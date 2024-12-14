@@ -182,7 +182,7 @@ void Example_ImGui::Initialize()
 	// Setup backend capabilities flags
 	ImGui_Impl_Data* bd = IM_NEW(ImGui_Impl_Data)();
 	io.BackendRendererUserData = (void*)bd;
-	io.BackendRendererName = "Wicked";
+	io.BackendRendererName = "Libertas";
 	io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;  // We can honor the ImDrawCmd::VtxOffset field, allowing for large meshes.
 
 	Application::Initialize();
@@ -494,7 +494,7 @@ void Example_ImGuiRenderer::Update(float dt)
 	ImGui::GetStyle().Colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.00f);
 
 	bool dockingopen = true;
-	if (ImGui::Begin("DockSpaceWicked", &dockingopen, window_flags))
+	if (ImGui::Begin("DockSpaceLibertas", &dockingopen, window_flags))
 	{
 		ImGui::PopStyleVar();
 		ImGui::PopStyleVar(2);
@@ -517,7 +517,7 @@ void Example_ImGuiRenderer::Update(float dt)
 
 			ImGui::DockBuilderDockWindow("Scene", dock_id_left);
 			ImGui::DockBuilderDockWindow("Options", dock_id_right);
-			ImGui::DockBuilderDockWindow(ICON_MD_TEXT_SNIPPET " Wicked Backlog", dock_id_bottom);
+			ImGui::DockBuilderDockWindow(ICON_MD_TEXT_SNIPPET " Libertas Backlog", dock_id_bottom);
 			ImGui::DockBuilderDockWindow(ICON_MD_BUG_REPORT " Debugger", dock_id_bottom);
 
 			ImGui::DockBuilderFinish(dockspace_id);
@@ -560,7 +560,7 @@ void Example_ImGuiRenderer::Update(float dt)
 
 					//PE: Generate real docking host window name.
 					ImDrawList* host_drawlist = NULL;
-					ImGuiWindow* host_window = ImGui::FindWindowByName("DockSpaceWicked");
+					ImGuiWindow* host_window = ImGui::FindWindowByName("DockSpaceLibertas");
 					ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
 					char title[256];
 					ImFormatString(title, IM_ARRAYSIZE(title), "%s/DockSpace_%08X", host_window->Name, dockspace_id);
@@ -1337,7 +1337,7 @@ void Example_ImGuiRenderer::Update(float dt)
 	ImGui::End();
 
 	//Wicked backlog and lua.
-	ImGui::Begin(ICON_MD_TEXT_SNIPPET " Wicked Backlog", &bAlwaysOpen, ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin(ICON_MD_TEXT_SNIPPET " Libertas Backlog", &bAlwaysOpen, ImGuiWindowFlags_NoScrollbar);
 	{
 		static std::string lastlog = "";
 
@@ -1377,7 +1377,7 @@ void Example_ImGuiRenderer::Update(float dt)
 
 		if (lua_history.empty())
 		{
-			lua_history.push_back("backlog_post(\"Hello Wicked Engine :)\")");
+			lua_history.push_back("backlog_post(\"Hello Libertas Engine :)\")");
 		}
 
 		ImGui::PushItemWidth(24);
@@ -1556,7 +1556,7 @@ void Example_ImGuiRenderer::DisplayPerformanceData(bool* p_open)
 	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
 	if (ImGui::Begin("##DisplayPerformanceData", p_open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
 	{
-		ImGui::Text("Wicked Engine (%s) - FPS: %.1f", wi::version::GetVersionString(),ImGui::GetIO().Framerate);
+		ImGui::Text("Libertas Engine (%s) - FPS: %.1f", wi::version::GetVersionString(),ImGui::GetIO().Framerate);
 	}
 	ImGui::End();
 }

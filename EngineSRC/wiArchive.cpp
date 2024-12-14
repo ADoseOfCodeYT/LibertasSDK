@@ -65,13 +65,13 @@ namespace wi
 			(*this) >> version;
 			if (version < __archiveVersionBarrier)
 			{
-				wi::helper::messageBox("File is not supported!\nReason: The archive version (" + std::to_string(version) + ") is no longer supported! This is likely because trying to open a file that was created by a version of Wicked Engine that is too old.", "Error!");
+				wi::helper::messageBox("File is not supported!\nReason: The archive version (" + std::to_string(version) + ") is no longer supported! This is likely because trying to open a file that was created by a version of Libertas Engine that is too old.", "Error!");
 				Close();
 				return;
 			}
 			if (version > __archiveVersion)
 			{
-				wi::helper::messageBox("File is not supported!\nReason: The archive version (" + std::to_string(version) + ") is higher than the program's (" + std::to_string(__archiveVersion) + ")!\nThis is likely due to trying to open an Archive file that was not created by Wicked Engine.", "Error!");
+				wi::helper::messageBox("File is not supported!\nReason: The archive version (" + std::to_string(version) + ") is higher than the program's (" + std::to_string(__archiveVersion) + ")!\nThis is likely due to trying to open an Archive file that was not created by Libertas Engine.", "Error!");
 				Close();
 				return;
 			}

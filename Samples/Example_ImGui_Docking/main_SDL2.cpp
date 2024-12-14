@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
     }
 
     sdl2::window_ptr_t window = sdl2::make_window(
-            "Wicked Engine Tests",
+            "Libertas Engine Tests",
             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
             1280, 800,
             SDL_WINDOW_SHOWN | SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);

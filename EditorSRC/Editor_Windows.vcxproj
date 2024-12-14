@@ -141,12 +141,12 @@
     <ClCompile Include="main_Windows.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="wicked.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EngineSRC\LibertasEngine_Windows.vcxproj">
       <Project>{06163dcb-b183-4ed9-9c62-13ef1658e049}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app_icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

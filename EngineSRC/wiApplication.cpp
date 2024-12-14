@@ -30,12 +30,12 @@
 #include <cstdlib>
 #include <atomic>
 
-//#define WICKED_ENGINE_HEAP_ALLOCATION_COUNTER
+//#define LIBERTAS_ENGINE_HEAP_ALLOCATION_COUNTER
 
-#ifdef WICKED_ENGINE_HEAP_ALLOCATION_COUNTER
+#ifdef LIBERTAS_ENGINE_HEAP_ALLOCATION_COUNTER
 static std::atomic<uint32_t> number_of_heap_allocations{ 0 };
 static std::atomic<size_t> size_of_heap_allocations{ 0 };
-#endif // WICKED_ENGINE_HEAP_ALLOCATION_COUNTER
+#endif // LIBERTAS_ENGINE_HEAP_ALLOCATION_COUNTER
 
 using namespace wi::graphics;
 
@@ -366,7 +366,7 @@ namespace wi
 			infodisplay_str.clear();
 			if (infoDisplay.watermark)
 			{
-				infodisplay_str += "Wicked Engine ";
+				infodisplay_str += "Libertas Engine ";
 				infodisplay_str += wi::version::GetVersionString();
 				infodisplay_str += " ";
 
@@ -468,7 +468,7 @@ namespace wi
 			if (infoDisplay.heap_allocation_counter)
 			{
 				infodisplay_str += "Heap allocations per frame: ";
-#ifdef WICKED_ENGINE_HEAP_ALLOCATION_COUNTER
+#ifdef LIBERTAS_ENGINE_HEAP_ALLOCATION_COUNTER
 				infodisplay_str += std::to_string(number_of_heap_allocations.load());
 				infodisplay_str += " (";
 				infodisplay_str += std::to_string(size_of_heap_allocations.load());
@@ -477,7 +477,7 @@ namespace wi
 				size_of_heap_allocations.store(0);
 #else
 				infodisplay_str += "[disabled]\n";
-#endif // WICKED_ENGINE_HEAP_ALLOCATION_COUNTER
+#endif // LIBERTAS_ENGINE_HEAP_ALLOCATION_COUNTER
 			}
 			if (infoDisplay.pipeline_count)
 			{
@@ -750,7 +750,7 @@ namespace wi
 }
 
 
-#ifdef WICKED_ENGINE_HEAP_ALLOCATION_COUNTER
+#ifdef LIBERTAS_ENGINE_HEAP_ALLOCATION_COUNTER
 // Heap alloc replacements are used to count heap allocations:
 //	It is good practice to reduce the amount of heap allocations that happen during the frame,
 //	so keep an eye on the info display of the engine while Application::InfoDisplayer::heap_allocation_counter is enabled
@@ -783,4 +783,4 @@ void operator delete(void* ptr) throw() { free(ptr); }
 void operator delete (void* ptr, const std::nothrow_t&) throw() { free(ptr); }
 void operator delete[](void* ptr) throw() { free(ptr); }
 void operator delete[](void* ptr, const std::nothrow_t&) throw() { free(ptr); }
-#endif // WICKED_ENGINE_HEAP_ALLOCATION_COUNTER
+#endif // LIBERTAS_ENGINE_HEAP_ALLOCATION_COUNTER

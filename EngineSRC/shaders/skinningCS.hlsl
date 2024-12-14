@@ -3,7 +3,7 @@
 PUSHCONSTANT(push, SkinningPushConstants);
 
 #ifndef __PSSL__
-#undef WICKED_ENGINE_DEFAULT_ROOTSIGNATURE // don't use auto root signature!
+#undef LIBERTAS_ENGINE_DEFAULT_ROOTSIGNATURE // don't use auto root signature!
 [RootSignature(
 	"RootConstants(num32BitConstants=20, b999),"
 	"DescriptorTable( "

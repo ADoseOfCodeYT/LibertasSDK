@@ -23,7 +23,7 @@ struct RayPayload
 #ifndef __spirv__
 GlobalRootSignature MyGlobalRootSignature =
 {
-	WICKED_ENGINE_DEFAULT_ROOTSIGNATURE
+	LIBERTAS_ENGINE_DEFAULT_ROOTSIGNATURE
 };
 #endif // __spirv__
 

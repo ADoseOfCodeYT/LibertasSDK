@@ -47,7 +47,7 @@ namespace wi::texturehelper
 
 		// Logo
 		{
-			CreateTexture(helperTextures[HELPERTEXTURE_LOGO], wicked_engine_logo, 256, 256);
+			CreateTexture(helperTextures[HELPERTEXTURE_LOGO], libertas_engine_logo, 256, 256);
 			device->SetName(&helperTextures[HELPERTEXTURE_LOGO], "HELPERTEXTURE_LOGO");
 		}
 

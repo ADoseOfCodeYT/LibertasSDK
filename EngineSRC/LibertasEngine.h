@@ -92,8 +92,8 @@
 // After version 0.59.11, namespaces were refactored into nested namespaces under the wi:: root namespace.
 // To allow compatibility with older user code, the backwards compatibility definitions are included below.
 // If you need backwards compatibility features, define the following before including this file:
-//#define WICKEDENGINE_BACKWARDS_COMPATIBILITY_0_59
-#ifdef WICKEDENGINE_BACKWARDS_COMPATIBILITY_0_59
+//#define LIBERTASENGINE_BACKWARDS_COMPATIBILITY_0_59
+#ifdef LIBERTASENGINE_BACKWARDS_COMPATIBILITY_0_59
 
 using namespace wi;
 using namespace wi::enums;
@@ -176,7 +176,7 @@ static constexpr int SYSTEM_EVENT_RELOAD_SHADERS = wi::eventhandler::EVENT_RELOA
 static constexpr int SYSTEM_EVENT_SET_VSYNC = wi::eventhandler::EVENT_SET_VSYNC;
 static constexpr XMFLOAT4X4 IDENTITYMATRIX = wi::math::IDENTITY_MATRIX;
 
-#endif // WICKEDENGINE_BACKWARDS_COMPATIBILITY_0_59
+#endif // LIBERTASENGINE_BACKWARDS_COMPATIBILITY_0_59
 
 
 

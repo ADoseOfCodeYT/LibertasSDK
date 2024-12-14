@@ -31,7 +31,7 @@ namespace wi::initializer
 		initializationStarted.store(true);
 
 		std::string ss;
-		ss += "\n[wi::initializer] Initializing Wicked Engine, please wait...\n";
+		ss += "\n[wi::initializer] Initializing Libertas Engine, please wait...\n";
 		ss += "Version: ";
 		ss += wi::version::GetVersionString();
 		wi::backlog::post(ss);
@@ -69,7 +69,7 @@ namespace wi::initializer
 
 		std::thread([] {
 			wi::jobsystem::Wait(ctx);
-			wi::backlog::post("\n[wi::initializer] Wicked Engine Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			wi::backlog::post("\n[wi::initializer] Libertas Engine Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}).detach();
 
 	}

@@ -7,7 +7,7 @@ struct CubeConstants
 PUSHCONSTANT(cube, CubeConstants);
 
 #ifndef __PSSL__
-#undef WICKED_ENGINE_DEFAULT_ROOTSIGNATURE // don't use auto root signature!
+#undef LIBERTAS_ENGINE_DEFAULT_ROOTSIGNATURE // don't use auto root signature!
 [RootSignature("RootConstants(num32BitConstants=16, b999, visibility = SHADER_VISIBILITY_VERTEX)")]
 #endif // __PSSL__
 

@@ -163,10 +163,10 @@ float3x3 adjoint(in float4x4 m)
 }
 
 // The root signature will affect shader compilation for DX12.
-//	The shader compiler will take the defined name: WICKED_ENGINE_DEFAULT_ROOTSIGNATURE and use it as root signature
+//	The shader compiler will take the defined name: LIBERTAS_ENGINE_DEFAULT_ROOTSIGNATURE and use it as root signature
 //	If you wish to specify custom root signature, make sure that this define is not available
-//		(for example: not including this file, or using #undef WICKED_ENGINE_DEFAULT_ROOTSIGNATURE)
-#define WICKED_ENGINE_DEFAULT_ROOTSIGNATURE \
+//		(for example: not including this file, or using #undef LIBERTAS_ENGINE_DEFAULT_ROOTSIGNATURE)
+#define LIBERTAS_ENGINE_DEFAULT_ROOTSIGNATURE \
 	"RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT), " \
 	"RootConstants(num32BitConstants=12, b999), " \
 	"CBV(b0), " \
