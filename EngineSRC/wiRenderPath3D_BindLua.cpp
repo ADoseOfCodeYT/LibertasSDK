@@ -32,7 +32,6 @@ namespace wi::lua
 		lunamethod(RenderPath3D_BindLua, SetRaytracedReflectionsEnabled),
 		lunamethod(RenderPath3D_BindLua, SetShadowsEnabled),
 		lunamethod(RenderPath3D_BindLua, SetReflectionsEnabled),
-		lunamethod(RenderPath3D_BindLua, SetFXAAEnabled),
 		lunamethod(RenderPath3D_BindLua, SetBloomEnabled),
 		lunamethod(RenderPath3D_BindLua, SetBloomThreshold),
 		lunamethod(RenderPath3D_BindLua, SetColorGradingEnabled),
@@ -208,19 +207,6 @@ namespace wi::lua
 			((RenderPath3D*)component)->setReflectionsEnabled(wi::lua::SGetBool(L, 1));
 		else
 			wi::lua::SError(L, "SetShadowsEnabled(bool value) not enough arguments!");
-		return 0;
-	}
-	int RenderPath3D_BindLua::SetFXAAEnabled(lua_State* L)
-	{
-		if (component == nullptr)
-		{
-			wi::lua::SError(L, "SetFXAAEnabled(bool value) component is null!");
-			return 0;
-		}
-		if (wi::lua::SGetArgCount(L) > 0)
-			((RenderPath3D*)component)->setFXAAEnabled(wi::lua::SGetBool(L, 1));
-		else
-			wi::lua::SError(L, "SetFXAAEnabled(bool value) not enough arguments!");
 		return 0;
 	}
 	int RenderPath3D_BindLua::SetBloomEnabled(lua_State* L)

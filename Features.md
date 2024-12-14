@@ -90,7 +90,6 @@
 * Bokeh Depth Of Field
 * Chromatic Aberration
 * MSAA
-* FXAA
 * TAA
 * Super-Sampling
 * Directional Lights (Cascaded Shadow Maps)
@@ -105,11 +104,9 @@
 ### Screen Space: 
 
 * Screen Space Refractions
-* Multi Sampled Ambient Occlusion
 * Screen Spacce Ambient Occlusion
 * Horizon Based Ambient Occlusion
 * Stochastic Screen Space Reflections
-* Screen Space Global Illumination
 * Screen Space Contact Shadows
 
 ### Raytracing / Conetracing / Pathtracing:

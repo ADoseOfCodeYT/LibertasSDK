@@ -738,11 +738,6 @@ namespace wi::renderer
 		const VolumetricCloudResources& res,
 		wi::graphics::CommandList cmd
 	);
-	void Postprocess_FXAA(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
-	);
 	struct TemporalAAResources
 	{
 		mutable int frame = 0;

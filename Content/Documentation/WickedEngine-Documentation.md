@@ -312,7 +312,7 @@ The post process chain is implemented in `RenderPath3D::RenderPostprocessChain()
 - HDR<br/>
 These are using the HDR scene render targets, they happen before tone mapping. For example: Temporal AA, Motion blur, Depth of field
 - LDR<br/>
-These are running after tone mapping. For example: Color grading, FXAA, chromatic aberration. The last LDR post process result will be output to the back buffer in the `Compose()` function.
+These are running after tone mapping. For example: Color grading, chromatic aberration. The last LDR post process result will be output to the back buffer in the `Compose()` function.
 - Other<br/>
 These are running in more specific locations, depending on the render path. For example: SSR, SSAO, cartoon outline
 

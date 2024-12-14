@@ -338,10 +338,6 @@ Requires Tier2 support for variable shading rate</entry>
 				<entry id="3">8</entry>
 			</section>
 		</section>
-		<section name="FXAA: " hint="CheckBox">
-			<entry id="0" hint="text">FXAA: </entry>
-			<entry id="1" hint="tooltip">Fast Approximate Anti Aliasing. A fast antialiasing method, but can be a bit too blurry.</entry>
-		</section>
 		<section name="LightShafts: " hint="CheckBox">
 			<entry id="0" hint="text">LightShafts: </entry>
 			<entry id="1" hint="tooltip">Enable light shaft for directional light sources.</entry>

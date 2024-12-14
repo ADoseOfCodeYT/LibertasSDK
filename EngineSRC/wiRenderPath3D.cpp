@@ -192,7 +192,7 @@ namespace wi
 				assert(subresource_index == i);
 			}
 
-			// because this is used by SSR and SSGI before it gets a chance to be normally rendered, it MUST be cleared!
+			// because this is used by SSR before it gets a chance to be normally rendered, it MUST be cleared!
 			CommandList cmd = device->BeginCommandList();
 			device->Barrier(GPUBarrier::Image(&rtSceneCopy, rtSceneCopy.desc.layout, ResourceState::UNORDERED_ACCESS), cmd);
 			device->ClearUAV(&rtSceneCopy, 0, cmd);
@@ -2434,14 +2434,6 @@ namespace wi
 
 				std::swap(rt_read, rt_write);
 			}
-
-			if (getFXAAEnabled())
-			{
-				wi::renderer::Postprocess_FXAA(*rt_read, *rt_write, cmd);
-
-				std::swap(rt_read, rt_write);
-			}
-
 			if (getChromaticAberrationEnabled())
 			{
 				wi::renderer::Postprocess_Chromatic_Aberration(*rt_read, *rt_write, cmd, getChromaticAberrationAmount());

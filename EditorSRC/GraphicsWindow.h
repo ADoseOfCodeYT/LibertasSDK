@@ -78,7 +78,6 @@ public:
 	wi::gui::Slider depthOfFieldScaleSlider;
 	wi::gui::CheckBox bloomCheckBox;
 	wi::gui::Slider bloomStrengthSlider;
-	wi::gui::CheckBox fxaaCheckBox;
 	wi::gui::CheckBox colorGradingCheckBox;
 	wi::gui::CheckBox ditherCheckBox;
 	wi::gui::CheckBox sharpenFilterCheckBox;
