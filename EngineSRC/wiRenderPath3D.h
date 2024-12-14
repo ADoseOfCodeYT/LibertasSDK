@@ -17,7 +17,6 @@ namespace wi
 			AO_DISABLED,	// no ambient occlusion
 			AO_SSAO,		// simple brute force screen space ambient occlusion
 			AO_HBAO,		// horizon based screen space ambient occlusion
-			AO_MSAO,		// multi scale screen space ambient occlusion
 			AO_RTAO,		// ray traced ambient occlusion
 			// Don't alter order! (bound to lua manually)
 		};
@@ -129,7 +128,6 @@ namespace wi
 		wi::renderer::TiledLightResources tiledLightResources_planarReflection;
 		wi::renderer::LuminanceResources luminanceResources;
 		wi::renderer::SSAOResources ssaoResources;
-		wi::renderer::MSAOResources msaoResources;
 		wi::renderer::RTAOResources rtaoResources;
 		wi::renderer::RTDiffuseResources rtdiffuseResources;
 		wi::renderer::RTReflectionResources rtreflectionResources;

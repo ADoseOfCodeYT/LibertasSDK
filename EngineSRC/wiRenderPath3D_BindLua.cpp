@@ -711,8 +711,7 @@ static const std::string value_bindings = R"(
 AO_DISABLED = 0
 AO_SSAO = 1
 AO_HBAO = 2
-AO_MSAO = 3
-AO_RTAO = 4
+AO_RTAO = 3
 
 FSR2_Preset = {
 	Quality = 0,

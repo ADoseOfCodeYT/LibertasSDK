@@ -59,7 +59,6 @@ namespace wi
 		tiledLightResources_planarReflection = {};
 		luminanceResources = {};
 		ssaoResources = {};
-		msaoResources = {};
 		rtaoResources = {};
 		rtdiffuseResources = {};
 		rtreflectionResources = {};
@@ -1836,16 +1835,6 @@ namespace wi
 					getAOPower()
 				);
 				break;
-			case AO_MSAO:
-				wi::renderer::Postprocess_MSAO(
-					msaoResources,
-					*camera,
-					rtLinearDepth,
-					rtAO,
-					cmd,
-					getAOPower()
-				);
-				break;
 			case AO_RTAO:
 				wi::renderer::Postprocess_RTAO(
 					rtaoResources,
@@ -2517,7 +2506,6 @@ namespace wi
 
 		rtAO = {};
 		ssaoResources = {};
-		msaoResources = {};
 		rtaoResources = {};
 
 		if (ao == AO_DISABLED)
@@ -2541,11 +2529,6 @@ namespace wi
 			desc.width = internalResolution.x / 2;
 			desc.height = internalResolution.y / 2;
 			wi::renderer::CreateSSAOResources(ssaoResources, internalResolution);
-			break;
-		case RenderPath3D::AO_MSAO:
-			desc.width = internalResolution.x;
-			desc.height = internalResolution.y;
-			wi::renderer::CreateMSAOResources(msaoResources, internalResolution);
 			break;
 		case RenderPath3D::AO_RTAO:
 			desc.width = internalResolution.x;

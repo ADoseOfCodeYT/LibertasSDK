@@ -287,30 +287,7 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)oceanSimulatorCS.hlsl">
       <Filter>CS</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)msao_interleaveCS.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)msao_preparedepthbuffers1CS.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)msao_preparedepthbuffers2CS.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)msao_blurupsampleCS.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)msao_blurupsampleCS_blendout.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)msao_blurupsampleCS_premin.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)msao_blurupsampleCS_premin_blendout.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)msaoCS.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
+  
     <FxCompile Include="$(MSBuildThisFileDirectory)motionblur_neighborhoodMaxVelocityCS.hlsl">
       <Filter>CS</Filter>
     </FxCompile>

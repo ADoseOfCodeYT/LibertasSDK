@@ -69,28 +69,6 @@ static const uint POSTPROCESS_HBAO_THREADCOUNT = 320;
 
 #define volumetricclouds_frame postprocess.params0.z
 
-static const uint POSTPROCESS_MSAO_BLOCKSIZE = 16;
-struct MSAO
-{
-	float4 xInvThicknessTable[3];
-	float4 xSampleWeightTable[3];
-	float2 xInvSliceDimension;
-	float xRejectFadeoff;
-	float xRcpAccentuation;
-};
-CONSTANTBUFFER(msao, MSAO, CBSLOT_MSAO);
-
-//#define MSAO_SAMPLE_EXHAUSTIVELY
-struct MSAO_UPSAMPLE
-{
-	float2 InvLowResolution;
-	float2 InvHighResolution;
-	float NoiseFilterStrength;
-	float StepSize;
-	float kBlurTolerance;
-	float kUpsampleTolerance;
-};
-
 struct ShadingRateClassification
 {
 	uint TileSize;

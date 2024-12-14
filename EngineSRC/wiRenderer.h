@@ -515,38 +515,6 @@ namespace wi::renderer
 		wi::graphics::CommandList cmd,
 		float power = 1.0f
 		);
-	struct MSAOResources
-	{
-		mutable bool cleared = false;
-		wi::graphics::Texture texture_lineardepth_downsize1;
-		wi::graphics::Texture texture_lineardepth_tiled1;
-		wi::graphics::Texture texture_lineardepth_downsize2;
-		wi::graphics::Texture texture_lineardepth_tiled2;
-		wi::graphics::Texture texture_lineardepth_downsize3;
-		wi::graphics::Texture texture_lineardepth_tiled3;
-		wi::graphics::Texture texture_lineardepth_downsize4;
-		wi::graphics::Texture texture_lineardepth_tiled4;
-		wi::graphics::Texture texture_ao_merged1;
-		wi::graphics::Texture texture_ao_hq1;
-		wi::graphics::Texture texture_ao_smooth1;
-		wi::graphics::Texture texture_ao_merged2;
-		wi::graphics::Texture texture_ao_hq2;
-		wi::graphics::Texture texture_ao_smooth2;
-		wi::graphics::Texture texture_ao_merged3;
-		wi::graphics::Texture texture_ao_hq3;
-		wi::graphics::Texture texture_ao_smooth3;
-		wi::graphics::Texture texture_ao_merged4;
-		wi::graphics::Texture texture_ao_hq4;
-	};
-	void CreateMSAOResources(MSAOResources& res, XMUINT2 resolution);
-	void Postprocess_MSAO(
-		const MSAOResources& res,
-		const wi::scene::CameraComponent& camera,
-		const wi::graphics::Texture& lineardepth,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
-		float power = 1.0f
-		);
 	struct RTAOResources
 	{
 		wi::graphics::Texture normals;

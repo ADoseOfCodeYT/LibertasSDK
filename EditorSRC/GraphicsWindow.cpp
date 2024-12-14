@@ -835,7 +835,6 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 	aoComboBox.AddItem("Disabled");
 	aoComboBox.AddItem("SSAO");
 	aoComboBox.AddItem("HBAO");
-	aoComboBox.AddItem("MSAO");
 	if (wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
 	{
 		aoComboBox.AddItem("RTAO");

@@ -769,7 +769,7 @@ runProcess(function()
 
 	--path.SetLightShaftsEnabled(true)
 	path.SetLightShaftsStrength(0.01)
-	path.SetAO(AO_MSAO)
+	path.SetAO(AO_SSAO)
 	path.SetAOPower(0.25)
 	--path.SetOutlineEnabled(true)
 	path.SetOutlineThreshold(0.11)

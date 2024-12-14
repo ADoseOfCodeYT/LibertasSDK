@@ -156,8 +156,7 @@ This specifies the maximum shadow resolution for these light types, but that can
 				<entry id="0">Disabled</entry>
 				<entry id="1">SSAO</entry>
 				<entry id="2">HBAO</entry>
-				<entry id="3">MSAO</entry>
-				<entry id="4">RTAO</entry>
+				<entry id="3">RTAO</entry>
 			</section>
 		</section>
 		<section name="Power: " hint="Slider">

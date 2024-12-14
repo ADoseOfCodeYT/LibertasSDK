@@ -115,7 +115,6 @@ static const uint IndirectDispatchArgsAlignment = 4u;
 #define CBSLOT_OTHER_OCEAN						3
 #define CBSLOT_OTHER_CLOUDGENERATOR				3
 #define CBSLOT_OTHER_GPUSORTLIB					4
-#define CBSLOT_MSAO								4
 #define CBSLOT_FSR								4
 #define CBSLOT_TRAILRENDERER					3
 
@@ -142,7 +141,6 @@ static const uint IndirectDispatchArgsAlignment = 4u;
 #define CBSLOT_OTHER_OCEAN						4
 #define CBSLOT_OTHER_CLOUDGENERATOR				4
 #define CBSLOT_OTHER_GPUSORTLIB					4
-#define CBSLOT_MSAO								4
 #define CBSLOT_FSR								4
 #define CBSLOT_TRAILRENDERER					4
 #endif // !__PSSL__ && !__SCE__

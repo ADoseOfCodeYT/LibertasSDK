@@ -1701,7 +1701,6 @@ It inherits functions from RenderPath2D, so it can render a 2D overlay.
 - AO_DISABLED : int  -- turn off AO computation (use in SetAO() function)
 	- AO_SSAO : int  -- enable simple brute force screen space ambient occlusion (use in SetAO() function)
 	- AO_HBAO : int  -- enable horizon based screen space ambient occlusion (use in SetAO() function)
-	- AO_MSAO : int  -- enable multi scale screen space ambient occlusion (use in SetAO() function)
 - SetAOPower(float value)  -- applies AO power value if any AO is enabled
 - SetAORange(float value)	-- sets max range for ray traced AO
 - SetSSREnabled(bool value)
