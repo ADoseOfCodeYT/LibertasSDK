@@ -112,11 +112,6 @@ void main(uint Gid : SV_GroupID, uint groupIndex : SV_GroupIndex)
 		lighting.indirect.specular = lerp(lighting.indirect.specular, ssr.rgb * surface.F, ssr.a);
 	}
 	[branch]
-	if (GetCamera().texture_ssgi_index >= 0)
-	{
-		surface.ssgi = bindless_textures_half4[GetCamera().texture_ssgi_index].SampleLevel(sampler_linear_clamp, surface.screenUV, 0).rgb;
-	}
-	[branch]
 	if (GetCamera().texture_ao_index >= 0)
 	{
 		surface.occlusion *= bindless_textures_half4[GetCamera().texture_ao_index].SampleLevel(sampler_linear_clamp, surface.screenUV, 0).r;

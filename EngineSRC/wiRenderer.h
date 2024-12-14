@@ -553,25 +553,6 @@ namespace wi::renderer
 		wi::graphics::CommandList cmd,
 		float range = 1000.0f
 	);
-	struct SSGIResources
-	{
-		mutable bool cleared = false;
-		wi::graphics::Texture texture_atlas_depth;
-		wi::graphics::Texture texture_atlas_color;
-		wi::graphics::Texture texture_depth_mips;
-		wi::graphics::Texture texture_normal_mips;
-		wi::graphics::Texture texture_diffuse_mips;
-	};
-	void CreateSSGIResources(SSGIResources& res, XMUINT2 resolution);
-	void Postprocess_SSGI(
-		const SSGIResources& res,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& input_depth,
-		const wi::graphics::Texture& input_normal,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
-		float depthRejection = 8
-	);
 	struct RTReflectionResources
 	{
 		mutable int frame = 0;

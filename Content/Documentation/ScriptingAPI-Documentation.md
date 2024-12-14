@@ -1704,7 +1704,6 @@ It inherits functions from RenderPath2D, so it can render a 2D overlay.
 - SetAOPower(float value)  -- applies AO power value if any AO is enabled
 - SetAORange(float value)	-- sets max range for ray traced AO
 - SetSSREnabled(bool value)
-- SetSSGIEnabled(bool value)
 - SetRaytracedDiffuseEnabled(bool value)
 - SetRaytracedReflectionsEnabled(bool value)
 - SetShadowsEnabled(bool value)

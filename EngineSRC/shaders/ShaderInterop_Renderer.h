@@ -1283,7 +1283,6 @@ struct alignas(16) ShaderCamera
 
 	int texture_ao_index;
 	int texture_ssr_index;
-	int texture_ssgi_index;
 	int texture_rtshadow_index;
 
 	int texture_surfelgi_index;
@@ -1354,7 +1353,6 @@ struct alignas(16) ShaderCamera
 		texture_waterriples_index = -1;
 		texture_ao_index = -1;
 		texture_ssr_index = -1;
-		texture_ssgi_index = -1;
 		texture_rtshadow_index = -1;
 		texture_surfelgi_index = -1;
 		texture_depth_index_prev = -1;

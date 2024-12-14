@@ -66,9 +66,6 @@ wi::vector<ShaderEntry> shaders = {
 	{"ffx-fsr2/ffx_fsr2_accumulate_pass", wi::graphics::ShaderStage::CS},
 	{"ffx-fsr2/ffx_fsr2_rcas_pass", wi::graphics::ShaderStage::CS},
 	{"ssaoCS", wi::graphics::ShaderStage::CS},
-	{"ssgi_deinterleaveCS", wi::graphics::ShaderStage::CS},
-	{"ssgiCS", wi::graphics::ShaderStage::CS},
-	{"ssgi_upsampleCS", wi::graphics::ShaderStage::CS},
 	{"rtdiffuseCS", wi::graphics::ShaderStage::CS, wi::graphics::ShaderModel::SM_6_5},
 	{"rtdiffuse_spatialCS", wi::graphics::ShaderStage::CS},
 	{"rtdiffuse_temporalCS", wi::graphics::ShaderStage::CS},
@@ -487,13 +484,6 @@ int main(int argc, char* argv[])
 	{
 		shaders.back().permutations.emplace_back().defines = x;
 	}
-
-	// permutations for ssgiCS:
-	shaders.push_back({ "ssgiCS", wi::graphics::ShaderStage::CS });
-	shaders.back().permutations.emplace_back().defines = { "WIDE" };
-	// permutations for ssgi_upsampleCS:
-	shaders.push_back({ "ssgi_upsampleCS", wi::graphics::ShaderStage::CS });
-	shaders.back().permutations.emplace_back().defines = { "WIDE" };
 
 	wi::jobsystem::Initialize();
 	wi::jobsystem::context ctx;

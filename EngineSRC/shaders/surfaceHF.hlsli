@@ -91,7 +91,6 @@ struct Surface
 	float hit_depth;
 	half3 gi;
 	half3 bumpColor;
-	half3 ssgi;
 	half3 extinction;
 
 	// It's good to use bools instead of flags in shaders, because bools of all lanes can be combined into one SGPR
@@ -144,7 +143,6 @@ struct Surface
 		facenormal = 0;
 		gi = 0;
 		bumpColor = 0;
-		ssgi = 0;
 		extinction = 0;
 		
 		receiveshadow = true;

@@ -321,7 +321,6 @@ namespace wi
 		// These can trigger resource creations if needed:
 		setAO(ao);
 		setSSREnabled(ssrEnabled);
-		setSSGIEnabled(ssgiEnabled);
 		setRaytracedReflectionsEnabled(raytracedReflectionsEnabled);
 		setRaytracedDiffuseEnabled(raytracedDiffuseEnabled);
 		setFSREnabled(fsrEnabled);
@@ -453,10 +452,6 @@ namespace wi
 		if (!getSSREnabled() && !getRaytracedReflectionEnabled())
 		{
 			rtSSR = {};
-		}
-		if (!getSSGIEnabled())
-		{
-			rtSSGI = {};
 		}
 		if (!getRaytracedDiffuseEnabled())
 		{
@@ -596,7 +591,6 @@ namespace wi
 			getMotionBlurEnabled() ||
 			wi::renderer::GetTemporalAAEnabled() ||
 			getSSREnabled() ||
-			getSSGIEnabled() ||
 			getRaytracedReflectionEnabled() ||
 			getRaytracedDiffuseEnabled() ||
 			wi::renderer::GetRaytracedShadowsEnabled() ||
@@ -658,7 +652,6 @@ namespace wi
 		if (
 			visibility_shading_in_compute ||
 			getSSREnabled() ||
-			getSSGIEnabled() ||
 			getRaytracedReflectionEnabled() ||
 			getRaytracedDiffuseEnabled() ||
 			wi::renderer::GetScreenSpaceShadowsEnabled() ||
@@ -748,7 +741,6 @@ namespace wi
 		camera->texture_waterriples_index = device->GetDescriptorIndex(&rtWaterRipple, SubresourceType::SRV);
 		camera->texture_ao_index = device->GetDescriptorIndex(&rtAO, SubresourceType::SRV);
 		camera->texture_ssr_index = device->GetDescriptorIndex(&rtSSR, SubresourceType::SRV);
-		camera->texture_ssgi_index = device->GetDescriptorIndex(&rtSSGI, SubresourceType::SRV);
 		if (rtShadow.IsValid())
 		{
 			camera->shadercamera_options |= SHADERCAMERA_OPTION_USE_SHADOW_MASK;
@@ -793,7 +785,6 @@ namespace wi
 		camera_reflection.texture_waterriples_index = -1;
 		camera_reflection.texture_ao_index = -1;
 		camera_reflection.texture_ssr_index = -1;
-		camera_reflection.texture_ssgi_index = -1;
 		camera_reflection.texture_rtshadow_index = device->GetDescriptorIndex(wi::texturehelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
 		camera_reflection.texture_rtdiffuse_index = -1;
 		camera_reflection.texture_surfelgi_index = -1;
@@ -1061,7 +1052,6 @@ namespace wi
 			}
 			else if (
 				getSSREnabled() ||
-				getSSGIEnabled() ||
 				getRaytracedReflectionEnabled() ||
 				getRaytracedDiffuseEnabled() ||
 				wi::renderer::GetScreenSpaceShadowsEnabled() ||
@@ -1107,8 +1097,6 @@ namespace wi
 			}
 
 			RenderSSR(cmd);
-
-			RenderSSGI(cmd);
 
 			if (wi::renderer::GetScreenSpaceShadowsEnabled())
 			{
@@ -1864,21 +1852,6 @@ namespace wi
 			);
 		}
 	}
-	void RenderPath3D::RenderSSGI(CommandList cmd) const
-	{
-		if (getSSGIEnabled())
-		{
-			wi::renderer::Postprocess_SSGI(
-				ssgiResources,
-				rtSceneCopy,
-				depthBuffer_Copy,
-				visibilityResources.texture_normals,
-				rtSSGI,
-				cmd,
-				getSSGIDepthRejection()
-			);
-		}
-	}
 	void RenderPath3D::RenderOutline(CommandList cmd) const
 	{
 		if (getOutlineEnabled())
@@ -2569,33 +2542,6 @@ namespace wi
 		else
 		{
 			ssrResources = {};
-		}
-	}
-	void RenderPath3D::setSSGIEnabled(bool value)
-	{
-		ssgiEnabled = value;
-
-		if (value)
-		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
-			XMUINT2 internalResolution = GetInternalResolution();
-			if (internalResolution.x == 0 || internalResolution.y == 0)
-				return;
-
-			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R16G16B16A16_FLOAT;
-			desc.width = internalResolution.x;
-			desc.height = internalResolution.y;
-			desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
-			device->CreateTexture(&desc, nullptr, &rtSSGI);
-			device->SetName(&rtSSGI, "rtSSGI");
-
-			wi::renderer::CreateSSGIResources(ssgiResources, internalResolution);
-		}
-		else
-		{
-			ssgiResources = {};
 		}
 	}
 	void RenderPath3D::setRaytracedReflectionsEnabled(bool value)
