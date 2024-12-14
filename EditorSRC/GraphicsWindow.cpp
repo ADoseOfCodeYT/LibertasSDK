@@ -951,37 +951,6 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 	AddWidget(&raytracedReflectionsRangeSlider);
 	raytracedReflectionsRangeSlider.SetEnabled(wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
 
-	raytracedDiffuseCheckBox.Create("RT Diffuse: ");
-	raytracedDiffuseCheckBox.SetTooltip("Enable Ray Traced Diffuse. Only if GPU supports raytracing.\nThis effect computes single bounce diffuse with ray tracing per pixel.\nIf DDGI is enabled, it will make it multi bounce.");
-	raytracedDiffuseCheckBox.SetScriptTip("RenderPath3D::SetRaytracedDiffuseEnabled(bool value)");
-	raytracedDiffuseCheckBox.SetSize(XMFLOAT2(hei, hei));
-	raytracedDiffuseCheckBox.SetPos(XMFLOAT2(x + 140, y));
-	editor->renderPath->setRaytracedDiffuseEnabled(editor->main->config.GetSection("graphics").GetBool("raytraced_diffuse"));
-	raytracedDiffuseCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		editor->renderPath->setRaytracedDiffuseEnabled(args.bValue);
-		editor->main->config.GetSection("graphics").Set("raytraced_diffuse", args.bValue);
-		editor->main->config.Commit();
-		});
-	AddWidget(&raytracedDiffuseCheckBox);
-	raytracedDiffuseCheckBox.SetEnabled(wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
-
-	raytracedDiffuseRangeSlider.Create(1.0f, 100.0f, 1, 1000, "RTDiffuse.Range: ");
-	raytracedDiffuseRangeSlider.SetText("Range: ");
-	raytracedDiffuseRangeSlider.SetTooltip("Set Reflection ray length for Ray traced diffuse.");
-	raytracedDiffuseRangeSlider.SetSize(XMFLOAT2(mod_wid, hei));
-	raytracedDiffuseRangeSlider.SetPos(XMFLOAT2(x + 100, y += step));
-	if (editor->main->config.GetSection("graphics").Has("rtdiffuse_range"))
-	{
-		editor->renderPath->setRaytracedDiffuseRange(editor->main->config.GetSection("graphics").GetFloat("rtdiffuse_range"));
-	}
-	raytracedDiffuseRangeSlider.OnSlide([=](wi::gui::EventArgs args) {
-		editor->renderPath->setRaytracedDiffuseRange(args.fValue);
-		editor->main->config.GetSection("graphics").Set("rtdiffuse_range", args.fValue);
-		editor->main->config.Commit();
-		});
-	AddWidget(&raytracedDiffuseRangeSlider);
-	raytracedDiffuseRangeSlider.SetEnabled(wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
-
 	screenSpaceShadowsCheckBox.Create("Screen Shadows: ");
 	screenSpaceShadowsCheckBox.SetTooltip("Enable screen space contact shadows. This can add small shadows details to shadow maps in screen space.");
 	screenSpaceShadowsCheckBox.SetSize(XMFLOAT2(hei, hei));
@@ -1534,8 +1503,6 @@ void GraphicsWindow::Update()
 	reflectionsRoughnessCutoffSlider.SetValue(editor->renderPath->getReflectionRoughnessCutoff());
 	raytracedReflectionsCheckBox.SetCheck(editor->renderPath->getRaytracedReflectionEnabled());
 	raytracedReflectionsRangeSlider.SetValue(editor->renderPath->getRaytracedReflectionsRange());
-	raytracedDiffuseCheckBox.SetCheck(editor->renderPath->getRaytracedDiffuseEnabled());
-	raytracedDiffuseRangeSlider.SetValue(editor->renderPath->getRaytracedDiffuseRange());
 	screenSpaceShadowsCheckBox.SetCheck(wi::renderer::GetScreenSpaceShadowsEnabled());
 	screenSpaceShadowsRangeSlider.SetValue((float)editor->renderPath->getScreenSpaceShadowRange());
 	screenSpaceShadowsStepCountSlider.SetValue((float)editor->renderPath->getScreenSpaceShadowSampleCount());
@@ -1801,8 +1768,6 @@ void GraphicsWindow::ResizeLayout()
 	ssrCheckBox.SetPos(XMFLOAT2(reflectionsRoughnessCutoffSlider.GetPos().x - ssrCheckBox.GetSize().x - 80, reflectionsRoughnessCutoffSlider.GetPos().y));
 	add_right(raytracedReflectionsRangeSlider);
 	raytracedReflectionsCheckBox.SetPos(XMFLOAT2(raytracedReflectionsRangeSlider.GetPos().x - raytracedReflectionsCheckBox.GetSize().x - 80, raytracedReflectionsRangeSlider.GetPos().y));
-	add_right(raytracedDiffuseRangeSlider);
-	raytracedDiffuseCheckBox.SetPos(XMFLOAT2(raytracedDiffuseRangeSlider.GetPos().x - raytracedDiffuseCheckBox.GetSize().x - 80, raytracedDiffuseRangeSlider.GetPos().y));
 	add_right(screenSpaceShadowsStepCountSlider);
 	screenSpaceShadowsCheckBox.SetPos(XMFLOAT2(screenSpaceShadowsStepCountSlider.GetPos().x - screenSpaceShadowsCheckBox.GetSize().x - 80, screenSpaceShadowsStepCountSlider.GetPos().y));
 	add_right(screenSpaceShadowsRangeSlider);

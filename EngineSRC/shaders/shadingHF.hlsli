@@ -341,12 +341,6 @@ inline void TiledLighting(inout Surface surface, inout Lighting lighting, uint f
 #endif //DISABLE_VOXELGI
 
 #ifndef TRANSPARENT
-	[branch]
-	if (!surface.IsGIApplied() && GetCamera().texture_rtdiffuse_index >= 0)
-	{
-		lighting.indirect.diffuse = bindless_textures_half4[GetCamera().texture_rtdiffuse_index][surface.pixel].rgb;
-		surface.SetGIApplied(true);
-	}
 
 	[branch]
 	if (!surface.IsGIApplied() && GetFrame().options & OPTION_BIT_SURFELGI_ENABLED && GetCamera().texture_surfelgi_index >= 0 && surfel_cellvalid(surfel_cell(surface.P)))

@@ -1266,7 +1266,6 @@ struct alignas(16) ShaderCamera
 	uint visibility_tilecount_flat;
 	float distance_from_origin;
 
-	int texture_rtdiffuse_index;
 	int texture_primitiveID_index;
 	int texture_depth_index;
 	int texture_lineardepth_index;
@@ -1340,7 +1339,6 @@ struct alignas(16) ShaderCamera
 		visibility_tilecount_flat = {};
 		distance_from_origin = {};
 
-		texture_rtdiffuse_index = -1;
 		texture_primitiveID_index = -1;
 		texture_depth_index = -1;
 		texture_lineardepth_index = -1;

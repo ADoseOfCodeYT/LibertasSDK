@@ -34,7 +34,6 @@ namespace wi::lua
 		int SetAOPower(lua_State* L);
 		int SetAORange(lua_State* L);
 		int SetSSREnabled(lua_State* L);
-		int SetRaytracedDiffuseEnabled(lua_State* L);
 		int SetRaytracedReflectionsEnabled(lua_State* L);
 		int SetShadowsEnabled(lua_State* L);
 		int SetReflectionsEnabled(lua_State* L);

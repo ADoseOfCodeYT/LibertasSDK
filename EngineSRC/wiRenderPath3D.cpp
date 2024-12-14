@@ -22,7 +22,6 @@ namespace wi
 		rtPrimitiveID_render = {};
 		rtVelocity = {};
 		rtReflection = {};
-		rtRaytracedDiffuse = {};
 		rtSSR = {};
 		rtSceneCopy = {};
 		rtSceneCopy_tmp = {};
@@ -60,7 +59,6 @@ namespace wi
 		luminanceResources = {};
 		ssaoResources = {};
 		rtaoResources = {};
-		rtdiffuseResources = {};
 		rtreflectionResources = {};
 		ssrResources = {};
 		rtshadowResources = {};
@@ -322,7 +320,6 @@ namespace wi
 		setAO(ao);
 		setSSREnabled(ssrEnabled);
 		setRaytracedReflectionsEnabled(raytracedReflectionsEnabled);
-		setRaytracedDiffuseEnabled(raytracedDiffuseEnabled);
 		setFSREnabled(fsrEnabled);
 		setFSR2Enabled(fsr2Enabled);
 		setEyeAdaptionEnabled(eyeAdaptionEnabled);
@@ -363,8 +360,7 @@ namespace wi
 				wi::renderer::GetDDGIEnabled() ||
 				(hw_raytrace && wi::renderer::GetRaytracedShadowsEnabled()) ||
 				(hw_raytrace && getAO() == AO_RTAO) ||
-				(hw_raytrace && getRaytracedReflectionEnabled()) ||
-				(hw_raytrace && getRaytracedDiffuseEnabled())
+				(hw_raytrace && getRaytracedReflectionEnabled())
 				)
 			{
 				scene->SetAccelerationStructureUpdateRequested(true);
@@ -452,10 +448,6 @@ namespace wi
 		if (!getSSREnabled() && !getRaytracedReflectionEnabled())
 		{
 			rtSSR = {};
-		}
-		if (!getRaytracedDiffuseEnabled())
-		{
-			rtRaytracedDiffuse = {};
 		}
 		if (getAO() == AO_DISABLED)
 		{
@@ -592,7 +584,6 @@ namespace wi
 			wi::renderer::GetTemporalAAEnabled() ||
 			getSSREnabled() ||
 			getRaytracedReflectionEnabled() ||
-			getRaytracedDiffuseEnabled() ||
 			wi::renderer::GetRaytracedShadowsEnabled() ||
 			getAO() == AO::AO_RTAO ||
 			wi::renderer::GetVariableRateShadingClassification() ||
@@ -653,7 +644,6 @@ namespace wi
 			visibility_shading_in_compute ||
 			getSSREnabled() ||
 			getRaytracedReflectionEnabled() ||
-			getRaytracedDiffuseEnabled() ||
 			wi::renderer::GetScreenSpaceShadowsEnabled() ||
 			wi::renderer::GetRaytracedShadowsEnabled() ||
 			wi::renderer::GetVXGIEnabled()
@@ -750,7 +740,6 @@ namespace wi
 		{
 			camera->texture_rtshadow_index = device->GetDescriptorIndex(wi::texturehelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
 		}
-		camera->texture_rtdiffuse_index = device->GetDescriptorIndex(&rtRaytracedDiffuse, SubresourceType::SRV);
 		camera->texture_surfelgi_index = device->GetDescriptorIndex(&surfelGIResources.result, SubresourceType::SRV);
 		camera->texture_vxgi_diffuse_index = device->GetDescriptorIndex(&vxgiResources.diffuse, SubresourceType::SRV);
 		if (wi::renderer::GetVXGIReflectionsEnabled())
@@ -786,7 +775,6 @@ namespace wi
 		camera_reflection.texture_ao_index = -1;
 		camera_reflection.texture_ssr_index = -1;
 		camera_reflection.texture_rtshadow_index = device->GetDescriptorIndex(wi::texturehelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
-		camera_reflection.texture_rtdiffuse_index = -1;
 		camera_reflection.texture_surfelgi_index = -1;
 		camera_reflection.texture_vxgi_diffuse_index = -1;
 		camera_reflection.texture_vxgi_specular_index = -1;
@@ -1053,7 +1041,6 @@ namespace wi
 			else if (
 				getSSREnabled() ||
 				getRaytracedReflectionEnabled() ||
-				getRaytracedDiffuseEnabled() ||
 				wi::renderer::GetScreenSpaceShadowsEnabled() ||
 				wi::renderer::GetRaytracedShadowsEnabled() ||
 				wi::renderer::GetVXGIEnabled()
@@ -1499,16 +1486,6 @@ namespace wi
 					cmd,
 					getRaytracedReflectionsRange(),
 					getReflectionRoughnessCutoff()
-				);
-			}
-			if (getRaytracedDiffuseEnabled())
-			{
-				wi::renderer::Postprocess_RTDiffuse(
-					rtdiffuseResources,
-					*scene,
-					rtRaytracedDiffuse,
-					cmd,
-					getRaytracedDiffuseRange()
 				);
 			}
 			if (wi::renderer::GetVXGIEnabled())
@@ -2560,33 +2537,6 @@ namespace wi
 		else
 		{
 			rtreflectionResources = {};
-		}
-	}
-	void RenderPath3D::setRaytracedDiffuseEnabled(bool value)
-	{
-		raytracedDiffuseEnabled = value;
-
-		if (value)
-		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
-			XMUINT2 internalResolution = GetInternalResolution();
-			if (internalResolution.x == 0 || internalResolution.y == 0)
-				return;
-
-			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R16G16B16A16_FLOAT;
-			desc.width = internalResolution.x;
-			desc.height = internalResolution.y;
-			device->CreateTexture(&desc, nullptr, &rtRaytracedDiffuse);
-			device->SetName(&rtRaytracedDiffuse, "rtRaytracedDiffuse");
-
-			wi::renderer::CreateRTDiffuseResources(rtdiffuseResources, internalResolution);
-		}
-		else
-		{
-			rtRaytracedDiffuse = {};
-			rtdiffuseResources = {};
 		}
 	}
 	void RenderPath3D::setFSREnabled(bool value)

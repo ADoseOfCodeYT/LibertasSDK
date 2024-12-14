@@ -536,23 +536,6 @@ namespace wi::renderer
 		float range = 1.0f,
 		float power = 1.0f
 	);
-	struct RTDiffuseResources
-	{
-		mutable int frame = 0;
-		wi::graphics::Texture texture_rayIndirectDiffuse;
-		wi::graphics::Texture texture_spatial;
-		wi::graphics::Texture texture_spatial_variance;
-		wi::graphics::Texture texture_temporal[2];
-		wi::graphics::Texture texture_temporal_variance[2];
-	};
-	void CreateRTDiffuseResources(RTDiffuseResources& res, XMUINT2 resolution);
-	void Postprocess_RTDiffuse(
-		const RTDiffuseResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
-		float range = 1000.0f
-	);
 	struct RTReflectionResources
 	{
 		mutable int frame = 0;
