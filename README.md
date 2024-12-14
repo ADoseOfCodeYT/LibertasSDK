@@ -6,6 +6,8 @@
 <br/>
 <br/>
 <br/>
+<br/>
+<br/>
 Libertas Engine is an open-source 3D engine forked from Wicked Engine 0.71.633. It is just a small 3D engine for fucking around in and it really isnt ready for a full feature game (and isn't planned to be). If you want to make a commercial game, please use <a href="https://github.com/turanszkij/WickedEngine">Wicked Engine</a> instead.
 
 
