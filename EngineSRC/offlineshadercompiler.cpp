@@ -362,7 +362,6 @@ int main(int argc, char* argv[])
 	wi::shadercompiler::Flags compile_flags = wi::shadercompiler::Flags::NONE;
 	std::cout << "[Libertas Engine Offline Shader Compiler]\n";
 	std::cout << "Available command arguments:\n";
-	std::cout << "\thlsl5 : \t\tCompile shaders to hlsl5 (dx11) format (using d3dcompiler)\n";
 	std::cout << "\thlsl6 : \t\tCompile shaders to hlsl6 (dx12) format (using dxcompiler)\n";
 	std::cout << "\tspirv : \t\tCompile shaders to spirv (vulkan) format (using dxcompiler)\n";
 	std::cout << "\thlsl6_xs : \t\tCompile shaders to hlsl6 Xbox Series native (dx12) format (requires Xbox SDK)\n";
@@ -431,11 +430,12 @@ int main(int argc, char* argv[])
 	if (targets.empty())
 	{
 		targets = {
-			//{ ShaderFormat::HLSL5, "shaders/hlsl5/" },
 			{ ShaderFormat::HLSL6, "shaders/hlsl6/" },
-			{ ShaderFormat::SPIRV, "shaders/spirv/" },
+			{ ShaderFormat::SPIRV, "shaders/spirv/" },		
 		};
-		std::cout << "No shader formats were specified, assuming command arguments: spirv hlsl6\n";
+		shaderdump_enabled = true;
+		rebuild = true;
+		std::cout << "No shader formats were specified, assuming command arguments: spirv hlsl6, shaderdump\n";
 	}
 
 	// permutations for objectPS:

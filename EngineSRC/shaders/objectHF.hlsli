@@ -40,7 +40,6 @@
 #include "lightingHF.hlsli"
 #include "skyAtmosphere.hlsli"
 #include "fogHF.hlsli"
-#include "ShaderInterop_SurfelGI.h"
 #include "ShaderInterop_DDGI.h"
 #include "shadingHF.hlsli"
 
