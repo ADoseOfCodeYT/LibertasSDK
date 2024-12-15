@@ -4,7 +4,6 @@
 #include "surfaceHF.hlsli"
 #include "lightingHF.hlsli"
 #include "brdf.hlsli"
-#include "ShaderInterop_SurfelGI.h"
 #include "ShaderInterop_DDGI.h"
 
 inline void LightMapping(in int lightmap, in float2 ATLAS, inout Lighting lighting, inout Surface surface)
@@ -341,13 +340,6 @@ inline void TiledLighting(inout Surface surface, inout Lighting lighting, uint f
 #endif //DISABLE_VOXELGI
 
 #ifndef TRANSPARENT
-
-	[branch]
-	if (!surface.IsGIApplied() && GetFrame().options & OPTION_BIT_SURFELGI_ENABLED && GetCamera().texture_surfelgi_index >= 0 && surfel_cellvalid(surfel_cell(surface.P)))
-	{
-		lighting.indirect.diffuse = bindless_textures_half4[GetCamera().texture_surfelgi_index][surface.pixel].rgb;
-		surface.SetGIApplied(true);
-	}
 
 	[branch]
 	if (!surface.IsGIApplied() && GetCamera().texture_vxgi_diffuse_index >= 0)

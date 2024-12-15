@@ -177,32 +177,6 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		});
 	AddWidget(&GIBoostSlider);
 
-	surfelGICheckBox.Create("Surfel GI: ");
-	surfelGICheckBox.SetTooltip("Surfel GI is a raytraced diffuse GI using raytracing and surface cache.");
-	surfelGICheckBox.SetPos(XMFLOAT2(x, y += step));
-	surfelGICheckBox.SetSize(XMFLOAT2(itemheight, itemheight));
-	surfelGICheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetSurfelGIEnabled(args.bValue);
-		});
-	surfelGICheckBox.SetCheck(wi::renderer::GetSurfelGIEnabled());
-	AddWidget(&surfelGICheckBox);
-
-	surfelGIDebugComboBox.Create("");
-	surfelGIDebugComboBox.SetTooltip("Choose Surfel GI debug visualization.");
-	surfelGIDebugComboBox.SetPos(XMFLOAT2(x + 30, y));
-	surfelGIDebugComboBox.SetSize(XMFLOAT2(80, itemheight));
-	surfelGIDebugComboBox.AddItem("No Debug", SURFEL_DEBUG_NONE);
-	surfelGIDebugComboBox.AddItem("Normal", SURFEL_DEBUG_NORMAL);
-	surfelGIDebugComboBox.AddItem("Color", SURFEL_DEBUG_COLOR);
-	surfelGIDebugComboBox.AddItem("Point", SURFEL_DEBUG_POINT);
-	surfelGIDebugComboBox.AddItem("Random", SURFEL_DEBUG_RANDOM);
-	surfelGIDebugComboBox.AddItem("Heatmap", SURFEL_DEBUG_HEATMAP);
-	surfelGIDebugComboBox.AddItem("Inconsist.", SURFEL_DEBUG_INCONSISTENCY);
-	surfelGIDebugComboBox.OnSelect([](wi::gui::EventArgs args) {
-		wi::renderer::SetSurfelGIDebugEnabled((SURFEL_DEBUG)args.userdata);
-	});
-	AddWidget(&surfelGIDebugComboBox);
-
 	ddgiCheckBox.Create("DDGI: ");
 	ddgiCheckBox.SetTooltip("Toggle Dynamic Diffuse Global Illumination (DDGI).\nNote that DDGI probes that were loaded with the scene will still be active if this is turned off, but they won't be updated.");
 	ddgiCheckBox.SetPos(XMFLOAT2(x, y += step));
@@ -1676,8 +1650,6 @@ void GraphicsWindow::ResizeLayout()
 		add_fullwidth(pathTraceStatisticsLabel);
 
 		GIBoostSlider.SetVisible(false);
-		surfelGIDebugComboBox.SetVisible(false);
-		surfelGICheckBox.SetVisible(false);
 		ddgiDebugCheckBox.SetVisible(false);
 		ddgiCheckBox.SetVisible(false);
 		ddgiZ.SetVisible(false);
@@ -1700,8 +1672,6 @@ void GraphicsWindow::ResizeLayout()
 
 
 		GIBoostSlider.SetVisible(true);
-		surfelGIDebugComboBox.SetVisible(true);
-		surfelGICheckBox.SetVisible(true);
 		ddgiDebugCheckBox.SetVisible(true);
 		ddgiCheckBox.SetVisible(true);
 		ddgiZ.SetVisible(true);
@@ -1722,11 +1692,6 @@ void GraphicsWindow::ResizeLayout()
 		vxgiMaxDistanceSlider.SetValue(editor->GetCurrentScene().vxgi.maxDistance);
 
 		add(GIBoostSlider);
-
-		y += jump;
-
-		add_right(surfelGIDebugComboBox);
-		surfelGICheckBox.SetPos(XMFLOAT2(surfelGIDebugComboBox.GetPos().x - surfelGICheckBox.GetSize().x - padding, surfelGIDebugComboBox.GetPos().y));
 
 		y += jump;
 

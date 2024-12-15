@@ -131,8 +131,6 @@ bool disableAlbedoMaps = false;
 bool forceDiffuseLighting = false;
 bool SHADOWS_ENABLED = true;
 bool SCREENSPACESHADOWS = false;
-bool SURFELGI = false;
-SURFEL_DEBUG SURFELGI_DEBUG = SURFEL_DEBUG_NONE;
 bool DDGI_ENABLED = false;
 bool DDGI_DEBUG_ENABLED = false;
 uint32_t DDGI_RAYCOUNT = 256u;
@@ -1095,21 +1093,6 @@ void LoadShaders()
 	}
 
 	wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_POSTPROCESS_RTSHADOW_UPSAMPLE], "rtshadow_upsampleCS.cso"); });
-
-	wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_SURFEL_COVERAGE], "surfel_coverageCS.cso"); });
-	wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_SURFEL_INDIRECTPREPARE], "surfel_indirectprepareCS.cso"); });
-	wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_SURFEL_UPDATE], "surfel_updateCS.cso"); });
-	wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_SURFEL_GRIDOFFSETS], "surfel_gridoffsetsCS.cso"); });
-	wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_SURFEL_BINNING], "surfel_binningCS.cso"); });
-	wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_SURFEL_INTEGRATE], "surfel_integrateCS.cso"); });
-	if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
-	{
-		wi::jobsystem::Execute(raytracing_ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_SURFEL_RAYTRACE], "surfel_raytraceCS_rtapi.cso", ShaderModel::SM_6_5); });
-	}
-	else
-	{
-		wi::jobsystem::Execute(raytracing_ctx, [](wi::jobsystem::JobArgs args) { LoadShader(ShaderStage::CS, shaders[CSTYPE_SURFEL_RAYTRACE], "surfel_raytraceCS.cso"); });
-	}
 
 	if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
 	{
@@ -3964,10 +3947,6 @@ void UpdatePerFrameData(
 	if (GetScreenSpaceShadowsEnabled())
 	{
 		frameCB.options |= OPTION_BIT_SHADOW_MASK;
-	}
-	if (GetSurfelGIEnabled())
-	{
-		frameCB.options |= OPTION_BIT_SURFELGI_ENABLED;
 	}
 	if (IsDisableAlbedoMaps())
 	{
@@ -10545,7 +10524,6 @@ void BindCameraCB(
 	shadercam.texture_ao_index = camera.texture_ao_index;
 	shadercam.texture_ssr_index = camera.texture_ssr_index;
 	shadercam.texture_rtshadow_index = camera.texture_rtshadow_index;
-	shadercam.texture_surfelgi_index = camera.texture_surfelgi_index;
 	shadercam.texture_depth_index_prev = camera_previous.texture_depth_index;
 	shadercam.texture_vxgi_diffuse_index = camera.texture_vxgi_diffuse_index;
 	shadercam.texture_vxgi_specular_index = camera.texture_vxgi_specular_index;
@@ -11144,344 +11122,6 @@ void Visibility_Velocity(
 	wi::profiler::EndRange(range);
 	device->EventEnd(cmd);
 }
-
-void CreateSurfelGIResources(SurfelGIResources& res, XMUINT2 resolution)
-{
-	TextureDesc desc;
-	desc.format = Format::R11G11B10_FLOAT;
-	desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-	desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
-	desc.width = resolution.x / 2;
-	desc.height = resolution.y / 2;
-	device->CreateTexture(&desc, nullptr, &res.result_halfres);
-	device->SetName(&res.result_halfres, "surfelGI.result_halfres");
-	desc.width = resolution.x;
-	desc.height = resolution.y;
-	device->CreateTexture(&desc, nullptr, &res.result);
-	device->SetName(&res.result, "surfelGI.result");
-}
-void SurfelGI_Coverage(
-	const SurfelGIResources& res,
-	const Scene& scene,
-	const Texture& lineardepth,
-	const Texture& debugUAV,
-	CommandList cmd
-)
-{
-	device->EventBegin("SurfelGI - Coverage", cmd);
-	auto prof_range = wi::profiler::BeginRangeGPU("SurfelGI - Coverage", cmd);
-
-	{
-		GPUBarrier barriers[] = {
-			GPUBarrier::Buffer(&scene.surfelgi.statsBuffer, ResourceState::SHADER_RESOURCE_COMPUTE, ResourceState::UNORDERED_ACCESS),
-			GPUBarrier::Image(&res.result_halfres, res.result_halfres.desc.layout, ResourceState::UNORDERED_ACCESS),
-			GPUBarrier::Image(&res.result, res.result.desc.layout, ResourceState::UNORDERED_ACCESS),
-		};
-		device->Barrier(barriers, arraysize(barriers), cmd);
-	}
-	device->ClearUAV(&res.result_halfres, 0, cmd);
-	device->ClearUAV(&res.result, 0, cmd);
-	device->Barrier(GPUBarrier::Memory(), cmd);
-
-
-	// Coverage:
-	{
-		device->EventBegin("Coverage", cmd);
-		device->BindComputeShader(&shaders[CSTYPE_SURFEL_COVERAGE], cmd);
-
-		SurfelDebugPushConstants push;
-		push.debug = GetSurfelGIDebugEnabled();
-		device->PushConstants(&push, sizeof(push), cmd);
-
-		device->BindResource(&scene.surfelgi.surfelBuffer, 0, cmd);
-		device->BindResource(&scene.surfelgi.gridBuffer, 1, cmd);
-		device->BindResource(&scene.surfelgi.cellBuffer, 2, cmd);
-		device->BindResource(&scene.surfelgi.momentsTexture, 3, cmd);
-		device->BindResource(&scene.surfelgi.irradianceTexture, 4, cmd);
-
-		const GPUResource* uavs[] = {
-			&scene.surfelgi.dataBuffer,
-			&scene.surfelgi.deadBuffer,
-			&scene.surfelgi.aliveBuffer[1],
-			&scene.surfelgi.statsBuffer,
-			&res.result_halfres,
-			&debugUAV
-		};
-		device->BindUAVs(uavs, 0, arraysize(uavs), cmd);
-
-		device->Dispatch(
-			(res.result_halfres.desc.width + 15) / 16,
-			(res.result_halfres.desc.height + 15) / 16,
-			1,
-			cmd
-		);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Image(&res.result_halfres, ResourceState::UNORDERED_ACCESS, res.result_halfres.desc.layout),
-				GPUBarrier::Image(&res.result, ResourceState::UNORDERED_ACCESS, res.result.desc.layout),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->EventEnd(cmd);
-	}
-
-	// surfel count -> indirect args (for next frame):
-	{
-		device->EventBegin("Indirect args", cmd);
-		const GPUResource* uavs[] = {
-			&scene.surfelgi.statsBuffer,
-			&scene.surfelgi.indirectBuffer,
-		};
-		device->BindUAVs(uavs, 0, arraysize(uavs), cmd);
-
-		device->BindComputeShader(&shaders[CSTYPE_SURFEL_INDIRECTPREPARE], cmd);
-		device->Dispatch(1, 1, 1, cmd);
-
-		device->EventEnd(cmd);
-	}
-
-	Postprocess_Upsample_Bilateral(
-		res.result_halfres,
-		lineardepth,
-		res.result,
-		cmd,
-		false,
-		2
-	);
-
-	wi::profiler::EndRange(prof_range);
-	device->EventEnd(cmd);
-}
-void SurfelGI(
-	const SurfelGIResources& res,
-	const Scene& scene,
-	CommandList cmd
-)
-{
-	if (!scene.TLAS.IsValid() && !scene.BVH.IsValid())
-		return;
-
-	wi::jobsystem::Wait(raytracing_ctx);
-
-	auto prof_range = wi::profiler::BeginRangeGPU("SurfelGI", cmd);
-	device->EventBegin("SurfelGI", cmd);
-
-	BindCommonResources(cmd);
-
-	if (!scene.surfelgi.cleared)
-	{
-		scene.surfelgi.cleared = true;
-		GPUBarrier barriers[] = {
-			GPUBarrier::Image(&scene.surfelgi.momentsTexture, scene.surfelgi.momentsTexture.desc.layout, ResourceState::UNORDERED_ACCESS),
-		};
-		device->Barrier(barriers, arraysize(barriers), cmd);
-		device->ClearUAV(&scene.surfelgi.momentsTexture, 0, cmd);
-		device->ClearUAV(&scene.surfelgi.irradianceTexture_rw, 0, cmd);
-		device->ClearUAV(&scene.surfelgi.varianceBuffer, 0, cmd);
-		for (auto& x : barriers)
-		{
-			std::swap(x.image.layout_before, x.image.layout_after);
-		}
-		device->Barrier(barriers, arraysize(barriers), cmd);
-		device->Barrier(GPUBarrier::Memory(), cmd);
-	}
-
-	// Grid reset:
-	{
-		device->EventBegin("Grid Reset", cmd);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&scene.surfelgi.gridBuffer, ResourceState::SHADER_RESOURCE_COMPUTE, ResourceState::UNORDERED_ACCESS),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->ClearUAV(&scene.surfelgi.gridBuffer, 0, cmd);
-		device->Barrier(GPUBarrier::Memory(&scene.surfelgi.gridBuffer), cmd);
-
-		device->EventEnd(cmd);
-	}
-
-	// Update:
-	{
-		device->EventBegin("Update", cmd);
-		device->BindComputeShader(&shaders[CSTYPE_SURFEL_UPDATE], cmd);
-
-		device->BindResource(&scene.surfelgi.aliveBuffer[0], 1, cmd);
-
-		const GPUResource* uavs[] = {
-			&scene.surfelgi.surfelBuffer,
-			&scene.surfelgi.gridBuffer,
-			&scene.surfelgi.aliveBuffer[1],
-			&scene.surfelgi.deadBuffer,
-			&scene.surfelgi.statsBuffer,
-			&scene.surfelgi.rayBuffer,
-			&scene.surfelgi.dataBuffer,
-		};
-		device->BindUAVs(uavs, 0, arraysize(uavs), cmd);
-
-		device->DispatchIndirect(&scene.surfelgi.indirectBuffer, SURFEL_INDIRECT_OFFSET_ITERATE, cmd);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&scene.surfelgi.surfelBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
-				GPUBarrier::Buffer(&scene.surfelgi.dataBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->EventEnd(cmd);
-	}
-
-	// Grid offsets:
-	{
-		device->EventBegin("Grid Offsets", cmd);
-		device->BindComputeShader(&shaders[CSTYPE_SURFEL_GRIDOFFSETS], cmd);
-
-		const GPUResource* uavs[] = {
-			&scene.surfelgi.gridBuffer,
-			&scene.surfelgi.cellBuffer,
-			&scene.surfelgi.statsBuffer,
-		};
-		device->BindUAVs(uavs, 0, arraysize(uavs), cmd);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&scene.surfelgi.cellBuffer, ResourceState::SHADER_RESOURCE_COMPUTE, ResourceState::UNORDERED_ACCESS),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->Dispatch(
-			(SURFEL_TABLE_SIZE + 63) / 64,
-			1,
-			1,
-			cmd
-		);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&scene.surfelgi.statsBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->EventEnd(cmd);
-	}
-
-	// Binning:
-	{
-		device->EventBegin("Binning", cmd);
-		device->BindComputeShader(&shaders[CSTYPE_SURFEL_BINNING], cmd);
-
-		device->BindResource(&scene.surfelgi.surfelBuffer, 0, cmd);
-		device->BindResource(&scene.surfelgi.aliveBuffer[0], 1, cmd);
-		device->BindResource(&scene.surfelgi.statsBuffer, 2, cmd);
-
-		const GPUResource* uavs[] = {
-			&scene.surfelgi.gridBuffer,
-			&scene.surfelgi.cellBuffer,
-		};
-		device->BindUAVs(uavs, 0, arraysize(uavs), cmd);
-
-		device->DispatchIndirect(&scene.surfelgi.indirectBuffer, SURFEL_INDIRECT_OFFSET_ITERATE, cmd);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&scene.surfelgi.gridBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
-				GPUBarrier::Buffer(&scene.surfelgi.cellBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->EventEnd(cmd);
-	}
-
-	// Raytracing:
-	{
-		device->EventBegin("Raytrace", cmd);
-
-		device->BindComputeShader(&shaders[CSTYPE_SURFEL_RAYTRACE], cmd);
-
-		PushConstantsSurfelRaytrace push;
-		uint8_t instanceInclusionMask = 0xFF;
-		push.instanceInclusionMask = instanceInclusionMask;
-		device->PushConstants(&push, sizeof(push), cmd);
-
-		device->BindResource(&scene.surfelgi.surfelBuffer, 0, cmd);
-		device->BindResource(&scene.surfelgi.statsBuffer, 1, cmd);
-		device->BindResource(&scene.surfelgi.gridBuffer, 2, cmd);
-		device->BindResource(&scene.surfelgi.cellBuffer, 3, cmd);
-		device->BindResource(&scene.surfelgi.aliveBuffer[0], 4, cmd);
-		device->BindResource(&scene.surfelgi.momentsTexture, 5, cmd);
-		device->BindResource(&scene.surfelgi.irradianceTexture, 6, cmd);
-
-		const GPUResource* uavs[] = {
-			&scene.surfelgi.rayBuffer,
-		};
-		device->BindUAVs(uavs, 0, arraysize(uavs), cmd);
-
-		device->DispatchIndirect(&scene.surfelgi.indirectBuffer, SURFEL_INDIRECT_OFFSET_RAYTRACE, cmd);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&scene.surfelgi.rayBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->EventEnd(cmd);
-	}
-
-	// Integrate rays:
-	{
-		device->EventBegin("Integrate", cmd);
-
-		device->BindComputeShader(&shaders[CSTYPE_SURFEL_INTEGRATE], cmd);
-
-		device->BindResource(&scene.surfelgi.surfelBuffer, 0, cmd);
-		device->BindResource(&scene.surfelgi.statsBuffer, 1, cmd);
-		device->BindResource(&scene.surfelgi.gridBuffer, 2, cmd);
-		device->BindResource(&scene.surfelgi.cellBuffer, 3, cmd);
-		device->BindResource(&scene.surfelgi.aliveBuffer[0], 4, cmd);
-		device->BindResource(&scene.surfelgi.rayBuffer, 5, cmd);
-
-		const GPUResource* uavs[] = {
-			&scene.surfelgi.dataBuffer,
-			&scene.surfelgi.varianceBuffer,
-			&scene.surfelgi.momentsTexture,
-			&scene.surfelgi.irradianceTexture_rw,
-		};
-		device->BindUAVs(uavs, 0, arraysize(uavs), cmd);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&scene.surfelgi.dataBuffer, ResourceState::SHADER_RESOURCE_COMPUTE, ResourceState::UNORDERED_ACCESS),
-				GPUBarrier::Image(&scene.surfelgi.momentsTexture, scene.surfelgi.momentsTexture.desc.layout, ResourceState::UNORDERED_ACCESS),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->DispatchIndirect(&scene.surfelgi.indirectBuffer, SURFEL_INDIRECT_OFFSET_INTEGRATE, cmd);
-
-		{
-			GPUBarrier barriers[] = {
-				GPUBarrier::Image(&scene.surfelgi.momentsTexture, ResourceState::UNORDERED_ACCESS, scene.surfelgi.momentsTexture.desc.layout),
-				GPUBarrier::Memory(&scene.surfelgi.irradianceTexture_rw),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
-		device->EventEnd(cmd);
-	}
-
-	wi::profiler::EndRange(prof_range);
-	device->EventEnd(cmd);
-}
-
 void DDGI(
 	const wi::scene::Scene& scene,
 	CommandList cmd
@@ -16911,22 +16551,6 @@ void SetScreenSpaceShadowsEnabled(bool value)
 bool GetScreenSpaceShadowsEnabled()
 {
 	return SCREENSPACESHADOWS;
-}
-void SetSurfelGIEnabled(bool value)
-{
-	SURFELGI = value;
-}
-bool GetSurfelGIEnabled()
-{
-	return SURFELGI;
-}
-void SetSurfelGIDebugEnabled(SURFEL_DEBUG value)
-{
-	SURFELGI_DEBUG = value;
-}
-SURFEL_DEBUG GetSurfelGIDebugEnabled()
-{
-	return SURFELGI_DEBUG;
 }
 void SetDDGIEnabled(bool value)
 {

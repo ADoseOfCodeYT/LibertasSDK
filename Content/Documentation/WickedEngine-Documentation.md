@@ -1504,7 +1504,6 @@ Shader Interop is used for declaring shared structures or values between C++ Eng
 [ShaderInterop_Postprocess.h](../../WickedEngine/shaders/ShaderInterop_Postprocess.h) <br/>
 [ShaderInterop_Raytracing.h](../../WickedEngine/shaders/ShaderInterop_Raytracing.h) <br/>
 [ShaderInterop_Renderer.h](../../WickedEngine/shaders/ShaderInterop_Renderer.h) <br/>
-[ShaderInterop_SurfelGI.h](../../WickedEngine/shaders/ShaderInterop_SurfelGI.h) <br/>
 [ShaderInterop_Terrain.h](../../WickedEngine/shaders/ShaderInterop_Terrain.h) <br/>
 [ShaderInterop_VoxelGrid.h](../../WickedEngine/shaders/ShaderInterop_VoxelGrid.h) <br/>
 [ShaderInterop_VXGI.h](../../WickedEngine/shaders/ShaderInterop_VXGI.h) <br/>

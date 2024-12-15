@@ -168,26 +168,6 @@ namespace wi::scene
 		uint32_t queryheap_idx = 0;
 		mutable std::atomic<uint32_t> queryAllocator{ 0 };
 
-		// Surfel GI resources:
-		struct SurfelGI
-		{
-			mutable bool cleared = false;
-			wi::graphics::GPUBuffer surfelBuffer;
-			wi::graphics::GPUBuffer dataBuffer;
-			wi::graphics::GPUBuffer varianceBuffer;
-			wi::graphics::GPUBuffer aliveBuffer[2];
-			wi::graphics::GPUBuffer deadBuffer;
-			wi::graphics::GPUBuffer statsBuffer;
-			wi::graphics::GPUBuffer indirectBuffer;
-			wi::graphics::GPUBuffer gridBuffer;
-			wi::graphics::GPUBuffer cellBuffer;
-			wi::graphics::GPUBuffer rayBuffer;
-			wi::graphics::Texture momentsTexture;
-			wi::graphics::Texture irradianceTexture;
-			wi::graphics::Texture irradianceTexture_rw;
-			wi::graphics::GPUBuffer sparse_tile_pool;
-		} surfelgi;
-
 		// DDGI resources:
 		struct DDGI
 		{

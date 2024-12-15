@@ -11,8 +11,6 @@
 * Fonts (TrueType)
 * 3D Renderpath
 * 2D Renderpath
-* Reference Path Tracer 
-* Reversed Z-Buffer
 * Tiled Forward Rendering (+2.5D Culling)
 * Animated texturing
 * PBR
@@ -20,7 +18,6 @@
 * Morph Target Animation
 * Parallax Occlusion Mapping
 * Interactive Water
-* Tessellation
 * Multithreaded Rendering
 * GPU Particles
 * Soft Particles
@@ -89,9 +86,6 @@
 * Light Shafts
 * Bokeh Depth Of Field
 * Chromatic Aberration
-* MSAA
-* TAA
-* Super-Sampling
 * Directional Lights (Cascaded Shadow Maps)
 * Spotlights (Simple Shadow Maps)
 * Point lights (Shadow Cubemaps)
@@ -100,8 +94,19 @@
 * Refraction Caustics
 * Volumetric light Scattering
 * Smooth Particle Hydrodynamics Fluid Simulation
+* Reversed Z-Buffer
+* Tessellation
 
-### Screen Space: 
+
+
+#### Anti Aliasing
+* MSAA
+* TAA
+* FSR 1.0
+* FSR 2.1
+* Super-Sampling
+
+#### Screen Space
 
 * Screen Space Refractions
 * Screen Spacce Ambient Occlusion
@@ -109,12 +114,16 @@
 * Stochastic Screen Space Reflections
 * Screen Space Contact Shadows
 
-### Raytracing / Conetracing / Pathtracing:
+#### Raytracing
 * Dynamic Diffuse Global Illumination
-* Surfel Global Illumination
 * Raytraced Ambient Occulusion
 * Raytraced Shadows
 * Raytraced Reflections
-* Voxel Global Illumination (Conetracing)
-* Voxel Reflections (Conetracing)
-* Lightmap Baking (Pathtracing)
+
+#### Conetracing
+* Voxel Global Illumination
+* Voxel Reflections
+
+#### Pathtracing
+* Lightmap Baking
+* Reference Pathtracer

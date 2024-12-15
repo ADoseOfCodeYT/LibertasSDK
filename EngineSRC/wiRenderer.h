@@ -9,7 +9,6 @@
 #include "wiCanvas.h"
 #include "wiMath.h"
 #include "shaders/ShaderInterop_Renderer.h"
-#include "shaders/ShaderInterop_SurfelGI.h"
 #include "wiVector.h"
 
 #include <memory>
@@ -422,26 +421,6 @@ namespace wi::renderer
 	);
 	void Visibility_Velocity(
 		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
-	);
-
-	// Surfel GI: diffuse GI with ray tracing from surfels
-	struct SurfelGIResources
-	{
-		wi::graphics::Texture result_halfres;
-		wi::graphics::Texture result;
-	};
-	void CreateSurfelGIResources(SurfelGIResources& res, XMUINT2 resolution);
-	void SurfelGI_Coverage(
-		const SurfelGIResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& lineardepth,
-		const wi::graphics::Texture& debugUAV,
-		wi::graphics::CommandList cmd
-	);
-	void SurfelGI(
-		const SurfelGIResources& res,
-		const wi::scene::Scene& scene,
 		wi::graphics::CommandList cmd
 	);
 
@@ -1032,10 +1011,6 @@ namespace wi::renderer
 	bool IsForceDiffuseLighting();
 	void SetScreenSpaceShadowsEnabled(bool value);
 	bool GetScreenSpaceShadowsEnabled();
-	void SetSurfelGIEnabled(bool value);
-	bool GetSurfelGIEnabled();
-	void SetSurfelGIDebugEnabled(SURFEL_DEBUG value);
-	SURFEL_DEBUG GetSurfelGIDebugEnabled();
 	void SetDDGIEnabled(bool value);
 	bool GetDDGIEnabled();
 	void SetDDGIDebugEnabled(bool value);

@@ -133,7 +133,6 @@ namespace wi
 		wi::renderer::VolumetricCloudResources volumetriccloudResources;
 		wi::renderer::VolumetricCloudResources volumetriccloudResources_reflection;
 		wi::renderer::BloomResources bloomResources;
-		wi::renderer::SurfelGIResources surfelGIResources;
 		wi::renderer::TemporalAAResources temporalAAResources;
 		wi::renderer::VisibilityResources visibilityResources;
 		wi::renderer::FSR2Resources fsr2Resources;

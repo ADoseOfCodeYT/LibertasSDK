@@ -1119,7 +1119,7 @@ enum FRAME_OPTIONS
 	OPTION_BIT_HEIGHT_FOG = 1 << 7,
 	OPTION_BIT_RAYTRACED_SHADOWS = 1 << 8,
 	OPTION_BIT_SHADOW_MASK = 1 << 9,
-	OPTION_BIT_SURFELGI_ENABLED = 1 << 10,
+	//OPTION_BIT_SURFELGI_ENABLED = 1 << 10,
 	OPTION_BIT_DISABLE_ALBEDO_MAPS = 1 << 11,
 	OPTION_BIT_FORCE_DIFFUSE_LIGHTING = 1 << 12,
 	OPTION_BIT_VOLUMETRICCLOUDS_CAST_SHADOW = 1 << 13,
@@ -1284,7 +1284,6 @@ struct alignas(16) ShaderCamera
 	int texture_ssr_index;
 	int texture_rtshadow_index;
 
-	int texture_surfelgi_index;
 	int texture_depth_index_prev;
 	int texture_vxgi_diffuse_index;
 	int texture_vxgi_specular_index;
@@ -1352,7 +1351,7 @@ struct alignas(16) ShaderCamera
 		texture_ao_index = -1;
 		texture_ssr_index = -1;
 		texture_rtshadow_index = -1;
-		texture_surfelgi_index = -1;
+		
 		texture_depth_index_prev = -1;
 		texture_vxgi_diffuse_index = -1;
 		texture_vxgi_specular_index = -1;

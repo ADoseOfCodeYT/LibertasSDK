@@ -21,8 +21,6 @@ public:
 	wi::gui::Slider resolutionScaleSlider;
 	wi::gui::Slider streamingSlider;
 	wi::gui::Slider GIBoostSlider;
-	wi::gui::CheckBox surfelGICheckBox;
-	wi::gui::ComboBox surfelGIDebugComboBox;
 	wi::gui::CheckBox ddgiCheckBox;
 	wi::gui::CheckBox ddgiDebugCheckBox;
 	wi::gui::TextInputField ddgiX;

@@ -70,7 +70,6 @@ namespace wi
 		volumetriccloudResources = {};
 		volumetriccloudResources_reflection = {};
 		bloomResources = {};
-		surfelGIResources = {};
 		temporalAAResources = {};
 		visibilityResources = {};
 		fsr2Resources = {};
@@ -356,8 +355,7 @@ namespace wi
 		const bool hw_raytrace = device->CheckCapability(GraphicsDeviceCapability::RAYTRACING);
 		if (getSceneUpdateEnabled())
 		{
-			if (wi::renderer::GetSurfelGIEnabled() ||
-				wi::renderer::GetDDGIEnabled() ||
+			if (wi::renderer::GetDDGIEnabled() ||
 				(hw_raytrace && wi::renderer::GetRaytracedShadowsEnabled()) ||
 				(hw_raytrace && getAO() == AO_RTAO) ||
 				(hw_raytrace && getRaytracedReflectionEnabled())
@@ -529,14 +527,6 @@ namespace wi
 		else
 		{
 			rtWaterRipple = {};
-		}
-
-		if (wi::renderer::GetSurfelGIEnabled())
-		{
-			if (!surfelGIResources.result.IsValid())
-			{
-				wi::renderer::CreateSurfelGIResources(surfelGIResources, internalResolution);
-			}
 		}
 
 		if (wi::renderer::GetVXGIEnabled())
@@ -740,7 +730,6 @@ namespace wi
 		{
 			camera->texture_rtshadow_index = device->GetDescriptorIndex(wi::texturehelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
 		}
-		camera->texture_surfelgi_index = device->GetDescriptorIndex(&surfelGIResources.result, SubresourceType::SRV);
 		camera->texture_vxgi_diffuse_index = device->GetDescriptorIndex(&vxgiResources.diffuse, SubresourceType::SRV);
 		if (wi::renderer::GetVXGIReflectionsEnabled())
 		{
@@ -775,7 +764,6 @@ namespace wi
 		camera_reflection.texture_ao_index = -1;
 		camera_reflection.texture_ssr_index = -1;
 		camera_reflection.texture_rtshadow_index = device->GetDescriptorIndex(wi::texturehelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
-		camera_reflection.texture_surfelgi_index = -1;
 		camera_reflection.texture_vxgi_diffuse_index = -1;
 		camera_reflection.texture_vxgi_specular_index = -1;
 		camera_reflection.texture_reprojected_depth_index = -1;
@@ -874,15 +862,6 @@ namespace wi
 			{
 				wi::renderer::ComputeSkyAtmosphereTextures(cmd);
 				wi::renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
-			}
-
-			if (wi::renderer::GetSurfelGIEnabled())
-			{
-				wi::renderer::SurfelGI(
-					surfelGIResources,
-					*scene,
-					cmd
-				);
 			}
 
 			if (wi::renderer::GetDDGIEnabled() && getSceneUpdateEnabled())
@@ -1057,17 +1036,6 @@ namespace wi
 			{
 				wi::renderer::Visibility_Velocity(
 					rtVelocity,
-					cmd
-				);
-			}
-
-			if (wi::renderer::GetSurfelGIEnabled())
-			{
-				wi::renderer::SurfelGI_Coverage(
-					surfelGIResources,
-					*scene,
-					rtLinearDepth,
-					debugUAV,
 					cmd
 				);
 			}
@@ -1746,8 +1714,7 @@ namespace wi
 
 		if (
 			wi::renderer::GetDebugLightCulling() ||
-			wi::renderer::GetVariableRateShadingClassificationDebug() ||
-			wi::renderer::GetSurfelGIDebugEnabled()
+			wi::renderer::GetVariableRateShadingClassificationDebug()
 			)
 		{
 			fx.enableFullScreen();
