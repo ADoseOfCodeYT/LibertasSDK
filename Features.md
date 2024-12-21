@@ -86,6 +86,13 @@
 * Light Shafts
 * Bokeh Depth Of Field
 * Chromatic Aberration
+<<<<<<< HEAD
+=======
+* MSAA
+* FXAA
+* TAA
+* Super-Sampling
+>>>>>>> parent of ccb2939 (removed fxaa)
 * Directional Lights (Cascaded Shadow Maps)
 * Spotlights (Simple Shadow Maps)
 * Point lights (Shadow Cubemaps)
@@ -109,9 +116,11 @@
 #### Screen Space
 
 * Screen Space Refractions
+* Multi Sampled Ambient Occlusion
 * Screen Spacce Ambient Occlusion
 * Horizon Based Ambient Occlusion
 * Stochastic Screen Space Reflections
+* Screen Space Global Illumination
 * Screen Space Contact Shadows
 
 #### Raytracing
