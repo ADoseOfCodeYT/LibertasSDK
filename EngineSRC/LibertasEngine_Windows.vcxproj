@@ -77,7 +77,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <FxCompile>
-      <ObjectFileOutput>shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput>shaders/compiled/%(Filename).cso</ObjectFileOutput>
       <DisableOptimizations>false</DisableOptimizations>
       <EnableDebuggingInformation>false</EnableDebuggingInformation>
       <ShaderModel>5.0</ShaderModel>
@@ -117,7 +117,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <FxCompile>
-      <ObjectFileOutput>shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput>shaders/compiled/%(Filename).cso</ObjectFileOutput>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <Lib>

@@ -74,11 +74,11 @@ size_t GetShaderDumpCount()
 
 #ifdef SHADERDUMP_ENABLED
 // Note: when using Shader Dump, use relative directory, because the dump will contain relative names too
-std::string SHADERPATH = "shaders/";
+std::string SHADERPATH = "shaders/compiled/";
 std::string SHADERSOURCEPATH = "../EngineSRC/shaders/";
 #else
 // Note: when NOT using Shader Dump, use absolute directory, to avoid the case when something (eg. file dialog) overrides working directory
-std::string SHADERPATH = wi::helper::GetCurrentPath() + "/shaders/";
+std::string SHADERPATH = wi::helper::GetCurrentPath() + "/shaders/compiled/";
 std::string SHADERSOURCEPATH = SHADER_INTEROP_PATH;
 #endif // SHADERDUMP_ENABLED
 

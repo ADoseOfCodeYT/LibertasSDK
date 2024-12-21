@@ -365,29 +365,24 @@ int main(int argc, char* argv[])
 
 	wi::arguments::Parse(argc, argv);
 
-	if (wi::arguments::HasArgument("hlsl5"))
-	{
-		targets.push_back({ ShaderFormat::HLSL5, "shaders/hlsl5/" });
-		std::cout << "hlsl5 ";
-	}
 	if (wi::arguments::HasArgument("hlsl6"))
 	{
-		targets.push_back({ ShaderFormat::HLSL6, "shaders/hlsl6/" });
+		targets.push_back({ ShaderFormat::HLSL6, "shaders/compiled/hlsl6/" });
 		std::cout << "hlsl6 ";
 	}
 	if (wi::arguments::HasArgument("spirv"))
 	{
-		targets.push_back({ ShaderFormat::SPIRV, "shaders/spirv/" });
+		targets.push_back({ ShaderFormat::SPIRV, "shaders/compiled/spirv/" });
 		std::cout << "spirv ";
 	}
 	if (wi::arguments::HasArgument("hlsl6_xs"))
 	{
-		targets.push_back({ ShaderFormat::HLSL6_XS, "shaders/hlsl6_xs/" });
+		targets.push_back({ ShaderFormat::HLSL6_XS, "shaders/compiled/hlsl6_xs/" });
 		std::cout << "hlsl6_xs ";
 	}
 	if (wi::arguments::HasArgument("ps5"))
 	{
-		targets.push_back({ ShaderFormat::PS5, "shaders/ps5/" });
+		targets.push_back({ ShaderFormat::PS5, "shaders/compiled/ps5/" });
 		std::cout << "ps5 ";
 	}
 
@@ -421,8 +416,8 @@ int main(int argc, char* argv[])
 	if (targets.empty())
 	{
 		targets = {
-			{ ShaderFormat::HLSL6, "shaders/hlsl6/" },
-			{ ShaderFormat::SPIRV, "shaders/spirv/" },		
+			{ ShaderFormat::HLSL6, "shaders/compiled/hlsl6/" },
+			{ ShaderFormat::SPIRV, "shaders/compiled/spirv/" },		
 		};
 		shaderdump_enabled = true;
 		rebuild = true;

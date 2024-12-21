@@ -82,7 +82,7 @@
     </FxCompile>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
-      <ObjectFileOutput>shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput>shaders/compiled/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <PostBuildEvent>
       <Command>
@@ -114,7 +114,7 @@
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
-      <ObjectFileOutput>shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput>shaders/compiled/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <PostBuildEvent>
       <Command>
