@@ -20,7 +20,7 @@ Libertas SDK is an open-source 3D SDK forked from Wicked Engine 0.71.633. It is 
 
 ### How to build: 
 
-To build Libertas SDK for Windows (10 or newer), use the latest version of Visual Studio and the provided `LibertasSDK.sln` solution file.
+To build Libertas SDK for Windows 10 or newer, use the latest version of Visual Studio and the provided `LibertasSDK.sln` solution file.
 
 If you want to develop a C++ application that uses Libertas Engine, you can build the Libertas Engine static library project for the appropriate platform, such as `LibertasEngine_Windows` and link against it. Including the `"Libertas Engine.h"` header will attempt to link the binaries for the appropriate platform, but search directories should be set up beforehand. For example, you can set additional library directories to `$(SolutionDir)BuildOutput\$(Configuration)` by default. For examples, see the `Template`, `Tests`, and `Editor` projects. 
 
