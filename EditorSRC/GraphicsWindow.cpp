@@ -1108,6 +1108,22 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		});
 	AddWidget(&bloomStrengthSlider);
 
+	fxaaCheckBox.Create("FXAA: ");
+	fxaaCheckBox.SetTooltip("Fast Approximate Anti Aliasing. A fast antialiasing method, but can be a bit too blurry.");
+	fxaaCheckBox.SetScriptTip("RenderPath3D::SetFXAAEnabled(bool value)");
+	fxaaCheckBox.SetSize(XMFLOAT2(hei, hei));
+	fxaaCheckBox.SetPos(XMFLOAT2(x, y += step));
+	if (editor->main->config.GetSection("graphics").Has("fxaa"))
+	{
+		editor->renderPath->setFXAAEnabled(editor->main->config.GetSection("graphics").GetBool("fxaa"));
+	}
+	fxaaCheckBox.OnClick([=](wi::gui::EventArgs args) {
+		editor->renderPath->setFXAAEnabled(args.bValue);
+		editor->main->config.GetSection("graphics").Set("fxaa", args.bValue);
+		editor->main->config.Commit();
+		});
+	AddWidget(&fxaaCheckBox);
+
 	colorGradingCheckBox.Create("Color Grading: ");
 	colorGradingCheckBox.SetTooltip("Enable color grading of the final render. An additional lookup texture must be set in the Weather!");
 	colorGradingCheckBox.SetSize(XMFLOAT2(hei, hei));
@@ -1489,6 +1505,7 @@ void GraphicsWindow::Update()
 	depthOfFieldScaleSlider.SetValue(editor->renderPath->getDepthOfFieldStrength());
 	bloomCheckBox.SetCheck(editor->renderPath->getBloomEnabled());
 	bloomStrengthSlider.SetValue(editor->renderPath->getBloomThreshold());
+	fxaaCheckBox.SetCheck(editor->renderPath->getFXAAEnabled());
 	colorGradingCheckBox.SetCheck(editor->renderPath->getColorGradingEnabled());
 	ditherCheckBox.SetCheck(editor->renderPath->getDitherEnabled());
 	sharpenFilterCheckBox.SetCheck(editor->renderPath->getSharpenFilterEnabled());
@@ -1745,6 +1762,7 @@ void GraphicsWindow::ResizeLayout()
 	depthOfFieldCheckBox.SetPos(XMFLOAT2(depthOfFieldScaleSlider.GetPos().x - depthOfFieldCheckBox.GetSize().x - 80, depthOfFieldScaleSlider.GetPos().y));
 	add_right(bloomStrengthSlider);
 	bloomCheckBox.SetPos(XMFLOAT2(bloomStrengthSlider.GetPos().x - bloomCheckBox.GetSize().x - 80, bloomStrengthSlider.GetPos().y));
+	add_right(fxaaCheckBox);
 	add_right(colorGradingCheckBox);
 	add_right(ditherCheckBox);
 	add_right(sharpenFilterAmountSlider);

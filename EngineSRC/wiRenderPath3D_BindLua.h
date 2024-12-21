@@ -37,6 +37,7 @@ namespace wi::lua
 		int SetRaytracedReflectionsEnabled(lua_State* L);
 		int SetShadowsEnabled(lua_State* L);
 		int SetReflectionsEnabled(lua_State* L);
+		int SetFXAAEnabled(lua_State* L);
 		int SetBloomEnabled(lua_State* L);
 		int SetBloomThreshold(lua_State* L);
 		int SetColorGradingEnabled(lua_State* L);

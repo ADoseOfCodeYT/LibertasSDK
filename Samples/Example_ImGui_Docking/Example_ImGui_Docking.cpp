@@ -372,6 +372,7 @@ void Example_ImGuiRenderer::Render() const
 void Example_ImGuiRenderer::Load()
 {
 	// Reset all state that tests might have modified:
+	setFXAAEnabled(true);
 	wi::eventhandler::SetVSync(true);
 	wi::renderer::ClearWorld(wi::scene::GetScene());
 	wi::scene::GetScene().weather = WeatherComponent();
@@ -1060,6 +1061,11 @@ void Example_ImGuiRenderer::Update(float dt)
 			if (ImGui::Checkbox("Temporal AA", &bTemporalAAEnabled))
 			{
 				wi::renderer::SetTemporalAAEnabled(bTemporalAAEnabled);
+			}
+			static bool bFXAAEnabled = true;
+			if (ImGui::Checkbox("FXAA", &bFXAAEnabled))
+			{
+				setFXAAEnabled(bFXAAEnabled);
 			}
 			static bool bVoxelGIEnabled = false;
 			if (ImGui::Checkbox("Voxel GI", &bVoxelGIEnabled))

@@ -1707,6 +1707,7 @@ It inherits functions from RenderPath2D, so it can render a 2D overlay.
 - SetRaytracedReflectionsEnabled(bool value)
 - SetShadowsEnabled(bool value)
 - SetReflectionsEnabled(bool value)
+- SetFXAAEnabled(bool value)
 - SetBloomEnabled(bool value)
 - SetBloomThreshold(bool value)
 - SetColorGradingEnabled(bool value)

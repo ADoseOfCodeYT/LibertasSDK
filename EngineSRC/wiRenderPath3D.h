@@ -57,6 +57,7 @@ namespace wi
 		float hdr_calibration = 1;
 
 		AO ao = AO_DISABLED;
+		bool fxaaEnabled = false;
 		bool ssrEnabled = false;
 		bool raytracedReflectionsEnabled = false;
 		bool reflectionsEnabled = true;
@@ -235,6 +236,7 @@ namespace wi
 		constexpr bool getRaytracedReflectionEnabled() const { return raytracedReflectionsEnabled; }
 		constexpr bool getShadowsEnabled() const { return shadowsEnabled; }
 		constexpr bool getReflectionsEnabled() const { return reflectionsEnabled; }
+		constexpr bool getFXAAEnabled() const { return fxaaEnabled; }
 		constexpr bool getBloomEnabled() const { return bloomEnabled; }
 		constexpr bool getColorGradingEnabled() const { return colorGradingEnabled; }
 		constexpr bool getVolumeLightsEnabled() const { return volumeLightsEnabled; }
@@ -293,6 +295,7 @@ namespace wi
 		void setLightShaftsEnabled(bool value);
 		void setOutlineEnabled(bool value);
 		constexpr void setShadowsEnabled(bool value) { shadowsEnabled = value; }
+		constexpr void setFXAAEnabled(bool value) { fxaaEnabled = value; }
 		constexpr void setColorGradingEnabled(bool value) { colorGradingEnabled = value; }
 		constexpr void setLensFlareEnabled(bool value) { lensFlareEnabled = value; }
 		constexpr void setSharpenFilterEnabled(bool value) { sharpenFilterEnabled = value; }

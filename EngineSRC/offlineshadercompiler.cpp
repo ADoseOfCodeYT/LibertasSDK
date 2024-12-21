@@ -103,6 +103,7 @@ wi::vector<ShaderEntry> shaders = {
 	{"gpusortlib_sortStepCS", wi::graphics::ShaderStage::CS},
 	{"gpusortlib_kickoffSortCS", wi::graphics::ShaderStage::CS},
 	{"gpusortlib_sortCS", wi::graphics::ShaderStage::CS},
+	{"fxaaCS", wi::graphics::ShaderStage::CS},
 	{"filterEnvMapCS", wi::graphics::ShaderStage::CS},
 	{"fft_512x512_c2c_CS", wi::graphics::ShaderStage::CS},
 	{"fft_512x512_c2c_v2_CS", wi::graphics::ShaderStage::CS},
