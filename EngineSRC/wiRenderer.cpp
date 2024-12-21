@@ -14348,7 +14348,7 @@ void Postprocess_VolumetricClouds(
 	device->EventBegin("Postprocess_VolumetricClouds", cmd);
 	auto range = wi::profiler::BeginRangeGPU("Volumetric Clouds", cmd);
 
-	// Disable Temporal AA and FSR2 jitter for clouds
+	// Disable Temporal AA jitter for clouds
 	if (jitterEnabled)
 	{
 		CameraComponent camera_clouds = camera;

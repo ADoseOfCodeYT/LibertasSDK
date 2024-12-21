@@ -106,8 +106,7 @@
 #### Anti Aliasing
 * MSAA
 * TAA
-* FSR 1.0
-* FSR 2.1
+* FXAA
 * Super-Sampling
 
 #### Screen Space
