@@ -1496,7 +1496,6 @@ Shader Interop is used for declaring shared structures or values between C++ Eng
 [ShaderInterop_EmittedParticle.h](../../WickedEngine/shaders/ShaderInterop_EmittedParticle.h) <br/>
 [ShaderInterop_FFTGenerator.h](../../WickedEngine/shaders/ShaderInterop_FFTGenerator.h) <br/>
 [ShaderInterop_Font.h](../../WickedEngine/shaders/ShaderInterop_Font.h) <br/>
-[ShaderInterop_FSR2.h](../../WickedEngine/shaders/ShaderInterop_FSR2.h) <br/>
 [ShaderInterop_GPUSortLib.h](../../WickedEngine/shaders/ShaderInterop_GPUSortLib.h) <br/>
 [ShaderInterop_HairParticle.h](../../WickedEngine/shaders/ShaderInterop_HairParticle.h) <br/>
 [ShaderInterop_Image.h](../../WickedEngine/shaders/ShaderInterop_Image.h) <br/>

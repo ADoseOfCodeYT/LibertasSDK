@@ -84,12 +84,6 @@ public:
 	wi::gui::Slider outlineThicknessSlider;
 	wi::gui::CheckBox chromaticaberrationCheckBox;
 	wi::gui::Slider chromaticaberrationSlider;
-	wi::gui::CheckBox fsrCheckBox;
-	wi::gui::Slider fsrSlider;
-	wi::gui::CheckBox fsr2CheckBox;
-	wi::gui::ComboBox fsr2Combo;
-	wi::gui::Slider fsr2Slider;
-
 	wi::gui::CheckBox variableRateShadingClassificationCheckBox;
 	wi::gui::CheckBox variableRateShadingClassificationDebugCheckBox;
 	wi::gui::CheckBox advancedLightCullingCheckBox;

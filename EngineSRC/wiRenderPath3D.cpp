@@ -40,8 +40,6 @@ namespace wi
 		rtGUIBlurredBackground[1] = {};
 		rtGUIBlurredBackground[2] = {};
 		rtShadingRate = {};
-		rtFSR[0] = {};
-		rtFSR[1] = {};
 		rtOutlineSource = {};
 
 		rtPostprocess = {};
@@ -72,7 +70,6 @@ namespace wi
 		bloomResources = {};
 		temporalAAResources = {};
 		visibilityResources = {};
-		fsr2Resources = {};
 		vxgiResources = {};
 	}
 
@@ -319,8 +316,6 @@ namespace wi
 		setAO(ao);
 		setSSREnabled(ssrEnabled);
 		setRaytracedReflectionsEnabled(raytracedReflectionsEnabled);
-		setFSREnabled(fsrEnabled);
-		setFSR2Enabled(fsr2Enabled);
 		setEyeAdaptionEnabled(eyeAdaptionEnabled);
 		setReflectionsEnabled(reflectionsEnabled);
 		setBloomEnabled(bloomEnabled);
@@ -407,11 +402,7 @@ namespace wi
 			getSceneUpdateEnabled() ? dt : 0
 		);
 
-		if (getFSR2Enabled())
-		{
-			camera->jitter = fsr2Resources.GetJitter();
-		}
-		else if (wi::renderer::GetTemporalAAEnabled())
+		 if (wi::renderer::GetTemporalAAEnabled())
 		{
 			const XMFLOAT4& halton = wi::math::GetHaltonSequence(wi::graphics::GetDevice()->GetFrameCount() % 256);
 			camera->jitter.x = (halton.x * 2 - 1) / (float)internalResolution.x;
@@ -577,7 +568,6 @@ namespace wi
 			wi::renderer::GetRaytracedShadowsEnabled() ||
 			getAO() == AO::AO_RTAO ||
 			wi::renderer::GetVariableRateShadingClassification() ||
-			getFSR2Enabled() ||
 			reprojectedDepth.IsValid()
 			)
 		{
@@ -619,16 +609,6 @@ namespace wi
 			rtShadow = {};
 		}
 
-		if (getFSR2Enabled())
-		{
-			// FSR2 also acts as a temporal AA, so we inform the shaders about it here
-			//	This will allow improved stochastic alpha test transparency
-			frameCB.options |= OPTION_BIT_TEMPORALAA_ENABLED;
-			uint x = frameCB.frame_count % 4;
-			uint y = frameCB.frame_count / 4;
-			frameCB.temporalaa_samplerotation = (x & 0x000000FF) | ((y & 0x000000FF) << 8);
-		}
-
 		// Check whether visibility resources are required:
 		if (
 			visibility_shading_in_compute ||
@@ -658,10 +638,6 @@ namespace wi
 			if (!depthoffieldResources.IsValid())
 			{
 				XMUINT2 resolution = GetInternalResolution();
-				if (getFSR2Enabled())
-				{
-					resolution = XMUINT2(GetPhysicalWidth(), GetPhysicalHeight());
-				}
 				wi::renderer::CreateDepthOfFieldResources(depthoffieldResources, resolution);
 			}
 		}
@@ -676,10 +652,6 @@ namespace wi
 			if (!motionblurResources.IsValid())
 			{
 				XMUINT2 resolution = GetInternalResolution();
-				if (getFSR2Enabled())
-				{
-					resolution = XMUINT2(GetPhysicalWidth(), GetPhysicalHeight());
-				}
 				wi::renderer::CreateMotionBlurResources(motionblurResources, resolution);
 			}
 		}
@@ -1087,7 +1059,7 @@ namespace wi
 					*camera,
 					camera_previous,
 					camera_reflection,
-					wi::renderer::GetTemporalAAEnabled() || getFSR2Enabled(),
+					wi::renderer::GetTemporalAAEnabled(),
 					scene->weather.volumetricCloudsWeatherMapFirst.IsValid() ? &scene->weather.volumetricCloudsWeatherMapFirst.GetTexture() : nullptr,
 					scene->weather.volumetricCloudsWeatherMapSecond.IsValid() ? &scene->weather.volumetricCloudsWeatherMapSecond.GetTexture() : nullptr
 				);
@@ -1297,7 +1269,7 @@ namespace wi
 						camera_reflection,
 						camera_reflection_previous,
 						camera_reflection,
-						wi::renderer::GetTemporalAAEnabled() || getFSR2Enabled(),
+						wi::renderer::GetTemporalAAEnabled(),
 						scene->weather.volumetricCloudsWeatherMapFirst.IsValid() ? &scene->weather.volumetricCloudsWeatherMapFirst.GetTexture() : nullptr,
 						scene->weather.volumetricCloudsWeatherMapSecond.IsValid() ? &scene->weather.volumetricCloudsWeatherMapSecond.GetTexture() : nullptr
 					);
@@ -1422,7 +1394,7 @@ namespace wi
 						*camera,
 						camera_previous,
 						camera_reflection,
-						wi::renderer::GetTemporalAAEnabled() || getFSR2Enabled(),
+						wi::renderer::GetTemporalAAEnabled(),
 						scene->weather.volumetricCloudsWeatherMapFirst.IsValid() ? &scene->weather.volumetricCloudsWeatherMapFirst.GetTexture() : nullptr,
 						scene->weather.volumetricCloudsWeatherMapSecond.IsValid() ? &scene->weather.volumetricCloudsWeatherMapSecond.GetTexture() : nullptr
 					);
@@ -1971,27 +1943,6 @@ namespace wi
 			device->RenderPassEnd(cmd);
 		}
 
-		if (getFSR2Enabled())
-		{
-			// Save the pre-alpha for FSR2 reactive mask:
-			//	Note that rtFSR temp resource is always larger or equal to rtMain, so CopyTexture is used instead of CopyResource!
-			GPUBarrier barriers[] = {
-				GPUBarrier::Image(&rtMain, rtMain.desc.layout, ResourceState::COPY_SRC),
-				GPUBarrier::Image(&rtFSR[1], rtFSR->desc.layout, ResourceState::COPY_DST),
-			};
-			device->Barrier(barriers, arraysize(barriers), cmd);
-			device->CopyTexture(
-				&rtFSR[1], 0, 0, 0, 0, 0,
-				&rtMain, 0, 0,
-				cmd
-			);
-			for (int i = 0; i < arraysize(barriers); ++i)
-			{
-				std::swap(barriers[i].image.layout_before, barriers[i].image.layout_after);
-			}
-			device->Barrier(barriers, arraysize(barriers), cmd);
-		}
-
 		Rect scissor = GetScissorInternalResolution();
 		device->BindScissorRects(1, &scissor, cmd);
 
@@ -2205,34 +2156,7 @@ namespace wi
 
 		// 1.) HDR post process chain
 		{
-			if (getFSR2Enabled() && fsr2Resources.IsValid())
-			{
-				wi::renderer::Postprocess_FSR2(
-					fsr2Resources,
-					*camera,
-					rtFSR[1],
-					*rt_read,
-					depthBuffer_Copy,
-					rtVelocity,
-					rtFSR[0],
-					cmd,
-					scene->dt,
-					getFSR2Sharpness()
-				);
-
-				// rebind these, because FSR2 binds other things to those constant buffers:
-				wi::renderer::BindCameraCB(
-					*camera,
-					camera_previous,
-					camera_reflection,
-					cmd
-				);
-				wi::renderer::BindCommonResources(cmd);
-
-				rt_read = &rtFSR[0];
-				rt_write = &rtFSR[1];
-			}
-			else if (wi::renderer::GetTemporalAAEnabled() && !wi::renderer::GetTemporalAADebugEnabled() && temporalAAResources.IsValid())
+			if (wi::renderer::GetTemporalAAEnabled() && !wi::renderer::GetTemporalAADebugEnabled() && temporalAAResources.IsValid())
 			{
 				wi::renderer::Postprocess_TemporalAA(
 					temporalAAResources,
@@ -2405,12 +2329,6 @@ namespace wi
 				device->EventEnd(cmd);
 				wi::profiler::EndRange(range);
 			}
-
-			if (rtFSR[0].IsValid() && getFSREnabled())
-			{
-				wi::renderer::Postprocess_FSR(*rt_read, rtFSR[1], rtFSR[0], cmd, getFSRSharpness());
-				lastPostprocessRT = &rtFSR[0];
-			}
 		}
 	}
 
@@ -2513,103 +2431,6 @@ namespace wi
 		{
 			rtreflectionResources = {};
 		}
-	}
-	void RenderPath3D::setFSREnabled(bool value)
-	{
-		fsrEnabled = value;
-
-		if (resolutionScale < 1.0f && fsrEnabled)
-		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
-			if (GetPhysicalWidth() == 0 || GetPhysicalHeight() == 0)
-				return;
-
-			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = wi::renderer::format_rendertarget_main;
-			desc.width = GetPhysicalWidth();
-			desc.height = GetPhysicalHeight();
-			device->CreateTexture(&desc, nullptr, &rtFSR[0]);
-			device->SetName(&rtFSR[0], "rtFSR[0]");
-			device->CreateTexture(&desc, nullptr, &rtFSR[1]);
-			device->SetName(&rtFSR[1], "rtFSR[1]");
-		}
-		else
-		{
-			if (!getFSR2Enabled())
-			{
-				// These are used both for FSR and FSR2
-				rtFSR[0] = {};
-				rtFSR[1] = {};
-			}
-		}
-	}
-	void RenderPath3D::setFSR2Enabled(bool value)
-	{
-		fsr2Enabled = value;
-
-		if (fsr2Enabled)
-		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
-			if (GetPhysicalWidth() == 0 || GetPhysicalHeight() == 0)
-				return;
-
-			XMUINT2 displayResolution = XMUINT2(
-				std::max(GetPhysicalWidth(), GetInternalResolution().x),
-				std::max(GetPhysicalHeight(), GetInternalResolution().y)
-			);
-
-			wi::renderer::CreateFSR2Resources(fsr2Resources, GetInternalResolution(), displayResolution);
-
-			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = wi::renderer::format_rendertarget_main;
-			desc.width = displayResolution.x;
-			desc.height = displayResolution.y;
-			device->CreateTexture(&desc, nullptr, &rtFSR[0]);
-			device->SetName(&rtFSR[0], "rtFSR[0]");
-			device->CreateTexture(&desc, nullptr, &rtFSR[1]);
-			device->SetName(&rtFSR[1], "rtFSR[1]");
-		}
-		else
-		{
-			fsr2Resources = {};
-			if (!getFSREnabled())
-			{
-				// These are used both for FSR and FSR2
-				rtFSR[0] = {};
-				rtFSR[1] = {};
-			}
-		}
-
-		// Depending on FSR2 is on/off, these either need to run at display or internal resolution:
-		motionblurResources = {};
-		depthoffieldResources = {};
-	}
-	void RenderPath3D::setFSR2Preset(FSR2_Preset preset)
-	{
-		wi::graphics::SamplerDesc desc = wi::renderer::GetSampler(wi::enums::SAMPLER_OBJECTSHADER)->GetDesc();
-		switch (preset)
-		{
-		default:
-		case FSR2_Preset::Quality:
-			resolutionScale = 1.0f / 1.5f;
-			desc.mip_lod_bias = -1.58f;
-			break;
-		case FSR2_Preset::Balanced:
-			resolutionScale = 1.0f / 1.7f;
-			desc.mip_lod_bias = -1.76f;
-			break;
-		case FSR2_Preset::Performance:
-			resolutionScale = 1.0f / 2.0f;
-			desc.mip_lod_bias = -2.0f;
-			break;
-		case FSR2_Preset::Ultra_Performance:
-			resolutionScale = 1.0f / 3.0f;
-			desc.mip_lod_bias = -2.58f;
-			break;
-		}
-		wi::renderer::ModifyObjectSampler(desc);
 	}
 	void RenderPath3D::setMotionBlurEnabled(bool value)
 	{

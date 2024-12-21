@@ -78,15 +78,6 @@ struct ShadingRateClassification
 	uint SHADING_RATE_4X4;
 };
 
-struct FSR
-{
-	uint4 Const0;
-	uint4 Const1;
-	uint4 Const2;
-	uint4 Const3;
-};
-CONSTANTBUFFER(fsr, FSR, CBSLOT_FSR);
-
 static const uint MOTIONBLUR_TILESIZE = 32;
 #define motionblur_strength postprocess.params0.x
 

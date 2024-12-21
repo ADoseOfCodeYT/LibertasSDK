@@ -20,14 +20,6 @@ namespace wi
 			AO_RTAO,		// ray traced ambient occlusion
 			// Don't alter order! (bound to lua manually)
 		};
-		enum class FSR2_Preset
-		{
-			// Guidelines: https://github.com/GPUOpen-Effects/FidelityFX-FSR2#scaling-modes
-			Quality,
-			Balanced,
-			Performance,
-			Ultra_Performance,
-		};
 	private:
 		float exposure = 1.0f;
 		float brightness = 0.0f;
@@ -48,8 +40,6 @@ namespace wi
 		float screenSpaceShadowRange = 1;
 		float eyeadaptionKey = 0.115f;
 		float eyeadaptionRate = 1;
-		float fsrSharpness = 1.0f;
-		float fsr2Sharpness = 0.5f;
 		float lightShaftsStrength = 0.2f;
 		float raytracedReflectionsRange = 10000.0f;
 		float reflectionRoughnessCutoff = 0.6f;
@@ -76,8 +66,6 @@ namespace wi
 		bool ditherEnabled = true;
 		bool occlusionCullingEnabled = true;
 		bool sceneUpdateEnabled = true;
-		bool fsrEnabled = false;
-		bool fsr2Enabled = false;
 
 		mutable bool first_frame = true;
 
@@ -104,7 +92,6 @@ namespace wi
 		wi::graphics::Texture rtSun_resolved; // sun render target, but the resolved version if MSAA is enabled
 		wi::graphics::Texture rtGUIBlurredBackground[3];	// downsampled, gaussian blurred scene for GUI
 		wi::graphics::Texture rtShadingRate; // UINT8 shading rate per tile
-		wi::graphics::Texture rtFSR[2]; // FSR upscaling result (full resolution LDR)
 		wi::graphics::Texture rtOutlineSource; // linear depth but only the regions which have outline stencil
 
 		wi::graphics::Texture rtPostprocess; // ping-pong with main scene RT in post-process chain
@@ -136,7 +123,6 @@ namespace wi
 		wi::renderer::BloomResources bloomResources;
 		wi::renderer::TemporalAAResources temporalAAResources;
 		wi::renderer::VisibilityResources visibilityResources;
-		wi::renderer::FSR2Resources fsr2Resources;
 		wi::renderer::VXGIResources vxgiResources;
 
 		wi::graphics::CommandList video_cmd;
@@ -223,8 +209,6 @@ namespace wi
 		constexpr float getScreenSpaceShadowRange() const { return screenSpaceShadowRange; }
 		constexpr float getEyeAdaptionKey() const { return eyeadaptionKey; }
 		constexpr float getEyeAdaptionRate() const { return eyeadaptionRate; }
-		constexpr float getFSRSharpness() const { return fsrSharpness; }
-		constexpr float getFSR2Sharpness() const { return fsr2Sharpness; }
 		constexpr float getLightShaftsStrength() const { return lightShaftsStrength; }
 		constexpr float getRaytracedReflectionsRange() const { return raytracedReflectionsRange; }
 		constexpr float getReflectionRoughnessCutoff() const { return reflectionRoughnessCutoff; }
@@ -251,8 +235,7 @@ namespace wi
 		constexpr bool getDitherEnabled() const { return ditherEnabled; }
 		constexpr bool getOcclusionCullingEnabled() const { return occlusionCullingEnabled; }
 		constexpr bool getSceneUpdateEnabled() const { return sceneUpdateEnabled; }
-		constexpr bool getFSREnabled() const { return fsrEnabled; }
-		constexpr bool getFSR2Enabled() const { return fsr2Enabled; }
+
 		constexpr bool getVisibilityComputeShadingEnabled() const { return visibility_shading_in_compute; }
 
 		constexpr void setExposure(float value) { exposure = value; }
@@ -275,8 +258,6 @@ namespace wi
 		constexpr void setScreenSpaceShadowRange(float value) { screenSpaceShadowRange = value; }
 		constexpr void setEyeAdaptionKey(float value) { eyeadaptionKey = value; }
 		constexpr void setEyeAdaptionRate(float value) { eyeadaptionRate = value; }
-		constexpr void setFSRSharpness(float value) { fsrSharpness = value; }
-		constexpr void setFSR2Sharpness(float value) { fsr2Sharpness = value; }
 		constexpr void setLightShaftsStrength(float value) { lightShaftsStrength = value; }
 		constexpr void setRaytracedReflectionsRange(float value) { raytracedReflectionsRange = value; }
 		constexpr void setReflectionRoughnessCutoff(float value) { reflectionRoughnessCutoff = value; }
@@ -303,9 +284,7 @@ namespace wi
 		constexpr void setDitherEnabled(bool value) { ditherEnabled = value; }
 		constexpr void setOcclusionCullingEnabled(bool value) { occlusionCullingEnabled = value; }
 		constexpr void setSceneUpdateEnabled(bool value) { sceneUpdateEnabled = value; }
-		void setFSREnabled(bool value);
-		void setFSR2Enabled(bool value);
-		void setFSR2Preset(FSR2_Preset preset); // this will modify resolution scaling and sampler lod bias
+
 
 		struct CustomPostprocess
 		{

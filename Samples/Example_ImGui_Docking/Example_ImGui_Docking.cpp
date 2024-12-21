@@ -1073,35 +1073,6 @@ void Example_ImGuiRenderer::Update(float dt)
 				wi::renderer::SetVXGIEnabled(bVoxelGIEnabled);
 			}
 
-
-			static bool bFSR = active_render->getFSREnabled();
-			if (ImGui::Checkbox("FidelityFX FSR", &bFSR))
-			{
-				active_render->setFSREnabled(bFSR);
-			}
-			if (bFSR)
-			{
-				static float fFSRSharpness = active_render->getFSRSharpness();
-				ImGui::PushItemWidth(-4);
-				if (ImGui::SliderFloat("##FSRSharpness", &fFSRSharpness, 0.0, 2.0, "%.2f", ImGuiSliderFlags_AlwaysClamp))
-				{
-					active_render->setFSRSharpness(fFSRSharpness);
-				}
-				if (ImGui::IsItemHovered()) ImGui::SetTooltip("FSR Sharpness");
-				ImGui::PopItemWidth();
-
-
-				static float fResolutionScale = active_render->resolutionScale;
-				ImGui::PushItemWidth(-4);
-				if (ImGui::SliderFloat("##fResolutionScale", &fResolutionScale, 0.25, 2.0, "%.2f", ImGuiSliderFlags_AlwaysClamp))
-				{
-					active_render->resolutionScale = fResolutionScale;
-					ResizeBuffers();
-				}
-				if (ImGui::IsItemHovered()) ImGui::SetTooltip("Resolution Scale");
-				ImGui::PopItemWidth();
-			}
-
 		}
 
 		if (ImGui::CollapsingHeader(ICON_MD_VIDEOCAM "  Camera Transform", ImGuiTreeNodeFlags_None)) //ImGuiTreeNodeFlags_DefaultOpen

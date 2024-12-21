@@ -31,15 +31,6 @@
     <Filter Include="interop">
       <UniqueIdentifier>{d43cceda-5146-4e72-92e4-e97b4b91fd6e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ffx-fsr2">
-      <UniqueIdentifier>{902ab028-5d33-4517-a981-4b5adc0f7031}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="compressonator">
-      <UniqueIdentifier>{913dd8d5-7a4e-4a41-9737-4c690309165e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ffx-fsr">
-      <UniqueIdentifier>{a0f04960-eae7-45c2-a6d8-c0c25ec3b333}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ffx-shadows-dnsr">
       <UniqueIdentifier>{2bb6f2d6-f3e1-4501-95bc-bd4a0ca64c4b}</UniqueIdentifier>
     </Filter>
@@ -287,7 +278,6 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)oceanSimulatorCS.hlsl">
       <Filter>CS</Filter>
     </FxCompile>
-  
     <FxCompile Include="$(MSBuildThisFileDirectory)motionblur_neighborhoodMaxVelocityCS.hlsl">
       <Filter>CS</Filter>
     </FxCompile>
@@ -834,12 +824,6 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)objectVS_simple_tessellation.hlsl">
       <Filter>VS</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)fsr_upscalingCS.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)fsr_sharpenCS.hlsl">
-      <Filter>CS</Filter>
-    </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)visibility_resolveCS.hlsl">
       <Filter>CS</Filter>
     </FxCompile>
@@ -947,30 +931,6 @@
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)emittedparticle_sphbinningCS.hlsl">
       <Filter>CS</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_accumulate_pass.hlsl">
-      <Filter>ffx-fsr2</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_autogen_reactive_pass.hlsl">
-      <Filter>ffx-fsr2</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_compute_luminance_pyramid_pass.hlsl">
-      <Filter>ffx-fsr2</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_depth_clip_pass.hlsl">
-      <Filter>ffx-fsr2</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_lock_pass.hlsl">
-      <Filter>ffx-fsr2</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_prepare_input_color_pass.hlsl">
-      <Filter>ffx-fsr2</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_rcas_pass.hlsl">
-      <Filter>ffx-fsr2</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_reconstruct_previous_depth_pass.hlsl">
-      <Filter>ffx-fsr2</Filter>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)vxgi_sdf_jumpfloodCS.hlsl">
       <Filter>CS</Filter>
@@ -1160,95 +1120,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderInterop_DDGI.h">
       <Filter>interop</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_common_types.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_core.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_core_cpu.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_core_gpu_common.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_core_gpu_common_half.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_core_hlsl.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_core_portability.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr1.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_accumulate.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_callbacks_hlsl.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_common.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_compute_luminance_pyramid.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_depth_clip.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_lock.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_postprocess_lock_status.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_prepare_input_color.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_rcas.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_reconstruct_dilated_velocity_and_previous_depth.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_reproject.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_resources.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_sample.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_fsr2_upsample.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr2\ffx_spd.h">
-      <Filter>ffx-fsr2</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ShaderInterop_FSR2.h">
-      <Filter>interop</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderInterop_VXGI.h">
       <Filter>interop</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)compressonator\bcn_common_api.h">
-      <Filter>compressonator</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)compressonator\bcn_common_kernel.h">
-      <Filter>compressonator</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)compressonator\common_def.h">
-      <Filter>compressonator</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr\ffx_a.h">
-      <Filter>ffx-fsr</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ffx-fsr\ffx_fsr1.h">
-      <Filter>ffx-fsr</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ffx-shadows-dnsr\ffx_denoiser_shadows_filter.h">
       <Filter>ffx-shadows-dnsr</Filter>
@@ -1268,5 +1141,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderInterop_VoxelGrid.h">
       <Filter>interop</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)compressonator\bcn_common_api.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)compressonator\bcn_common_kernel.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)compressonator\common_def.h" />
   </ItemGroup>
 </Project>
