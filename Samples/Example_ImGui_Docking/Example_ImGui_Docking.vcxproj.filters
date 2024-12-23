@@ -31,13 +31,13 @@
     <ClCompile Include="ImGui\ImGuizmo.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Editor\ModelImporter_FBX.cpp">
+    <ClCompile Include="..\..\EditorSRC\ModelImporter_FBX.cpp">
       <Filter>Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Editor\ModelImporter_GLTF.cpp">
+    <ClCompile Include="..\..\EditorSRC\ModelImporter_GLTF.cpp">
       <Filter>Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Editor\ModelImporter_OBJ.cpp">
+    <ClCompile Include="..\..\EditorSRC\ModelImporter_OBJ.cpp">
       <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>

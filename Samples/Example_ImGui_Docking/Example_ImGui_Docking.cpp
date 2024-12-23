@@ -27,7 +27,7 @@
 #include "../EngineSRC/wiBacklog.h"
 #include "../EngineSRC/wiPrimitive.h"
 #include "../EngineSRC/wiRenderPath3D.h"
-#include "../Editor/ModelImporter.h"
+#include "../EditorSRC/ModelImporter.h"
 
 #include <fstream>
 #include <thread>

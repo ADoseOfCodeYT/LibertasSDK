@@ -1,7 +1,7 @@
 
 # Libertas SDK
 
-Libertas SDK is an open-source 3D SDK forked from Wicked Engine 0.71.633. It is just a small 3D SDK for fucking around in and it really isnt ready for a full feature game (and isn't planned to be). If you want to make a commercial game, please use <a href="https://github.com/turanszkij/WickedEngine">Wicked Engine</a> instead.
+Libertas SDK is an open-source SDK forked from Wicked Engine 0.71.633. It is just a small 3D SDK for fucking around in and it really isnt ready for a full feature game (and isn't planned to be). If you want to make a commercial game, please use <a href="https://github.com/turanszkij/WickedEngine">Wicked Engine</a> instead.
 
 
 - [Features](Features.md)<br/>

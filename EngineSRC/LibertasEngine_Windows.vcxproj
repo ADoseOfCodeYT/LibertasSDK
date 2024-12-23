@@ -37,7 +37,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
-    <Import Project="LibertasEngine_SOURCE.vcxitems" Label="Shared" />
+    <Import Project="LibertasEngine_SRC.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -47,13 +47,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)BuildOutput\$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)BUILDOUT\$(Configuration)\$(ProjectName)\</OutDir>
     <MultiProcFXC>true</MultiProcFXC>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)BuildOutput\$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)BUILDOUT\$(Configuration)\$(ProjectName)\</OutDir>
     <MultiProcFXC>true</MultiProcFXC>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
