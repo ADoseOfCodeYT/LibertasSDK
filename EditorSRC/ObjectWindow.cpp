@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ObjectWindow.h"
-#include "wiScene.h"
+#include "lbScene.h"
 
 #include "xatlas.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "Translator.h"
-#include "wiScene_BindLua.h"
+#include "lbScene_BindLua.h"
 #include "ComponentsWindow.h"
 #include "ProfilerWindow.h"
 #include "ContentBrowserWindow.h"

@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "wiScene.h"
+#include "lbScene.h"
 #include "ModelImporter.h"
-#include "wiRandom.h"
+#include "lbRandom.h"
 
 #include "Utility/stb_image.h"
 #include "Utility/dds.h"

@@ -4,11 +4,11 @@
 #ifdef __cplusplus // not invoking shader compiler, but included in engine source
 
 // Determine shader source path:
-#include "../wiHelper.h"
+#include "../lbHelper.h"
 static const std::string SHADER_INTEROP_PATH = lb::helper::GetCurrentPath() + "/" + lb::helper::GetDirectoryFromPath(lb::helper::GetPathRelative(lb::helper::GetCurrentPath(), std::string(__FILE__)));
 
 // Application-side types:
-#include "../wiMath.h"
+#include "../lbMath.h"
 
 using float3x3 = XMFLOAT3X3;
 using float4x4 = XMFLOAT4X4;

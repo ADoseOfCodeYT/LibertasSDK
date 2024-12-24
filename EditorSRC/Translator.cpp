@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Translator.h"
-#include "wiRenderer.h"
-#include "wiInput.h"
-#include "wiMath.h"
+#include "lbRenderer.h"
+#include "lbInput.h"
+#include "lbMath.h"
 #include "shaders/ShaderInterop_Renderer.h"
-#include "wiEventHandler.h"
+#include "lbEventHandler.h"
 
 using namespace lb::ecs;
 using namespace lb::scene;
