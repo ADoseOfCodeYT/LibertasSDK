@@ -1148,7 +1148,7 @@ namespace lb::physics
 		RegisterTypes();
 
 		char text[256] = {};
-		snprintf(text, arraysize(text), "lb::physics Initialized [Jolt Physics %d.%d.%d] (%d ms)", JPH_VERSION_MAJOR, JPH_VERSION_MINOR, JPH_VERSION_PATCH, (int)std::round(timer.elapsed()));
+		snprintf(text, arraysize(text), "Physics System Initialized [Jolt Physics %d.%d.%d] (%d ms)", JPH_VERSION_MAJOR, JPH_VERSION_MINOR, JPH_VERSION_PATCH, (int)std::round(timer.elapsed()));
 		lb::backlog::post(text);
 	}
 

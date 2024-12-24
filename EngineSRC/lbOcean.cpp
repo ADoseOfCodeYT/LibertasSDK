@@ -596,7 +596,7 @@ namespace lb
 		LoadShaders();
 		lb::fftgenerator::LoadShaders();
 
-		lb::backlog::post("lb::Ocean Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("Ocean Simulator Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 	const Texture* Ocean::getDisplacementMap() const

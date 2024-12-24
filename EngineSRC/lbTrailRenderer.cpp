@@ -333,6 +333,6 @@ namespace lb
 		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { TrailRenderer_Internal::LoadShaders(); });
 		TrailRenderer_Internal::LoadShaders();
 
-		lb::backlog::post("lb::TrailRenderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("Trail Renderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 }

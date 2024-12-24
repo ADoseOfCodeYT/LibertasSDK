@@ -342,7 +342,7 @@ namespace lb::font
 		static lb::eventhandler::Handle handle1 = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 
-		lb::backlog::post("lb::font Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("Font System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 	void InvalidateAtlas()

@@ -26,11 +26,11 @@ namespace lb::network
 			if (result)
 			{
 				int error = WSAGetLastError();
-				lb::backlog::post("lb::network Initialization FAILED with error: " + std::to_string(error));
+				lb::backlog::post("Network Initialization FAILED with error: " + std::to_string(error));
 				assert(0);
 			}
 
-			lb::backlog::post("lb::network Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::backlog::post("Network Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 		~NetworkInternal()
 		{

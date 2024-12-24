@@ -40,7 +40,7 @@ namespace lb::gpusortlib
 		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 
-		lb::backlog::post("lb::gpusortlib Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("GPU Sort System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 

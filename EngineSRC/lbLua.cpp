@@ -273,7 +273,7 @@ namespace lb::lua
 		Async_BindLua::Bind();
 
 		char text[256] = {};
-		snprintf(text, arraysize(text), "lb::lua Initialized [Lua %s.%s] (%d ms)", LUA_VERSION_MAJOR, LUA_VERSION_MINOR, (int)std::round(timer.elapsed()));
+		snprintf(text, arraysize(text), "Lua  Initialized [%s.%s] (%d ms)", LUA_VERSION_MAJOR, LUA_VERSION_MINOR, (int)std::round(timer.elapsed()));
 		lb::backlog::post(text);
 	}
 

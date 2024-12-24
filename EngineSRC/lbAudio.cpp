@@ -204,7 +204,7 @@ namespace lb::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			lb::backlog::post("lb::audio Initialized [XAudio2] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::backlog::post("Audio System Initialized [XAudio2] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 		~AudioInternal()
 		{
@@ -881,7 +881,7 @@ namespace lb::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			lb::backlog::post("lb::audio Initialized [FAudio] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::backlog::post("Audio System Initialized [FAudio] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 		~AudioInternal(){
 			if(reverbSubmix != nullptr)
