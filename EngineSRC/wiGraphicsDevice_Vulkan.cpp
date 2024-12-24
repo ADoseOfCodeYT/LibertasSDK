@@ -30,14 +30,14 @@
 #include <iostream>
 #include <algorithm>
 
-namespace wi::graphics
+namespace lb::graphics
 {
 
 namespace vulkan_internal
 {
 
 	// These shifts are made so that Vulkan resource bindings slots don't interfere with each other across shader stages:
-	//	These are also defined in wi::shadercompiler.cpp as hard coded compiler arguments for SPIRV, so they need to be the same
+	//	These are also defined in lb::shadercompiler.cpp as hard coded compiler arguments for SPIRV, so they need to be the same
 	enum
 	{
 		VULKAN_BINDING_SHIFT_B = 0,
@@ -311,21 +311,21 @@ namespace vulkan_internal
 	{
 		switch (value)
 		{
-		case wi::graphics::StencilOp::KEEP:
+		case lb::graphics::StencilOp::KEEP:
 			return VK_STENCIL_OP_KEEP;
-		case wi::graphics::StencilOp::ZERO:
+		case lb::graphics::StencilOp::ZERO:
 			return VK_STENCIL_OP_ZERO;
-		case wi::graphics::StencilOp::REPLACE:
+		case lb::graphics::StencilOp::REPLACE:
 			return VK_STENCIL_OP_REPLACE;
-		case wi::graphics::StencilOp::INCR_SAT:
+		case lb::graphics::StencilOp::INCR_SAT:
 			return VK_STENCIL_OP_INCREMENT_AND_CLAMP;
-		case wi::graphics::StencilOp::DECR_SAT:
+		case lb::graphics::StencilOp::DECR_SAT:
 			return VK_STENCIL_OP_DECREMENT_AND_CLAMP;
-		case wi::graphics::StencilOp::INVERT:
+		case lb::graphics::StencilOp::INVERT:
 			return VK_STENCIL_OP_INVERT;
-		case wi::graphics::StencilOp::INCR:
+		case lb::graphics::StencilOp::INCR:
 			return VK_STENCIL_OP_INCREMENT_AND_WRAP;
-		case wi::graphics::StencilOp::DECR:
+		case lb::graphics::StencilOp::DECR:
 			return VK_STENCIL_OP_DECREMENT_AND_WRAP;
 		default:
 			return VK_STENCIL_OP_KEEP;
@@ -394,15 +394,15 @@ namespace vulkan_internal
 		switch (value)
 		{
 		default:
-		case wi::graphics::ImageAspect::COLOR:
+		case lb::graphics::ImageAspect::COLOR:
 			return VK_IMAGE_ASPECT_COLOR_BIT;
-		case wi::graphics::ImageAspect::DEPTH:
+		case lb::graphics::ImageAspect::DEPTH:
 			return VK_IMAGE_ASPECT_DEPTH_BIT;
-		case wi::graphics::ImageAspect::STENCIL:
+		case lb::graphics::ImageAspect::STENCIL:
 			return VK_IMAGE_ASPECT_STENCIL_BIT;
-		case wi::graphics::ImageAspect::LUMINANCE:
+		case lb::graphics::ImageAspect::LUMINANCE:
 			return VK_IMAGE_ASPECT_PLANE_0_BIT;
-		case wi::graphics::ImageAspect::CHROMINANCE:
+		case lb::graphics::ImageAspect::CHROMINANCE:
 			return VK_IMAGE_ASPECT_PLANE_1_BIT;
 		}
 	}
@@ -543,17 +543,17 @@ namespace vulkan_internal
 		{
 		default:
 			return VK_COMPONENT_SWIZZLE_IDENTITY;
-		case wi::graphics::ComponentSwizzle::R:
+		case lb::graphics::ComponentSwizzle::R:
 			return VK_COMPONENT_SWIZZLE_R;
-		case wi::graphics::ComponentSwizzle::G:
+		case lb::graphics::ComponentSwizzle::G:
 			return VK_COMPONENT_SWIZZLE_G;
-		case wi::graphics::ComponentSwizzle::B:
+		case lb::graphics::ComponentSwizzle::B:
 			return VK_COMPONENT_SWIZZLE_B;
-		case wi::graphics::ComponentSwizzle::A:
+		case lb::graphics::ComponentSwizzle::A:
 			return VK_COMPONENT_SWIZZLE_A;
-		case wi::graphics::ComponentSwizzle::ZERO:
+		case lb::graphics::ComponentSwizzle::ZERO:
 			return VK_COMPONENT_SWIZZLE_ZERO;
-		case wi::graphics::ComponentSwizzle::ONE:
+		case lb::graphics::ComponentSwizzle::ONE:
 			return VK_COMPONENT_SWIZZLE_ONE;
 		}
 	}
@@ -568,7 +568,7 @@ namespace vulkan_internal
 	}
 
 
-	bool checkExtensionSupport(const char* checkExtension, const wi::vector<VkExtensionProperties>& available_extensions)
+	bool checkExtensionSupport(const char* checkExtension, const lb::vector<VkExtensionProperties>& available_extensions)
 	{
 		for (const auto& x : available_extensions)
 		{
@@ -580,8 +580,8 @@ namespace vulkan_internal
 		return false;
 	}
 
-	bool ValidateLayers(const wi::vector<const char*>& required,
-		const wi::vector<VkLayerProperties>& available)
+	bool ValidateLayers(const lb::vector<const char*>& required,
+		const lb::vector<VkLayerProperties>& available)
 	{
 		for (auto layer : required)
 		{
@@ -618,14 +618,14 @@ namespace vulkan_internal
 			ss += "[Vulkan Warning]: ";
 			ss += callback_data->pMessage;
             ss += "\n";
-			wi::helper::DebugOut(ss, wi::helper::DebugLevel::Warning);
+			lb::helper::DebugOut(ss, lb::helper::DebugLevel::Warning);
 		}
 		else if (message_severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 		{
 			ss += "[Vulkan Error]: ";
 			ss += callback_data->pMessage;
             ss += "\n";
-			wi::helper::DebugOut(ss, wi::helper::DebugLevel::Error);
+			lb::helper::DebugOut(ss, lb::helper::DebugLevel::Error);
 		}
 
 		return VK_FALSE;
@@ -633,7 +633,7 @@ namespace vulkan_internal
 
 	inline std::string get_shader_cache_path()
 	{
-		return wi::helper::GetCurrentPath() + "/pso_cache_vulkan";
+		return lb::helper::GetCurrentPath() + "/pso_cache_vulkan";
 	}
 
 	struct BindingUsage
@@ -660,8 +660,8 @@ namespace vulkan_internal
 		};
 		BufferSubresource srv;
 		BufferSubresource uav;
-		wi::vector<BufferSubresource> subresources_srv;
-		wi::vector<BufferSubresource> subresources_uav;
+		lb::vector<BufferSubresource> subresources_srv;
+		lb::vector<BufferSubresource> subresources_uav;
 		VkDeviceAddress address = 0;
 
 		void destroy_subresources()
@@ -765,12 +765,12 @@ namespace vulkan_internal
 		TextureSubresource rtv;
 		TextureSubresource dsv;
 		uint32_t framebuffer_layercount = 0;
-		wi::vector<TextureSubresource> subresources_srv;
-		wi::vector<TextureSubresource> subresources_uav;
-		wi::vector<TextureSubresource> subresources_rtv;
-		wi::vector<TextureSubresource> subresources_dsv;
+		lb::vector<TextureSubresource> subresources_srv;
+		lb::vector<TextureSubresource> subresources_uav;
+		lb::vector<TextureSubresource> subresources_rtv;
+		lb::vector<TextureSubresource> subresources_dsv;
 
-		wi::vector<SubresourceData> mapped_subresources;
+		lb::vector<SubresourceData> mapped_subresources;
 		SparseTextureProperties sparse_texture_properties;
 
 		VkImageView video_decode_view = VK_NULL_HANDLE;
@@ -890,17 +890,17 @@ namespace vulkan_internal
 		VkPipelineShaderStageCreateInfo stageInfo = {};
 		VkPipelineLayout pipelineLayout_cs = VK_NULL_HANDLE; // no lifetime management here
 		VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE; // no lifetime management here
-		wi::vector<VkDescriptorSetLayoutBinding> layoutBindings;
-		wi::vector<VkImageViewType> imageViewTypes;
+		lb::vector<VkDescriptorSetLayoutBinding> layoutBindings;
+		lb::vector<VkImageViewType> imageViewTypes;
 
-		wi::vector<BindingUsage> bindlessBindings;
-		wi::vector<VkDescriptorSet> bindlessSets;
+		lb::vector<BindingUsage> bindlessBindings;
+		lb::vector<VkDescriptorSet> bindlessSets;
 		uint32_t bindlessFirstSet = 0;
 
 		VkPushConstantRange pushconstants = {};
 
 		VkDeviceSize uniform_buffer_sizes[DESCRIPTORBINDER_CBV_COUNT] = {};
-		wi::vector<uint32_t> uniform_buffer_dynamic_slots;
+		lb::vector<uint32_t> uniform_buffer_dynamic_slots;
 
 		size_t binding_hash = 0;
 
@@ -921,18 +921,18 @@ namespace vulkan_internal
 		VkPipeline pipeline = VK_NULL_HANDLE;
 		VkPipelineLayout pipelineLayout = VK_NULL_HANDLE; // no lifetime management here
 		VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE; // no lifetime management here
-		wi::vector<VkDescriptorSetLayoutBinding> layoutBindings;
-		wi::vector<VkImageViewType> imageViewTypes;
+		lb::vector<VkDescriptorSetLayoutBinding> layoutBindings;
+		lb::vector<VkImageViewType> imageViewTypes;
 		size_t hash = 0;
 
-		wi::vector<BindingUsage> bindlessBindings;
-		wi::vector<VkDescriptorSet> bindlessSets;
+		lb::vector<BindingUsage> bindlessBindings;
+		lb::vector<VkDescriptorSet> bindlessSets;
 		uint32_t bindlessFirstSet = 0;
 
 		VkPushConstantRange pushconstants = {};
 
 		VkDeviceSize uniform_buffer_sizes[DESCRIPTORBINDER_CBV_COUNT] = {};
-		wi::vector<uint32_t> uniform_buffer_dynamic_slots;
+		lb::vector<uint32_t> uniform_buffer_dynamic_slots;
 
 		size_t binding_hash = 0;
 
@@ -968,8 +968,8 @@ namespace vulkan_internal
 		VkAccelerationStructureBuildGeometryInfoKHR buildInfo = {};
 		VkAccelerationStructureBuildSizesInfoKHR sizeInfo = {};
 		VkAccelerationStructureCreateInfoKHR createInfo = {};
-		wi::vector<VkAccelerationStructureGeometryKHR> geometries;
-		wi::vector<uint32_t> primitiveCounts;
+		lb::vector<VkAccelerationStructureGeometryKHR> geometries;
+		lb::vector<uint32_t> primitiveCounts;
 		VkDeviceAddress scratch_address = 0;
 		VkDeviceAddress as_address = 0;
 
@@ -1006,8 +1006,8 @@ namespace vulkan_internal
 		VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 		VkFormat swapChainImageFormat;
 		VkExtent2D swapChainExtent;
-		wi::vector<VkImage> swapChainImages;
-		wi::vector<VkImageView> swapChainImageViews;
+		lb::vector<VkImage> swapChainImages;
+		lb::vector<VkImageView> swapChainImageViews;
 
 		Texture dummyTexture;
 
@@ -1015,7 +1015,7 @@ namespace vulkan_internal
 
 		uint32_t swapChainImageIndex = 0;
 		uint32_t swapChainAcquireSemaphoreIndex = 0;
-		wi::vector<VkSemaphore> swapchainAcquireSemaphores;
+		lb::vector<VkSemaphore> swapchainAcquireSemaphores;
 		VkSemaphore swapchainReleaseSemaphore = VK_NULL_HANDLE;
 
 		ColorSpace colorSpace = ColorSpace::SRGB;
@@ -1055,7 +1055,7 @@ namespace vulkan_internal
 		std::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VkVideoSessionKHR video_session = VK_NULL_HANDLE;
 		VkVideoSessionParametersKHR session_parameters = VK_NULL_HANDLE;
-		wi::vector<VmaAllocation> allocations;
+		lb::vector<VmaAllocation> allocations;
 
 		~VideoDecoder_Vulkan()
 		{
@@ -1135,7 +1135,7 @@ namespace vulkan_internal
 		res = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, internal_state->surface, &formatCount, nullptr);
 		assert(res == VK_SUCCESS);
 
-		wi::vector<VkSurfaceFormatKHR> swapchain_formats(formatCount);
+		lb::vector<VkSurfaceFormatKHR> swapchain_formats(formatCount);
 		res = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, internal_state->surface, &formatCount, swapchain_formats.data());
 		assert(res == VK_SUCCESS);
 
@@ -1143,7 +1143,7 @@ namespace vulkan_internal
 		res = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, internal_state->surface, &presentModeCount, nullptr);
 		assert(res == VK_SUCCESS);
 
-		wi::vector<VkPresentModeKHR> swapchain_presentModes(presentModeCount);
+		lb::vector<VkPresentModeKHR> swapchain_presentModes(presentModeCount);
 		swapchain_presentModes.resize(presentModeCount);
 		res = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, internal_state->surface, &presentModeCount, swapchain_presentModes.data());
 		assert(res == VK_SUCCESS);
@@ -1477,7 +1477,7 @@ using namespace vulkan_internal;
 			assert(res == VK_SUCCESS);
 
 			GPUBufferDesc uploaddesc;
-			uploaddesc.size = wi::math::GetNextPowerOfTwo(staging_size);
+			uploaddesc.size = lb::math::GetNextPowerOfTwo(staging_size);
 			uploaddesc.size = std::max(uploaddesc.size, uint64_t(65536));
 			uploaddesc.usage = Usage::UPLOAD;
 			bool upload_success = device->CreateBuffer(&uploaddesc, nullptr, &cmd.uploadbuffer);
@@ -2268,8 +2268,8 @@ using namespace vulkan_internal;
 				// Input layout:
 				VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 				vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-				wi::vector<VkVertexInputBindingDescription> bindings;
-				wi::vector<VkVertexInputAttributeDescription> attributes;
+				lb::vector<VkVertexInputBindingDescription> bindings;
+				lb::vector<VkVertexInputAttributeDescription> attributes;
 				if (pso->desc.il != nullptr)
 				{
 					uint32_t lastBinding = 0xFFFFFFFF;
@@ -2367,16 +2367,16 @@ using namespace vulkan_internal;
 	}
 
 	// Engine functions
-	GraphicsDevice_Vulkan::GraphicsDevice_Vulkan(wi::platform::window_type window, ValidationMode validationMode_, GPUPreference preference)
+	GraphicsDevice_Vulkan::GraphicsDevice_Vulkan(lb::platform::window_type window, ValidationMode validationMode_, GPUPreference preference)
 	{
-		wi::Timer timer;
+		lb::Timer timer;
 		capabilities |= GraphicsDeviceCapability::ALIASING_GENERIC;
 
 		// This functionalty is missing from Vulkan but might be added in the future:
 		//	Issue: https://github.com/KhronosGroup/Vulkan-Docs/issues/2079
 		capabilities |= GraphicsDeviceCapability::COPY_BETWEEN_DIFFERENT_IMAGE_ASPECTS_NOT_SUPPORTED;
 
-		wi::unordered_map<uint32_t, std::shared_ptr<std::mutex>> queue_lockers;
+		lb::unordered_map<uint32_t, std::shared_ptr<std::mutex>> queue_lockers;
 
 		TOPLEVEL_ACCELERATION_STRUCTURE_INSTANCE_SIZE = sizeof(VkAccelerationStructureInstanceKHR);
 
@@ -2388,8 +2388,8 @@ using namespace vulkan_internal;
 		assert(res == VK_SUCCESS);
 		if (res != VK_SUCCESS)
 		{
-			wi::helper::messageBox("volkInitialize failed! ERROR: " + std::to_string(res), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox("volkInitialize failed! ERROR: " + std::to_string(res), "Error!");
+			lb::platform::Exit();
 		}
 
 		// Fill out application info:
@@ -2398,26 +2398,26 @@ using namespace vulkan_internal;
 		appInfo.pApplicationName = "Libertas Engine Application";
 		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 		appInfo.pEngineName = "Libertas Engine";
-		appInfo.engineVersion = VK_MAKE_VERSION(wi::version::GetMajor(), wi::version::GetMinor(), wi::version::GetRevision());
+		appInfo.engineVersion = VK_MAKE_VERSION(lb::version::GetMajor(), lb::version::GetMinor(), lb::version::GetRevision());
 		appInfo.apiVersion = VK_API_VERSION_1_3;
 
 		// Enumerate available layers and extensions:
 		uint32_t instanceLayerCount;
 		res = vkEnumerateInstanceLayerProperties(&instanceLayerCount, nullptr);
 		assert(res == VK_SUCCESS);
-		wi::vector<VkLayerProperties> availableInstanceLayers(instanceLayerCount);
+		lb::vector<VkLayerProperties> availableInstanceLayers(instanceLayerCount);
 		res = vkEnumerateInstanceLayerProperties(&instanceLayerCount, availableInstanceLayers.data());
 		assert(res == VK_SUCCESS);
 
 		uint32_t extensionCount = 0;
 		res = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 		assert(res == VK_SUCCESS);
-		wi::vector<VkExtensionProperties> availableInstanceExtensions(extensionCount);
+		lb::vector<VkExtensionProperties> availableInstanceExtensions(extensionCount);
 		res = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableInstanceExtensions.data());
 		assert(res == VK_SUCCESS);
 
-		wi::vector<const char*> instanceLayers;
-		wi::vector<const char*> instanceExtensions;
+		lb::vector<const char*> instanceLayers;
+		lb::vector<const char*> instanceExtensions;
 
 		for (auto& availableExtension : availableInstanceExtensions)
 		{
@@ -2444,7 +2444,7 @@ using namespace vulkan_internal;
 		{
 			uint32_t extensionCount;
 			SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, nullptr);
-			wi::vector<const char *> extensionNames_sdl(extensionCount);
+			lb::vector<const char *> extensionNames_sdl(extensionCount);
 			SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, extensionNames_sdl.data());
 			instanceExtensions.reserve(instanceExtensions.size() + extensionNames_sdl.size());
 			for (auto& x : extensionNames_sdl)
@@ -2457,7 +2457,7 @@ using namespace vulkan_internal;
 		if (validationMode != ValidationMode::Disabled)
 		{
 			// Determine the optimal validation layers to enable that are necessary for useful debugging
-			static const wi::vector<const char*> validationLayerPriorityList[] =
+			static const lb::vector<const char*> validationLayerPriorityList[] =
 			{
 				// The preferred validation layer is "VK_LAYER_KHRONOS_validation"
 				{"VK_LAYER_KHRONOS_validation"},
@@ -2522,8 +2522,8 @@ using namespace vulkan_internal;
 			assert(res == VK_SUCCESS);
 			if (res != VK_SUCCESS)
 			{
-				wi::helper::messageBox("vkCreateInstance failed! ERROR: " + std::to_string(res), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox("vkCreateInstance failed! ERROR: " + std::to_string(res), "Error!");
+				lb::platform::Exit();
 			}
 
 			volkLoadInstanceOnly(instance);
@@ -2543,18 +2543,18 @@ using namespace vulkan_internal;
 			if (deviceCount == 0)
 			{
 				assert(0);
-				wi::helper::messageBox("Failed to find GPU with Vulkan support!");
-				wi::platform::Exit();
+				lb::helper::messageBox("Failed to find GPU with Vulkan support!");
+				lb::platform::Exit();
 			}
 
-			wi::vector<VkPhysicalDevice> devices(deviceCount);
+			lb::vector<VkPhysicalDevice> devices(deviceCount);
 			res = vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 			assert(res == VK_SUCCESS);
 
-			const wi::vector<const char*> required_deviceExtensions = {
+			const lb::vector<const char*> required_deviceExtensions = {
 				VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 			};
-			wi::vector<const char*> enabled_deviceExtensions;
+			lb::vector<const char*> enabled_deviceExtensions;
 
 			bool h264_decode_extension = false;
 			bool suitable = false;
@@ -2566,7 +2566,7 @@ using namespace vulkan_internal;
 				uint32_t extensionCount;
 				VkResult res = vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionCount, nullptr);
 				assert(res == VK_SUCCESS);
-				wi::vector<VkExtensionProperties> available_deviceExtensions(extensionCount);
+				lb::vector<VkExtensionProperties> available_deviceExtensions(extensionCount);
 				res = vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionCount, available_deviceExtensions.data());
 				assert(res == VK_SUCCESS);
 
@@ -2770,8 +2770,8 @@ using namespace vulkan_internal;
 			if (physicalDevice == VK_NULL_HANDLE)
 			{
 				assert(0);
-				wi::helper::messageBox("Failed to find a suitable GPU!");
-				wi::platform::Exit();
+				lb::helper::messageBox("Failed to find a suitable GPU!");
+				lb::platform::Exit();
 			}
 
 			if (!properties2_matches_physical_device) {
@@ -3048,8 +3048,8 @@ using namespace vulkan_internal;
 				}
 			}
 
-			wi::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-			wi::unordered_set<uint32_t> uniqueQueueFamilies = { graphicsFamily,copyFamily,computeFamily };
+			lb::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+			lb::unordered_set<uint32_t> uniqueQueueFamilies = { graphicsFamily,copyFamily,computeFamily };
 			if (videoFamily != VK_QUEUE_FAMILY_IGNORED)
 			{
 				uniqueQueueFamilies.insert(videoFamily);
@@ -3081,8 +3081,8 @@ using namespace vulkan_internal;
 			assert(res == VK_SUCCESS);
 			if (res != VK_SUCCESS)
 			{
-				wi::helper::messageBox("vkCreateDevice failed! ERROR: " + std::to_string(res), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox("vkCreateDevice failed! ERROR: " + std::to_string(res), "Error!");
+				lb::platform::Exit();
 			}
 
 			volkLoadDevice(device);
@@ -3153,8 +3153,8 @@ using namespace vulkan_internal;
 		assert(res == VK_SUCCESS);
 		if (res != VK_SUCCESS)
 		{
-			wi::helper::messageBox("vmaCreateAllocator failed! ERROR: " + std::to_string(res), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox("vmaCreateAllocator failed! ERROR: " + std::to_string(res), "Error!");
+			lb::platform::Exit();
 		}
 
 		std::vector<VkExternalMemoryHandleTypeFlags> externalMemoryHandleTypes;
@@ -3170,8 +3170,8 @@ using namespace vulkan_internal;
 		assert(res == VK_SUCCESS);
 		if (res != VK_SUCCESS)
 		{
-			wi::helper::messageBox("Failed to create Vulkan external memory allocator, ERROR: " + std::to_string(res), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox("Failed to create Vulkan external memory allocator, ERROR: " + std::to_string(res), "Error!");
+			lb::platform::Exit();
 		}
 
 		copyAllocator.init(this);
@@ -3191,8 +3191,8 @@ using namespace vulkan_internal;
 				assert(res == VK_SUCCESS);
 				if (res != VK_SUCCESS)
 				{
-					wi::helper::messageBox("vkCreateFence[FRAME] failed! ERROR: " + std::to_string(res), "Error!");
-					wi::platform::Exit();
+					lb::helper::messageBox("vkCreateFence[FRAME] failed! ERROR: " + std::to_string(res), "Error!");
+					lb::platform::Exit();
 				}
 			}
 		}
@@ -3412,8 +3412,8 @@ using namespace vulkan_internal;
 		// Pipeline Cache
 		{
 			// Try to read pipeline cache file if exists.
-			wi::vector<uint8_t> pipelineData;
-			if (!wi::helper::FileRead(get_shader_cache_path(), pipelineData))
+			lb::vector<uint8_t> pipelineData;
+			if (!lb::helper::FileRead(get_shader_cache_path(), pipelineData))
 			{
 				pipelineData.clear();
 			}
@@ -3603,7 +3603,7 @@ using namespace vulkan_internal;
 			assert(res == VK_SUCCESS);
 		}
 
-		wi::backlog::post("Created GraphicsDevice_Vulkan (" + std::to_string((int)std::round(timer.elapsed())) + " ms)\nAdapter: " + adapterName);
+		lb::backlog::post("Created GraphicsDevice_Vulkan (" + std::to_string((int)std::round(timer.elapsed())) + " ms)\nAdapter: " + adapterName);
 	}
 	GraphicsDevice_Vulkan::~GraphicsDevice_Vulkan()
 	{
@@ -3681,12 +3681,12 @@ using namespace vulkan_internal;
 			assert(res == VK_SUCCESS);
 
 			// Get data of pipeline cache 
-			wi::vector<uint8_t> data(size);
+			lb::vector<uint8_t> data(size);
 			res = vkGetPipelineCacheData(device, pipelineCache, &size, data.data());
 			assert(res == VK_SUCCESS);
 
 			// Write pipeline cache data to a file in binary format
-			wi::helper::FileWrite(get_shader_cache_path(), data.data(), size);
+			lb::helper::FileWrite(get_shader_cache_path(), data.data(), size);
 
 			// Destroy Vulkan pipeline cache 
 			vkDestroyPipelineCache(device, pipelineCache, nullptr);
@@ -3699,7 +3699,7 @@ using namespace vulkan_internal;
 		}
 	}
 
-	bool GraphicsDevice_Vulkan::CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const
+	bool GraphicsDevice_Vulkan::CreateSwapChain(const SwapChainDesc* desc, lb::platform::window_type window, SwapChain* swapchain) const
 	{
 		auto internal_state = std::static_pointer_cast<SwapChain_Vulkan>(swapchain->internal_state);
 		if (swapchain->internal_state == nullptr)
@@ -4197,7 +4197,7 @@ using namespace vulkan_internal;
 			VkResult res = vkGetPhysicalDeviceVideoFormatPropertiesKHR(physicalDevice, &video_format_info, &format_property_count, nullptr);
 			assert(res == VK_SUCCESS);
 
-			wi::vector<VkVideoFormatPropertiesKHR> video_format_properties(format_property_count);
+			lb::vector<VkVideoFormatPropertiesKHR> video_format_properties(format_property_count);
 			for (auto& x : video_format_properties)
 			{
 				x.sType = VK_STRUCTURE_TYPE_VIDEO_FORMAT_PROPERTIES_KHR;
@@ -4266,7 +4266,7 @@ using namespace vulkan_internal;
 				nullptr
 			);
 
-			wi::vector<VkSparseImageMemoryRequirements> sparse_requirements(sparse_requirement_count);
+			lb::vector<VkSparseImageMemoryRequirements> sparse_requirements(sparse_requirement_count);
 			texture->sparse_properties = &internal_state->sparse_texture_properties;
 
 			vkGetImageSparseMemoryRequirements(
@@ -4471,7 +4471,7 @@ using namespace vulkan_internal;
 				mapped_data = cmd.uploadbuffer.mapped_data;
 			}
 
-			wi::vector<VkBufferImageCopy> copyRegions;
+			lb::vector<VkBufferImageCopy> copyRegions;
 
 			VkDeviceSize copyOffset = 0;
 			uint32_t initDataIdx = 0;
@@ -4728,7 +4728,7 @@ using namespace vulkan_internal;
 			);
 			assert(result == SPV_REFLECT_RESULT_SUCCESS);
 
-			wi::vector<SpvReflectDescriptorBinding*> bindings(binding_count);
+			lb::vector<SpvReflectDescriptorBinding*> bindings(binding_count);
 			result = spvReflectEnumerateDescriptorBindings(
 				&module, &binding_count, bindings.data()
 			);
@@ -4738,7 +4738,7 @@ using namespace vulkan_internal;
 			result = spvReflectEnumeratePushConstantBlocks(&module, &push_count, nullptr);
 			assert(result == SPV_REFLECT_RESULT_SUCCESS);
 
-			wi::vector<SpvReflectBlockVariable*> pushconstants(push_count);
+			lb::vector<SpvReflectBlockVariable*> pushconstants(push_count);
 			result = spvReflectEnumeratePushConstantBlocks(&module, &push_count, pushconstants.data());
 			assert(result == SPV_REFLECT_RESULT_SUCCESS);
 
@@ -4850,28 +4850,28 @@ using namespace vulkan_internal;
 				size_t i = 0;
 				for (auto& x : internal_state->layoutBindings)
 				{
-					wi::helper::hash_combine(internal_state->binding_hash, x.binding);
-					wi::helper::hash_combine(internal_state->binding_hash, x.descriptorCount);
-					wi::helper::hash_combine(internal_state->binding_hash, x.descriptorType);
-					wi::helper::hash_combine(internal_state->binding_hash, x.stageFlags);
-					wi::helper::hash_combine(internal_state->binding_hash, internal_state->imageViewTypes[i++]);
+					lb::helper::hash_combine(internal_state->binding_hash, x.binding);
+					lb::helper::hash_combine(internal_state->binding_hash, x.descriptorCount);
+					lb::helper::hash_combine(internal_state->binding_hash, x.descriptorType);
+					lb::helper::hash_combine(internal_state->binding_hash, x.stageFlags);
+					lb::helper::hash_combine(internal_state->binding_hash, internal_state->imageViewTypes[i++]);
 				}
 				for (auto& x : internal_state->bindlessBindings)
 				{
-					wi::helper::hash_combine(internal_state->binding_hash, x.used);
-					wi::helper::hash_combine(internal_state->binding_hash, x.binding.binding);
-					wi::helper::hash_combine(internal_state->binding_hash, x.binding.descriptorCount);
-					wi::helper::hash_combine(internal_state->binding_hash, x.binding.descriptorType);
-					wi::helper::hash_combine(internal_state->binding_hash, x.binding.stageFlags);
+					lb::helper::hash_combine(internal_state->binding_hash, x.used);
+					lb::helper::hash_combine(internal_state->binding_hash, x.binding.binding);
+					lb::helper::hash_combine(internal_state->binding_hash, x.binding.descriptorCount);
+					lb::helper::hash_combine(internal_state->binding_hash, x.binding.descriptorType);
+					lb::helper::hash_combine(internal_state->binding_hash, x.binding.stageFlags);
 				}
-				wi::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.offset);
-				wi::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.size);
-				wi::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.stageFlags);
+				lb::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.offset);
+				lb::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.size);
+				lb::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.stageFlags);
 
 				pso_layout_cache_mutex.lock();
 				if (pso_layout_cache[internal_state->binding_hash].pipelineLayout == VK_NULL_HANDLE)
 				{
-					wi::vector<VkDescriptorSetLayout> layouts;
+					lb::vector<VkDescriptorSetLayout> layouts;
 
 					{
 						VkDescriptorSetLayoutCreateInfo descriptorSetlayoutInfo = {};
@@ -5253,19 +5253,19 @@ using namespace vulkan_internal;
 		pso->desc = *desc;
 
 		internal_state->hash = 0;
-		wi::helper::hash_combine(internal_state->hash, desc->ms);
-		wi::helper::hash_combine(internal_state->hash, desc->as);
-		wi::helper::hash_combine(internal_state->hash, desc->vs);
-		wi::helper::hash_combine(internal_state->hash, desc->ps);
-		wi::helper::hash_combine(internal_state->hash, desc->hs);
-		wi::helper::hash_combine(internal_state->hash, desc->ds);
-		wi::helper::hash_combine(internal_state->hash, desc->gs);
-		wi::helper::hash_combine(internal_state->hash, desc->il);
-		wi::helper::hash_combine(internal_state->hash, desc->rs);
-		wi::helper::hash_combine(internal_state->hash, desc->bs);
-		wi::helper::hash_combine(internal_state->hash, desc->dss);
-		wi::helper::hash_combine(internal_state->hash, desc->pt);
-		wi::helper::hash_combine(internal_state->hash, desc->sample_mask);
+		lb::helper::hash_combine(internal_state->hash, desc->ms);
+		lb::helper::hash_combine(internal_state->hash, desc->as);
+		lb::helper::hash_combine(internal_state->hash, desc->vs);
+		lb::helper::hash_combine(internal_state->hash, desc->ps);
+		lb::helper::hash_combine(internal_state->hash, desc->hs);
+		lb::helper::hash_combine(internal_state->hash, desc->ds);
+		lb::helper::hash_combine(internal_state->hash, desc->gs);
+		lb::helper::hash_combine(internal_state->hash, desc->il);
+		lb::helper::hash_combine(internal_state->hash, desc->rs);
+		lb::helper::hash_combine(internal_state->hash, desc->bs);
+		lb::helper::hash_combine(internal_state->hash, desc->dss);
+		lb::helper::hash_combine(internal_state->hash, desc->pt);
+		lb::helper::hash_combine(internal_state->hash, desc->sample_mask);
 
 		VkResult res = VK_SUCCESS;
 
@@ -5373,29 +5373,29 @@ using namespace vulkan_internal;
 			size_t i = 0;
 			for (auto& x : internal_state->layoutBindings)
 			{
-				wi::helper::hash_combine(internal_state->binding_hash, x.binding);
-				wi::helper::hash_combine(internal_state->binding_hash, x.descriptorCount);
-				wi::helper::hash_combine(internal_state->binding_hash, x.descriptorType);
-				wi::helper::hash_combine(internal_state->binding_hash, x.stageFlags);
-				wi::helper::hash_combine(internal_state->binding_hash, internal_state->imageViewTypes[i++]);
+				lb::helper::hash_combine(internal_state->binding_hash, x.binding);
+				lb::helper::hash_combine(internal_state->binding_hash, x.descriptorCount);
+				lb::helper::hash_combine(internal_state->binding_hash, x.descriptorType);
+				lb::helper::hash_combine(internal_state->binding_hash, x.stageFlags);
+				lb::helper::hash_combine(internal_state->binding_hash, internal_state->imageViewTypes[i++]);
 			}
 			for (auto& x : internal_state->bindlessBindings)
 			{
-				wi::helper::hash_combine(internal_state->binding_hash, x.used);
-				wi::helper::hash_combine(internal_state->binding_hash, x.binding.binding);
-				wi::helper::hash_combine(internal_state->binding_hash, x.binding.descriptorCount);
-				wi::helper::hash_combine(internal_state->binding_hash, x.binding.descriptorType);
-				wi::helper::hash_combine(internal_state->binding_hash, x.binding.stageFlags);
+				lb::helper::hash_combine(internal_state->binding_hash, x.used);
+				lb::helper::hash_combine(internal_state->binding_hash, x.binding.binding);
+				lb::helper::hash_combine(internal_state->binding_hash, x.binding.descriptorCount);
+				lb::helper::hash_combine(internal_state->binding_hash, x.binding.descriptorType);
+				lb::helper::hash_combine(internal_state->binding_hash, x.binding.stageFlags);
 			}
-			wi::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.offset);
-			wi::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.size);
-			wi::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.stageFlags);
+			lb::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.offset);
+			lb::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.size);
+			lb::helper::hash_combine(internal_state->binding_hash, internal_state->pushconstants.stageFlags);
 
 
 			pso_layout_cache_mutex.lock();
 			if (pso_layout_cache[internal_state->binding_hash].pipelineLayout == VK_NULL_HANDLE)
 			{
-				wi::vector<VkDescriptorSetLayout> layouts;
+				lb::vector<VkDescriptorSetLayout> layouts;
 				{
 					VkDescriptorSetLayoutCreateInfo descriptorSetlayoutInfo = {};
 					descriptorSetlayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -5814,8 +5814,8 @@ using namespace vulkan_internal;
 			// Input layout:
 			VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 			vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-			wi::vector<VkVertexInputBindingDescription> bindings;
-			wi::vector<VkVertexInputAttributeDescription> attributes;
+			lb::vector<VkVertexInputBindingDescription> bindings;
+			lb::vector<VkVertexInputAttributeDescription> attributes;
 			if (pso->desc.il != nullptr)
 			{
 				uint32_t lastBinding = 0xFFFFFFFF;
@@ -6093,7 +6093,7 @@ using namespace vulkan_internal;
 		info.sType = VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_KHR;
 		info.flags = 0;
 
-		wi::vector<VkPipelineShaderStageCreateInfo> stages;
+		lb::vector<VkPipelineShaderStageCreateInfo> stages;
 		for (auto& x : desc->shader_libraries)
 		{
 			stages.emplace_back();
@@ -6125,7 +6125,7 @@ using namespace vulkan_internal;
 		info.stageCount = (uint32_t)stages.size();
 		info.pStages = stages.data();
 
-		wi::vector<VkRayTracingShaderGroupCreateInfoKHR> groups;
+		lb::vector<VkRayTracingShaderGroupCreateInfoKHR> groups;
 		groups.reserve(desc->hit_groups.size());
 		for (auto& x : desc->hit_groups)
 		{
@@ -6189,8 +6189,8 @@ using namespace vulkan_internal;
 		video_decoder->internal_state = internal_state;
 		video_decoder->desc = *desc;
 
-		wi::vector<StdVideoH264PictureParameterSet> pps_array_h264(desc->pps_count);
-		wi::vector<StdVideoH264ScalingLists> scalinglist_array_h264(desc->pps_count);
+		lb::vector<StdVideoH264PictureParameterSet> pps_array_h264(desc->pps_count);
+		lb::vector<StdVideoH264ScalingLists> scalinglist_array_h264(desc->pps_count);
 		for (uint32_t i = 0; i < desc->pps_count; ++i)
 		{
 			const h264::PPS* pps = (const h264::PPS*)desc->pps_datas + i;
@@ -6242,9 +6242,9 @@ using namespace vulkan_internal;
 		}
 
 		uint32_t num_reference_frames = 0;
-		wi::vector<StdVideoH264SequenceParameterSet> sps_array_h264(desc->sps_count);
-		wi::vector<StdVideoH264SequenceParameterSetVui> vui_array_h264(desc->sps_count);
-		wi::vector<StdVideoH264HrdParameters> hrd_array_h264(desc->sps_count);
+		lb::vector<StdVideoH264SequenceParameterSet> sps_array_h264(desc->sps_count);
+		lb::vector<StdVideoH264SequenceParameterSetVui> vui_array_h264(desc->sps_count);
+		lb::vector<StdVideoH264HrdParameters> hrd_array_h264(desc->sps_count);
 		for (uint32_t i = 0; i < desc->sps_count; ++i)
 		{
 			const h264::SPS* sps = (const h264::SPS*)desc->sps_datas + i;
@@ -6431,7 +6431,7 @@ using namespace vulkan_internal;
 		res = vkGetVideoSessionMemoryRequirementsKHR(device, internal_state->video_session, &requirement_count, nullptr);
 		assert(res == VK_SUCCESS);
 
-		wi::vector<VkVideoSessionMemoryRequirementsKHR> requirements(requirement_count);
+		lb::vector<VkVideoSessionMemoryRequirementsKHR> requirements(requirement_count);
 		for (auto& x : requirements)
 		{
 			x.sType = VK_STRUCTURE_TYPE_VIDEO_SESSION_MEMORY_REQUIREMENTS_KHR;
@@ -6440,7 +6440,7 @@ using namespace vulkan_internal;
 		assert(res == VK_SUCCESS);
 
 		internal_state->allocations.resize(requirement_count);
-		wi::vector<VkBindVideoSessionMemoryInfoKHR> bind_session_memory_infos(requirement_count);
+		lb::vector<VkBindVideoSessionMemoryInfoKHR> bind_session_memory_infos(requirement_count);
 		for (uint32_t i = 0; i < requirement_count; ++i)
 		{
 			const VkVideoSessionMemoryRequirementsKHR& video_req = requirements[i];
@@ -7106,16 +7106,16 @@ using namespace vulkan_internal;
 				poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 				switch (queue)
 				{
-				case wi::graphics::QUEUE_GRAPHICS:
+				case lb::graphics::QUEUE_GRAPHICS:
 					poolInfo.queueFamilyIndex = graphicsFamily;
 					break;
-				case wi::graphics::QUEUE_COMPUTE:
+				case lb::graphics::QUEUE_COMPUTE:
 					poolInfo.queueFamilyIndex = computeFamily;
 					break;
-				case wi::graphics::QUEUE_COPY:
+				case lb::graphics::QUEUE_COPY:
 					poolInfo.queueFamilyIndex = copyFamily;
 					break;
-				case wi::graphics::QUEUE_VIDEO_DECODE:
+				case lb::graphics::QUEUE_VIDEO_DECODE:
 					poolInfo.queueFamilyIndex = videoFamily;
 					break;
 				default:
@@ -7416,7 +7416,7 @@ using namespace vulkan_internal;
 		VkResult res = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, internal_state->surface, &formatCount, nullptr);
 		if (res == VK_SUCCESS)
 		{
-			wi::vector<VkSurfaceFormatKHR> swapchain_formats(formatCount);
+			lb::vector<VkSurfaceFormatKHR> swapchain_formats(formatCount);
 			res = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, internal_state->surface, &formatCount, swapchain_formats.data());
 			if (res == VK_SUCCESS)
 			{
@@ -7434,16 +7434,16 @@ using namespace vulkan_internal;
 
 	void GraphicsDevice_Vulkan::SparseUpdate(QUEUE_TYPE queue, const SparseUpdateCommand* commands, uint32_t command_count)
 	{
-		thread_local wi::vector<VkBindSparseInfo> sparse_infos;
+		thread_local lb::vector<VkBindSparseInfo> sparse_infos;
 		struct DataPerBind
 		{
 			VkSparseBufferMemoryBindInfo buffer_bind_info;
 			VkSparseImageOpaqueMemoryBindInfo image_opaque_bind_info;
 			VkSparseImageMemoryBindInfo image_bind_info;
-			wi::vector<VkSparseMemoryBind> memory_binds;
-			wi::vector<VkSparseImageMemoryBind> image_memory_binds;
+			lb::vector<VkSparseMemoryBind> memory_binds;
+			lb::vector<VkSparseImageMemoryBind> image_memory_binds;
 		};
-		thread_local wi::vector<DataPerBind> sparse_binds;
+		thread_local lb::vector<DataPerBind> sparse_binds;
 
 		sparse_infos.resize(command_count);
 		sparse_binds.resize(command_count);
@@ -8152,7 +8152,7 @@ using namespace vulkan_internal;
 		assert(count <= 8);
 		for (uint32_t i = 0; i < count; ++i)
 		{
-			wi::helper::hash_combine(hash, strides[i]);
+			lb::helper::hash_combine(hash, strides[i]);
 
 			if (vertexBuffers[i] == nullptr || !vertexBuffers[i]->IsValid())
 			{
@@ -8293,8 +8293,8 @@ using namespace vulkan_internal;
 		else
 		{
 			size_t pipeline_hash = 0;
-			wi::helper::hash_combine(pipeline_hash, internal_state->hash);
-			wi::helper::hash_combine(pipeline_hash, commandlist.renderpass_info.get_hash());
+			lb::helper::hash_combine(pipeline_hash, internal_state->hash);
+			lb::helper::hash_combine(pipeline_hash, commandlist.renderpass_info.get_hash());
 			if (commandlist.prev_pipeline_hash == pipeline_hash)
 			{
 				commandlist.active_pso = pso;

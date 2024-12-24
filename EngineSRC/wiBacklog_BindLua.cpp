@@ -5,35 +5,35 @@
 
 #include <string>
 
-namespace wi::lua::backlog
+namespace lb::lua::backlog
 {
 	int backlog_clear(lua_State* L)
 	{
-		wi::backlog::clear();
+		lb::backlog::clear();
 		return 0;
 	}
 	int backlog_post(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 
 		std::string ss;
 
 		for (int i = 1; i <= argc; i++)
 		{
-			if (wi::lua::SIsString(L, i))
+			if (lb::lua::SIsString(L, i))
 			{
-				ss += wi::lua::SGetString(L, i);
+				ss += lb::lua::SGetString(L, i);
 			}
-			else if (wi::lua::SIsNumber(L, i))
+			else if (lb::lua::SIsNumber(L, i))
 			{
-				double arg = wi::lua::SGetDouble(L, i);
+				double arg = lb::lua::SGetDouble(L, i);
 				ss += std::to_string(arg);
 			}
-			else if (wi::lua::SIsBool(L, i)) {
-				bool arg = wi::lua::SGetBool(L, i);
+			else if (lb::lua::SIsBool(L, i)) {
+				bool arg = lb::lua::SGetBool(L, i);
 				ss += arg ? "true" : "false";
 			}
-			else if (wi::lua::SIsNil(L, i)) {
+			else if (lb::lua::SIsNil(L, i)) {
 				ss += "nil";
 			}
 			else
@@ -61,69 +61,69 @@ namespace wi::lua::backlog
 
 		if (!ss.empty())
 		{
-			wi::backlog::post(ss);
+			lb::backlog::post(ss);
 		}
 
 		return 0;
 	}
 	int backlog_fontsize(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 
 		if (argc > 0)
 		{
-			wi::backlog::setFontSize(wi::lua::SGetInt(L, 1));
+			lb::backlog::setFontSize(lb::lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "backlog_fontsize(int val) not enough arguments!");
+			lb::lua::SError(L, "backlog_fontsize(int val) not enough arguments!");
 
 		return 0;
 	}
 	int backlog_isactive(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::backlog::isActive());
+		lb::lua::SSetBool(L, lb::backlog::isActive());
 		return 1;
 	}
 	int backlog_fontrowspacing(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::backlog::setFontRowspacing(wi::lua::SGetFloat(L, 1));
+			lb::backlog::setFontRowspacing(lb::lua::SGetFloat(L, 1));
 		}
 		else
-			wi::lua::SError(L, "backlog_fontrowspacing(int val) not enough arguments!");
+			lb::lua::SError(L, "backlog_fontrowspacing(int val) not enough arguments!");
 		return 0;
 	}
 	int backlog_setlevel(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::backlog::SetLogLevel((wi::backlog::LogLevel)wi::lua::SGetInt(L, 1));
+			lb::backlog::SetLogLevel((lb::backlog::LogLevel)lb::lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "backlog_setlevel(int val) not enough arguments!");
+			lb::lua::SError(L, "backlog_setlevel(int val) not enough arguments!");
 		return 0;
 	}
 	int backlog_lock(lua_State* L)
 	{
-		wi::backlog::Lock();
+		lb::backlog::Lock();
 		return 0;
 	}
 	int backlog_unlock(lua_State* L)
 	{
-		wi::backlog::Unlock();
+		lb::backlog::Unlock();
 		return 0;
 	}
 	int backlog_blocklua(lua_State* L)
 	{
-		wi::backlog::BlockLuaExecution();
+		lb::backlog::BlockLuaExecution();
 		return 0;
 	}
 	int backlog_unblocklua(lua_State* L)
 	{
-		wi::backlog::UnblockLuaExecution();
+		lb::backlog::UnblockLuaExecution();
 		return 0;
 	}
 
@@ -133,16 +133,16 @@ namespace wi::lua::backlog
 		if (!initialized)
 		{
 			initialized = true;
-			wi::lua::RegisterFunc("backlog_clear", backlog_clear);
-			wi::lua::RegisterFunc("backlog_post", backlog_post);
-			wi::lua::RegisterFunc("backlog_fontsize", backlog_fontsize);
-			wi::lua::RegisterFunc("backlog_isactive", backlog_isactive);
-			wi::lua::RegisterFunc("backlog_fontrowspacing", backlog_fontrowspacing);
-			wi::lua::RegisterFunc("backlog_setlevel", backlog_setlevel);
-			wi::lua::RegisterFunc("backlog_lock", backlog_lock);
-			wi::lua::RegisterFunc("backlog_unlock", backlog_unlock);
-			wi::lua::RegisterFunc("backlog_blocklua", backlog_blocklua);
-			wi::lua::RegisterFunc("backlog_unblocklua", backlog_unblocklua);
+			lb::lua::RegisterFunc("backlog_clear", backlog_clear);
+			lb::lua::RegisterFunc("backlog_post", backlog_post);
+			lb::lua::RegisterFunc("backlog_fontsize", backlog_fontsize);
+			lb::lua::RegisterFunc("backlog_isactive", backlog_isactive);
+			lb::lua::RegisterFunc("backlog_fontrowspacing", backlog_fontrowspacing);
+			lb::lua::RegisterFunc("backlog_setlevel", backlog_setlevel);
+			lb::lua::RegisterFunc("backlog_lock", backlog_lock);
+			lb::lua::RegisterFunc("backlog_unlock", backlog_unlock);
+			lb::lua::RegisterFunc("backlog_blocklua", backlog_blocklua);
+			lb::lua::RegisterFunc("backlog_unblocklua", backlog_unblocklua);
 		}
 	}
 }

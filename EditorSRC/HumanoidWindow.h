@@ -1,30 +1,30 @@
 #pragma once
 class EditorComponent;
 
-class HumanoidWindow : public wi::gui::Window
+class HumanoidWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
 	void RefreshBoneList();
 
-	wi::gui::Label infoLabel;
-	wi::gui::CheckBox lookatMouseCheckBox;
-	wi::gui::CheckBox lookatCheckBox;
-	wi::gui::CheckBox ragdollCheckBox;
-	wi::gui::Slider headRotMaxXSlider;
-	wi::gui::Slider headRotMaxYSlider;
-	wi::gui::Slider headRotSpeedSlider;
-	wi::gui::Slider eyeRotMaxXSlider;
-	wi::gui::Slider eyeRotMaxYSlider;
-	wi::gui::Slider eyeRotSpeedSlider;
-	wi::gui::Slider headSizeSlider;
-	wi::gui::Slider ragdollFatnessSlider;
-	wi::gui::Slider ragdollHeadSizeSlider;
-	wi::gui::TreeList boneList;
+	lb::gui::Label infoLabel;
+	lb::gui::CheckBox lookatMouseCheckBox;
+	lb::gui::CheckBox lookatCheckBox;
+	lb::gui::CheckBox ragdollCheckBox;
+	lb::gui::Slider headRotMaxXSlider;
+	lb::gui::Slider headRotMaxYSlider;
+	lb::gui::Slider headRotSpeedSlider;
+	lb::gui::Slider eyeRotMaxXSlider;
+	lb::gui::Slider eyeRotMaxYSlider;
+	lb::gui::Slider eyeRotSpeedSlider;
+	lb::gui::Slider headSizeSlider;
+	lb::gui::Slider ragdollFatnessSlider;
+	lb::gui::Slider ragdollHeadSizeSlider;
+	lb::gui::TreeList boneList;
 
 	void ResizeLayout() override;
 

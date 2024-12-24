@@ -3,7 +3,7 @@
 #include "wiLuna.h"
 #include "wiRenderPath.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 	class RenderPath_BindLua
 	{

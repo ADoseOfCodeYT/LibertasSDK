@@ -3,7 +3,7 @@
 #include "wiPlatform.h"
 #include "wiMath.h"
 
-namespace wi
+namespace lb
 {
 	// The canvas specifies a DPI-aware drawing area
 	struct Canvas

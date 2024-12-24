@@ -14,7 +14,7 @@
 #include <string>
 
 // Entity-Component System
-namespace wi::ecs
+namespace lb::ecs
 {
 	// The Entity is a global unique persistent identifier within the entity-component system
 	//	It can be stored and used for the duration of the application
@@ -32,17 +32,17 @@ namespace wi::ecs
 	class ComponentLibrary;
 	struct EntitySerializer
 	{
-		wi::jobsystem::context ctx; // allow components to spawn serialization subtasks
-		wi::unordered_map<uint64_t, Entity> remap;
+		lb::jobsystem::context ctx; // allow components to spawn serialization subtasks
+		lb::unordered_map<uint64_t, Entity> remap;
 		bool allow_remap = true;
 		uint64_t version = 0; // The ComponentLibrary serialization will modify this by the registered component's version number
-		wi::unordered_set<std::string> resource_registration; // register for resource manager serialization
+		lb::unordered_set<std::string> resource_registration; // register for resource manager serialization
 		ComponentLibrary* componentlibrary = nullptr;
-		wi::unordered_map<std::string, uint64_t> library_versions;
+		lb::unordered_map<std::string, uint64_t> library_versions;
 
 		~EntitySerializer()
 		{
-			wi::jobsystem::Wait(ctx); // automatically wait for all subtasks after serialization
+			lb::jobsystem::Wait(ctx); // automatically wait for all subtasks after serialization
 		}
 
 		// Returns the library version of the currently serializing Component
@@ -69,7 +69,7 @@ namespace wi::ecs
 		}
 	};
 	// This is the safe way to serialize an entity
-	inline void SerializeEntity(wi::Archive& archive, Entity& entity, EntitySerializer& seri)
+	inline void SerializeEntity(lb::Archive& archive, Entity& entity, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -119,8 +119,8 @@ namespace wi::ecs
 		virtual void Copy(const ComponentManager_Interface& other) = 0;
 		virtual void Merge(ComponentManager_Interface& other) = 0;
 		virtual void Clear() = 0;
-		virtual void Serialize(wi::Archive& archive, EntitySerializer& seri) = 0;
-		virtual void Component_Serialize(Entity entity, wi::Archive& archive, EntitySerializer& seri) = 0;
+		virtual void Serialize(lb::Archive& archive, EntitySerializer& seri) = 0;
+		virtual void Component_Serialize(Entity entity, lb::Archive& archive, EntitySerializer& seri) = 0;
 		virtual void Remove(Entity entity) = 0;
 		virtual void Remove_KeepSorted(Entity entity) = 0;
 		virtual void MoveItem(size_t index_from, size_t index_to) = 0;
@@ -128,7 +128,7 @@ namespace wi::ecs
 		virtual size_t GetIndex(Entity entity) const = 0;
 		virtual size_t GetCount() const = 0;
 		virtual Entity GetEntity(size_t index) const = 0;
-		virtual const wi::vector<Entity>& GetEntityArray() const = 0;
+		virtual const lb::vector<Entity>& GetEntityArray() const = 0;
 	};
 
 	// The ComponentManager is a container that stores components and matches them with entities
@@ -203,7 +203,7 @@ namespace wi::ecs
 		}
 
 		// Read/Write everything to an archive depending on the archive state
-		inline void Serialize(wi::Archive& archive, EntitySerializer& seri)
+		inline void Serialize(lb::Archive& archive, EntitySerializer& seri)
 		{
 			if (archive.IsReadMode())
 			{
@@ -242,7 +242,7 @@ namespace wi::ecs
 		}
 
 		//Read one single component onto an archive, make sure entity are serialized first
-		inline void Component_Serialize(Entity entity, wi::Archive& archive, EntitySerializer& seri)
+		inline void Component_Serialize(Entity entity, lb::Archive& archive, EntitySerializer& seri)
 		{
 			if(archive.IsReadMode())
 			{
@@ -446,18 +446,18 @@ namespace wi::ecs
 		inline const Component& operator[](size_t index) const { return components[index]; }
 
 		// Returns the tightly packed [read only] entity array
-		inline const wi::vector<Entity>& GetEntityArray() const { return entities; }
+		inline const lb::vector<Entity>& GetEntityArray() const { return entities; }
 
 		// Returns the tightly packed [read only] component array
-		inline const wi::vector<Component>& GetComponentArray() const { return components; }
+		inline const lb::vector<Component>& GetComponentArray() const { return components; }
 
 	private:
 		// This is a linear array of alive components
-		wi::vector<Component> components;
+		lb::vector<Component> components;
 		// This is a linear array of entities corresponding to each alive component
-		wi::vector<Entity> entities;
+		lb::vector<Entity> entities;
 		// This is a lookup table for entities
-		wi::unordered_map<Entity, size_t> lookup;
+		lb::unordered_map<Entity, size_t> lookup;
 
 		// Disallow this to be copied by mistake
 		ComponentManager(const ComponentManager&) = delete;
@@ -473,7 +473,7 @@ namespace wi::ecs
 			std::unique_ptr<ComponentManager_Interface> component_manager;
 			uint64_t version = 0;
 		};
-		wi::unordered_map<std::string, LibraryEntry> entries;
+		lb::unordered_map<std::string, LibraryEntry> entries;
 
 		// Create an instance of ComponentManager of a certain data type
 		//	The name must be unique, it will be used in serialization
@@ -513,7 +513,7 @@ namespace wi::ecs
 		}
 
 		// Serialize all registered component managers
-		inline void Serialize(wi::Archive& archive, EntitySerializer& seri)
+		inline void Serialize(lb::Archive& archive, EntitySerializer& seri)
 		{
 			seri.componentlibrary = this;
 			if(archive.IsReadMode())
@@ -594,7 +594,7 @@ namespace wi::ecs
 		}
 
 		// Serialize all components for one entity
-		inline void Entity_Serialize(Entity entity, wi::Archive& archive, EntitySerializer& seri)
+		inline void Entity_Serialize(Entity entity, lb::Archive& archive, EntitySerializer& seri)
 		{
 			seri.componentlibrary = this;
 			if(archive.IsReadMode())

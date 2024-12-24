@@ -1,25 +1,25 @@
 #pragma once
 class EditorComponent;
 
-class SpriteRectWindow : public wi::gui::Window
+class SpriteRectWindow : public lb::gui::Window
 {
 	std::function<void()> onAccepted;
 public:
 	void Create(EditorComponent* editor);
 
-	wi::gui::Button spriteButton;
-	wi::gui::Button okButton;
+	lb::gui::Button spriteButton;
+	lb::gui::Button okButton;
 
-	wi::Sprite sprite;
+	lb::Sprite sprite;
 	XMFLOAT2 dragStartUV = XMFLOAT2(0, 0);
 	XMFLOAT2 dragEndUV = XMFLOAT2(0, 0);
 	XMFLOAT4 muladd = XMFLOAT4(1, 1, 0, 0);
 
-	void SetSprite(const wi::Sprite& sprite);
+	void SetSprite(const lb::Sprite& sprite);
 	void ResetSelection();
 	void OnAccepted(std::function<void()> cb);
 
 	void ResizeLayout() override;
-	void Update(const wi::Canvas& canvas, float dt) override;
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Update(const lb::Canvas& canvas, float dt) override;
+	void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 };

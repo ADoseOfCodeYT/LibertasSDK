@@ -6,11 +6,11 @@
 #include "wiTextureHelper.h"
 #include "wiScene.h"
 
-using namespace wi::graphics;
-using namespace wi::enums;
-using namespace wi::scene;
+using namespace lb::graphics;
+using namespace lb::enums;
+using namespace lb::scene;
 
-namespace wi
+namespace lb
 {
 	static Shader vertexShader;
 	static Shader pixelShader;
@@ -41,7 +41,7 @@ namespace wi
 
 		device->EventBegin("TrailRenderer", cmd);
 
-		if (wi::renderer::IsWireRender())
+		if (lb::renderer::IsWireRender())
 		{
 			device->BindPipelineState(&PSO_wire, cmd);
 		}
@@ -56,8 +56,8 @@ namespace wi
 		sb.g_xTrailTexMulAdd = texMulAdd;
 		sb.g_xTrailTexMulAdd2 = texMulAdd2;
 		sb.g_xTrailDepthSoften = 1.0f / (width * 10);
-		sb.g_xTrailTextureIndex1 = device->GetDescriptorIndex(texture.IsValid() ? &texture : wi::texturehelper::getWhite(), SubresourceType::SRV);
-		sb.g_xTrailTextureIndex2 = device->GetDescriptorIndex(texture2.IsValid() ? &texture : wi::texturehelper::getWhite(), SubresourceType::SRV);
+		sb.g_xTrailTextureIndex1 = device->GetDescriptorIndex(texture.IsValid() ? &texture : lb::texturehelper::getWhite(), SubresourceType::SRV);
+		sb.g_xTrailTextureIndex2 = device->GetDescriptorIndex(texture2.IsValid() ? &texture : lb::texturehelper::getWhite(), SubresourceType::SRV);
 		sb.g_xTrailLinearDepthTextureIndex = camera.texture_lineardepth_index;
 		sb.g_xTrailCameraFar = camera.zFarP;
 		device->BindDynamicConstantBuffer(sb, CBSLOT_TRAILRENDERER, cmd);
@@ -137,11 +137,11 @@ namespace wi
 				{
 					float t = float(j) / float(segment_resolution);
 
-					XMVECTOR P = cap ? XMVectorLerp(P1, P2, t) : wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t);
-					XMVECTOR P_prev = cap ? XMVectorLerp(P0, P1, t - resolution_rcp) : wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t - resolution_rcp);
-					XMVECTOR P_next = cap ? XMVectorLerp(P1, P2, t + resolution_rcp) : wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t + resolution_rcp);
-					float width_interpolated = wi::math::Lerp(width_current, width_next, t);
-					XMFLOAT4 color_interpolated = wi::math::Lerp(color_current, color_next, t);
+					XMVECTOR P = cap ? XMVectorLerp(P1, P2, t) : lb::math::CatmullRomCentripetal(P0, P1, P2, P3, t);
+					XMVECTOR P_prev = cap ? XMVectorLerp(P0, P1, t - resolution_rcp) : lb::math::CatmullRomCentripetal(P0, P1, P2, P3, t - resolution_rcp);
+					XMVECTOR P_next = cap ? XMVectorLerp(P1, P2, t + resolution_rcp) : lb::math::CatmullRomCentripetal(P0, P1, P2, P3, t + resolution_rcp);
+					float width_interpolated = lb::math::Lerp(width_current, width_next, t);
+					XMFLOAT4 color_interpolated = lb::math::Lerp(color_current, color_next, t);
 
 					XMVECTOR T = XMVector3Normalize(P_next - P_prev);
 					XMVECTOR B = XMVector3Normalize(XMVector3Cross(T, P - CAM));
@@ -205,8 +205,8 @@ namespace wi
 	{
 		void LoadShaders()
 		{
-			wi::renderer::LoadShader(ShaderStage::VS, vertexShader, "trailVS.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, pixelShader, "trailPS.cso");
+			lb::renderer::LoadShader(ShaderStage::VS, vertexShader, "trailVS.cso");
+			lb::renderer::LoadShader(ShaderStage::PS, pixelShader, "trailPS.cso");
 
 			inputLayout.elements = {
 				{ "POSITION", 0, Format::R32G32B32_FLOAT, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification::PER_VERTEX_DATA },
@@ -214,7 +214,7 @@ namespace wi
 				{ "COLOR", 0, Format::R16G16B16A16_FLOAT, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification::PER_VERTEX_DATA },
 			};
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = lb::graphics::GetDevice();
 
 			for (int i = 0; i < BLENDMODE_COUNT; ++i)
 			{
@@ -245,7 +245,7 @@ namespace wi
 	}
 	void TrailRenderer::Initialize()
 	{
-		wi::Timer timer;
+		lb::Timer timer;
 
 		RasterizerState rs;
 		rs.fill_mode = FillMode::SOLID;
@@ -330,9 +330,9 @@ namespace wi
 		blendStates[BLENDMODE_OPAQUE] = bd;
 
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { TrailRenderer_Internal::LoadShaders(); });
+		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { TrailRenderer_Internal::LoadShaders(); });
 		TrailRenderer_Internal::LoadShaders();
 
-		wi::backlog::post("wi::TrailRenderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("lb::TrailRenderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 }

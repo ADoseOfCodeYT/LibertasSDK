@@ -1,4 +1,4 @@
-This file contains changelog of wi::Archive versions
+This file contains changelog of lb::Archive versions
 
 91: thumbnail image support for Archive
 90: resource serialization resource name list and improvements
@@ -18,7 +18,7 @@ This file contains changelog of wi::Archive versions
 76: serialized LOD parameters
 75: PreviousFrameTransformComponent is no longer serialized
 74: serialized emitter restitution
-73: wi::Archive no longer saves null terminator for strings
+73: lb::Archive no longer saves null terminator for strings
 72: Scene::Entity_Serialize() recursive serialization
 71: serialized WeatherComponent::fogHeightStart and fogHeightEnd
 70: serialized VolumetricCloudParameters
@@ -28,7 +28,7 @@ This file contains changelog of wi::Archive versions
 66: serialized WeatherComponent::atmosphereParameters and skyExposure
 65: serialized CameraComponent focal_length, aperture_size and aperture_shape
 64: serialized per-emitter gravity, velocity, drag and random_color
-63: serialized wi::resource_manager embedded resources
+63: serialized lb::resource_manager embedded resources
 62: serialized WeatherComponent::colorGradingMapName property
 61: serialized sheen and clearcoat material properties
 60: serializer ObjectComponent::emissiveColor

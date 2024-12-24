@@ -4,13 +4,13 @@
 #include <list>
 #include <mutex>
 
-namespace wi::eventhandler
+namespace lb::eventhandler
 {
 	struct EventManager
 	{
 		// Note: list is used because events can also add events from within and that mustn't cause invalidation like vector
-		wi::unordered_map<int, std::list<std::function<void(uint64_t)>*>> subscribers;
-		wi::unordered_map<int, std::list<std::function<void(uint64_t)>>> subscribers_once;
+		lb::unordered_map<int, std::list<std::function<void(uint64_t)>*>> subscribers;
+		lb::unordered_map<int, std::list<std::function<void(uint64_t)>>> subscribers_once;
 		std::mutex locker;
 	};
 	std::shared_ptr<EventManager> manager = std::make_shared<EventManager>();

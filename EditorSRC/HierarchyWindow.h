@@ -1,18 +1,18 @@
 #pragma once
 class EditorComponent;
 
-class HierarchyWindow : public wi::gui::Window
+class HierarchyWindow : public lb::gui::Window
 {
 private:
-	wi::unordered_set<wi::ecs::Entity> entities;
+	lb::unordered_set<lb::ecs::Entity> entities;
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::ComboBox parentCombo;
+	lb::gui::ComboBox parentCombo;
 
 	void ResizeLayout() override;
 };

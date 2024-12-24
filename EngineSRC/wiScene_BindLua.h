@@ -6,32 +6,32 @@
 
 #include <memory>
 
-namespace wi::lua::scene
+namespace lb::lua::scene
 {
 	// If the application doesn't use the global scene, but manages it manually,
 	//	Then this can be used to override the global GetScene() in lua scripts with a custom scene
-	void SetGlobalScene(wi::scene::Scene* scene);
+	void SetGlobalScene(lb::scene::Scene* scene);
 	// If the application doesn't use the global camera, but manages it manually,
 	//	Then this can be used to override the global GetCamera() in lua scripts with a custom camera
-	void SetGlobalCamera(wi::scene::CameraComponent* camera);
-	wi::scene::Scene* GetGlobalScene();
-	wi::scene::CameraComponent* GetGlobalCamera();
+	void SetGlobalCamera(lb::scene::CameraComponent* camera);
+	lb::scene::Scene* GetGlobalScene();
+	lb::scene::CameraComponent* GetGlobalCamera();
 
 	void Bind();
 
 	class Scene_BindLua
 	{
 	private:
-		std::unique_ptr<wi::scene::Scene> owning; // GetScene() is too slow if scene object is always constructed
+		std::unique_ptr<lb::scene::Scene> owning; // GetScene() is too slow if scene object is always constructed
 	public:
-		wi::scene::Scene* scene = nullptr;
+		lb::scene::Scene* scene = nullptr;
 
 		inline static constexpr char className[] = "Scene";
 		static Luna<Scene_BindLua>::FunctionType methods[];
 		static Luna<Scene_BindLua>::PropertyType properties[];
 
-		Scene_BindLua(wi::scene::Scene* scene) :scene(scene) {}
-		Scene_BindLua(lua_State* L) : owning(std::make_unique<wi::scene::Scene>()), scene(owning.get()) {}
+		Scene_BindLua(lb::scene::Scene* scene) :scene(scene) {}
+		Scene_BindLua(lua_State* L) : owning(std::make_unique<lb::scene::Scene>()), scene(owning.get()) {}
 
 		int Update(lua_State* L);
 		int Clear(lua_State* L);
@@ -215,15 +215,15 @@ namespace wi::lua::scene
 	class NameComponent_BindLua
 	{
 	private:
-		wi::scene::NameComponent owning;
+		lb::scene::NameComponent owning;
 	public:
-		wi::scene::NameComponent* component = nullptr;
+		lb::scene::NameComponent* component = nullptr;
 
 		inline static constexpr char className[] = "NameComponent";
 		static Luna<NameComponent_BindLua>::FunctionType methods[];
 		static Luna<NameComponent_BindLua>::PropertyType properties[];
 
-		NameComponent_BindLua(wi::scene::NameComponent* component) :component(component) {}
+		NameComponent_BindLua(lb::scene::NameComponent* component) :component(component) {}
 		NameComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int SetName(lua_State* L);
@@ -233,15 +233,15 @@ namespace wi::lua::scene
 	class LayerComponent_BindLua
 	{
 	private:
-		wi::scene::LayerComponent owning;
+		lb::scene::LayerComponent owning;
 	public:
-		wi::scene::LayerComponent* component = nullptr;
+		lb::scene::LayerComponent* component = nullptr;
 
 		inline static constexpr char className[] = "LayerComponent";
 		static Luna<LayerComponent_BindLua>::FunctionType methods[];
 		static Luna<LayerComponent_BindLua>::PropertyType properties[];
 
-		LayerComponent_BindLua(wi::scene::LayerComponent* component) :component(component) {}
+		LayerComponent_BindLua(lb::scene::LayerComponent* component) :component(component) {}
 		LayerComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int SetLayerMask(lua_State* L);
@@ -251,9 +251,9 @@ namespace wi::lua::scene
 	class TransformComponent_BindLua
 	{
 	private:
-		wi::scene::TransformComponent owning;
+		lb::scene::TransformComponent owning;
 	public:
-		wi::scene::TransformComponent* component = nullptr;
+		lb::scene::TransformComponent* component = nullptr;
 
 		inline static constexpr char className[] = "TransformComponent";
 		static Luna<TransformComponent_BindLua>::FunctionType methods[];
@@ -266,7 +266,7 @@ namespace wi::lua::scene
 			Scale_local = VectorProperty(&component->scale_local);
 		}
 
-		TransformComponent_BindLua(wi::scene::TransformComponent* component) :component(component)
+		TransformComponent_BindLua(lb::scene::TransformComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -309,15 +309,15 @@ namespace wi::lua::scene
 	class CameraComponent_BindLua
 	{
 	private:
-		wi::scene::CameraComponent owning;
+		lb::scene::CameraComponent owning;
 	public:
-		wi::scene::CameraComponent* component = nullptr;
+		lb::scene::CameraComponent* component = nullptr;
 
 		inline static constexpr char className[] = "CameraComponent";
 		static Luna<CameraComponent_BindLua>::FunctionType methods[];
 		static Luna<CameraComponent_BindLua>::PropertyType properties[];
 
-		CameraComponent_BindLua(wi::scene::CameraComponent* component) :component(component) {}
+		CameraComponent_BindLua(lb::scene::CameraComponent* component) :component(component) {}
 		CameraComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int UpdateCamera(lua_State* L);
@@ -356,15 +356,15 @@ namespace wi::lua::scene
 	class AnimationComponent_BindLua
 	{
 	private:
-		wi::scene::AnimationComponent owning;
+		lb::scene::AnimationComponent owning;
 	public:
-		wi::scene::AnimationComponent* component = nullptr;
+		lb::scene::AnimationComponent* component = nullptr;
 
 		inline static constexpr char className[] = "AnimationComponent";
 		static Luna<AnimationComponent_BindLua>::FunctionType methods[];
 		static Luna<AnimationComponent_BindLua>::PropertyType properties[];
 
-		AnimationComponent_BindLua(wi::scene::AnimationComponent* component) :component(component) {}
+		AnimationComponent_BindLua(lb::scene::AnimationComponent* component) :component(component) {}
 		AnimationComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int Play(lua_State* L);
@@ -398,9 +398,9 @@ namespace wi::lua::scene
 	class MaterialComponent_BindLua
 	{
 	private:
-		wi::scene::MaterialComponent owning;
+		lb::scene::MaterialComponent owning;
 	public:
-		wi::scene::MaterialComponent* component = nullptr;
+		lb::scene::MaterialComponent* component = nullptr;
 
 		inline static constexpr char className[] = "MaterialComponent";
 		static Luna<MaterialComponent_BindLua>::FunctionType methods[];
@@ -437,7 +437,7 @@ namespace wi::lua::scene
 			customShaderID = IntProperty(&component->customShaderID);
 		}
 
-		MaterialComponent_BindLua(wi::scene::MaterialComponent* component) :component(component)
+		MaterialComponent_BindLua(lb::scene::MaterialComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -526,9 +526,9 @@ namespace wi::lua::scene
 	class MeshComponent_BindLua
 	{
 	private:
-		wi::scene::MeshComponent owning;
+		lb::scene::MeshComponent owning;
 	public:
-		wi::scene::MeshComponent* component = nullptr;
+		lb::scene::MeshComponent* component = nullptr;
 
 		inline static constexpr char className[] = "MeshComponent";
 		static Luna<MeshComponent_BindLua>::FunctionType methods[];
@@ -542,7 +542,7 @@ namespace wi::lua::scene
 			SubsetsPerLOD = LongLongProperty(reinterpret_cast<long long*>(&component->subsets_per_lod));
 		}
 
-		MeshComponent_BindLua(wi::scene::MeshComponent* component) :component(component)
+		MeshComponent_BindLua(lb::scene::MeshComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -569,9 +569,9 @@ namespace wi::lua::scene
 	class EmitterComponent_BindLua
 	{
 	private:
-		wi::EmittedParticleSystem owning;
+		lb::EmittedParticleSystem owning;
 	public:
-		wi::EmittedParticleSystem* component = nullptr;
+		lb::EmittedParticleSystem* component = nullptr;
 
 		inline static constexpr char className[] = "EmitterComponent";
 		static Luna<EmitterComponent_BindLua>::FunctionType methods[];
@@ -601,7 +601,7 @@ namespace wi::lua::scene
 			SpriteSheet_Framerate = FloatProperty(&component->frameRate);
 		}
 
-		EmitterComponent_BindLua(wi::EmittedParticleSystem* component) :component(component)
+		EmitterComponent_BindLua(lb::EmittedParticleSystem* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -681,9 +681,9 @@ namespace wi::lua::scene
 	class HairParticleSystem_BindLua
 	{
 	private:
-		wi::HairParticleSystem owning;
+		lb::HairParticleSystem owning;
 	public:
-		wi::HairParticleSystem* component = nullptr;
+		lb::HairParticleSystem* component = nullptr;
 
 		inline static constexpr char className[] = "HairParticleSystem";
 		static Luna<HairParticleSystem_BindLua>::FunctionType methods[];
@@ -750,15 +750,15 @@ namespace wi::lua::scene
 	class LightComponent_BindLua
 	{
 	private:
-		wi::scene::LightComponent owning;
+		lb::scene::LightComponent owning;
 	public:
-		wi::scene::LightComponent* component = nullptr;
+		lb::scene::LightComponent* component = nullptr;
 
 		inline static constexpr char className[] = "LightComponent";
 		static Luna<LightComponent_BindLua>::FunctionType methods[];
 		static Luna<LightComponent_BindLua>::PropertyType properties[];
 
-		LightComponent_BindLua(wi::scene::LightComponent* component) :component(component) {}
+		LightComponent_BindLua(lb::scene::LightComponent* component) :component(component) {}
 		LightComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int SetType(lua_State* L);
@@ -789,15 +789,15 @@ namespace wi::lua::scene
 	class ObjectComponent_BindLua
 	{
 	private:
-		wi::scene::ObjectComponent owning;
+		lb::scene::ObjectComponent owning;
 	public:
-		wi::scene::ObjectComponent* component = nullptr;
+		lb::scene::ObjectComponent* component = nullptr;
 
 		inline static constexpr char className[] = "ObjectComponent";
 		static Luna<ObjectComponent_BindLua>::FunctionType methods[];
 		static Luna<ObjectComponent_BindLua>::PropertyType properties[];
 
-		ObjectComponent_BindLua(wi::scene::ObjectComponent* component) :component(component) {}
+		ObjectComponent_BindLua(lb::scene::ObjectComponent* component) :component(component) {}
 		ObjectComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int GetMeshID(lua_State* L);
@@ -837,15 +837,15 @@ namespace wi::lua::scene
 	class InverseKinematicsComponent_BindLua
 	{
 	private:
-		wi::scene::InverseKinematicsComponent owning;
+		lb::scene::InverseKinematicsComponent owning;
 	public:
-		wi::scene::InverseKinematicsComponent* component = nullptr;
+		lb::scene::InverseKinematicsComponent* component = nullptr;
 
 		inline static constexpr char className[] = "InverseKinematicsComponent";
 		static Luna<InverseKinematicsComponent_BindLua>::FunctionType methods[];
 		static Luna<InverseKinematicsComponent_BindLua>::PropertyType properties[];
 
-		InverseKinematicsComponent_BindLua(wi::scene::InverseKinematicsComponent* component) :component(component) {}
+		InverseKinematicsComponent_BindLua(lb::scene::InverseKinematicsComponent* component) :component(component) {}
 		InverseKinematicsComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int SetTarget(lua_State* L);
@@ -861,9 +861,9 @@ namespace wi::lua::scene
 	class SpringComponent_BindLua
 	{
 	private:
-		wi::scene::SpringComponent owning;
+		lb::scene::SpringComponent owning;
 	public:
-		wi::scene::SpringComponent* component = nullptr;
+		lb::scene::SpringComponent* component = nullptr;
 
 		inline static constexpr char className[] = "SpringComponent";
 		static Luna<SpringComponent_BindLua>::FunctionType methods[];
@@ -877,7 +877,7 @@ namespace wi::lua::scene
 			GravityDirection = VectorProperty(&component->gravityDir);
 		}
 		
-		SpringComponent_BindLua(wi::scene::SpringComponent* component) :component(component)
+		SpringComponent_BindLua(lb::scene::SpringComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -907,15 +907,15 @@ namespace wi::lua::scene
 	class ScriptComponent_BindLua
 	{
 	private:
-		wi::scene::ScriptComponent owning;
+		lb::scene::ScriptComponent owning;
 	public:
-		wi::scene::ScriptComponent* component = nullptr;
+		lb::scene::ScriptComponent* component = nullptr;
 
 		inline static constexpr char className[] = "ScriptComponent";
 		static Luna<ScriptComponent_BindLua>::FunctionType methods[];
 		static Luna<ScriptComponent_BindLua>::PropertyType properties[];
 
-		ScriptComponent_BindLua(wi::scene::ScriptComponent* component) :component(component) {}
+		ScriptComponent_BindLua(lb::scene::ScriptComponent* component) :component(component) {}
 		ScriptComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int CreateFromFile(lua_State* L);
@@ -928,9 +928,9 @@ namespace wi::lua::scene
 	class RigidBodyPhysicsComponent_BindLua
 	{
 	private:
-		wi::scene::RigidBodyPhysicsComponent owning;
+		lb::scene::RigidBodyPhysicsComponent owning;
 	public:
-		wi::scene::RigidBodyPhysicsComponent* component = nullptr;
+		lb::scene::RigidBodyPhysicsComponent* component = nullptr;
 
 		inline static constexpr char className[] = "RigidBodyPhysicsComponent";
 		static Luna<RigidBodyPhysicsComponent_BindLua>::FunctionType methods[];
@@ -952,7 +952,7 @@ namespace wi::lua::scene
 			TargetMeshLOD = LongLongProperty(reinterpret_cast<long long*>(&component->mesh_lod));
 		}
 
-		RigidBodyPhysicsComponent_BindLua(wi::scene::RigidBodyPhysicsComponent* component) :component(component)
+		RigidBodyPhysicsComponent_BindLua(lb::scene::RigidBodyPhysicsComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -999,9 +999,9 @@ namespace wi::lua::scene
 	class SoftBodyPhysicsComponent_BindLua
 	{
 	private:
-		wi::scene::SoftBodyPhysicsComponent owning;
+		lb::scene::SoftBodyPhysicsComponent owning;
 	public:
-		wi::scene::SoftBodyPhysicsComponent* component = nullptr;
+		lb::scene::SoftBodyPhysicsComponent* component = nullptr;
 
 		inline static constexpr char className[] = "SoftBodyPhysicsComponent";
 		static Luna<SoftBodyPhysicsComponent_BindLua>::FunctionType methods[];
@@ -1009,13 +1009,13 @@ namespace wi::lua::scene
 
 		inline void BuildBindings()
 		{
-			Mass = wi::lua::FloatProperty(&component->mass);
-			Friction = wi::lua::FloatProperty(&component->friction);
-			Restitution = wi::lua::FloatProperty(&component->restitution);
-			VertexRadius = wi::lua::FloatProperty(&component->vertex_radius);
+			Mass = lb::lua::FloatProperty(&component->mass);
+			Friction = lb::lua::FloatProperty(&component->friction);
+			Restitution = lb::lua::FloatProperty(&component->restitution);
+			VertexRadius = lb::lua::FloatProperty(&component->vertex_radius);
 		}
 
-		SoftBodyPhysicsComponent_BindLua(wi::scene::SoftBodyPhysicsComponent* component) :component(component)
+		SoftBodyPhysicsComponent_BindLua(lb::scene::SoftBodyPhysicsComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -1024,10 +1024,10 @@ namespace wi::lua::scene
 			BuildBindings();
 		}
 
-		wi::lua::FloatProperty Mass;
-		wi::lua::FloatProperty Friction;
-		wi::lua::FloatProperty Restitution;
-		wi::lua::FloatProperty VertexRadius;
+		lb::lua::FloatProperty Mass;
+		lb::lua::FloatProperty Friction;
+		lb::lua::FloatProperty Restitution;
+		lb::lua::FloatProperty VertexRadius;
 
 		PropertyFunction(Mass)
 		PropertyFunction(Friction)
@@ -1046,9 +1046,9 @@ namespace wi::lua::scene
 	class ForceFieldComponent_BindLua
 	{
 	private:
-		wi::scene::ForceFieldComponent owning;
+		lb::scene::ForceFieldComponent owning;
 	public:
-		wi::scene::ForceFieldComponent* component = nullptr;
+		lb::scene::ForceFieldComponent* component = nullptr;
 
 		inline static constexpr char className[] = "ForceFieldComponent";
 		static Luna<ForceFieldComponent_BindLua>::FunctionType methods[];
@@ -1061,7 +1061,7 @@ namespace wi::lua::scene
 			Range = FloatProperty(&component->range);
 		}
 
-		ForceFieldComponent_BindLua(wi::scene::ForceFieldComponent* component) :component(component)
+		ForceFieldComponent_BindLua(lb::scene::ForceFieldComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -1082,9 +1082,9 @@ namespace wi::lua::scene
 	class Weather_OceanParams_BindLua
 	{
 	private:
-		wi::Ocean::OceanParameters owning;
+		lb::Ocean::OceanParameters owning;
 	public:
-		wi::Ocean::OceanParameters* parameter = nullptr;
+		lb::Ocean::OceanParameters* parameter = nullptr;
 
 		inline static constexpr char className[] = "OceanParameters";
 		static Luna<Weather_OceanParams_BindLua>::FunctionType methods[];
@@ -1106,7 +1106,7 @@ namespace wi::lua::scene
 			surfaceDisplacementTolerance = FloatProperty(&parameter->surfaceDisplacementTolerance);
 		}
 
-		Weather_OceanParams_BindLua(wi::Ocean::OceanParameters* parameter) :parameter(parameter)
+		Weather_OceanParams_BindLua(lb::Ocean::OceanParameters* parameter) :parameter(parameter)
 		{
 			BuildBindings();
 		}
@@ -1143,9 +1143,9 @@ namespace wi::lua::scene
 	};
 	struct Weather_OceanParams_Property
 	{
-		wi::Ocean::OceanParameters* data = nullptr;
+		lb::Ocean::OceanParameters* data = nullptr;
 		Weather_OceanParams_Property(){}
-		Weather_OceanParams_Property(wi::Ocean::OceanParameters* data) :data(data){}
+		Weather_OceanParams_Property(lb::Ocean::OceanParameters* data) :data(data){}
 		int Get(lua_State* L);
 		int Set(lua_State* L);
 	};
@@ -1504,9 +1504,9 @@ namespace wi::lua::scene
 	class WeatherComponent_BindLua
 	{
 	private:
-		wi::scene::WeatherComponent owning;
+		lb::scene::WeatherComponent owning;
 	public:
-		wi::scene::WeatherComponent* component = nullptr;
+		lb::scene::WeatherComponent* component = nullptr;
 
 		inline static constexpr char className[] = "WeatherComponent";
 		static Luna<WeatherComponent_BindLua>::FunctionType methods[];
@@ -1546,7 +1546,7 @@ namespace wi::lua::scene
 			volumetricCloudsWeatherMapSecondName = StringProperty(&component->volumetricCloudsWeatherMapSecondName);
 		}
 
-		WeatherComponent_BindLua(wi::scene::WeatherComponent* component) :component(component)
+		WeatherComponent_BindLua(lb::scene::WeatherComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -1665,9 +1665,9 @@ namespace wi::lua::scene
 	class SoundComponent_BindLua
 	{
 	private:
-		wi::scene::SoundComponent owning;
+		lb::scene::SoundComponent owning;
 	public:
-		wi::scene::SoundComponent* component = nullptr;
+		lb::scene::SoundComponent* component = nullptr;
 
 		inline static constexpr char className[] = "SoundComponent";
 		static Luna<SoundComponent_BindLua>::FunctionType methods[];
@@ -1679,7 +1679,7 @@ namespace wi::lua::scene
 			Volume = FloatProperty(&component->volume);
 		}
 
-		SoundComponent_BindLua(wi::scene::SoundComponent* component) :component(component)
+		SoundComponent_BindLua(lb::scene::SoundComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -1711,9 +1711,9 @@ namespace wi::lua::scene
 	class ColliderComponent_BindLua
 	{
 	private:
-		wi::scene::ColliderComponent owning;
+		lb::scene::ColliderComponent owning;
 	public:
-		wi::scene::ColliderComponent* component = nullptr;
+		lb::scene::ColliderComponent* component = nullptr;
 
 		inline static constexpr char className[] = "ColliderComponent";
 		static Luna<ColliderComponent_BindLua>::FunctionType methods[];
@@ -1727,7 +1727,7 @@ namespace wi::lua::scene
 			Tail = VectorProperty(&component->tail);
 		}
 
-		ColliderComponent_BindLua(wi::scene::ColliderComponent* component) :component(component)
+		ColliderComponent_BindLua(lb::scene::ColliderComponent* component) :component(component)
 		{
 			BuildBindings();
 		}
@@ -1756,15 +1756,15 @@ namespace wi::lua::scene
 	class ExpressionComponent_BindLua
 	{
 	private:
-		wi::scene::ExpressionComponent owning;
+		lb::scene::ExpressionComponent owning;
 	public:
-		wi::scene::ExpressionComponent* component = nullptr;
+		lb::scene::ExpressionComponent* component = nullptr;
 
 		inline static constexpr char className[] = "ExpressionComponent";
 		static Luna<ExpressionComponent_BindLua>::FunctionType methods[];
 		static Luna<ExpressionComponent_BindLua>::PropertyType properties[];
 
-		ExpressionComponent_BindLua(wi::scene::ExpressionComponent* component) :component(component) {}
+		ExpressionComponent_BindLua(lb::scene::ExpressionComponent* component) :component(component) {}
 		ExpressionComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int FindExpressionID(lua_State* L);
@@ -1786,15 +1786,15 @@ namespace wi::lua::scene
 	class HumanoidComponent_BindLua
 	{
 	private:
-		wi::scene::HumanoidComponent owning;
+		lb::scene::HumanoidComponent owning;
 	public:
-		wi::scene::HumanoidComponent* component = nullptr;
+		lb::scene::HumanoidComponent* component = nullptr;
 
 		inline static constexpr char className[] = "HumanoidComponent";
 		static Luna<HumanoidComponent_BindLua>::FunctionType methods[];
 		static Luna<HumanoidComponent_BindLua>::PropertyType properties[];
 
-		HumanoidComponent_BindLua(wi::scene::HumanoidComponent* component) :component(component) {}
+		HumanoidComponent_BindLua(lb::scene::HumanoidComponent* component) :component(component) {}
 		HumanoidComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int GetBoneEntity(lua_State* L);
@@ -1813,15 +1813,15 @@ namespace wi::lua::scene
 	class DecalComponent_BindLua
 	{
 	private:
-		wi::scene::DecalComponent owning;
+		lb::scene::DecalComponent owning;
 	public:
-		wi::scene::DecalComponent* component = nullptr;
+		lb::scene::DecalComponent* component = nullptr;
 
 		inline static constexpr char className[] = "DecalComponent";
 		static Luna<DecalComponent_BindLua>::FunctionType methods[];
 		static Luna<DecalComponent_BindLua>::PropertyType properties[];
 
-		DecalComponent_BindLua(wi::scene::DecalComponent* component) :component(component) {}
+		DecalComponent_BindLua(lb::scene::DecalComponent* component) :component(component) {}
 		DecalComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int SetBaseColorOnlyAlpha(lua_State* L);
@@ -1833,15 +1833,15 @@ namespace wi::lua::scene
 	class MetadataComponent_BindLua
 	{
 	private:
-		wi::scene::MetadataComponent owning;
+		lb::scene::MetadataComponent owning;
 	public:
-		wi::scene::MetadataComponent* component = nullptr;
+		lb::scene::MetadataComponent* component = nullptr;
 
 		inline static constexpr char className[] = "MetadataComponent";
 		static Luna<MetadataComponent_BindLua>::FunctionType methods[];
 		static Luna<MetadataComponent_BindLua>::PropertyType properties[];
 
-		MetadataComponent_BindLua(wi::scene::MetadataComponent* component) :component(component) {}
+		MetadataComponent_BindLua(lb::scene::MetadataComponent* component) :component(component) {}
 		MetadataComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int HasBool(lua_State* L);
@@ -1865,15 +1865,15 @@ namespace wi::lua::scene
 	class CharacterComponent_BindLua
 	{
 	private:
-		wi::scene::CharacterComponent owning;
+		lb::scene::CharacterComponent owning;
 	public:
-		wi::scene::CharacterComponent* component = nullptr;
+		lb::scene::CharacterComponent* component = nullptr;
 
 		inline static constexpr char className[] = "CharacterComponent";
 		static Luna<CharacterComponent_BindLua>::FunctionType methods[];
 		static Luna<CharacterComponent_BindLua>::PropertyType properties[];
 
-		CharacterComponent_BindLua(wi::scene::CharacterComponent* component) :component(component) {}
+		CharacterComponent_BindLua(lb::scene::CharacterComponent* component) :component(component) {}
 		CharacterComponent_BindLua(lua_State* L) : component(&owning) {}
 
 		int Move(lua_State* L);

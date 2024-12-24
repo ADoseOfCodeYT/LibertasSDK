@@ -22,7 +22,7 @@
 #include "wiInput_PS5.h"
 #endif // PLATFORM_PS5
 
-namespace wi::input
+namespace lb::input
 {
 #ifdef _WIN32
 #define KEY_DOWN(vk_code) (GetAsyncKeyState(vk_code) < 0)
@@ -33,14 +33,14 @@ namespace wi::input
 #endif // WIN32
 #define KEY_UP(vk_code) (!KEY_DOWN(vk_code))
 
-	wi::platform::window_type window = nullptr;
-	wi::Canvas canvas;
+	lb::platform::window_type window = nullptr;
+	lb::Canvas canvas;
 	KeyboardState keyboard;
 	MouseState mouse;
 	Pen pen;
 	bool pen_override = false;
 	bool double_click = false;
-	wi::Timer doubleclick_timer;
+	lb::Timer doubleclick_timer;
 	XMFLOAT2 doubleclick_prevpos = XMFLOAT2(0, 0);
 	CURSOR cursor_current = CURSOR_COUNT; // something that's not default, because at least once code should change it to default
 	CURSOR cursor_next = CURSOR_DEFAULT;
@@ -95,7 +95,7 @@ namespace wi::input
 		};
 	};
 	std::map<Input, int, Input::LessComparer> inputs; // Input -> down frames (-1 = released)
-	wi::vector<Touch> touches;
+	lb::vector<Touch> touches;
 
 	struct Controller
 	{
@@ -111,18 +111,18 @@ namespace wi::input
 		int deviceIndex;
 		ControllerState state;
 	};
-	wi::vector<Controller> controllers;
+	lb::vector<Controller> controllers;
 	std::atomic_bool initialized{ false };
 
 	void Initialize()
 	{
-		wi::Timer timer;
+		lb::Timer timer;
 
-		wi::input::rawinput::Initialize();
-		wi::input::sdlinput::Initialize();
+		lb::input::rawinput::Initialize();
+		lb::input::sdlinput::Initialize();
 
 #ifdef PLATFORM_PS5
-		wi::input::ps5::Initialize();
+		lb::input::ps5::Initialize();
 #endif // PLATFORM_PS5
 
 		for (int i = 0; i < arraysize(cursor_table); ++i)
@@ -130,11 +130,11 @@ namespace wi::input
 			cursor_table[i] = cursor_table_original[i];
 		}
 
-		wi::backlog::post("wi::input Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("lb::input Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		initialized.store(true);
 	}
 
-	void Update(wi::platform::window_type _window, wi::Canvas _canvas)
+	void Update(lb::platform::window_type _window, lb::Canvas _canvas)
 	{
 		window = _window;
 		canvas = _canvas;
@@ -143,19 +143,19 @@ namespace wi::input
 			return;
 		}
 
-		auto range = wi::profiler::BeginRangeCPU("Input");
+		auto range = lb::profiler::BeginRangeCPU("Input");
 
-		wi::input::xinput::Update();
-		wi::input::rawinput::Update();
-		wi::input::sdlinput::Update();
+		lb::input::xinput::Update();
+		lb::input::rawinput::Update();
+		lb::input::sdlinput::Update();
 
 #ifdef PLATFORM_PS5
-		wi::input::ps5::Update();
+		lb::input::ps5::Update();
 #endif // PLATFORM_PS5
 
 #if defined(_WIN32) && !defined(PLATFORM_XBOX)
-		wi::input::rawinput::GetMouseState(&mouse); // currently only the relative data can be used from this
-		wi::input::rawinput::GetKeyboardState(&keyboard); 
+		lb::input::rawinput::GetMouseState(&mouse); // currently only the relative data can be used from this
+		lb::input::rawinput::GetKeyboardState(&keyboard); 
 
 		// apparently checking the mouse here instead of Down() avoids missing the button presses (review!)
 		mouse.left_button_press |= KEY_DOWN(VK_LBUTTON);
@@ -172,10 +172,10 @@ namespace wi::input
 		mouse.position.y /= canvas.GetDPIScaling();
 
 #elif SDL2
-		wi::input::sdlinput::GetMouseState(&mouse);
+		lb::input::sdlinput::GetMouseState(&mouse);
 		mouse.position.x /= canvas.GetDPIScaling();
 		mouse.position.y /= canvas.GetDPIScaling();
-		wi::input::sdlinput::GetKeyboardState(&keyboard);
+		lb::input::sdlinput::GetKeyboardState(&keyboard);
 		//TODO controllers
 		//TODO touch
 #endif
@@ -189,9 +189,9 @@ namespace wi::input
 		}
 
 		// Check if low-level XINPUT controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::xinput::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < lb::input::xinput::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::xinput::GetControllerState(nullptr, i))
+			if (lb::input::xinput::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -220,9 +220,9 @@ namespace wi::input
 		}
 
 		// Check if low-level RAWINPUT controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::rawinput::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < lb::input::rawinput::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::rawinput::GetControllerState(nullptr, i))
+			if (lb::input::rawinput::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -251,9 +251,9 @@ namespace wi::input
 		}
 
 		// Check if low-level SDLINPUT controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::sdlinput::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < lb::input::sdlinput::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::sdlinput::GetControllerState(nullptr, i))
+			if (lb::input::sdlinput::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -283,9 +283,9 @@ namespace wi::input
 
 #ifdef PLATFORM_PS5
 		// Check if low-level PS5 controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::ps5::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < lb::input::ps5::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::ps5::GetControllerState(nullptr, i))
+			if (lb::input::ps5::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -321,17 +321,17 @@ namespace wi::input
 			switch (controller.deviceType)
 			{
 				case Controller::XINPUT:
-					connected = wi::input::xinput::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = lb::input::xinput::GetControllerState(&controller.state, controller.deviceIndex);
 					break;
 				case Controller::RAWINPUT:
-					connected = wi::input::rawinput::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = lb::input::rawinput::GetControllerState(&controller.state, controller.deviceIndex);
 					break;
 				case Controller::SDLINPUT:
-					connected = wi::input::sdlinput::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = lb::input::sdlinput::GetControllerState(&controller.state, controller.deviceIndex);
 					break;
 #ifdef PLATFORM_PS5
 				case Controller::PS5:
-					connected = wi::input::ps5::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = lb::input::ps5::GetControllerState(&controller.state, controller.deviceIndex);
 					break;
 #endif // PLATFORM_PS5
 				case Controller::DISCONNECTED:
@@ -380,7 +380,7 @@ namespace wi::input
 		{
 			XMFLOAT2 pos = mouse.position;
 			double elapsed = doubleclick_timer.record_elapsed_seconds();
-			if (elapsed < 0.5 && wi::math::Distance(doubleclick_prevpos, pos) < 5)
+			if (elapsed < 0.5 && lb::math::Distance(doubleclick_prevpos, pos) < 5)
 			{
 				double_click = true;
 			}
@@ -402,7 +402,7 @@ namespace wi::input
 		}
 		cursor_next = CURSOR_DEFAULT;
 
-		wi::profiler::EndRange(range);
+		lb::profiler::EndRange(range);
 	}
 
 	void ClearForNextFrame()
@@ -473,104 +473,104 @@ namespace wi::input
 
 			switch (button)
 			{
-			case wi::input::MOUSE_BUTTON_LEFT:
+			case lb::input::MOUSE_BUTTON_LEFT:
 				if (mouse.left_button_press) 
 					return true;
 				return false;
-			case wi::input::MOUSE_BUTTON_RIGHT:
+			case lb::input::MOUSE_BUTTON_RIGHT:
 				if (mouse.right_button_press) 
 					return true;
 				return false;
-			case wi::input::MOUSE_BUTTON_MIDDLE:
+			case lb::input::MOUSE_BUTTON_MIDDLE:
 				if (mouse.middle_button_press) 
 					return true;
 				return false;
 #ifdef _WIN32
-			case wi::input::KEYBOARD_BUTTON_UP:
+			case lb::input::KEYBOARD_BUTTON_UP:
 				keycode = VK_UP;
 				break;
-			case wi::input::KEYBOARD_BUTTON_DOWN:
+			case lb::input::KEYBOARD_BUTTON_DOWN:
 				keycode = VK_DOWN;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LEFT:
+			case lb::input::KEYBOARD_BUTTON_LEFT:
 				keycode = VK_LEFT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RIGHT:
+			case lb::input::KEYBOARD_BUTTON_RIGHT:
 				keycode = VK_RIGHT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_SPACE:
+			case lb::input::KEYBOARD_BUTTON_SPACE:
 				keycode = VK_SPACE;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RSHIFT:
+			case lb::input::KEYBOARD_BUTTON_RSHIFT:
 				keycode = VK_RSHIFT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LSHIFT:
+			case lb::input::KEYBOARD_BUTTON_LSHIFT:
 				keycode = VK_LSHIFT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F1: 
+			case lb::input::KEYBOARD_BUTTON_F1: 
 				keycode = VK_F1;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F2:
+			case lb::input::KEYBOARD_BUTTON_F2:
 				keycode = VK_F2;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F3:
+			case lb::input::KEYBOARD_BUTTON_F3:
 				keycode = VK_F3;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F4:
+			case lb::input::KEYBOARD_BUTTON_F4:
 				keycode = VK_F4;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F5:
+			case lb::input::KEYBOARD_BUTTON_F5:
 				keycode = VK_F5;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F6:
+			case lb::input::KEYBOARD_BUTTON_F6:
 				keycode = VK_F6;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F7:
+			case lb::input::KEYBOARD_BUTTON_F7:
 				keycode = VK_F7;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F8:
+			case lb::input::KEYBOARD_BUTTON_F8:
 				keycode = VK_F8;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F9:
+			case lb::input::KEYBOARD_BUTTON_F9:
 				keycode = VK_F9;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F10:
+			case lb::input::KEYBOARD_BUTTON_F10:
 				keycode = VK_F10;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F11:
+			case lb::input::KEYBOARD_BUTTON_F11:
 				keycode = VK_F11;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F12:
+			case lb::input::KEYBOARD_BUTTON_F12:
 				keycode = VK_F12;
 				break;
-			case wi::input::KEYBOARD_BUTTON_ENTER:
+			case lb::input::KEYBOARD_BUTTON_ENTER:
 				keycode = VK_RETURN;
 				break;
-			case wi::input::KEYBOARD_BUTTON_ESCAPE:
+			case lb::input::KEYBOARD_BUTTON_ESCAPE:
 				keycode = VK_ESCAPE;
 				break;
-			case wi::input::KEYBOARD_BUTTON_HOME:
+			case lb::input::KEYBOARD_BUTTON_HOME:
 				keycode = VK_HOME;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LCONTROL:
+			case lb::input::KEYBOARD_BUTTON_LCONTROL:
 				keycode = VK_LCONTROL;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RCONTROL:
+			case lb::input::KEYBOARD_BUTTON_RCONTROL:
 				keycode = VK_RCONTROL;
 				break;
-			case wi::input::KEYBOARD_BUTTON_INSERT:
+			case lb::input::KEYBOARD_BUTTON_INSERT:
 				keycode = VK_INSERT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_DELETE:
+			case lb::input::KEYBOARD_BUTTON_DELETE:
 				keycode = VK_DELETE;
 				break;
-			case wi::input::KEYBOARD_BUTTON_BACKSPACE:
+			case lb::input::KEYBOARD_BUTTON_BACKSPACE:
 				keycode = VK_BACK;
 				break;
-			case wi::input::KEYBOARD_BUTTON_PAGEDOWN:
+			case lb::input::KEYBOARD_BUTTON_PAGEDOWN:
 				keycode = VK_NEXT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_PAGEUP:
+			case lb::input::KEYBOARD_BUTTON_PAGEUP:
 				keycode = VK_PRIOR;
 				break;
 			case KEYBOARD_BUTTON_NUMPAD0:
@@ -800,20 +800,20 @@ namespace wi::input
 
 			if (controller.deviceType == Controller::XINPUT)
 			{
-				wi::input::xinput::SetControllerFeedback(data, controller.deviceIndex);
+				lb::input::xinput::SetControllerFeedback(data, controller.deviceIndex);
 			}
 			else if (controller.deviceType == Controller::RAWINPUT)
 			{
-				wi::input::rawinput::SetControllerFeedback(data, controller.deviceIndex);
+				lb::input::rawinput::SetControllerFeedback(data, controller.deviceIndex);
 			}
 			else if (controller.deviceType == Controller::SDLINPUT)
 			{
-				wi::input::sdlinput::SetControllerFeedback(data, controller.deviceIndex);
+				lb::input::sdlinput::SetControllerFeedback(data, controller.deviceIndex);
 			}
 #ifdef PLATFORM_PS5
 			else if (controller.deviceType == Controller::PS5)
 			{
-				wi::input::ps5::SetControllerFeedback(data, controller.deviceIndex);
+				lb::input::ps5::SetControllerFeedback(data, controller.deviceIndex);
 			}
 #endif // PLATFORM_PS5
 		}
@@ -825,7 +825,7 @@ namespace wi::input
 		pen_override = true;
 	}
 
-	const wi::vector<Touch>& GetTouches()
+	const lb::vector<Touch>& GetTouches()
 	{
 		return touches;
 	}
@@ -839,7 +839,7 @@ namespace wi::input
 	{
 #ifdef PLATFORM_WINDOWS_DESKTOP
 		wchar_t wfilename[1024] = {};
-		wi::helper::StringConvert(filename, wfilename);
+		lb::helper::StringConvert(filename, wfilename);
 		cursor_table[cursor] = LoadCursorFromFile(wfilename);
 #endif // PLATFORM_WINDOWS_DESKTOP
 
@@ -1107,18 +1107,18 @@ namespace wi::input
 		{
 			switch (button)
 			{
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_SQUARE: return "■";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_CROSS: return "✖";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_CIRCLE: return "●";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_TRIANGLE: return "▲";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_L1: return "L1";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_L2: return "L2";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_R1: return "R1";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_R2: return "R2";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_L3: return "L3";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_R3: return "R3";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_SHARE: return "Share";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_OPTION: return "Option";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_SQUARE: return "■";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_CROSS: return "✖";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_CIRCLE: return "●";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_TRIANGLE: return "▲";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_L1: return "L1";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_L2: return "L2";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_R1: return "R1";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_R2: return "R2";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_L3: return "L3";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_R3: return "R3";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_SHARE: return "Share";
+			case lb::input::GAMEPAD_BUTTON_PLAYSTATION_OPTION: return "Option";
 			default:
 				break;
 			}
@@ -1128,18 +1128,18 @@ namespace wi::input
 		{
 			switch (button)
 			{
-			case wi::input::GAMEPAD_BUTTON_XBOX_X: return "(X)";
-			case wi::input::GAMEPAD_BUTTON_XBOX_A: return "(A)";
-			case wi::input::GAMEPAD_BUTTON_XBOX_B: return "(B)";
-			case wi::input::GAMEPAD_BUTTON_XBOX_Y: return "(Y)";
-			case wi::input::GAMEPAD_BUTTON_XBOX_L1: return "L1";
-			case wi::input::GAMEPAD_BUTTON_XBOX_LT: return "LT";
-			case wi::input::GAMEPAD_BUTTON_XBOX_R1: return "R1";
-			case wi::input::GAMEPAD_BUTTON_XBOX_RT: return "RT";
-			case wi::input::GAMEPAD_BUTTON_XBOX_L3: return "L3";
-			case wi::input::GAMEPAD_BUTTON_XBOX_R3: return "R3";
-			case wi::input::GAMEPAD_BUTTON_XBOX_BACK: return "Back";
-			case wi::input::GAMEPAD_BUTTON_XBOX_START: return "Start";
+			case lb::input::GAMEPAD_BUTTON_XBOX_X: return "(X)";
+			case lb::input::GAMEPAD_BUTTON_XBOX_A: return "(A)";
+			case lb::input::GAMEPAD_BUTTON_XBOX_B: return "(B)";
+			case lb::input::GAMEPAD_BUTTON_XBOX_Y: return "(Y)";
+			case lb::input::GAMEPAD_BUTTON_XBOX_L1: return "L1";
+			case lb::input::GAMEPAD_BUTTON_XBOX_LT: return "LT";
+			case lb::input::GAMEPAD_BUTTON_XBOX_R1: return "R1";
+			case lb::input::GAMEPAD_BUTTON_XBOX_RT: return "RT";
+			case lb::input::GAMEPAD_BUTTON_XBOX_L3: return "L3";
+			case lb::input::GAMEPAD_BUTTON_XBOX_R3: return "R3";
+			case lb::input::GAMEPAD_BUTTON_XBOX_BACK: return "Back";
+			case lb::input::GAMEPAD_BUTTON_XBOX_START: return "Start";
 			default:
 				break;
 			}
@@ -1147,88 +1147,88 @@ namespace wi::input
 
 		switch (button)
 		{
-		case wi::input::GAMEPAD_BUTTON_UP: return "Dpad ↑";
-		case wi::input::GAMEPAD_BUTTON_LEFT: return "Dpad ←";
-		case wi::input::GAMEPAD_BUTTON_DOWN: return "Dpad ↓";
-		case wi::input::GAMEPAD_BUTTON_RIGHT: return "Dpad →";
-		case wi::input::GAMEPAD_BUTTON_1: return "Gamepad 1";
-		case wi::input::GAMEPAD_BUTTON_2: return "Gamepad 2";
-		case wi::input::GAMEPAD_BUTTON_3: return "Gamepad 3";
-		case wi::input::GAMEPAD_BUTTON_4: return "Gamepad 4";
-		case wi::input::GAMEPAD_BUTTON_5: return "Gamepad 5";
-		case wi::input::GAMEPAD_BUTTON_6: return "Gamepad 6";
-		case wi::input::GAMEPAD_BUTTON_7: return "Gamepad 7";
-		case wi::input::GAMEPAD_BUTTON_8: return "Gamepad 8";
-		case wi::input::GAMEPAD_BUTTON_9: return "Gamepad 9";
-		case wi::input::GAMEPAD_BUTTON_10: return "Gamepad 10";
-		case wi::input::GAMEPAD_BUTTON_11: return "Gamepad 11";
-		case wi::input::GAMEPAD_BUTTON_12: return "Gamepad 12";
-		case wi::input::GAMEPAD_BUTTON_13: return "Gamepad 13";
-		case wi::input::GAMEPAD_BUTTON_14: return "Gamepad 14";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_UP: return "Left Stick ↑";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_LEFT: return "Left Stick ←";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_DOWN: return "Left Stick ↓";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_RIGHT: return "Left Stick →";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_UP: return "Right Stick ↑";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_LEFT: return "Right Stick ←";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_DOWN: return "Right Stick ↓";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_RIGHT: return "Right Stick →";
-		case wi::input::GAMEPAD_ANALOG_TRIGGER_L_AS_BUTTON: return "Left Trigger";
-		case wi::input::GAMEPAD_ANALOG_TRIGGER_R_AS_BUTTON: return "Right Trigger";
-		case wi::input::MOUSE_BUTTON_LEFT: return "Left Mouse Button";
-		case wi::input::MOUSE_BUTTON_RIGHT: return "Right Mouse Button";
-		case wi::input::MOUSE_BUTTON_MIDDLE: return "Middle Mouse Button";
-		case wi::input::MOUSE_SCROLL_AS_BUTTON_UP: return "Mouse Wheel ↑";
-		case wi::input::MOUSE_SCROLL_AS_BUTTON_DOWN: return "Mouse Wheel ↓";
-		case wi::input::KEYBOARD_BUTTON_UP: return "↑";
-		case wi::input::KEYBOARD_BUTTON_DOWN: return "↓";
-		case wi::input::KEYBOARD_BUTTON_LEFT: return "←";
-		case wi::input::KEYBOARD_BUTTON_RIGHT: return "→";
-		case wi::input::KEYBOARD_BUTTON_SPACE: return "Space";
-		case wi::input::KEYBOARD_BUTTON_RSHIFT: return "Right Shift";
-		case wi::input::KEYBOARD_BUTTON_LSHIFT: return "Left Shift";
-		case wi::input::KEYBOARD_BUTTON_F1: return "F1";
-		case wi::input::KEYBOARD_BUTTON_F2: return "F2";
-		case wi::input::KEYBOARD_BUTTON_F3: return "F3";
-		case wi::input::KEYBOARD_BUTTON_F4: return "F4";
-		case wi::input::KEYBOARD_BUTTON_F5: return "F5";
-		case wi::input::KEYBOARD_BUTTON_F6: return "F6";
-		case wi::input::KEYBOARD_BUTTON_F7: return "F7";
-		case wi::input::KEYBOARD_BUTTON_F8: return "F8";
-		case wi::input::KEYBOARD_BUTTON_F9: return "F9";
-		case wi::input::KEYBOARD_BUTTON_F10: return "F10";
-		case wi::input::KEYBOARD_BUTTON_F11: return "F11";
-		case wi::input::KEYBOARD_BUTTON_F12: return "F12";
-		case wi::input::KEYBOARD_BUTTON_ENTER: return "Enter";
-		case wi::input::KEYBOARD_BUTTON_ESCAPE: return "Escape";
-		case wi::input::KEYBOARD_BUTTON_HOME: return "Home";
-		case wi::input::KEYBOARD_BUTTON_RCONTROL: return "Right Control";
-		case wi::input::KEYBOARD_BUTTON_LCONTROL: return "Left Control";
-		case wi::input::KEYBOARD_BUTTON_DELETE: return "Delete";
-		case wi::input::KEYBOARD_BUTTON_BACKSPACE: return "Backspace";
-		case wi::input::KEYBOARD_BUTTON_PAGEDOWN: return "Page Down";
-		case wi::input::KEYBOARD_BUTTON_PAGEUP: return "Page Up";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD0: return "Numpad 0";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD1: return "Numpad 1";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD2: return "Numpad 2";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD3: return "Numpad 3";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD4: return "Numpad 4";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD5: return "Numpad 5";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD6: return "Numpad 6";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD7: return "Numpad 7";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD8: return "Numpad 8";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD9: return "Numpad 9";
-		case wi::input::KEYBOARD_BUTTON_MULTIPLY: return "*";
-		case wi::input::KEYBOARD_BUTTON_ADD: return "+";
-		case wi::input::KEYBOARD_BUTTON_SEPARATOR: return "Separator";
-		case wi::input::KEYBOARD_BUTTON_SUBTRACT: return "-";
-		case wi::input::KEYBOARD_BUTTON_DECIMAL: return "Decimal";
-		case wi::input::KEYBOARD_BUTTON_DIVIDE: return "/";
-		case wi::input::KEYBOARD_BUTTON_TAB: return "Tab";
-		case wi::input::KEYBOARD_BUTTON_TILDE: return "Tilde";
-		case wi::input::KEYBOARD_BUTTON_INSERT: return "Insert";
-		case wi::input::KEYBOARD_BUTTON_ALT: return "Alt";
-		case wi::input::KEYBOARD_BUTTON_ALTGR: return "Alt Gr";
+		case lb::input::GAMEPAD_BUTTON_UP: return "Dpad ↑";
+		case lb::input::GAMEPAD_BUTTON_LEFT: return "Dpad ←";
+		case lb::input::GAMEPAD_BUTTON_DOWN: return "Dpad ↓";
+		case lb::input::GAMEPAD_BUTTON_RIGHT: return "Dpad →";
+		case lb::input::GAMEPAD_BUTTON_1: return "Gamepad 1";
+		case lb::input::GAMEPAD_BUTTON_2: return "Gamepad 2";
+		case lb::input::GAMEPAD_BUTTON_3: return "Gamepad 3";
+		case lb::input::GAMEPAD_BUTTON_4: return "Gamepad 4";
+		case lb::input::GAMEPAD_BUTTON_5: return "Gamepad 5";
+		case lb::input::GAMEPAD_BUTTON_6: return "Gamepad 6";
+		case lb::input::GAMEPAD_BUTTON_7: return "Gamepad 7";
+		case lb::input::GAMEPAD_BUTTON_8: return "Gamepad 8";
+		case lb::input::GAMEPAD_BUTTON_9: return "Gamepad 9";
+		case lb::input::GAMEPAD_BUTTON_10: return "Gamepad 10";
+		case lb::input::GAMEPAD_BUTTON_11: return "Gamepad 11";
+		case lb::input::GAMEPAD_BUTTON_12: return "Gamepad 12";
+		case lb::input::GAMEPAD_BUTTON_13: return "Gamepad 13";
+		case lb::input::GAMEPAD_BUTTON_14: return "Gamepad 14";
+		case lb::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_UP: return "Left Stick ↑";
+		case lb::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_LEFT: return "Left Stick ←";
+		case lb::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_DOWN: return "Left Stick ↓";
+		case lb::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_RIGHT: return "Left Stick →";
+		case lb::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_UP: return "Right Stick ↑";
+		case lb::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_LEFT: return "Right Stick ←";
+		case lb::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_DOWN: return "Right Stick ↓";
+		case lb::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_RIGHT: return "Right Stick →";
+		case lb::input::GAMEPAD_ANALOG_TRIGGER_L_AS_BUTTON: return "Left Trigger";
+		case lb::input::GAMEPAD_ANALOG_TRIGGER_R_AS_BUTTON: return "Right Trigger";
+		case lb::input::MOUSE_BUTTON_LEFT: return "Left Mouse Button";
+		case lb::input::MOUSE_BUTTON_RIGHT: return "Right Mouse Button";
+		case lb::input::MOUSE_BUTTON_MIDDLE: return "Middle Mouse Button";
+		case lb::input::MOUSE_SCROLL_AS_BUTTON_UP: return "Mouse Wheel ↑";
+		case lb::input::MOUSE_SCROLL_AS_BUTTON_DOWN: return "Mouse Wheel ↓";
+		case lb::input::KEYBOARD_BUTTON_UP: return "↑";
+		case lb::input::KEYBOARD_BUTTON_DOWN: return "↓";
+		case lb::input::KEYBOARD_BUTTON_LEFT: return "←";
+		case lb::input::KEYBOARD_BUTTON_RIGHT: return "→";
+		case lb::input::KEYBOARD_BUTTON_SPACE: return "Space";
+		case lb::input::KEYBOARD_BUTTON_RSHIFT: return "Right Shift";
+		case lb::input::KEYBOARD_BUTTON_LSHIFT: return "Left Shift";
+		case lb::input::KEYBOARD_BUTTON_F1: return "F1";
+		case lb::input::KEYBOARD_BUTTON_F2: return "F2";
+		case lb::input::KEYBOARD_BUTTON_F3: return "F3";
+		case lb::input::KEYBOARD_BUTTON_F4: return "F4";
+		case lb::input::KEYBOARD_BUTTON_F5: return "F5";
+		case lb::input::KEYBOARD_BUTTON_F6: return "F6";
+		case lb::input::KEYBOARD_BUTTON_F7: return "F7";
+		case lb::input::KEYBOARD_BUTTON_F8: return "F8";
+		case lb::input::KEYBOARD_BUTTON_F9: return "F9";
+		case lb::input::KEYBOARD_BUTTON_F10: return "F10";
+		case lb::input::KEYBOARD_BUTTON_F11: return "F11";
+		case lb::input::KEYBOARD_BUTTON_F12: return "F12";
+		case lb::input::KEYBOARD_BUTTON_ENTER: return "Enter";
+		case lb::input::KEYBOARD_BUTTON_ESCAPE: return "Escape";
+		case lb::input::KEYBOARD_BUTTON_HOME: return "Home";
+		case lb::input::KEYBOARD_BUTTON_RCONTROL: return "Right Control";
+		case lb::input::KEYBOARD_BUTTON_LCONTROL: return "Left Control";
+		case lb::input::KEYBOARD_BUTTON_DELETE: return "Delete";
+		case lb::input::KEYBOARD_BUTTON_BACKSPACE: return "Backspace";
+		case lb::input::KEYBOARD_BUTTON_PAGEDOWN: return "Page Down";
+		case lb::input::KEYBOARD_BUTTON_PAGEUP: return "Page Up";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD0: return "Numpad 0";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD1: return "Numpad 1";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD2: return "Numpad 2";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD3: return "Numpad 3";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD4: return "Numpad 4";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD5: return "Numpad 5";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD6: return "Numpad 6";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD7: return "Numpad 7";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD8: return "Numpad 8";
+		case lb::input::KEYBOARD_BUTTON_NUMPAD9: return "Numpad 9";
+		case lb::input::KEYBOARD_BUTTON_MULTIPLY: return "*";
+		case lb::input::KEYBOARD_BUTTON_ADD: return "+";
+		case lb::input::KEYBOARD_BUTTON_SEPARATOR: return "Separator";
+		case lb::input::KEYBOARD_BUTTON_SUBTRACT: return "-";
+		case lb::input::KEYBOARD_BUTTON_DECIMAL: return "Decimal";
+		case lb::input::KEYBOARD_BUTTON_DIVIDE: return "/";
+		case lb::input::KEYBOARD_BUTTON_TAB: return "Tab";
+		case lb::input::KEYBOARD_BUTTON_TILDE: return "Tilde";
+		case lb::input::KEYBOARD_BUTTON_INSERT: return "Insert";
+		case lb::input::KEYBOARD_BUTTON_ALT: return "Alt";
+		case lb::input::KEYBOARD_BUTTON_ALTGR: return "Alt Gr";
 		default:
 			break;
 		}

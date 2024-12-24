@@ -1,7 +1,7 @@
 #include "wiInput_BindLua.h"
 #include "wiMath_BindLua.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	Luna<Input_BindLua>::FunctionType Input_BindLua::methods[] = {
@@ -31,149 +31,149 @@ namespace wi::lua
 
 	int Input_BindLua::Down(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON button = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
+			lb::input::BUTTON button = (lb::input::BUTTON)lb::lua::SGetInt(L, 1);
 			int playerindex = 0;
 			if (argc > 1)
 			{
-				playerindex = wi::lua::SGetInt(L, 2);
+				playerindex = lb::lua::SGetInt(L, 2);
 			}
-			wi::lua::SSetBool(L, wi::input::Down(button, playerindex));
+			lb::lua::SSetBool(L, lb::input::Down(button, playerindex));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "Down(int code, opt int playerindex = 0) not enough arguments!");
+			lb::lua::SError(L, "Down(int code, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::Press(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON code = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
+			lb::input::BUTTON code = (lb::input::BUTTON)lb::lua::SGetInt(L, 1);
 			int playerindex = 0;
 			if (argc > 1)
 			{
-				playerindex = wi::lua::SGetInt(L, 2);
+				playerindex = lb::lua::SGetInt(L, 2);
 			}
-			wi::lua::SSetBool(L, wi::input::Press(code, playerindex));
+			lb::lua::SSetBool(L, lb::input::Press(code, playerindex));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "Press(int code, opt int playerindex = 0) not enough arguments!");
+			lb::lua::SError(L, "Press(int code, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::Release(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON code = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
+			lb::input::BUTTON code = (lb::input::BUTTON)lb::lua::SGetInt(L, 1);
 			int playerindex = 0;
 			if (argc > 1)
 			{
-				playerindex = wi::lua::SGetInt(L, 2);
+				playerindex = lb::lua::SGetInt(L, 2);
 			}
-			wi::lua::SSetBool(L, wi::input::Release(code, playerindex));
+			lb::lua::SSetBool(L, lb::input::Release(code, playerindex));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "Release(int code, opt int playerindex = 0) not enough arguments!");
+			lb::lua::SError(L, "Release(int code, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::Hold(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON button = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
+			lb::input::BUTTON button = (lb::input::BUTTON)lb::lua::SGetInt(L, 1);
 			uint32_t duration = 30;
 			if (argc > 1)
 			{
-				duration = wi::lua::SGetInt(L, 2);
+				duration = lb::lua::SGetInt(L, 2);
 			}
 			bool continuous = false;
 			if (argc > 2)
 			{
-				continuous = wi::lua::SGetBool(L, 3);
+				continuous = lb::lua::SGetBool(L, 3);
 			}
 			int playerindex = 0;
 			if (argc > 3)
 			{
-				playerindex = wi::lua::SGetInt(L, 4);
+				playerindex = lb::lua::SGetInt(L, 4);
 			}
-			wi::lua::SSetBool(L, wi::input::Hold(button, duration, continuous, playerindex));
+			lb::lua::SSetBool(L, lb::input::Hold(button, duration, continuous, playerindex));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "Hold(int code, opt int duration = 30, opt boolean continuous = false, opt int playerindex = 0) not enough arguments!");
+			lb::lua::SError(L, "Hold(int code, opt int duration = 30, opt boolean continuous = false, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::GetPointer(lua_State* L)
 	{
-		XMFLOAT4 P = wi::input::GetPointer();
+		XMFLOAT4 P = lb::input::GetPointer();
 		Luna<Vector_BindLua>::push(L, XMLoadFloat4(&P));
 		return 1;
 	}
 	int Input_BindLua::SetPointer(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec != nullptr)
 			{
-				wi::input::SetPointer(vec->data);
+				lb::input::SetPointer(vec->data);
 			}
 			else
-				wi::lua::SError(L, "SetPointer(Vector props) argument is not a Vector!");
+				lb::lua::SError(L, "SetPointer(Vector props) argument is not a Vector!");
 		}
 		else
-			wi::lua::SError(L, "SetPointer(Vector props) not enough arguments!");
+			lb::lua::SError(L, "SetPointer(Vector props) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::GetPointerDelta(lua_State* L)
 	{
-		Luna<Vector_BindLua>::push(L, XMLoadFloat2(&wi::input::GetMouseState().delta_position));
+		Luna<Vector_BindLua>::push(L, XMLoadFloat2(&lb::input::GetMouseState().delta_position));
 		return 1;
 	}
 	int Input_BindLua::HidePointer(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::HidePointer(wi::lua::SGetBool(L, 1));
+			lb::input::HidePointer(lb::lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "HidePointer(bool value) not enough arguments!");
+			lb::lua::SError(L, "HidePointer(bool value) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::GetAnalog(lua_State* L)
 	{
 		XMFLOAT4 result = XMFLOAT4(0, 0, 0, 0);
 
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::GAMEPAD_ANALOG type = (wi::input::GAMEPAD_ANALOG)wi::lua::SGetInt(L, 1);
+			lb::input::GAMEPAD_ANALOG type = (lb::input::GAMEPAD_ANALOG)lb::lua::SGetInt(L, 1);
 			int playerindex = 0;
 			if (argc > 1)
 			{
-				playerindex = wi::lua::SGetInt(L, 2);
+				playerindex = lb::lua::SGetInt(L, 2);
 			}
-			result = wi::input::GetAnalog(type, playerindex);
+			result = lb::input::GetAnalog(type, playerindex);
 		}
 		else
-			wi::lua::SError(L, "GetAnalog(int type, opt int playerindex = 0) not enough arguments!");
+			lb::lua::SError(L, "GetAnalog(int type, opt int playerindex = 0) not enough arguments!");
 
 		Luna<Vector_BindLua>::push(L, XMLoadFloat4(&result));
 		return 1;
 	}
 	int Input_BindLua::GetTouches(lua_State* L)
 	{
-		auto& touches = wi::input::GetTouches();
+		auto& touches = lb::input::GetTouches();
 		for (auto& touch : touches)
 		{
 			Luna<Touch_BindLua>::push(L, touch);
@@ -182,7 +182,7 @@ namespace wi::lua
 	}
 	int Input_BindLua::SetControllerFeedback(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			ControllerFeedback_BindLua* fb = Luna<ControllerFeedback_BindLua>::lightcheck(L, 1); // Ferdinand Braun
@@ -191,106 +191,106 @@ namespace wi::lua
 				int playerindex = 0;
 				if (argc > 1)
 				{
-					playerindex = wi::lua::SGetInt(L, 2);
+					playerindex = lb::lua::SGetInt(L, 2);
 				}
-				wi::input::SetControllerFeedback(fb->feedback, playerindex);
+				lb::input::SetControllerFeedback(fb->feedback, playerindex);
 			}
 			else
 			{
-				wi::lua::SError(L, "SetControllerFeedback(ControllerFeedback feedback, opt int playerindex = 0) first argument is not a ControllerFeedback!");
+				lb::lua::SError(L, "SetControllerFeedback(ControllerFeedback feedback, opt int playerindex = 0) first argument is not a ControllerFeedback!");
 			}
 		}
 		else
-			wi::lua::SError(L, "SetControllerFeedback(ControllerFeedback feedback, opt int playerindex = 0) not enough arguments!");
+			lb::lua::SError(L, "SetControllerFeedback(ControllerFeedback feedback, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::WhatIsPressed(lua_State* L)
 	{
 		int playerindex = 0;
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			playerindex = wi::lua::SGetInt(L, 1);
+			playerindex = lb::lua::SGetInt(L, 1);
 		}
-		wi::lua::SSetInt(L, (int)wi::input::WhatIsPressed(playerindex));
+		lb::lua::SSetInt(L, (int)lb::input::WhatIsPressed(playerindex));
 		return 1;
 	}
 	int Input_BindLua::IsGamepadButton(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "IsGamepadButton(int button) not enough arguments!");
+			lb::lua::SError(L, "IsGamepadButton(int button) not enough arguments!");
 			return 0;
 		}
-		wi::input::BUTTON button = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
-		wi::lua::SSetBool(L, wi::input::IsGamepadButton(button));
+		lb::input::BUTTON button = (lb::input::BUTTON)lb::lua::SGetInt(L, 1);
+		lb::lua::SSetBool(L, lb::input::IsGamepadButton(button));
 		return 1;
 	}
 	int Input_BindLua::ButtonToString(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON button = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
-			wi::input::CONTROLLER_PREFERENCE preference = wi::input::CONTROLLER_PREFERENCE_GENERIC;
+			lb::input::BUTTON button = (lb::input::BUTTON)lb::lua::SGetInt(L, 1);
+			lb::input::CONTROLLER_PREFERENCE preference = lb::input::CONTROLLER_PREFERENCE_GENERIC;
 			if (argc > 1)
 			{
-				preference = (wi::input::CONTROLLER_PREFERENCE)wi::lua::SGetInt(L, 2);
+				preference = (lb::input::CONTROLLER_PREFERENCE)lb::lua::SGetInt(L, 2);
 			}
-			wi::lua::SSetString(L, wi::input::ButtonToString(button, preference));
+			lb::lua::SSetString(L, lb::input::ButtonToString(button, preference));
 			return 1;
 		}
-		wi::lua::SError(L, "ButtonToString(int button, opt int preference = CONTROLLER_PREFERENCE_GENERIC): not enough parameters!");
+		lb::lua::SError(L, "ButtonToString(int button, opt int preference = CONTROLLER_PREFERENCE_GENERIC): not enough parameters!");
 		return 0;
 	}
 	int Input_BindLua::StringToButton(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			const char* str = wi::lua::SGetString(L, 1);
-			wi::lua::SSetInt(L, (int)wi::input::StringToButton(str));
+			const char* str = lb::lua::SGetString(L, 1);
+			lb::lua::SSetInt(L, (int)lb::input::StringToButton(str));
 			return 1;
 		}
-		wi::lua::SError(L, "StringToButton(string str): not enough parameters!");
+		lb::lua::SError(L, "StringToButton(string str): not enough parameters!");
 		return 0;
 	}
 	int Input_BindLua::SetCursor(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::CURSOR cursor = (wi::input::CURSOR)wi::lua::SGetInt(L, 1);
-			wi::input::SetCursor(cursor);
+			lb::input::CURSOR cursor = (lb::input::CURSOR)lb::lua::SGetInt(L, 1);
+			lb::input::SetCursor(cursor);
 			return 0;
 		}
-		wi::lua::SError(L, "SetCursor(int cursor) not enough arguments!");
+		lb::lua::SError(L, "SetCursor(int cursor) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::SetCursorFromFile(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			wi::input::CURSOR cursor = (wi::input::CURSOR)wi::lua::SGetInt(L, 1);
-			const char* filename = wi::lua::SGetString(L, 2);
-			wi::input::SetCursorFromFile(cursor, filename);
+			lb::input::CURSOR cursor = (lb::input::CURSOR)lb::lua::SGetInt(L, 1);
+			const char* filename = lb::lua::SGetString(L, 2);
+			lb::input::SetCursorFromFile(cursor, filename);
 			return 0;
 		}
-		wi::lua::SError(L, "SetCursorFromFile(int cursor, string filename) not enough arguments!");
+		lb::lua::SError(L, "SetCursorFromFile(int cursor, string filename) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::ResetCursor(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::CURSOR cursor = (wi::input::CURSOR)wi::lua::SGetInt(L, 1);
-			wi::input::ResetCursor(cursor);
+			lb::input::CURSOR cursor = (lb::input::CURSOR)lb::lua::SGetInt(L, 1);
+			lb::input::ResetCursor(cursor);
 			return 0;
 		}
-		wi::lua::SError(L, "ResetCursor(int cursor) not enough arguments!");
+		lb::lua::SError(L, "ResetCursor(int cursor) not enough arguments!");
 		return 0;
 	}
 
@@ -300,9 +300,9 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Input_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Input_BindLua>::Register(lb::lua::GetLuaState());
 
-			wi::lua::RunText(R"(
+			lb::lua::RunText(R"(
 input = Input()
 
 BUTTON_NONE = 0
@@ -471,7 +471,7 @@ CURSOR_CROSS = 9
 
 	int Touch_BindLua::GetState(lua_State* L)
 	{
-		wi::lua::SSetInt(L, (int)touch.state);
+		lb::lua::SSetInt(L, (int)touch.state);
 		return 1;
 	}
 	int Touch_BindLua::GetPos(lua_State* L)
@@ -486,7 +486,7 @@ CURSOR_CROSS = 9
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Touch_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Touch_BindLua>::Register(lb::lua::GetLuaState());
 		}
 	}
 
@@ -508,48 +508,48 @@ CURSOR_CROSS = 9
 
 	int ControllerFeedback_BindLua::SetVibrationLeft(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			feedback.vibration_left = wi::lua::SGetFloat(L, 1);
+			feedback.vibration_left = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetVibrationLeft(float value) not enough arguments!");
+			lb::lua::SError(L, "SetVibrationLeft(float value) not enough arguments!");
 		}
 		return 0;
 	}
 	int ControllerFeedback_BindLua::SetVibrationRight(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			feedback.vibration_right = wi::lua::SGetFloat(L, 1);
+			feedback.vibration_right = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetVibrationRight(float value) not enough arguments!");
+			lb::lua::SError(L, "SetVibrationRight(float value) not enough arguments!");
 		}
 		return 0;
 	}
 	int ControllerFeedback_BindLua::SetLEDColor(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec != nullptr)
 			{
-				feedback.led_color = wi::Color::fromFloat4(vec->data);
+				feedback.led_color = lb::Color::fromFloat4(vec->data);
 			}
 			else
 			{
-				feedback.led_color.rgba = wi::lua::SGetInt(L, 1);
+				feedback.led_color.rgba = lb::lua::SGetInt(L, 1);
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetLEDColor(int hexcolor) not enough arguments!");
+			lb::lua::SError(L, "SetLEDColor(int hexcolor) not enough arguments!");
 		}
 		return 0;
 	}
@@ -560,7 +560,7 @@ CURSOR_CROSS = 9
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<ControllerFeedback_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<ControllerFeedback_BindLua>::Register(lb::lua::GetLuaState());
 		}
 	}
 

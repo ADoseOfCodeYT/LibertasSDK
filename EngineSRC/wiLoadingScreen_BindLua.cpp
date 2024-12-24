@@ -6,11 +6,11 @@
 
 #include <mutex>
 
-using namespace wi::lua::scene;
-using namespace wi::scene;
-using namespace wi::ecs;
+using namespace lb::lua::scene;
+using namespace lb::scene;
+using namespace lb::ecs;
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	Luna<LoadingScreen_BindLua>::FunctionType LoadingScreen_BindLua::methods[] = {
@@ -50,11 +50,11 @@ namespace wi::lua
 		LoadingScreen* loading = dynamic_cast<LoadingScreen*>(component);
 		if (loading == nullptr)
 		{
-			wi::lua::SError(L, "AddLoadModelTask(Scene scene, string fileName, opt Matrix transform): loading screen is invalid!");
+			lb::lua::SError(L, "AddLoadModelTask(Scene scene, string fileName, opt Matrix transform): loading screen is invalid!");
 			return 0;
 		}
 
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Scene_BindLua* custom_scene = Luna<Scene_BindLua>::lightcheck(L, 1);
@@ -63,7 +63,7 @@ namespace wi::lua
 				// Overload 1: thread safe version
 				if (argc > 1)
 				{
-					std::string fileName = wi::lua::SGetString(L, 2);
+					std::string fileName = lb::lua::SGetString(L, 2);
 					XMMATRIX transform = XMMatrixIdentity();
 					if (argc > 2)
 					{
@@ -74,13 +74,13 @@ namespace wi::lua
 						}
 						else
 						{
-							wi::lua::SError(L, "AddLoadModelTask(Scene scene, string fileName, opt Matrix transform) argument is not a matrix!");
+							lb::lua::SError(L, "AddLoadModelTask(Scene scene, string fileName, opt Matrix transform) argument is not a matrix!");
 						}
 					}
 					Entity root = CreateEntity();
-					loading->addLoadingFunction([=](wi::jobsystem::JobArgs args) {
+					loading->addLoadingFunction([=](lb::jobsystem::JobArgs args) {
 						Scene scene;
-						wi::scene::LoadModel2(scene, fileName, transform, root);
+						lb::scene::LoadModel2(scene, fileName, transform, root);
 
 						// Note: we lock the  scene for merging from multiple loading screen tasks
 						//	Because we don't have fine control over thread execution in lua, and this significantly
@@ -88,19 +88,19 @@ namespace wi::lua
 						std::scoped_lock lck(custom_scene->scene->locker);
 						custom_scene->scene->Merge(scene);
 					});
-					wi::lua::SSetLongLong(L, root);
+					lb::lua::SSetLongLong(L, root);
 					return 1;
 				}
 				else
 				{
-					wi::lua::SError(L, "AddLoadModelTask(Scene scene, string fileName, opt Matrix transform) not enough arguments!");
+					lb::lua::SError(L, "AddLoadModelTask(Scene scene, string fileName, opt Matrix transform) not enough arguments!");
 					return 0;
 				}
 			}
 			else
 			{
 				// Overload 2: global scene version
-				std::string fileName = wi::lua::SGetString(L, 1);
+				std::string fileName = lb::lua::SGetString(L, 1);
 				XMMATRIX transform = XMMatrixIdentity();
 				if (argc > 1)
 				{
@@ -111,13 +111,13 @@ namespace wi::lua
 					}
 					else
 					{
-						wi::lua::SError(L, "AddLoadModelTask(string fileName, opt Matrix transform) argument is not a matrix!");
+						lb::lua::SError(L, "AddLoadModelTask(string fileName, opt Matrix transform) argument is not a matrix!");
 					}
 				}
 				Entity root = CreateEntity();
-				loading->addLoadingFunction([=](wi::jobsystem::JobArgs args) {
+				loading->addLoadingFunction([=](lb::jobsystem::JobArgs args) {
 					Scene scene;
-					wi::scene::LoadModel2(scene, fileName, transform, root);
+					lb::scene::LoadModel2(scene, fileName, transform, root);
 
 					// Note: we lock the  scene for merging from multiple loading screen tasks
 					//	Because we don't have fine control over thread execution in lua, and this significantly
@@ -125,13 +125,13 @@ namespace wi::lua
 					std::scoped_lock lck(GetGlobalScene()->locker);
 					GetGlobalScene()->Merge(scene);
 				});
-				wi::lua::SSetLongLong(L, root);
+				lb::lua::SSetLongLong(L, root);
 				return 1;
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "AddLoadModelTask(string fileName, opt Matrix transform) not enough arguments!");
+			lb::lua::SError(L, "AddLoadModelTask(string fileName, opt Matrix transform) not enough arguments!");
 		}
 		return 0;
 	}
@@ -140,14 +140,14 @@ namespace wi::lua
 		LoadingScreen* loading = dynamic_cast<LoadingScreen*>(component);
 		if (loading == nullptr)
 		{
-			wi::lua::SError(L, "AddRenderPathActivationTask(RenderPath path, opt float fadeSeconds = 0, opt int fadeR = 0,fadeG = 0,fadeB = 0): loading screen is invalid!");
+			lb::lua::SError(L, "AddRenderPathActivationTask(RenderPath path, opt float fadeSeconds = 0, opt int fadeR = 0,fadeG = 0,fadeB = 0): loading screen is invalid!");
 			return 0;
 		}
 
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc < 2)
 		{
-			wi::lua::SError(L, "AddRenderPathActivationTask(RenderPath path, Application app, opt float fadeSeconds = 0, opt int fadeR = 0,fadeG = 0,fadeB = 0): not enough arguments!");
+			lb::lua::SError(L, "AddRenderPathActivationTask(RenderPath path, Application app, opt float fadeSeconds = 0, opt int fadeR = 0,fadeG = 0,fadeB = 0): not enough arguments!");
 			return 0;
 		}
 		RenderPath* path = nullptr;
@@ -164,7 +164,7 @@ namespace wi::lua
 					RenderPath_BindLua* comp = Luna<RenderPath_BindLua>::lightcheck(L, 1);
 					if (comp == nullptr)
 					{
-						wi::lua::SError(L, "AddRenderPathActivationTask(RenderPath path, Application app, opt float fadeSeconds = 0, opt int fadeR = 0,fadeG = 0,fadeB = 0): first argument is not a RenderPath!");
+						lb::lua::SError(L, "AddRenderPathActivationTask(RenderPath path, Application app, opt float fadeSeconds = 0, opt int fadeR = 0,fadeG = 0,fadeB = 0): first argument is not a RenderPath!");
 						return 0;
 					}
 					else
@@ -190,25 +190,25 @@ namespace wi::lua
 		Application_BindLua* app = Luna<Application_BindLua>::lightcheck(L, 2);
 		if (app == nullptr)
 		{
-			wi::lua::SError(L, "AddRenderPathActivationTask(RenderPath path, Application app, opt float fadeSeconds = 0, opt int fadeR = 0,fadeG = 0,fadeB = 0): second argument is not an Application!");
+			lb::lua::SError(L, "AddRenderPathActivationTask(RenderPath path, Application app, opt float fadeSeconds = 0, opt int fadeR = 0,fadeG = 0,fadeB = 0): second argument is not an Application!");
 			return 0;
 		}
 
 		float fadeSeconds = 0;
-		wi::Color fadeColor = wi::Color::Black();
+		lb::Color fadeColor = lb::Color::Black();
 
 		if (argc > 2)
 		{
-			fadeSeconds = wi::lua::SGetFloat(L, 3);
+			fadeSeconds = lb::lua::SGetFloat(L, 3);
 			if (argc > 3)
 			{
-				fadeColor.setR((uint8_t)wi::lua::SGetInt(L, 4));
+				fadeColor.setR((uint8_t)lb::lua::SGetInt(L, 4));
 				if (argc > 4)
 				{
-					fadeColor.setG((uint8_t)wi::lua::SGetInt(L, 5));
+					fadeColor.setG((uint8_t)lb::lua::SGetInt(L, 5));
 					if (argc > 5)
 					{
-						fadeColor.setB((uint8_t)wi::lua::SGetInt(L, 6));
+						fadeColor.setB((uint8_t)lb::lua::SGetInt(L, 6));
 					}
 				}
 			}
@@ -222,10 +222,10 @@ namespace wi::lua
 		LoadingScreen* loading = dynamic_cast<LoadingScreen*>(component);
 		if (loading != nullptr)
 		{
-			wi::lua::SSetBool(L, loading->isFinished());
+			lb::lua::SSetBool(L, loading->isFinished());
 			return 1;
 		}
-		wi::lua::SError(L, "IsFinished(): loading screen is invalid!");
+		lb::lua::SError(L, "IsFinished(): loading screen is invalid!");
 		return 0;
 	}
 	int LoadingScreen_BindLua::GetProgress(lua_State* L)
@@ -233,10 +233,10 @@ namespace wi::lua
 		LoadingScreen* loading = dynamic_cast<LoadingScreen*>(component);
 		if (loading != nullptr)
 		{
-			wi::lua::SSetInt(L, loading->getProgress());
+			lb::lua::SSetInt(L, loading->getProgress());
 			return 1;
 		}
-		wi::lua::SError(L, "GetProgress(): loading screen is invalid!");
+		lb::lua::SError(L, "GetProgress(): loading screen is invalid!");
 		return 0;
 	}
 	int LoadingScreen_BindLua::SetBackgroundTexture(lua_State* L)
@@ -244,19 +244,19 @@ namespace wi::lua
 		LoadingScreen* loading = dynamic_cast<LoadingScreen*>(component);
 		if (loading == nullptr)
 		{
-			wi::lua::SError(L, "SetBackgroundTexture(Texture tex): loading screen is not valid!");
+			lb::lua::SError(L, "SetBackgroundTexture(Texture tex): loading screen is not valid!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "SetBackgroundTexture(Texture tex): not enough arguments!");
+			lb::lua::SError(L, "SetBackgroundTexture(Texture tex): not enough arguments!");
 			return 0;
 		}
 		Texture_BindLua* tex = Luna<Texture_BindLua>::lightcheck(L, 1);
 		if (tex == nullptr)
 		{
-			wi::lua::SError(L, "SetBackgroundTexture(Texture tex): argument is not a Texture!");
+			lb::lua::SError(L, "SetBackgroundTexture(Texture tex): argument is not a Texture!");
 			return 0;
 		}
 		loading->backgroundTexture = tex->resource;
@@ -267,7 +267,7 @@ namespace wi::lua
 		LoadingScreen* loading = dynamic_cast<LoadingScreen*>(component);
 		if (loading == nullptr)
 		{
-			wi::lua::SError(L, "GetBackgroundTexture(): loading screen is not valid!");
+			lb::lua::SError(L, "GetBackgroundTexture(): loading screen is not valid!");
 			return 0;
 		}
 		Luna<Texture_BindLua>::push(L, loading->backgroundTexture);
@@ -278,16 +278,16 @@ namespace wi::lua
 		LoadingScreen* loading = dynamic_cast<LoadingScreen*>(component);
 		if (loading == nullptr)
 		{
-			wi::lua::SError(L, "SetBackgroundMode(int mode): loading screen is not valid!");
+			lb::lua::SError(L, "SetBackgroundMode(int mode): loading screen is not valid!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "SetBackgroundMode(int mode): not enough arguments!");
+			lb::lua::SError(L, "SetBackgroundMode(int mode): not enough arguments!");
 			return 0;
 		}
-		loading->background_mode = (LoadingScreen::BackgroundMode)wi::lua::SGetInt(L, 1);
+		loading->background_mode = (LoadingScreen::BackgroundMode)lb::lua::SGetInt(L, 1);
 		return 0;
 	}
 	int LoadingScreen_BindLua::GetBackgroundMode(lua_State* L)
@@ -295,10 +295,10 @@ namespace wi::lua
 		LoadingScreen* loading = dynamic_cast<LoadingScreen*>(component);
 		if (loading == nullptr)
 		{
-			wi::lua::SError(L, "GetBackgroundMode(): loading screen is not valid!");
+			lb::lua::SError(L, "GetBackgroundMode(): loading screen is not valid!");
 			return 0;
 		}
-		wi::lua::SSetInt(L, (int)loading->background_mode);
+		lb::lua::SSetInt(L, (int)loading->background_mode);
 		return 1;
 	}
 
@@ -308,9 +308,9 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<LoadingScreen_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<LoadingScreen_BindLua>::Register(lb::lua::GetLuaState());
 
-			wi::lua::RunText(R"(
+			lb::lua::RunText(R"(
 BackgroundMode = {
 	Fill = 0,
 	Fit = 1,

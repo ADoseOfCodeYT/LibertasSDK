@@ -13,7 +13,7 @@
 #include <string>
 #include <functional>
 
-namespace wi::gui
+namespace lb::gui
 {
 
 	struct EventArgs
@@ -25,7 +25,7 @@ namespace wi::gui
 		float fValue = 0;		// generic float value of operation
 		bool bValue = false;	// generic boolean value of operation
 		int iValue = 0;			// generic integer value of operation
-		wi::Color color;		// color value of color picker operation
+		lb::Color color;		// color value of color picker operation
 		std::string sValue;		// generic string value of operation
 		uint64_t userdata = 0;	// this will provide the userdata value that was set to a widget (or part of a widget)
 	};
@@ -105,19 +105,19 @@ namespace wi::gui
 
 	struct Theme
 	{
-		// Reduced version of wi::image::Params, excluding position, alignment, etc.
+		// Reduced version of lb::image::Params, excluding position, alignment, etc.
 		struct Image
 		{
-			inline static const wi::image::Params params; // prototype for default values
+			inline static const lb::image::Params params; // prototype for default values
 			XMFLOAT4 color = params.color;
-			wi::enums::BLENDMODE blendFlag = params.blendFlag;
-			wi::image::SAMPLEMODE sampleFlag = params.sampleFlag;
-			wi::image::QUALITY quality = params.quality;
+			lb::enums::BLENDMODE blendFlag = params.blendFlag;
+			lb::image::SAMPLEMODE sampleFlag = params.sampleFlag;
+			lb::image::QUALITY quality = params.quality;
 			bool background = params.isBackgroundEnabled();
 			bool corner_rounding = params.isCornerRoundingEnabled();
-			wi::image::Params::Rounding corners_rounding[arraysize(params.corners_rounding)];
+			lb::image::Params::Rounding corners_rounding[arraysize(params.corners_rounding)];
 
-			void Apply(wi::image::Params& params) const
+			void Apply(lb::image::Params& params) const
 			{
 				params.color = color;
 				params.blendFlag = blendFlag;
@@ -141,7 +141,7 @@ namespace wi::gui
 				}
 				std::memcpy(params.corners_rounding, corners_rounding, sizeof(corners_rounding));
 			}
-			void CopyFrom(const wi::image::Params& params)
+			void CopyFrom(const lb::image::Params& params)
 			{
 				color = params.color;
 				blendFlag = params.blendFlag;
@@ -167,12 +167,12 @@ namespace wi::gui
 			}
 		} image;
 
-		// Reduced version of wi::font::Params, excluding position, alignment, etc.
+		// Reduced version of lb::font::Params, excluding position, alignment, etc.
 		struct Font
 		{
-			inline static const wi::font::Params params; // prototype for default values
-			wi::Color color = params.color;
-			wi::Color shadow_color = params.shadowColor;
+			inline static const lb::font::Params params; // prototype for default values
+			lb::Color color = params.color;
+			lb::Color shadow_color = params.shadowColor;
 			int style = params.style;
 			float softness = params.softness;
 			float bolden = params.bolden;
@@ -181,7 +181,7 @@ namespace wi::gui
 			float shadow_offset_x = params.shadow_offset_x;
 			float shadow_offset_y = params.shadow_offset_y;
 
-			void Apply(wi::font::Params& params) const
+			void Apply(lb::font::Params& params) const
 			{
 				params.color = color;
 				params.shadowColor = shadow_color;
@@ -193,7 +193,7 @@ namespace wi::gui
 				params.shadow_offset_x = shadow_offset_x;
 				params.shadow_offset_y = shadow_offset_y;
 			}
-			void CopyFrom(const wi::font::Params& params)
+			void CopyFrom(const lb::font::Params& params)
 			{
 				color = params.color;
 				shadow_color = params.shadowColor;
@@ -207,11 +207,11 @@ namespace wi::gui
 			}
 		} font;
 
-		wi::Color shadow_color = wi::Color::Shadow(); // shadow color for whole widget
+		lb::Color shadow_color = lb::Color::Shadow(); // shadow color for whole widget
 
 		Image tooltipImage;
 		Font tooltipFont;
-		wi::Color tooltip_shadow_color = wi::Color::Shadow();
+		lb::Color tooltip_shadow_color = lb::Color::Shadow();
 	};
 
 	class Widget;
@@ -219,13 +219,13 @@ namespace wi::gui
 	class GUI
 	{
 	private:
-		wi::vector<Widget*> widgets;
+		lb::vector<Widget*> widgets;
 		bool focus = false;
 		bool visible = true;
 	public:
 
-		void Update(const wi::Canvas& canvas, float dt);
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const;
+		void Update(const lb::Canvas& canvas, float dt);
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const;
 
 		void AddWidget(Widget* widget);
 		void RemoveWidget(Widget* widget);
@@ -239,15 +239,15 @@ namespace wi::gui
 		void SetVisible(bool value) { visible = value; }
 		bool IsVisible() const { return visible; }
 
-		void SetColor(wi::Color color, int id = -1);
-		void SetShadowColor(wi::Color color);
+		void SetColor(lb::Color color, int id = -1);
+		void SetShadowColor(lb::Color color);
 		void SetTheme(const Theme& theme, int id = -1);
 
-		void ExportLocalization(wi::Localization& localization) const;
-		void ImportLocalization(const wi::Localization& localization);
+		void ExportLocalization(lb::Localization& localization) const;
+		void ImportLocalization(const lb::Localization& localization);
 	};
 
-	class Widget : public wi::scene::TransformComponent
+	class Widget : public lb::scene::TransformComponent
 	{
 	private:
 		int tooltipTimer = 0;
@@ -257,13 +257,13 @@ namespace wi::gui
 		bool visible = true;
 		LocalizationEnabled localization_enabled = LocalizationEnabled::All;
 		float shadow = 1; // shadow radius
-		wi::Color shadow_color = wi::Color::Shadow();
+		lb::Color shadow_color = lb::Color::Shadow();
 		WIDGETSTATE state = IDLE;
 		float tooltip_shadow = 1; // shadow radius
-		wi::Color tooltip_shadow_color = wi::Color::Shadow();
-		mutable wi::Sprite tooltipSprite;
-		mutable wi::SpriteFont tooltipFont;
-		mutable wi::SpriteFont scripttipFont;
+		lb::Color tooltip_shadow_color = lb::Color::Shadow();
+		mutable lb::Sprite tooltipSprite;
+		mutable lb::SpriteFont tooltipFont;
+		mutable lb::SpriteFont scripttipFont;
 		float angular_highlight_width = 0;
 		float angular_highlight_timer = 0;
 		XMFLOAT4 angular_highlight_color = XMFLOAT4(1, 1, 1, 1);
@@ -292,31 +292,31 @@ namespace wi::gui
 		bool IsEnabled() const;
 		virtual void SetVisible(bool val);
 		bool IsVisible() const;
-		wi::Color GetColor() const;
+		lb::Color GetColor() const;
 		float GetShadowRadius() const { return shadow; }
 		void SetShadowRadius(float value) { shadow = value; }
 
 		virtual void ResizeLayout() {};
-		virtual void Update(const wi::Canvas& canvas, float dt);
-		virtual void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const;
-		virtual void RenderTooltip(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const;
+		virtual void Update(const lb::Canvas& canvas, float dt);
+		virtual void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const;
+		virtual void RenderTooltip(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const;
 
 		// last param default: set color for all states
 		//	you can specify a WIDGET_ID here, or your own custom ID if you use your own widget type
-		virtual void SetColor(wi::Color color, int id = -1);
-		virtual void SetShadowColor(wi::Color color);
-		virtual void SetImage(wi::Resource textureResource, int id = -1);
+		virtual void SetColor(lb::Color color, int id = -1);
+		virtual void SetShadowColor(lb::Color color);
+		virtual void SetImage(lb::Resource textureResource, int id = -1);
 		virtual void SetTheme(const Theme& theme, int id = -1);
 		virtual const char* GetWidgetTypeName() const { return "Widget"; }
 
-		wi::Sprite sprites[WIDGETSTATE_COUNT];
-		wi::SpriteFont font;
+		lb::Sprite sprites[WIDGETSTATE_COUNT];
+		lb::SpriteFont font;
 
 		XMFLOAT3 translation = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 scale = XMFLOAT3(1, 1, 1);
 
-		wi::primitive::Hitbox2D hitBox;
-		wi::graphics::Rect scissorRect;
+		lb::primitive::Hitbox2D hitBox;
+		lb::graphics::Rect scissorRect;
 
 		Widget* parent = nullptr;
 		void AttachTo(Widget* parent);
@@ -325,11 +325,11 @@ namespace wi::gui
 		void Activate();
 		void Deactivate();
 
-		void ApplyScissor(const wi::Canvas& canvas, const wi::graphics::Rect rect, wi::graphics::CommandList cmd, bool constrain_to_parent = true) const;
-		wi::primitive::Hitbox2D GetPointerHitbox(bool constrained = true) const;
+		void ApplyScissor(const lb::Canvas& canvas, const lb::graphics::Rect rect, lb::graphics::CommandList cmd, bool constrain_to_parent = true) const;
+		lb::primitive::Hitbox2D GetPointerHitbox(bool constrained = true) const;
 
-		wi::primitive::Hitbox2D active_area; // Pointer hitbox constrain area
-		void HitboxConstrain(wi::primitive::Hitbox2D& hb) const;
+		lb::primitive::Hitbox2D active_area; // Pointer hitbox constrain area
+		void HitboxConstrain(lb::primitive::Hitbox2D& hb) const;
 
 		bool priority_change = true;
 		uint32_t priority = 0;
@@ -339,8 +339,8 @@ namespace wi::gui
 		LocalizationEnabled GetLocalizationEnabled() const { return localization_enabled; }
 		void SetLocalizationEnabled(LocalizationEnabled value) { localization_enabled = value; }
 		void SetLocalizationEnabled(bool value) { localization_enabled = value ? LocalizationEnabled::All : LocalizationEnabled::None; }
-		virtual void ExportLocalization(wi::Localization& localization) const;
-		virtual void ImportLocalization(const wi::Localization& localization);
+		virtual void ExportLocalization(lb::Localization& localization) const;
+		virtual void ImportLocalization(const lb::Localization& localization);
 
 		void SetAngularHighlightWidth(float value) { angular_highlight_width = value; };
 		float GetAngularHighlightWidth() const { return angular_highlight_width; };
@@ -361,11 +361,11 @@ namespace wi::gui
 	public:
 		void Create(const std::string& name);
 
-		wi::SpriteFont font_description;
+		lb::SpriteFont font_description;
 		void SetDescription(const std::string& desc) { font_description.SetText(desc); }
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "Button"; }
 
@@ -415,12 +415,12 @@ namespace wi::gui
 			SCROLLBAR_GRABBED,
 			SCROLLBAR_STATE_COUNT,
 		} scrollbar_state = SCROLLBAR_INACTIVE;
-		wi::Sprite sprites_knob[SCROLLBAR_STATE_COUNT];
+		lb::Sprite sprites_knob[SCROLLBAR_STATE_COUNT];
 		XMFLOAT2 knob_inset_border = {};
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void SetColor(lb::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "ScrollBar"; }
 
@@ -436,9 +436,9 @@ namespace wi::gui
 	public:
 		void Create(const std::string& name);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void SetColor(lb::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "Label"; }
 
@@ -454,13 +454,13 @@ namespace wi::gui
 	protected:
 		std::function<void(EventArgs args)> onInputAccepted;
 		std::function<void(EventArgs args)> onInput;
-		static wi::SpriteFont font_input;
+		static lb::SpriteFont font_input;
 		bool cancel_input_enabled = true;
 
 	public:
 		void Create(const std::string& name);
 
-		wi::SpriteFont font_description;
+		lb::SpriteFont font_description;
 
 		void SetValue(const std::string& newValue);
 		void SetValue(int newValue);
@@ -480,9 +480,9 @@ namespace wi::gui
 		static void DeleteFromInput(int direction = -1);
 		void SetAsActive();
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void SetColor(lb::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "TextInputField"; }
 
@@ -507,17 +507,17 @@ namespace wi::gui
 		// step : slider step size
 		void Create(float start, float end, float defaultValue, float step, const std::string& name);
 
-		wi::Sprite sprites_knob[WIDGETSTATE_COUNT];
+		lb::Sprite sprites_knob[WIDGETSTATE_COUNT];
 
 		void SetValue(float value);
 		void SetValue(int value);
 		float GetValue() const;
 		void SetRange(float start, float end);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void RenderTooltip(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void RenderTooltip(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void SetColor(lb::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "Slider"; }
 		WIDGETSTATE GetState() const override { return std::max(state, valueInputField.GetState()); };
@@ -541,8 +541,8 @@ namespace wi::gui
 		void SetCheck(bool value);
 		bool GetCheck() const;
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 		const char* GetWidgetTypeName() const override { return "CheckBox"; }
 
 		void OnClick(std::function<void(EventArgs args)> func);
@@ -582,14 +582,14 @@ namespace wi::gui
 			std::string name;
 			uint64_t userdata = 0;
 		};
-		wi::vector<Item> items;
+		lb::vector<Item> items;
 
-		wi::Color drop_color = wi::Color::Ghost();
+		lb::Color drop_color = lb::Color::Ghost();
 		std::wstring invalid_selection_text;
 
-		float GetDropOffset(const wi::Canvas& canvas) const;
-		float GetDropX(const wi::Canvas& canvas) const;
-		float GetItemOffset(const wi::Canvas& canvas, int index) const;
+		float GetDropOffset(const lb::Canvas& canvas) const;
+		float GetDropX(const lb::Canvas& canvas) const;
+		float GetItemOffset(const lb::Canvas& canvas, int index) const;
 	public:
 		void Create(const std::string& name);
 
@@ -612,18 +612,18 @@ namespace wi::gui
 		size_t GetItemCount() const { return items.size(); }
 		void SetInvalidSelectionText(const std::string& text);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void SetColor(lb::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "ComboBox"; }
 
 		void OnSelect(std::function<void(EventArgs args)> func);
 
-		wi::SpriteFont selected_font;
+		lb::SpriteFont selected_font;
 
-		void ExportLocalization(wi::Localization& localization) const override;
-		void ImportLocalization(const wi::Localization& localization) override;
+		void ExportLocalization(lb::Localization& localization) const override;
+		void ImportLocalization(const lb::Localization& localization) override;
 
 		void SetDropArrowEnabled(bool value) { drop_arrow = value; }
 		bool IsDropArrowEnabled() const { return drop_arrow; }
@@ -635,7 +635,7 @@ namespace wi::gui
 	class Window :public Widget
 	{
 	protected:
-		wi::vector<Widget*> widgets;
+		lb::vector<Widget*> widgets;
 		bool minimized = false;
 		Widget scrollable_area;
 		float control_size = 20;
@@ -693,11 +693,11 @@ namespace wi::gui
 		void RemoveWidgets();
 
 		void ResizeLayout() override;
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void RenderTooltip(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
-		void SetShadowColor(wi::Color color) override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void RenderTooltip(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void SetColor(lb::Color color, int id = -1) override;
+		void SetShadowColor(lb::Color color) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "Window"; }
 
@@ -724,8 +724,8 @@ namespace wi::gui
 		ScrollBar scrollbar_horizontal;
 		WindowControls controls;
 
-		void ExportLocalization(wi::Localization& localization) const override;
-		void ImportLocalization(const wi::Localization& localization) override;
+		void ExportLocalization(lb::Localization& localization) const override;
+		void ImportLocalization(const lb::Localization& localization) override;
 	};
 
 	// HSV-Color Picker
@@ -747,13 +747,13 @@ namespace wi::gui
 	public:
 		void Create(const std::string& name, WindowControls window_controls = WindowControls::ALL);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 		void ResizeLayout() override;
 		const char* GetWidgetTypeName() const override { return "ColorPicker"; }
 
-		wi::Color GetPickColor() const;
-		void SetPickColor(wi::Color value);
+		lb::Color GetPickColor() const;
+		void SetPickColor(lb::Color value);
 
 		void OnColorChanged(std::function<void(EventArgs args)> func);
 
@@ -786,11 +786,11 @@ namespace wi::gui
 		int item_highlight = -1;
 		int opener_highlight = -1;
 
-		wi::primitive::Hitbox2D GetHitbox_ListArea() const;
-		wi::primitive::Hitbox2D GetHitbox_Item(int visible_count, int level) const;
-		wi::primitive::Hitbox2D GetHitbox_ItemOpener(int visible_count, int level) const;
+		lb::primitive::Hitbox2D GetHitbox_ListArea() const;
+		lb::primitive::Hitbox2D GetHitbox_Item(int visible_count, int level) const;
+		lb::primitive::Hitbox2D GetHitbox_ItemOpener(int visible_count, int level) const;
 
-		wi::vector<Item> items;
+		lb::vector<Item> items;
 
 		float GetItemOffset(int index) const;
 		bool DoesItemHaveChildren(int index) const;
@@ -822,9 +822,9 @@ namespace wi::gui
 		int GetItemCount() const { return (int)items.size(); }
 		const Item& GetItem(int index) const;
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const lb::Canvas& canvas, float dt) override;
+		void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
+		void SetColor(lb::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "TreeList"; }
 
@@ -838,16 +838,16 @@ namespace wi::gui
 }
 
 template<>
-struct enable_bitmask_operators<wi::gui::Window::WindowControls> {
+struct enable_bitmask_operators<lb::gui::Window::WindowControls> {
 	static const bool enable = true;
 };
 
 template<>
-struct enable_bitmask_operators<wi::gui::Window::AttachmentOptions> {
+struct enable_bitmask_operators<lb::gui::Window::AttachmentOptions> {
 	static const bool enable = true;
 };
 
 template<>
-struct enable_bitmask_operators<wi::gui::LocalizationEnabled> {
+struct enable_bitmask_operators<lb::gui::LocalizationEnabled> {
 	static const bool enable = true;
 };

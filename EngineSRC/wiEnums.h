@@ -1,7 +1,7 @@
 #pragma once
 #include "shaders/ShaderInterop_Renderer.h"
 
-namespace wi::enums
+namespace lb::enums
 {
 	// Common blendmodes used across multiple systems
 	enum BLENDMODE

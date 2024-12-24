@@ -4,16 +4,16 @@
 #include "wiProfiler.h"
 #include "wiPrimitive.h"
 
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace lb::graphics;
+using namespace lb::primitive;
 
-namespace wi
+namespace lb
 {
 
 	void PathQuery::process(
 		const XMFLOAT3& startpos,
 		const XMFLOAT3& goalpos,
-		const wi::VoxelGrid& voxelgrid
+		const lb::VoxelGrid& voxelgrid
 	)
 	{
 		frontier = {};
@@ -238,7 +238,7 @@ namespace wi
 		const XMFLOAT3& subject,
 		const XMFLOAT3& direction,
 		float max_distance,
-		const wi::VoxelGrid& voxelgrid
+		const lb::VoxelGrid& voxelgrid
 	)
 	{
 		XMFLOAT3 goal_world;
@@ -315,7 +315,7 @@ namespace wi
 
 	XMFLOAT3 PathQuery::get_next_waypoint() const
 	{
-		const wi::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
+		const lb::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
 		if (results.size() < 2)
 			return process_startpos;
 		return results[results.size() - 2];
@@ -323,13 +323,13 @@ namespace wi
 
 	size_t PathQuery::get_waypoint_count() const
 	{
-		const wi::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
+		const lb::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
 		return results.size();
 	}
 
 	XMFLOAT3 PathQuery::get_waypoint(size_t index) const
 	{
-		const wi::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
+		const lb::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
 		if (results.size() <= index)
 			return process_startpos;
 		return results[results.size() - 1 - index]; // return results in direction: start -> goal
@@ -337,7 +337,7 @@ namespace wi
 
 	XMFLOAT3 PathQuery::get_goal() const
 	{
-		const wi::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
+		const lb::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
 		if (results.empty())
 			return process_startpos;
 		return results.front();
@@ -400,19 +400,19 @@ namespace wi
 		static void LoadShaders()
 		{
 			PipelineStateDesc desc;
-			desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-			desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-			desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHREAD);
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+			desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+			desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+			desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+			desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEPTHREAD);
+			desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_DOUBLESIDED);
+			desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 			desc.pt = PrimitiveTopology::TRIANGLESTRIP;
 
 			GraphicsDevice* device = GetDevice();
 			device->CreatePipelineState(&desc, &pso_curve);
 
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_FRONT);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_ADDITIVE);
+			desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_FRONT);
+			desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_ADDITIVE);
 			desc.pt = PrimitiveTopology::TRIANGLELIST;
 			device->CreatePipelineState(&desc, &pso_waypoint);
 		}
@@ -421,13 +421,13 @@ namespace wi
 
 	void PathQuery::debugdraw(const XMFLOAT4X4& ViewProjection, CommandList cmd) const
 	{
-		const wi::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
+		const lb::vector<XMFLOAT3>& results = result_path_goal_to_start_simplified.empty() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
 
 		static bool shaders_loaded = false;
 		if (!shaders_loaded)
 		{
 			shaders_loaded = true;
-			static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+			static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 			LoadShaders();
 		}
 
@@ -497,7 +497,7 @@ namespace wi
 				size_t dst_offset = 0;
 				for (size_t i = 0; i < numVoxels; ++i)
 				{
-					const wi::vector<XMFLOAT3>& srcarray = i < result_path_goal_to_start.size() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
+					const lb::vector<XMFLOAT3>& srcarray = i < result_path_goal_to_start.size() ? result_path_goal_to_start : result_path_goal_to_start_simplified;
 					const size_t idx = i < result_path_goal_to_start.size() ? i : (i - result_path_goal_to_start.size());
 					const XMFLOAT4 color = i < result_path_goal_to_start.size() ? XMFLOAT4(0, 0, 1, 1) : XMFLOAT4(1, 0, 0, 1);
 
@@ -606,8 +606,8 @@ namespace wi
 			debugtimer += 0.16f;
 			float segmenti = 0;
 			static float gradientsize = 5.0f / resolution;
-			static XMFLOAT4 color0 = wi::Color(10, 10, 20, 255);
-			static XMFLOAT4 color1 = wi::Color(70, 150, 170, 255);
+			static XMFLOAT4 color0 = lb::Color(10, 10, 20, 255);
+			static XMFLOAT4 color1 = lb::Color(70, 150, 170, 255);
 			static float curve_tension = 0.5f;
 
 			const XMVECTOR topalign = XMVectorSet(0, flying ? 0 : debugvoxelsize.y, 0, 0); // align line to top of voxels (if not flying)
@@ -641,9 +641,9 @@ namespace wi
 					float t = float(j) / float(segment_resolution);
 
 #if 1
-					XMVECTOR P = cap ? XMVectorLerp(P1, P2, t) : wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t, curve_tension);
-					XMVECTOR P_prev = cap ? XMVectorLerp(P0, P1, t - resolution_rcp) : wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t - resolution_rcp, curve_tension);
-					XMVECTOR P_next = cap ? XMVectorLerp(P1, P2, t + resolution_rcp) : wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t + resolution_rcp, curve_tension);
+					XMVECTOR P = cap ? XMVectorLerp(P1, P2, t) : lb::math::CatmullRomCentripetal(P0, P1, P2, P3, t, curve_tension);
+					XMVECTOR P_prev = cap ? XMVectorLerp(P0, P1, t - resolution_rcp) : lb::math::CatmullRomCentripetal(P0, P1, P2, P3, t - resolution_rcp, curve_tension);
+					XMVECTOR P_next = cap ? XMVectorLerp(P1, P2, t + resolution_rcp) : lb::math::CatmullRomCentripetal(P0, P1, P2, P3, t + resolution_rcp, curve_tension);
 #else
 					XMVECTOR P = XMVectorLerp(P1, P2, t);
 					XMVECTOR P_prev = XMVectorLerp(P0, P1, t - resolution_rcp);
@@ -655,7 +655,7 @@ namespace wi
 					B *= width;
 
 					Vertex vert;
-					vert.color = wi::math::Lerp(color0, color1, saturate(std::sin(segmenti + debugtimer) * 0.5f + 0.5f));
+					vert.color = lb::math::Lerp(color0, color1, saturate(std::sin(segmenti + debugtimer) * 0.5f + 0.5f));
 
 					XMStoreFloat4(&vert.position, XMVectorSetW(P - B + topalign, 1));
 					std::memcpy(vertices + numVertices, &vert, sizeof(vert));

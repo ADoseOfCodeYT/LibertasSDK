@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <limits>
 
-namespace wi::random
+namespace lb::random
 {
 	// deterministic random generator (xorshift64*):
 	//	From: https://en.wikipedia.org/wiki/Xorshift

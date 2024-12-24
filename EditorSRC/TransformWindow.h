@@ -1,43 +1,43 @@
 #pragma once
 class EditorComponent;
 
-class TransformWindow : public wi::gui::Window
+class TransformWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::Button clearButton;
+	lb::gui::Button clearButton;
 
-	wi::gui::TextInputField txInput;
-	wi::gui::TextInputField tyInput;
-	wi::gui::TextInputField tzInput;
+	lb::gui::TextInputField txInput;
+	lb::gui::TextInputField tyInput;
+	lb::gui::TextInputField tzInput;
 
-	wi::gui::TextInputField rollInput;
-	wi::gui::TextInputField pitchInput;
-	wi::gui::TextInputField yawInput;
+	lb::gui::TextInputField rollInput;
+	lb::gui::TextInputField pitchInput;
+	lb::gui::TextInputField yawInput;
 					 
-	wi::gui::TextInputField rxInput;
-	wi::gui::TextInputField ryInput;
-	wi::gui::TextInputField rzInput;
-	wi::gui::TextInputField rwInput;
+	lb::gui::TextInputField rxInput;
+	lb::gui::TextInputField ryInput;
+	lb::gui::TextInputField rzInput;
+	lb::gui::TextInputField rwInput;
 					 
-	wi::gui::TextInputField sxInput;
-	wi::gui::TextInputField syInput;
-	wi::gui::TextInputField szInput;
-	wi::gui::TextInputField suInput;
+	lb::gui::TextInputField sxInput;
+	lb::gui::TextInputField syInput;
+	lb::gui::TextInputField szInput;
+	lb::gui::TextInputField suInput;
 
-	wi::gui::TextInputField snapScaleInput;
-	wi::gui::TextInputField snapRotateInput;
-	wi::gui::TextInputField snapTranslateInput;
+	lb::gui::TextInputField snapScaleInput;
+	lb::gui::TextInputField snapRotateInput;
+	lb::gui::TextInputField snapTranslateInput;
 
-	wi::gui::Button resetTranslationButton;
-	wi::gui::Button resetScaleButton;
-	wi::gui::Button resetScaleUniformButton;
-	wi::gui::Button resetRotationButton;
+	lb::gui::Button resetTranslationButton;
+	lb::gui::Button resetScaleButton;
+	lb::gui::Button resetScaleUniformButton;
+	lb::gui::Button resetRotationButton;
 
 	void ResizeLayout() override;
 };

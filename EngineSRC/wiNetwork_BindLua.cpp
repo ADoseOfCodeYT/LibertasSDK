@@ -2,7 +2,7 @@
 #include "wiNetwork.h"
 #include "wiHelper.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	Luna<Network_BindLua>::FunctionType Network_BindLua::methods[] = {
@@ -18,8 +18,8 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Network_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<Network_BindLua>::push_global(wi::lua::GetLuaState(), "network");
+			Luna<Network_BindLua>::Register(lb::lua::GetLuaState());
+			Luna<Network_BindLua>::push_global(lb::lua::GetLuaState(), "network");
 		}
 	}
 

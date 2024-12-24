@@ -34,7 +34,7 @@
 
 class EditorComponent;
 
-class ComponentsWindow : public wi::gui::Window
+class ComponentsWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
@@ -43,7 +43,7 @@ public:
 	void ResizeLayout() override;
 
 	EditorComponent* editor = nullptr;
-	wi::gui::ComboBox newComponentCombo;
+	lb::gui::ComboBox newComponentCombo;
 	MaterialWindow materialWnd;
 	WeatherWindow weatherWnd;
 	ObjectWindow objectWnd;
@@ -111,16 +111,16 @@ public:
 
 		All = ~0ull,
 	} filter = Filter::All;
-	wi::gui::ComboBox filterCombo;
-	wi::gui::TextInputField filterInput;
-	wi::gui::CheckBox filterCaseCheckBox;
-	wi::gui::TreeList entityTree;
-	wi::unordered_set<wi::ecs::Entity> entitytree_temp_items;
-	wi::unordered_set<wi::ecs::Entity> entitytree_added_items;
-	wi::unordered_set<wi::ecs::Entity> entitytree_opened_items;
-	void PushToEntityTree(wi::ecs::Entity entity, int level);
+	lb::gui::ComboBox filterCombo;
+	lb::gui::TextInputField filterInput;
+	lb::gui::CheckBox filterCaseCheckBox;
+	lb::gui::TreeList entityTree;
+	lb::unordered_set<lb::ecs::Entity> entitytree_temp_items;
+	lb::unordered_set<lb::ecs::Entity> entitytree_added_items;
+	lb::unordered_set<lb::ecs::Entity> entitytree_opened_items;
+	void PushToEntityTree(lb::ecs::Entity entity, int level);
 	void RefreshEntityTree();
-	bool CheckEntityFilter(wi::ecs::Entity entity);
+	bool CheckEntityFilter(lb::ecs::Entity entity);
 };
 
 template<>

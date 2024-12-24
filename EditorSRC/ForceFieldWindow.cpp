@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "ForceFieldWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void ForceFieldWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_FORCE " Force Field", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_FORCE " Force Field", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(420, 120));
 
 	closeButton.SetTooltip("Delete ForceFieldComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -33,8 +33,8 @@ void ForceFieldWindow::Create(EditorComponent* _editor)
 	typeComboBox.Create("Type: ");
 	typeComboBox.SetPos(XMFLOAT2(x, y));
 	typeComboBox.SetSize(XMFLOAT2(wid, hei));
-	typeComboBox.OnSelect([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	typeComboBox.OnSelect([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ForceFieldComponent* force = scene.forces.GetComponent(x.entity);
@@ -64,8 +64,8 @@ void ForceFieldWindow::Create(EditorComponent* _editor)
 	gravitySlider.Create(-10, 10, 0, 100000, "Gravity: ");
 	gravitySlider.SetSize(XMFLOAT2(wid, hei));
 	gravitySlider.SetPos(XMFLOAT2(x, y += step));
-	gravitySlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	gravitySlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ForceFieldComponent* force = scene.forces.GetComponent(x.entity);
@@ -82,8 +82,8 @@ void ForceFieldWindow::Create(EditorComponent* _editor)
 	rangeSlider.Create(0.0f, 100.0f, 10, 100000, "Range: ");
 	rangeSlider.SetSize(XMFLOAT2(wid, hei));
 	rangeSlider.SetPos(XMFLOAT2(x, y += step));
-	rangeSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	rangeSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ForceFieldComponent* force = scene.forces.GetComponent(x.entity);
@@ -130,7 +130,7 @@ void ForceFieldWindow::SetEntity(Entity entity)
 
 void ForceFieldWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -139,7 +139,7 @@ void ForceFieldWindow::ResizeLayout()
 	const float margin_left = 70;
 	const float margin_right = 50;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -147,14 +147,14 @@ void ForceFieldWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

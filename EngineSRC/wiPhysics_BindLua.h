@@ -3,7 +3,7 @@
 #include "wiLuna.h"
 #include "wiPhysics.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 	class Physics_BindLua
 	{
@@ -47,7 +47,7 @@ namespace wi::lua
 	class PickDragOperation_BindLua
 	{
 	public:
-		wi::physics::PickDragOperation op;
+		lb::physics::PickDragOperation op;
 		inline static constexpr char className[] = "PickDragOperation";
 		static Luna<PickDragOperation_BindLua>::FunctionType methods[];
 		static Luna<PickDragOperation_BindLua>::PropertyType properties[];

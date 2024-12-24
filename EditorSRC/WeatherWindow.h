@@ -1,7 +1,7 @@
 #pragma once
 class EditorComponent;
 
-class WeatherWindow : public wi::gui::Window
+class WeatherWindow : public lb::gui::Window
 {
 	void UpdateWind();
 public:
@@ -11,101 +11,101 @@ public:
 
 	EditorComponent* editor = nullptr;
 
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
-	wi::scene::WeatherComponent& GetWeather() const;
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
+	lb::scene::WeatherComponent& GetWeather() const;
 	void InvalidateProbes() const;
 
 	XMFLOAT3 default_sky_horizon = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 default_sky_zenith = XMFLOAT3(0, 0, 0);
 
-	wi::gui::Button primaryButton;
-	wi::gui::CheckBox overrideFogColorCheckBox;
-	wi::gui::CheckBox heightFogCheckBox;
-	wi::gui::Slider fogStartSlider;
-	wi::gui::Slider fogDensitySlider;
-	wi::gui::Slider fogHeightStartSlider;
-	wi::gui::Slider fogHeightEndSlider;
-	wi::gui::Slider gravitySlider;
-	wi::gui::Slider windSpeedSlider;
-	wi::gui::Slider windMagnitudeSlider;
-	wi::gui::Slider windDirectionSlider;
-	wi::gui::Slider windWaveSizeSlider;
-	wi::gui::Slider windRandomnessSlider;
-	wi::gui::Slider skyExposureSlider;
-	wi::gui::Slider starsSlider;
-	wi::gui::Slider skyRotationSlider;
-	wi::gui::Slider rainAmountSlider;
-	wi::gui::Slider rainLengthSlider;
-	wi::gui::Slider rainSpeedSlider;
-	wi::gui::Slider rainScaleSlider;
-	wi::gui::Slider rainSplashScaleSlider;
-	wi::gui::CheckBox realisticskyCheckBox;
-	wi::gui::CheckBox aerialperspectiveCheckBox;
-	wi::gui::CheckBox realisticskyHighQualityCheckBox;
-	wi::gui::CheckBox realisticskyReceiveShadowCheckBox;
-	wi::gui::Button skyButton;
-	wi::gui::Button colorgradingButton;
+	lb::gui::Button primaryButton;
+	lb::gui::CheckBox overrideFogColorCheckBox;
+	lb::gui::CheckBox heightFogCheckBox;
+	lb::gui::Slider fogStartSlider;
+	lb::gui::Slider fogDensitySlider;
+	lb::gui::Slider fogHeightStartSlider;
+	lb::gui::Slider fogHeightEndSlider;
+	lb::gui::Slider gravitySlider;
+	lb::gui::Slider windSpeedSlider;
+	lb::gui::Slider windMagnitudeSlider;
+	lb::gui::Slider windDirectionSlider;
+	lb::gui::Slider windWaveSizeSlider;
+	lb::gui::Slider windRandomnessSlider;
+	lb::gui::Slider skyExposureSlider;
+	lb::gui::Slider starsSlider;
+	lb::gui::Slider skyRotationSlider;
+	lb::gui::Slider rainAmountSlider;
+	lb::gui::Slider rainLengthSlider;
+	lb::gui::Slider rainSpeedSlider;
+	lb::gui::Slider rainScaleSlider;
+	lb::gui::Slider rainSplashScaleSlider;
+	lb::gui::CheckBox realisticskyCheckBox;
+	lb::gui::CheckBox aerialperspectiveCheckBox;
+	lb::gui::CheckBox realisticskyHighQualityCheckBox;
+	lb::gui::CheckBox realisticskyReceiveShadowCheckBox;
+	lb::gui::Button skyButton;
+	lb::gui::Button colorgradingButton;
 
 	// ocean params:
-	wi::gui::CheckBox ocean_enabledCheckBox;
-	wi::gui::Slider ocean_patchSizeSlider;
-	wi::gui::Slider ocean_waveAmplitudeSlider;
-	wi::gui::Slider ocean_choppyScaleSlider;
-	wi::gui::Slider ocean_windDependencySlider;
-	wi::gui::Slider ocean_timeScaleSlider;
-	wi::gui::Slider ocean_heightSlider;
-	wi::gui::Slider ocean_detailSlider;
-	wi::gui::Slider ocean_toleranceSlider;
-	wi::gui::Button ocean_resetButton;
+	lb::gui::CheckBox ocean_enabledCheckBox;
+	lb::gui::Slider ocean_patchSizeSlider;
+	lb::gui::Slider ocean_waveAmplitudeSlider;
+	lb::gui::Slider ocean_choppyScaleSlider;
+	lb::gui::Slider ocean_windDependencySlider;
+	lb::gui::Slider ocean_timeScaleSlider;
+	lb::gui::Slider ocean_heightSlider;
+	lb::gui::Slider ocean_detailSlider;
+	lb::gui::Slider ocean_toleranceSlider;
+	lb::gui::Button ocean_resetButton;
 
-	wi::gui::ComboBox colorComboBox;
-	wi::gui::ColorPicker colorPicker;
+	lb::gui::ComboBox colorComboBox;
+	lb::gui::ColorPicker colorPicker;
 
 	// volumetric clouds:
-	wi::gui::CheckBox volumetricCloudsCheckBox;
-	wi::gui::CheckBox volumetricCloudsReceiveShadowCheckBox;
-	wi::gui::CheckBox volumetricCloudsCastShadowCheckBox;
-	wi::gui::Slider cloudStartHeightSlider;
-	wi::gui::Slider cloudThicknessSlider;
-	wi::gui::Slider skewAlongWindDirectionFirstSlider;
-	wi::gui::Slider totalNoiseScaleFirstSlider;
-	wi::gui::Slider curlScaleFirstSlider;
-	wi::gui::Slider curlNoiseHeightFractionFirstSlider;
-	wi::gui::Slider curlNoiseModifierFirstSlider;
-	wi::gui::Slider detailScaleFirstSlider;
-	wi::gui::Slider detailNoiseHeightFractionFirstSlider;
-	wi::gui::Slider detailNoiseModifierFirstSlider;
-	wi::gui::Slider skewAlongCoverageWindDirectionFirstSlider;
-	wi::gui::Slider weatherScaleFirstSlider;
-	wi::gui::Slider coverageAmountFirstSlider;
-	wi::gui::Slider coverageMinimumFirstSlider;
-	wi::gui::Slider typeAmountFirstSlider;
-	wi::gui::Slider typeMinimumFirstSlider;
-	wi::gui::Slider rainAmountFirstSlider;
-	wi::gui::Slider rainMinimumFirstSlider;
-	wi::gui::TextInputField gradientSmallFirstTextFields[4];
-	wi::gui::TextInputField gradientMediumFirstTextFields[4];
-	wi::gui::TextInputField gradientLargeFirstTextFields[4];
-	wi::gui::TextInputField anvilDeformationSmallFirstTextFields[4];
-	wi::gui::TextInputField anvilDeformationMediumFirstTextFields[4];
-	wi::gui::TextInputField anvilDeformationLargeFirstTextFields[4];
-	wi::gui::Slider windSpeedFirstSlider;
-	wi::gui::Slider windAngleFirstSlider;
-	wi::gui::Slider windUpAmountFirstSlider;
-	wi::gui::Slider coverageWindSpeedFirstSlider;
-	wi::gui::Slider coverageWindAngleFirstSlider;
-	wi::gui::Slider coverageAmountSecondSlider;
-	wi::gui::Slider coverageMinimumSecondSlider;
-	wi::gui::Button volumetricCloudsWeatherMapFirstButton;
-	wi::gui::Button volumetricCloudsWeatherMapSecondButton;
+	lb::gui::CheckBox volumetricCloudsCheckBox;
+	lb::gui::CheckBox volumetricCloudsReceiveShadowCheckBox;
+	lb::gui::CheckBox volumetricCloudsCastShadowCheckBox;
+	lb::gui::Slider cloudStartHeightSlider;
+	lb::gui::Slider cloudThicknessSlider;
+	lb::gui::Slider skewAlongWindDirectionFirstSlider;
+	lb::gui::Slider totalNoiseScaleFirstSlider;
+	lb::gui::Slider curlScaleFirstSlider;
+	lb::gui::Slider curlNoiseHeightFractionFirstSlider;
+	lb::gui::Slider curlNoiseModifierFirstSlider;
+	lb::gui::Slider detailScaleFirstSlider;
+	lb::gui::Slider detailNoiseHeightFractionFirstSlider;
+	lb::gui::Slider detailNoiseModifierFirstSlider;
+	lb::gui::Slider skewAlongCoverageWindDirectionFirstSlider;
+	lb::gui::Slider weatherScaleFirstSlider;
+	lb::gui::Slider coverageAmountFirstSlider;
+	lb::gui::Slider coverageMinimumFirstSlider;
+	lb::gui::Slider typeAmountFirstSlider;
+	lb::gui::Slider typeMinimumFirstSlider;
+	lb::gui::Slider rainAmountFirstSlider;
+	lb::gui::Slider rainMinimumFirstSlider;
+	lb::gui::TextInputField gradientSmallFirstTextFields[4];
+	lb::gui::TextInputField gradientMediumFirstTextFields[4];
+	lb::gui::TextInputField gradientLargeFirstTextFields[4];
+	lb::gui::TextInputField anvilDeformationSmallFirstTextFields[4];
+	lb::gui::TextInputField anvilDeformationMediumFirstTextFields[4];
+	lb::gui::TextInputField anvilDeformationLargeFirstTextFields[4];
+	lb::gui::Slider windSpeedFirstSlider;
+	lb::gui::Slider windAngleFirstSlider;
+	lb::gui::Slider windUpAmountFirstSlider;
+	lb::gui::Slider coverageWindSpeedFirstSlider;
+	lb::gui::Slider coverageWindAngleFirstSlider;
+	lb::gui::Slider coverageAmountSecondSlider;
+	lb::gui::Slider coverageMinimumSecondSlider;
+	lb::gui::Button volumetricCloudsWeatherMapFirstButton;
+	lb::gui::Button volumetricCloudsWeatherMapSecondButton;
 
-	wi::gui::Button preset0Button;
-	wi::gui::Button preset1Button;
-	wi::gui::Button preset2Button;
-	wi::gui::Button preset3Button;
-	wi::gui::Button preset4Button;
-	wi::gui::Button preset5Button;
+	lb::gui::Button preset0Button;
+	lb::gui::Button preset1Button;
+	lb::gui::Button preset2Button;
+	lb::gui::Button preset3Button;
+	lb::gui::Button preset4Button;
+	lb::gui::Button preset5Button;
 
 	void ResizeLayout() override;
 };

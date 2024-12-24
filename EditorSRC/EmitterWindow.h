@@ -3,68 +3,68 @@ class EditorComponent;
 
 class MaterialWindow;
 
-class EmitterWindow : public wi::gui::Window
+class EmitterWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
 	void UpdateData();
 
-	wi::EmittedParticleSystem* GetEmitter();
+	lb::EmittedParticleSystem* GetEmitter();
 
-	wi::gui::Button restartButton;
-	wi::gui::Button burstButton;
-	wi::gui::TextInputField burstCountInput;
-	wi::gui::ComboBox meshComboBox;
-	wi::gui::ComboBox shaderTypeComboBox;
-	wi::gui::Label infoLabel;
-	wi::gui::Slider maxParticlesSlider;
-	wi::gui::CheckBox sortCheckBox;
-	wi::gui::CheckBox depthCollisionsCheckBox;
-	wi::gui::CheckBox sphCheckBox;
-	wi::gui::CheckBox pauseCheckBox;
-	wi::gui::CheckBox debugCheckBox;
-	wi::gui::CheckBox volumeCheckBox;
-	wi::gui::CheckBox frameBlendingCheckBox;
-	wi::gui::CheckBox collidersDisabledCheckBox;
-	wi::gui::CheckBox takeColorCheckBox;
-	wi::gui::Slider emitCountSlider;
-	wi::gui::Slider emitSizeSlider;
-	wi::gui::Slider emitRotationSlider;
-	wi::gui::Slider emitNormalSlider;
-	wi::gui::Slider emitScalingSlider;
-	wi::gui::Slider emitLifeSlider;
-	wi::gui::Slider emitOpacityCurveStartSlider;
-	wi::gui::Slider emitOpacityCurveEndSlider;
-	wi::gui::Slider emitRandomnessSlider;
-	wi::gui::Slider emitLifeRandomnessSlider;
-	wi::gui::Slider emitColorRandomnessSlider;
-	wi::gui::Slider emitMotionBlurSlider;
-	wi::gui::Slider emitMassSlider;
-	wi::gui::Slider timestepSlider;
-	wi::gui::Slider dragSlider;
-	wi::gui::Slider restitutionSlider;
-	wi::gui::TextInputField VelocityXInput;
-	wi::gui::TextInputField VelocityYInput;
-	wi::gui::TextInputField VelocityZInput;
-	wi::gui::TextInputField GravityXInput;
-	wi::gui::TextInputField GravityYInput;
-	wi::gui::TextInputField GravityZInput;
+	lb::gui::Button restartButton;
+	lb::gui::Button burstButton;
+	lb::gui::TextInputField burstCountInput;
+	lb::gui::ComboBox meshComboBox;
+	lb::gui::ComboBox shaderTypeComboBox;
+	lb::gui::Label infoLabel;
+	lb::gui::Slider maxParticlesSlider;
+	lb::gui::CheckBox sortCheckBox;
+	lb::gui::CheckBox depthCollisionsCheckBox;
+	lb::gui::CheckBox sphCheckBox;
+	lb::gui::CheckBox pauseCheckBox;
+	lb::gui::CheckBox debugCheckBox;
+	lb::gui::CheckBox volumeCheckBox;
+	lb::gui::CheckBox frameBlendingCheckBox;
+	lb::gui::CheckBox collidersDisabledCheckBox;
+	lb::gui::CheckBox takeColorCheckBox;
+	lb::gui::Slider emitCountSlider;
+	lb::gui::Slider emitSizeSlider;
+	lb::gui::Slider emitRotationSlider;
+	lb::gui::Slider emitNormalSlider;
+	lb::gui::Slider emitScalingSlider;
+	lb::gui::Slider emitLifeSlider;
+	lb::gui::Slider emitOpacityCurveStartSlider;
+	lb::gui::Slider emitOpacityCurveEndSlider;
+	lb::gui::Slider emitRandomnessSlider;
+	lb::gui::Slider emitLifeRandomnessSlider;
+	lb::gui::Slider emitColorRandomnessSlider;
+	lb::gui::Slider emitMotionBlurSlider;
+	lb::gui::Slider emitMassSlider;
+	lb::gui::Slider timestepSlider;
+	lb::gui::Slider dragSlider;
+	lb::gui::Slider restitutionSlider;
+	lb::gui::TextInputField VelocityXInput;
+	lb::gui::TextInputField VelocityYInput;
+	lb::gui::TextInputField VelocityZInput;
+	lb::gui::TextInputField GravityXInput;
+	lb::gui::TextInputField GravityYInput;
+	lb::gui::TextInputField GravityZInput;
 
-	wi::gui::Slider sph_h_Slider;
-	wi::gui::Slider sph_K_Slider;
-	wi::gui::Slider sph_p0_Slider;
-	wi::gui::Slider sph_e_Slider;
+	lb::gui::Slider sph_h_Slider;
+	lb::gui::Slider sph_K_Slider;
+	lb::gui::Slider sph_p0_Slider;
+	lb::gui::Slider sph_e_Slider;
 
-	wi::gui::TextInputField frameRateInput;
-	wi::gui::TextInputField framesXInput;
-	wi::gui::TextInputField framesYInput;
-	wi::gui::TextInputField frameCountInput;
-	wi::gui::TextInputField frameStartInput;
+	lb::gui::TextInputField frameRateInput;
+	lb::gui::TextInputField framesXInput;
+	lb::gui::TextInputField framesYInput;
+	lb::gui::TextInputField frameCountInput;
+	lb::gui::TextInputField frameStartInput;
 
 	void ResizeLayout() override;
 };

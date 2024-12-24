@@ -1,19 +1,19 @@
 #pragma once
 class EditorComponent;
 
-class LayerWindow : public wi::gui::Window
+class LayerWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::Label label;
-	wi::gui::CheckBox layers[32];
-	wi::gui::Button enableAllButton;
-	wi::gui::Button enableNoneButton;
+	lb::gui::Label label;
+	lb::gui::CheckBox layers[32];
+	lb::gui::Button enableAllButton;
+	lb::gui::Button enableNoneButton;
 
 	void ResizeLayout() override;
 };

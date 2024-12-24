@@ -24,12 +24,12 @@
 #endif // OIDN_VERSION_MAJOR >= 2
 #endif // __has_include("OpenImageDenoise/oidn.hpp")
 
-using namespace wi::ecs;
-using namespace wi::enums;
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace lb::ecs;
+using namespace lb::enums;
+using namespace lb::graphics;
+using namespace lb::primitive;
 
-namespace wi::scene
+namespace lb::scene
 {
 
 
@@ -77,29 +77,29 @@ namespace wi::scene
 	}
 	XMFLOAT3 TransformComponent::GetForward() const
 	{
-		return wi::math::GetForward(world);
+		return lb::math::GetForward(world);
 	}
 	XMFLOAT3 TransformComponent::GetUp() const
 	{
-		return wi::math::GetUp(world);
+		return lb::math::GetUp(world);
 	}
 	XMFLOAT3 TransformComponent::GetRight() const
 	{
-		return wi::math::GetRight(world);
+		return lb::math::GetRight(world);
 	}
 	XMVECTOR TransformComponent::GetForwardV() const
 	{
-		XMFLOAT3 v = wi::math::GetForward(world);
+		XMFLOAT3 v = lb::math::GetForward(world);
 		return XMLoadFloat3(&v);
 	}
 	XMVECTOR TransformComponent::GetUpV() const
 	{
-		XMFLOAT3 v = wi::math::GetUp(world);
+		XMFLOAT3 v = lb::math::GetUp(world);
 		return XMLoadFloat3(&v);
 	}
 	XMVECTOR TransformComponent::GetRightV() const
 	{
-		XMFLOAT3 v = wi::math::GetRight(world);
+		XMFLOAT3 v = lb::math::GetRight(world);
 		return XMLoadFloat3(&v);
 	}
 	void TransformComponent::UpdateTransform()
@@ -267,7 +267,7 @@ namespace wi::scene
 
 	void MaterialComponent::WriteShaderMaterial(ShaderMaterial* dest) const
 	{
-		using namespace wi::math;
+		using namespace lb::math;
 
 		ShaderMaterial material;
 		material.init();
@@ -368,9 +368,9 @@ namespace wi::scene
 			material.options_stencilref |= SHADERMATERIAL_OPTION_BIT_USE_VERTEXAO;
 		}
 
-		material.options_stencilref |= wi::renderer::CombineStencilrefs(engineStencilRef, userStencilRef) << 24u;
+		material.options_stencilref |= lb::renderer::CombineStencilrefs(engineStencilRef, userStencilRef) << 24u;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		for (int i = 0; i < TEXTURESLOT_COUNT; ++i)
 		{
 			const MaterialComponent::TextureMap& texturemap = textures[i];
@@ -407,7 +407,7 @@ namespace wi::scene
 
 		if (sampler_descriptor < 0)
 		{
-			material.sampler_descriptor = device->GetDescriptorIndex(wi::renderer::GetSampler(wi::enums::SAMPLER_OBJECTSHADER));
+			material.sampler_descriptor = device->GetDescriptorIndex(lb::renderer::GetSampler(lb::enums::SAMPLER_OBJECTSHADER));
 		}
 		else
 		{
@@ -420,7 +420,7 @@ namespace wi::scene
 	{
 		std::memcpy(&dest->textures[slot].texture_descriptor, &descriptor, sizeof(descriptor)); // memcpy into mapped pointer to avoid read from uncached memory
 	}
-	void MaterialComponent::WriteTextures(const wi::graphics::GPUResource** dest, int count) const
+	void MaterialComponent::WriteTextures(const lb::graphics::GPUResource** dest, int count) const
 	{
 		count = std::min(count, (int)TEXTURESLOT_COUNT);
 		for (int i = 0; i < count; ++i)
@@ -430,9 +430,9 @@ namespace wi::scene
 	}
 	uint32_t MaterialComponent::GetFilterMask() const
 	{
-		if (IsCustomShader() && customShaderID < (int)wi::renderer::GetCustomShaders().size())
+		if (IsCustomShader() && customShaderID < (int)lb::renderer::GetCustomShaders().size())
 		{
-			auto& customShader = wi::renderer::GetCustomShaders()[customShaderID];
+			auto& customShader = lb::renderer::GetCustomShaders()[customShaderID];
 			return customShader.filterMask;
 		}
 		if (shaderType == SHADERTYPE_WATER)
@@ -449,22 +449,22 @@ namespace wi::scene
 		}
 		return FILTER_TRANSPARENT;
 	}
-	wi::resourcemanager::Flags MaterialComponent::GetTextureSlotResourceFlags(TEXTURESLOT slot)
+	lb::resourcemanager::Flags MaterialComponent::GetTextureSlotResourceFlags(TEXTURESLOT slot)
 	{
-		wi::resourcemanager::Flags flags = wi::resourcemanager::Flags::NONE;
+		lb::resourcemanager::Flags flags = lb::resourcemanager::Flags::NONE;
 		if (!IsPreferUncompressedTexturesEnabled())
 		{
-			flags |= wi::resourcemanager::Flags::IMPORT_BLOCK_COMPRESSED;
+			flags |= lb::resourcemanager::Flags::IMPORT_BLOCK_COMPRESSED;
 		}
 		if (!IsTextureStreamingDisabled())
 		{
-			flags |= wi::resourcemanager::Flags::STREAMING;
+			flags |= lb::resourcemanager::Flags::STREAMING;
 		}
 		switch (slot)
 		{
 		case NORMALMAP:
 		case CLEARCOATNORMALMAP:
-			flags |= wi::resourcemanager::Flags::IMPORT_NORMALMAP;
+			flags |= lb::resourcemanager::Flags::IMPORT_NORMALMAP;
 			break;
 		default:
 			break;
@@ -489,14 +489,14 @@ namespace wi::scene
 			auto& textureslot = textures[slot];
 			if (!textureslot.name.empty())
 			{
-				wi::resourcemanager::Flags flags = GetTextureSlotResourceFlags(TEXTURESLOT(slot));
-				textureslot.resource = wi::resourcemanager::Load(textureslot.name, flags);
+				lb::resourcemanager::Flags flags = GetTextureSlotResourceFlags(TEXTURESLOT(slot));
+				textureslot.resource = lb::resourcemanager::Load(textureslot.name, flags);
 			}
 		}
 	}
 	uint32_t MaterialComponent::GetStencilRef() const
 	{
-		return wi::renderer::CombineStencilrefs(engineStencilRef, userStencilRef);
+		return lb::renderer::CombineStencilrefs(engineStencilRef, userStencilRef);
 	}
 
 	struct MikkTSpaceUserdata
@@ -586,7 +586,7 @@ namespace wi::scene
 	{
 		DeleteRenderData();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		if (vertex_tangents.empty() && !vertex_uvset_0.empty() && !vertex_normals.empty())
 		{
@@ -708,8 +708,8 @@ namespace wi::scene
 		for (size_t i = 0; i < vertex_positions.size(); ++i)
 		{
 			const XMFLOAT3& pos = vertex_positions[i];
-			_min = wi::math::Min(_min, pos);
-			_max = wi::math::Max(_max, pos);
+			_min = lb::math::Min(_min, pos);
+			_max = lb::math::Max(_max, pos);
 		}
 		aabb = AABB(_min, _max);
 
@@ -778,10 +778,10 @@ namespace wi::scene
 			uv_range_max = XMFLOAT2(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest());
 			for (size_t i = 0; i < uv_count; ++i)
 			{
-				uv_range_max = wi::math::Max(uv_range_max, uv0_stream[i]);
-				uv_range_max = wi::math::Max(uv_range_max, uv1_stream[i]);
-				uv_range_min = wi::math::Min(uv_range_min, uv0_stream[i]);
-				uv_range_min = wi::math::Min(uv_range_min, uv1_stream[i]);
+				uv_range_max = lb::math::Max(uv_range_max, uv0_stream[i]);
+				uv_range_max = lb::math::Max(uv_range_max, uv1_stream[i]);
+				uv_range_min = lb::math::Min(uv_range_min, uv0_stream[i]);
+				uv_range_min = lb::math::Min(uv_range_min, uv1_stream[i]);
 			}
 		}
 
@@ -830,11 +830,11 @@ namespace wi::scene
 			}
 		}
 
-		wi::vector<ShaderCluster> clusters;
-		wi::vector<ShaderClusterBounds> cluster_bounds;
+		lb::vector<ShaderCluster> clusters;
+		lb::vector<ShaderClusterBounds> cluster_bounds;
 		cluster_ranges.clear();
 
-		if (wi::renderer::IsMeshShaderAllowed())
+		if (lb::renderer::IsMeshShaderAllowed())
 		{
 			const size_t max_vertices = MESHLET_VERTEX_COUNT;
 			const size_t max_triangles = MESHLET_TRIANGLE_COUNT;
@@ -1310,7 +1310,7 @@ namespace wi::scene
 	}
 	void MeshComponent::CreateStreamoutRenderData()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		GPUBufferDesc desc;
 		desc.usage = Usage::DEFAULT;
@@ -1375,7 +1375,7 @@ namespace wi::scene
 	}
 	void MeshComponent::CreateRaytracingRenderData()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		if (!device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
 			return;
@@ -1453,7 +1453,7 @@ namespace wi::scene
 				const XMFLOAT3& p0 = vertex_positions[i0];
 				const XMFLOAT3& p1 = vertex_positions[i1];
 				const XMFLOAT3& p2 = vertex_positions[i2];
-				AABB aabb = wi::primitive::AABB(wi::math::Min(p0, wi::math::Min(p1, p2)), wi::math::Max(p0, wi::math::Max(p1, p2)));
+				AABB aabb = lb::primitive::AABB(lb::math::Min(p0, lb::math::Min(p1, p2)), lb::math::Max(p0, lb::math::Max(p1, p2)));
 				aabb.layerMask = triangleIndex;
 				aabb.userdata = subsetIndex;
 				bvh_leaf_aabbs.push_back(aabb);
@@ -1471,15 +1471,15 @@ namespace wi::scene
 
 			// Right now they are always computed even before smooth setting
 
-			wi::vector<uint32_t> newIndexBuffer;
-			wi::vector<XMFLOAT3> newPositionsBuffer;
-			wi::vector<XMFLOAT3> newNormalsBuffer;
-			wi::vector<XMFLOAT2> newUV0Buffer;
-			wi::vector<XMFLOAT2> newUV1Buffer;
-			wi::vector<XMFLOAT2> newAtlasBuffer;
-			wi::vector<XMUINT4> newBoneIndicesBuffer;
-			wi::vector<XMFLOAT4> newBoneWeightsBuffer;
-			wi::vector<uint32_t> newColorsBuffer;
+			lb::vector<uint32_t> newIndexBuffer;
+			lb::vector<XMFLOAT3> newPositionsBuffer;
+			lb::vector<XMFLOAT3> newNormalsBuffer;
+			lb::vector<XMFLOAT2> newUV0Buffer;
+			lb::vector<XMFLOAT2> newUV1Buffer;
+			lb::vector<XMFLOAT2> newAtlasBuffer;
+			lb::vector<XMUINT4> newBoneIndicesBuffer;
+			lb::vector<XMFLOAT4> newBoneWeightsBuffer;
+			lb::vector<uint32_t> newColorsBuffer;
 
 			for (size_t face = 0; face < indices.size() / 3; face++)
 			{
@@ -1605,19 +1605,19 @@ namespace wi::scene
 
 
 					bool match_pos0 =
-						wi::math::float_equal(v_search_pos.x, v0.x) &&
-						wi::math::float_equal(v_search_pos.y, v0.y) &&
-						wi::math::float_equal(v_search_pos.z, v0.z);
+						lb::math::float_equal(v_search_pos.x, v0.x) &&
+						lb::math::float_equal(v_search_pos.y, v0.y) &&
+						lb::math::float_equal(v_search_pos.z, v0.z);
 
 					bool match_pos1 =
-						wi::math::float_equal(v_search_pos.x, v1.x) &&
-						wi::math::float_equal(v_search_pos.y, v1.y) &&
-						wi::math::float_equal(v_search_pos.z, v1.z);
+						lb::math::float_equal(v_search_pos.x, v1.x) &&
+						lb::math::float_equal(v_search_pos.y, v1.y) &&
+						lb::math::float_equal(v_search_pos.z, v1.z);
 
 					bool match_pos2 =
-						wi::math::float_equal(v_search_pos.x, v2.x) &&
-						wi::math::float_equal(v_search_pos.y, v2.y) &&
-						wi::math::float_equal(v_search_pos.z, v2.z);
+						lb::math::float_equal(v_search_pos.x, v2.x) &&
+						lb::math::float_equal(v_search_pos.y, v2.y) &&
+						lb::math::float_equal(v_search_pos.z, v2.z);
 
 					if (match_pos0 || match_pos1 || match_pos2)
 					{
@@ -1668,21 +1668,21 @@ namespace wi::scene
 						const XMFLOAT2& at1 = vertex_atlas.empty() ? XMFLOAT2(0, 0) : vertex_atlas[ind1];
 
 						const bool duplicated_pos =
-							wi::math::float_equal(p0.x, p1.x) &&
-							wi::math::float_equal(p0.y, p1.y) &&
-							wi::math::float_equal(p0.z, p1.z);
+							lb::math::float_equal(p0.x, p1.x) &&
+							lb::math::float_equal(p0.y, p1.y) &&
+							lb::math::float_equal(p0.z, p1.z);
 
 						const bool duplicated_uv0 =
-							wi::math::float_equal(u00.x, u01.x) &&
-							wi::math::float_equal(u00.y, u01.y);
+							lb::math::float_equal(u00.x, u01.x) &&
+							lb::math::float_equal(u00.y, u01.y);
 
 						const bool duplicated_uv1 =
-							wi::math::float_equal(u10.x, u11.x) &&
-							wi::math::float_equal(u10.y, u11.y);
+							lb::math::float_equal(u10.x, u11.x) &&
+							lb::math::float_equal(u10.y, u11.y);
 
 						const bool duplicated_atl =
-							wi::math::float_equal(at0.x, at1.x) &&
-							wi::math::float_equal(at0.y, at1.y);
+							lb::math::float_equal(at0.x, at1.x) &&
+							lb::math::float_equal(at0.y, at1.y);
 
 						if (duplicated_pos && duplicated_uv0 && duplicated_uv1 && duplicated_atl)
 						{
@@ -1883,7 +1883,7 @@ namespace wi::scene
 	{
 		return
 			bvh.allocation.capacity() +
-			bvh_leaf_aabbs.size() * sizeof(wi::primitive::AABB);
+			bvh_leaf_aabbs.size() * sizeof(lb::primitive::AABB);
 	}
 	size_t MeshComponent::GetClusterCount() const
 	{
@@ -1942,13 +1942,13 @@ namespace wi::scene
 		{
 			SetLightmapRenderRequest(false);
 
-			bool success = wi::helper::saveTextureToMemory(lightmap, lightmapTextureData);
+			bool success = lb::helper::saveTextureToMemory(lightmap, lightmapTextureData);
 			assert(success);
 
 #ifdef OPEN_IMAGE_DENOISE
 			if (success)
 			{
-				wi::vector<uint8_t> texturedata_dst(lightmapTextureData.size());
+				lb::vector<uint8_t> texturedata_dst(lightmapTextureData.size());
 
 				size_t width = (size_t)lightmapWidth;
 				size_t height = (size_t)lightmapHeight;
@@ -1983,7 +1983,7 @@ namespace wi::scene
 					auto error = device.getError(errorMessage);
 					if (error != oidn::Error::None && error != oidn::Error::Cancelled)
 					{
-						wi::backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
+						lb::backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
 					}
 					else
 					{
@@ -1997,8 +1997,8 @@ namespace wi::scene
 
 			CompressLightmap();
 
-			wi::texturehelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
-			wi::graphics::GetDevice()->SetName(&lightmap, "lightmap");
+			lb::texturehelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
+			lb::graphics::GetDevice()->SetName(&lightmap, "lightmap");
 		}
 	}
 	void ObjectComponent::CompressLightmap()
@@ -2007,7 +2007,7 @@ namespace wi::scene
 		{
 			// Simple packing to R11G11B10_FLOAT format on CPU:
 			using namespace PackedVector;
-			wi::vector<uint8_t> packed_data;
+			lb::vector<uint8_t> packed_data;
 			packed_data.resize(sizeof(XMFLOAT3PK) * lightmapWidth * lightmapHeight);
 			XMFLOAT3PK* packed_ptr = (XMFLOAT3PK*)packed_data.data();
 			XMHALF4* raw_ptr = (XMHALF4*)lightmapTextureData.data();
@@ -2025,7 +2025,7 @@ namespace wi::scene
 		else
 		{
 			// BC6 compress on GPU:
-			wi::texturehelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
+			lb::texturehelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
 			TextureDesc desc = lightmap.desc;
 			desc.format = Format::BC6H_UF16;
 			desc.bind_flags = BindFlag::SHADER_RESOURCE;
@@ -2033,8 +2033,8 @@ namespace wi::scene
 			GraphicsDevice* device = GetDevice();
 			device->CreateTexture(&desc, nullptr, &bc6tex);
 			CommandList cmd = device->BeginCommandList();
-			wi::renderer::BlockCompress(lightmap, bc6tex, cmd);
-			wi::helper::saveTextureToMemory(bc6tex, lightmapTextureData); // internally waits for GPU completion
+			lb::renderer::BlockCompress(lightmap, bc6tex, cmd);
+			lb::helper::saveTextureToMemory(bc6tex, lightmapTextureData); // internally waits for GPU completion
 			lightmap.desc = desc;
 		}
 	}
@@ -2047,7 +2047,7 @@ namespace wi::scene
 	{
 		DeleteRenderData();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		if (!vertex_ao.empty())
 		{
@@ -2072,7 +2072,7 @@ namespace wi::scene
 	{
 		if (!textureName.empty() && !resource.IsValid())
 		{
-			resource = wi::resourcemanager::Load(textureName);
+			resource = lb::resourcemanager::Load(textureName);
 		}
 		if (resource.IsValid())
 		{
@@ -2080,12 +2080,12 @@ namespace wi::scene
 			SetDirty(false);
 			return;
 		}
-		resolution = wi::math::GetNextPowerOfTwo(resolution);
+		resolution = lb::math::GetNextPowerOfTwo(resolution);
 		if (texture.IsValid() && resolution == texture.desc.width)
 			return;
 		SetDirty();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		TextureDesc desc;
 		desc.array_size = 6;
@@ -2120,50 +2120,50 @@ namespace wi::scene
 	{
 		switch (path)
 		{
-		case wi::scene::AnimationComponent::AnimationChannel::Path::TRANSLATION:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::TRANSLATION:
 			return PathDataType::Float3;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::ROTATION:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::ROTATION:
 			return PathDataType::Float4;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCALE:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::SCALE:
 			return PathDataType::Float3;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::WEIGHTS:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::WEIGHTS:
 			return PathDataType::Weights;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
 			return PathDataType::Float3;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
 			return PathDataType::Float;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
 			return PathDataType::Event;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
 			return PathDataType::Float;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
 			return PathDataType::Float;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
 			return PathDataType::Float;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
 			return PathDataType::Float2;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
 			return PathDataType::Event;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
 			return PathDataType::Float4;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
+		case lb::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
 			return PathDataType::Float;
 
 		default:
@@ -2183,7 +2183,7 @@ namespace wi::scene
 		if (physicsIndices.empty())
 		{
 			bool pinning_required = false;
-			wi::vector<uint32_t> source;
+			lb::vector<uint32_t> source;
 			uint32_t first_subset = 0;
 			uint32_t last_subset = 0;
 			mesh.GetLODSubsetRange(0, first_subset, last_subset);
@@ -2202,7 +2202,7 @@ namespace wi::scene
 			if (pinning_required)
 			{
 				// If there is pinning, we need to use precise LOD to retain difference between pinned and soft vertices:
-				wi::vector<XMFLOAT4> vertices(mesh.vertex_positions.size());
+				lb::vector<XMFLOAT4> vertices(mesh.vertex_positions.size());
 				for (size_t i = 0; i < mesh.vertex_positions.size(); ++i)
 				{
 					vertices[i].x = mesh.vertex_positions[i].x;
@@ -2212,7 +2212,7 @@ namespace wi::scene
 				}
 
 				// Generate shadow indices for position+weight-only stream:
-				wi::vector<uint32_t> shadow_indices(source.size());
+				lb::vector<uint32_t> shadow_indices(source.size());
 				meshopt_generateShadowIndexBuffer(
 					shadow_indices.data(), source.data(), source.size(),
 					vertices.data(), vertices.size(), sizeof(XMFLOAT4), sizeof(XMFLOAT4)
@@ -2268,7 +2268,7 @@ namespace wi::scene
 
 			// Remap physics indices to point to physics indices:
 			physicsToGraphicsVertexMapping.clear();
-			wi::unordered_map<uint32_t, size_t> physicsVertices;
+			lb::unordered_map<uint32_t, size_t> physicsVertices;
 			for (size_t i = 0; i < physicsIndices.size(); ++i)
 			{
 				const uint32_t graphicsInd = physicsIndices[i];
@@ -2360,8 +2360,8 @@ namespace wi::scene
 				mesh.vertex_boneindices2.resize(mesh.vertex_positions.size());
 				mesh.vertex_boneweights2.resize(mesh.vertex_positions.size());
 			}
-			wi::jobsystem::context ctx;
-			wi::jobsystem::Dispatch(ctx, (uint32_t)mesh.vertex_positions.size(), 64, [&](wi::jobsystem::JobArgs args) {
+			lb::jobsystem::context ctx;
+			lb::jobsystem::Dispatch(ctx, (uint32_t)mesh.vertex_positions.size(), 64, [&](lb::jobsystem::JobArgs args) {
 				const XMFLOAT3 position = mesh.vertex_positions[args.jobIndex];
 
 				BoneQueue bones;
@@ -2369,7 +2369,7 @@ namespace wi::scene
 				{
 					const uint32_t graphicsInd = physicsToGraphicsVertexMapping[physicsInd];
 					const XMFLOAT3 position2 = mesh.vertex_positions[graphicsInd];
-					const float dist = wi::math::DistanceSquared(position, position2);
+					const float dist = lb::math::DistanceSquared(position, position2);
 					// Note: 0.01 correction is carefully tweaked so that cloth_test and sponza curtains look good
 					// (larger values blow up the curtains, lower values make the shading of the cloth look bad)
 					const float weight = 1.0f / (0.01f + dist);
@@ -2385,7 +2385,7 @@ namespace wi::scene
 					mesh.vertex_boneweights2[args.jobIndex] = bones.get_weights2();
 				}
 			});
-			wi::jobsystem::Wait(ctx);
+			lb::jobsystem::Wait(ctx);
 			mesh.CreateRenderData();
 		}
 	}
@@ -2527,32 +2527,32 @@ namespace wi::scene
 	{
 		SetDirty();
 
-		width = wi::math::Lerp(a.width, b.width, t);
-		height = wi::math::Lerp(a.height, b.height, t);
-		zNearP = wi::math::Lerp(a.zNearP, b.zNearP, t);
-		zFarP = wi::math::Lerp(a.zFarP, b.zFarP, t);
-		fov = wi::math::Lerp(a.fov, b.fov, t);
-		focal_length = wi::math::Lerp(a.focal_length, b.focal_length, t);
-		aperture_size = wi::math::Lerp(a.aperture_size, b.aperture_size, t);
-		aperture_shape = wi::math::Lerp(a.aperture_shape, b.aperture_shape, t);
+		width = lb::math::Lerp(a.width, b.width, t);
+		height = lb::math::Lerp(a.height, b.height, t);
+		zNearP = lb::math::Lerp(a.zNearP, b.zNearP, t);
+		zFarP = lb::math::Lerp(a.zFarP, b.zFarP, t);
+		fov = lb::math::Lerp(a.fov, b.fov, t);
+		focal_length = lb::math::Lerp(a.focal_length, b.focal_length, t);
+		aperture_size = lb::math::Lerp(a.aperture_size, b.aperture_size, t);
+		aperture_shape = lb::math::Lerp(a.aperture_shape, b.aperture_shape, t);
 	}
 
 	void ScriptComponent::CreateFromFile(const std::string& filename)
 	{
 		this->filename = filename;
-		resource = wi::resourcemanager::Load(filename);
+		resource = lb::resourcemanager::Load(filename);
 		script.clear(); // will be created on first Update()
 	}
 
 	void SoundComponent::Play()
 	{
 		_flags |= PLAYING;
-		wi::audio::Play(&soundinstance);
+		lb::audio::Play(&soundinstance);
 	}
 	void SoundComponent::Stop()
 	{
 		_flags &= ~PLAYING;
-		wi::audio::Stop(&soundinstance);
+		lb::audio::Stop(&soundinstance);
 	}
 	void SoundComponent::SetLooped(bool value)
 	{
@@ -2560,12 +2560,12 @@ namespace wi::scene
 		if (value)
 		{
 			_flags |= LOOPED;
-			wi::audio::CreateSoundInstance(&soundResource.GetSound(), &soundinstance);
+			lb::audio::CreateSoundInstance(&soundResource.GetSound(), &soundinstance);
 		}
 		else
 		{
 			_flags &= ~LOOPED;
-			wi::audio::ExitLoop(&soundinstance);
+			lb::audio::ExitLoop(&soundinstance);
 		}
 	}
 	void SoundComponent::SetDisable3D(bool value)
@@ -2578,7 +2578,7 @@ namespace wi::scene
 		{
 			_flags &= ~DISABLE_3D;
 		}
-		wi::audio::CreateSoundInstance(&soundResource.GetSound(), &soundinstance);
+		lb::audio::CreateSoundInstance(&soundResource.GetSound(), &soundinstance);
 	}
 
 	void CharacterComponent::Move(const XMFLOAT3& direction)
@@ -2653,7 +2653,7 @@ namespace wi::scene
 	}
 	XMFLOAT3 CharacterComponent::GetPositionInterpolated() const
 	{
-		return wi::math::Lerp(position_prev, position, alpha);
+		return lb::math::Lerp(position_prev, position, alpha);
 	}
 	void CharacterComponent::SetVelocity(const XMFLOAT3& value)
 	{
@@ -2708,7 +2708,7 @@ namespace wi::scene
 	{
 		return foot_placement_enabled;
 	}
-	void CharacterComponent::SetPathGoal(const XMFLOAT3& goal, const wi::VoxelGrid* voxelgrid)
+	void CharacterComponent::SetPathGoal(const XMFLOAT3& goal, const lb::VoxelGrid* voxelgrid)
 	{
 		this->goal = goal;
 		this->voxelgrid = voxelgrid;

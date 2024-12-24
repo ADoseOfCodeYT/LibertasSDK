@@ -1,7 +1,7 @@
 #pragma once
 class EditorComponent;
 
-class CameraWindow : public wi::gui::Window
+class CameraWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
@@ -9,28 +9,28 @@ public:
 	void ResetCam();
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
 	void Update();
 
 
-	wi::gui::Slider farPlaneSlider;
-	wi::gui::Slider nearPlaneSlider;
-	wi::gui::Slider fovSlider;
-	wi::gui::Slider focalLengthSlider;
-	wi::gui::Slider apertureSizeSlider;
-	wi::gui::Slider apertureShapeXSlider;
-	wi::gui::Slider apertureShapeYSlider;
-	wi::gui::Slider movespeedSlider;
-	wi::gui::Slider rotationspeedSlider;
-	wi::gui::Slider accelerationSlider;
-	wi::gui::Button resetButton;
-	wi::gui::CheckBox fpsCheckBox;
-	wi::gui::CheckBox orthoCheckBox;
+	lb::gui::Slider farPlaneSlider;
+	lb::gui::Slider nearPlaneSlider;
+	lb::gui::Slider fovSlider;
+	lb::gui::Slider focalLengthSlider;
+	lb::gui::Slider apertureSizeSlider;
+	lb::gui::Slider apertureShapeXSlider;
+	lb::gui::Slider apertureShapeYSlider;
+	lb::gui::Slider movespeedSlider;
+	lb::gui::Slider rotationspeedSlider;
+	lb::gui::Slider accelerationSlider;
+	lb::gui::Button resetButton;
+	lb::gui::CheckBox fpsCheckBox;
+	lb::gui::CheckBox orthoCheckBox;
 
-	wi::gui::Button proxyButton;
-	wi::gui::CheckBox followCheckBox;
-	wi::gui::Slider followSlider;
+	lb::gui::Button proxyButton;
+	lb::gui::CheckBox followCheckBox;
+	lb::gui::Slider followSlider;
 
 	void ResizeLayout() override;
 };

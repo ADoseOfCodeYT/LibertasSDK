@@ -12,58 +12,58 @@
 #include "IconDefinitions.h"
 
 class Editor;
-class EditorComponent : public wi::RenderPath2D
+class EditorComponent : public lb::RenderPath2D
 {
 public:
 	Editor* main = nullptr;
 
-	wi::gui::Button newSceneButton;
+	lb::gui::Button newSceneButton;
 
-	wi::gui::ComboBox newEntityCombo;
+	lb::gui::ComboBox newEntityCombo;
 
-	wi::gui::Button translateButton;
-	wi::gui::Button rotateButton;
-	wi::gui::Button scaleButton;
+	lb::gui::Button translateButton;
+	lb::gui::Button rotateButton;
+	lb::gui::Button scaleButton;
 
-	wi::gui::Button physicsButton;
+	lb::gui::Button physicsButton;
 
-	wi::gui::Button dummyButton;
+	lb::gui::Button dummyButton;
 	bool dummy_enabled = false;
 	bool dummy_male = false;
 	XMFLOAT3 dummy_pos = XMFLOAT3(0, 0, 0);
 
-	wi::gui::Button navtestButton;
+	lb::gui::Button navtestButton;
 	bool navtest_enabled = false;
-	wi::scene::PickResult navtest_start_pick;
-	wi::scene::PickResult navtest_goal_pick;
-	wi::PathQuery navtest_pathquery;
+	lb::scene::PickResult navtest_start_pick;
+	lb::scene::PickResult navtest_goal_pick;
+	lb::PathQuery navtest_pathquery;
 
-	wi::gui::Button playButton;
-	wi::gui::Button stopButton;
+	lb::gui::Button playButton;
+	lb::gui::Button stopButton;
 
-	wi::gui::Button saveButton;
-	wi::gui::Button openButton;
-	wi::gui::Button contentBrowserButton;
-	wi::gui::Button logButton;
-	wi::gui::Button profilerButton;
-	wi::gui::Button cinemaButton;
-	wi::gui::Button fullscreenButton;
-	wi::gui::Button bugButton;
-	wi::gui::Button aboutButton;
-	wi::gui::Button exitButton;
-	wi::gui::Window aboutWindow;
-	wi::gui::Label aboutLabel;
+	lb::gui::Button saveButton;
+	lb::gui::Button openButton;
+	lb::gui::Button contentBrowserButton;
+	lb::gui::Button logButton;
+	lb::gui::Button profilerButton;
+	lb::gui::Button cinemaButton;
+	lb::gui::Button fullscreenButton;
+	lb::gui::Button bugButton;
+	lb::gui::Button aboutButton;
+	lb::gui::Button exitButton;
+	lb::gui::Window aboutWindow;
+	lb::gui::Label aboutLabel;
 
 	ComponentsWindow componentsWnd;
 	ProfilerWindow profilerWnd;
 	ContentBrowserWindow contentBrowserWnd;
-	wi::gui::Window topmenuWnd;
+	lb::gui::Window topmenuWnd;
 
-	wi::gui::Button generalButton;
-	wi::gui::Button graphicsButton;
-	wi::gui::Button cameraButton;
-	wi::gui::Button materialsButton;
-	wi::gui::Button paintToolButton;
+	lb::gui::Button generalButton;
+	lb::gui::Button graphicsButton;
+	lb::gui::Button cameraButton;
+	lb::gui::Button materialsButton;
+	lb::gui::Button paintToolButton;
 
 	GeneralWindow generalWnd;
 	GraphicsWindow graphicsWnd;
@@ -71,11 +71,11 @@ public:
 	MaterialPickerWindow materialPickerWnd;
 	PaintToolWindow paintToolWnd;
 
-	wi::primitive::Ray pickRay;
-	wi::physics::PickDragOperation physicsDragOp;
+	lb::primitive::Ray pickRay;
+	lb::physics::PickDragOperation physicsDragOp;
 
-	std::unique_ptr<wi::RenderPath3D> renderPath;
-	const wi::graphics::Texture* GetGUIBlurredBackground() const override { return renderPath->GetGUIBlurredBackground(); }
+	std::unique_ptr<lb::RenderPath3D> renderPath;
+	const lb::graphics::Texture* GetGUIBlurredBackground() const override { return renderPath->GetGUIBlurredBackground(); }
 
 	void ResizeBuffers() override;
 	void ResizeLayout() override;
@@ -86,10 +86,10 @@ public:
 	void Update(float dt) override;
 	void PostUpdate() override;
 	void Render() const override;
-	void Compose(wi::graphics::CommandList cmd) const override;
+	void Compose(lb::graphics::CommandList cmd) const override;
 
-	wi::graphics::Viewport viewport3D;
-	wi::primitive::Hitbox2D viewport3D_hitbox;
+	lb::graphics::Viewport viewport3D;
+	lb::primitive::Hitbox2D viewport3D_hitbox;
 	void ResizeViewport3D();
 
 	bool camControlStart = true;
@@ -103,44 +103,44 @@ public:
 		EDITORSTENCILREF_HIGHLIGHT_MATERIAL = 0x02,
 		EDITORSTENCILREF_LAST = 0x0F,
 	};
-	wi::graphics::Texture rt_selectionOutline_MSAA;
-	wi::graphics::Texture rt_selectionOutline[2];
-	wi::graphics::Texture rt_dummyOutline;
+	lb::graphics::Texture rt_selectionOutline_MSAA;
+	lb::graphics::Texture rt_selectionOutline[2];
+	lb::graphics::Texture rt_dummyOutline;
 	float outlineTimer = 0;
 	const XMFLOAT4 selectionColor = XMFLOAT4(1, 0.6f, 0, 1);
 	const XMFLOAT4 selectionColor2 = XMFLOAT4(0, 1, 0.6f, 0.35f);
-	wi::Color inactiveEntityColor = wi::Color::fromFloat4(XMFLOAT4(1, 1, 1, 0.5f));
-	wi::Color hoveredEntityColor = wi::Color::fromFloat4(XMFLOAT4(1, 1, 1, 1));
-	wi::Color backgroundEntityColor = wi::Color::Black();
-	wi::Color dummyColor = wi::Color::White();
+	lb::Color inactiveEntityColor = lb::Color::fromFloat4(XMFLOAT4(1, 1, 1, 0.5f));
+	lb::Color hoveredEntityColor = lb::Color::fromFloat4(XMFLOAT4(1, 1, 1, 1));
+	lb::Color backgroundEntityColor = lb::Color::Black();
+	lb::Color dummyColor = lb::Color::White();
 
-	wi::graphics::Texture rt_metadataDummies_MSAA;
-	wi::graphics::Texture rt_metadataDummies;
+	lb::graphics::Texture rt_metadataDummies_MSAA;
+	lb::graphics::Texture rt_metadataDummies;
 
-	const wi::Color springDebugColor = wi::Color(255, 70, 165, 255);
-	const wi::Color ikDebugColor = wi::Color(49, 190, 103, 255);
+	const lb::Color springDebugColor = lb::Color(255, 70, 165, 255);
+	const lb::Color ikDebugColor = lb::Color(49, 190, 103, 255);
 
-	wi::graphics::Texture editor_depthbuffer;
-	wi::graphics::Texture editor_rendertarget;
+	lb::graphics::Texture editor_depthbuffer;
+	lb::graphics::Texture editor_rendertarget;
 
 	Translator translator;
-	wi::scene::PickResult hovered;
+	lb::scene::PickResult hovered;
 	bool inspector_mode = false;
-	wi::ecs::Entity grass_interaction_entity = wi::ecs::INVALID_ENTITY;
+	lb::ecs::Entity grass_interaction_entity = lb::ecs::INVALID_ENTITY;
 
 	void ClearSelected();
-	void AddSelected(wi::ecs::Entity entity, bool allow_refocus = true);
-	void AddSelected(const wi::scene::PickResult& picked, bool allow_refocus = true);
-	bool IsSelected(wi::ecs::Entity entity) const;
+	void AddSelected(lb::ecs::Entity entity, bool allow_refocus = true);
+	void AddSelected(const lb::scene::PickResult& picked, bool allow_refocus = true);
+	bool IsSelected(lb::ecs::Entity entity) const;
 	bool selectAll = false;
-	wi::unordered_set<wi::ecs::Entity> selectAllStorage;
+	lb::unordered_set<lb::ecs::Entity> selectAllStorage;
 
 	bool bone_picking = false;
 	void CheckBonePickingEnabled();
 
 	void UpdateDynamicWidgets();
 
-	wi::Archive clipboard;
+	lb::Archive clipboard;
 
 	enum HistoryOperationType
 	{
@@ -153,17 +153,17 @@ public:
 		HISTORYOP_NONE
 	};
 
-	void RecordSelection(wi::Archive& archive) const;
-	void RecordEntity(wi::Archive& archive, wi::ecs::Entity entity);
-	void RecordEntity(wi::Archive& archive, const wi::vector<wi::ecs::Entity>& entities);
+	void RecordSelection(lb::Archive& archive) const;
+	void RecordEntity(lb::Archive& archive, lb::ecs::Entity entity);
+	void RecordEntity(lb::Archive& archive, const lb::vector<lb::ecs::Entity>& entities);
 
 	void ResetHistory();
-	wi::Archive& AdvanceHistory();
+	lb::Archive& AdvanceHistory();
 	void ConsumeHistoryOperation(bool undo);
 
-	wi::vector<std::string> recentFilenames;
+	lb::vector<std::string> recentFilenames;
 	size_t maxRecentFilenames = 10;
-	wi::vector<std::string> recentFolders;
+	lb::vector<std::string> recentFolders;
 	size_t maxRecentFolders = 8;
 	void RegisterRecentlyUsed(const std::string& filename);
 
@@ -172,12 +172,12 @@ public:
 	void SaveAs();
 	bool deleting = false;
 
-	wi::graphics::Texture CreateThumbnailScreenshot() const;
+	lb::graphics::Texture CreateThumbnailScreenshot() const;
 
 	std::string save_text_message = "";
 	std::string save_text_filename = "";
 	float save_text_alpha = 0; // seconds until save text disappears
-	wi::Color save_text_color = wi::Color::White();
+	lb::Color save_text_color = lb::Color::White();
 	void PostSaveText(const std::string& message, const std::string& filename = "", float time_seconds = 4);
 
 	std::string last_script_path;
@@ -185,50 +185,50 @@ public:
 	struct EditorScene
 	{
 		std::string path;
-		wi::scene::Scene scene;
+		lb::scene::Scene scene;
 		XMFLOAT3 cam_move = {};
-		wi::scene::CameraComponent camera;
-		wi::scene::TransformComponent camera_transform;
-		wi::scene::TransformComponent camera_target;
-		wi::vector<wi::Archive> history;
+		lb::scene::CameraComponent camera;
+		lb::scene::TransformComponent camera_transform;
+		lb::scene::TransformComponent camera_target;
+		lb::vector<lb::Archive> history;
 		int historyPos = -1;
-		wi::gui::Button tabSelectButton;
-		wi::gui::Button tabCloseButton;
+		lb::gui::Button tabSelectButton;
+		lb::gui::Button tabCloseButton;
 	};
-	wi::vector<std::unique_ptr<EditorScene>> scenes;
+	lb::vector<std::unique_ptr<EditorScene>> scenes;
 	int current_scene = 0;
 	EditorScene& GetCurrentEditorScene() { return *scenes[current_scene].get(); }
 	const EditorScene& GetCurrentEditorScene() const { return *scenes[current_scene].get(); }
-	wi::scene::Scene& GetCurrentScene() { return scenes[current_scene].get()->scene; }
-	const wi::scene::Scene& GetCurrentScene() const { return scenes[current_scene].get()->scene; }
+	lb::scene::Scene& GetCurrentScene() { return scenes[current_scene].get()->scene; }
+	const lb::scene::Scene& GetCurrentScene() const { return scenes[current_scene].get()->scene; }
 	void SetCurrentScene(int index);
 	void RefreshSceneList();
 	void NewScene();
 
 	void FocusCameraOnSelected();
 
-	wi::Localization default_localization;
-	wi::Localization current_localization;
+	lb::Localization default_localization;
+	lb::Localization current_localization;
 	void SetDefaultLocalization();
-	void SetLocalization(wi::Localization& loc);
+	void SetLocalization(lb::Localization& loc);
 	void ReloadLanguage();
 
 	struct FontData
 	{
 		std::string name;
-		wi::vector<uint8_t> filedata;
+		lb::vector<uint8_t> filedata;
 	};
-	wi::vector<FontData> font_datas;
+	lb::vector<FontData> font_datas;
 
-	wi::jobsystem::context loadmodel_workload;
-	wi::SpriteFont loadmodel_font;
+	lb::jobsystem::context loadmodel_workload;
+	lb::SpriteFont loadmodel_font;
 };
 
-class Editor : public wi::Application
+class Editor : public lb::Application
 {
 public:
 	EditorComponent renderComponent;
-	wi::config::File config;
+	lb::config::File config;
 
 	void Initialize() override;
 

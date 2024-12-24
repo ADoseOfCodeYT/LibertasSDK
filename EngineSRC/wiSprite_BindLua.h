@@ -3,18 +3,18 @@
 #include "wiLuna.h"
 #include "wiSprite.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 	class Sprite_BindLua
 	{
 	public:
-		wi::Sprite sprite;
+		lb::Sprite sprite;
 
 		inline static constexpr char className[] = "Sprite";
 		static Luna<Sprite_BindLua>::FunctionType methods[];
 		static Luna<Sprite_BindLua>::PropertyType properties[];
 
-		Sprite_BindLua(const wi::Sprite& sprite);
+		Sprite_BindLua(const lb::Sprite& sprite);
 		Sprite_BindLua(lua_State* L);
 
 		int SetParams(lua_State* L);

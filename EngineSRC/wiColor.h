@@ -2,7 +2,7 @@
 #include "CommonInclude.h"
 #include "wiMath.h"
 
-namespace wi
+namespace lb
 {
 	struct Color
 	{
@@ -109,7 +109,7 @@ namespace wi
 
 		static constexpr Color lerp(Color a, Color b, float i)
 		{
-			return fromFloat4(wi::math::Lerp(a.toFloat4(), b.toFloat4(), i));
+			return fromFloat4(lb::math::Lerp(a.toFloat4(), b.toFloat4(), i));
 		}
 
 		static constexpr Color Red() { return Color(255, 0, 0, 255); }
@@ -180,7 +180,7 @@ namespace wi
 
 		static constexpr Color16 lerp(Color16 a, Color16 b, float i)
 		{
-			return fromFloat4(wi::math::Lerp(a.toFloat4(), b.toFloat4(), i));
+			return fromFloat4(lb::math::Lerp(a.toFloat4(), b.toFloat4(), i));
 		}
 	};
 }

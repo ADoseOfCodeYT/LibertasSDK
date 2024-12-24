@@ -21,9 +21,9 @@
 #include <atomic>
 #include <sstream>
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi::profiler
+namespace lb::profiler
 {
 	bool ENABLED = false;
 	bool ENABLED_REQUEST = false;
@@ -36,8 +36,8 @@ namespace wi::profiler
 	std::atomic<uint32_t> nextQuery{ 0 };
 	uint32_t queryheap_idx = 0;
 	bool drawn_this_frame = false;
-	wi::Color background_color = wi::Color(20, 20, 20, 230);
-	wi::Color text_color = wi::Color::White();
+	lb::Color background_color = lb::Color(20, 20, 20, 230);
+	lb::Color text_color = lb::Color::White();
 
 #if PERFORMANCEAPI_ENABLED
 	PerformanceAPI_ModuleHandle superluminal_handle = {};
@@ -53,14 +53,14 @@ namespace wi::profiler
 		float time = 0;
 		CommandList cmd;
 
-		wi::Timer cpuTimer;
+		lb::Timer cpuTimer;
 
 		int gpuBegin[arraysize(queryResultBuffer)];
 		int gpuEnd[arraysize(queryResultBuffer)];
 
 		bool IsCPURange() const { return !cmd.IsValid(); }
 	};
-	wi::unordered_map<size_t, Range> ranges;
+	lb::unordered_map<size_t, Range> ranges;
 
 	void BeginFrame()
 	{
@@ -79,7 +79,7 @@ namespace wi::profiler
 
 			ranges.reserve(100);
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = lb::graphics::GetDevice();
 
 			GPUQueryHeapDesc desc;
 			desc.type = GpuQueryType::TIMESTAMP;
@@ -101,14 +101,14 @@ namespace wi::profiler
 			superluminal_handle = PerformanceAPI_LoadFrom(L"PerformanceAPI.dll", &superluminal_functions);
 			if (superluminal_handle)
 			{
-				wi::backlog::post("[wi::profiler] Superluminal Performance API loaded");
+				lb::backlog::post("[lb::profiler] Superluminal Performance API loaded");
 			}
 #endif // PERFORMANCEAPI_ENABLED
 		}
 
 		cpu_frame = BeginRangeCPU("CPU Frame");
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		CommandList cmd = device->BeginCommandList();
 		queryheap_idx = device->GetBufferIndex();
 
@@ -165,7 +165,7 @@ namespace wi::profiler
 		if (!ENABLED || !initialized)
 			return;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		// note: read the GPU Frame end range manually because it will be on a separate command list than start point:
 		auto& gpu_range = ranges[gpu_frame];
@@ -198,7 +198,7 @@ namespace wi::profiler
 		}
 #endif // PERFORMANCEAPI_ENABLED
 
-		range_id id = wi::helper::string_hash(name);
+		range_id id = lb::helper::string_hash(name);
 
 		lock.lock();
 
@@ -206,7 +206,7 @@ namespace wi::profiler
 		size_t differentiator = 0;
 		while (ranges[id].in_use)
 		{
-			wi::helper::hash_combine(id, differentiator++);
+			lb::helper::hash_combine(id, differentiator++);
 		}
 		ranges[id].in_use = true;
 		ranges[id].name = name;
@@ -221,7 +221,7 @@ namespace wi::profiler
 		if (!ENABLED || !initialized)
 			return 0;
 
-		range_id id = wi::helper::string_hash(name);
+		range_id id = lb::helper::string_hash(name);
 
 		lock.lock();
 
@@ -229,13 +229,13 @@ namespace wi::profiler
 		size_t differentiator = 0;
 		while (ranges[id].in_use)
 		{
-			wi::helper::hash_combine(id, differentiator++);
+			lb::helper::hash_combine(id, differentiator++);
 		}
 		ranges[id].in_use = true;
 		ranges[id].name = name;
 		ranges[id].cmd = cmd;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		ranges[id].gpuBegin[queryheap_idx] = nextQuery.fetch_add(1);
 		device->QueryEnd(&queryHeap, ranges[id].gpuBegin[queryheap_idx], cmd);
 
@@ -266,7 +266,7 @@ namespace wi::profiler
 			}
 			else
 			{
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = lb::graphics::GetDevice();
 				ranges[id].gpuEnd[queryheap_idx] = nextQuery.fetch_add(1);
 				device->QueryEnd(&queryHeap, it->second.gpuEnd[queryheap_idx], it->second.cmd);
 			}
@@ -289,15 +289,15 @@ namespace wi::profiler
 	float gpu_memory_graph[graph_vertex_count] = {};
 	void LoadShaders()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		PipelineStateDesc desc;
-		desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-		desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-		desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-		desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHDISABLED);
-		desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_WIRE_SMOOTH);
-		desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+		desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+		desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+		desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+		desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEPTHDISABLED);
+		desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_WIRE_SMOOTH);
+		desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 		desc.pt = PrimitiveTopology::LINESTRIP;
 		bool success = device->CreatePipelineState(&desc, &pso_linestrip);
 
@@ -311,10 +311,10 @@ namespace wi::profiler
 		uint32_t num_hits = 0;
 		float total_time = 0;
 	};
-	wi::unordered_map<std::string, Hits> time_cache_cpu;
-	wi::unordered_map<std::string, Hits> time_cache_gpu;
+	lb::unordered_map<std::string, Hits> time_cache_cpu;
+	lb::unordered_map<std::string, Hits> time_cache_gpu;
 	void DrawData(
-		const wi::Canvas& canvas,
+		const lb::Canvas& canvas,
 		float x,
 		float y,
 		CommandList cmd,
@@ -329,8 +329,8 @@ namespace wi::profiler
 		const float graph_left_offset = 45;
 		const float graph_padding_y = 40;
 
-		wi::image::SetCanvas(canvas);
-		wi::font::SetCanvas(canvas);
+		lb::image::SetCanvas(canvas);
+		lb::font::SetCanvas(canvas);
 
 		std::stringstream ss("");
 		ss.precision(2);
@@ -388,14 +388,14 @@ namespace wi::profiler
 			x.second.total_time = 0;
 		}
 
-		wi::font::Params params = wi::font::Params(x, y + (graph_size.y + graph_padding_y) * 2, wi::font::WIFONTSIZE_DEFAULT - 6, wi::font::WIFALIGN_LEFT, wi::font::WIFALIGN_TOP, text_color);
+		lb::font::Params params = lb::font::Params(x, y + (graph_size.y + graph_padding_y) * 2, lb::font::WIFONTSIZE_DEFAULT - 6, lb::font::WIFALIGN_LEFT, lb::font::WIFALIGN_TOP, text_color);
 
 		// Background:
-		wi::image::Params fx;
+		lb::image::Params fx;
 		fx.pos.x = x - 10;
 		fx.pos.y = y - 10;
-		fx.siz.x = std::max(graph_size.x, (float)wi::font::TextWidth(ss.str(), params)) + 200;
-		fx.siz.y = (float)wi::font::TextHeight(ss.str(), params) + (graph_size.y + graph_padding_y) * 2 + 20;
+		fx.siz.x = std::max(graph_size.x, (float)lb::font::TextWidth(ss.str(), params)) + 200;
+		fx.siz.y = (float)lb::font::TextHeight(ss.str(), params) + (graph_size.y + graph_padding_y) * 2 + 20;
 		fx.color = background_color;
 
 		if (colorspace != ColorSpace::SRGB)
@@ -404,21 +404,21 @@ namespace wi::profiler
 			fx.enableLinearOutputMapping(9);
 		}
 
-		wi::image::Draw(nullptr, fx, cmd);
-		wi::font::Draw(ss.str(), params, cmd);
+		lb::image::Draw(nullptr, fx, cmd);
+		lb::font::Draw(ss.str(), params, cmd);
 
 
 		// Graph:
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
-			wi::graphics::GraphicsDevice::MemoryUsage gpu_memory_usage = device->GetMemoryUsage();
-			wi::helper::MemoryUsage cpu_memory_usage = wi::helper::GetMemoryUsage();
+			GraphicsDevice* device = lb::graphics::GetDevice();
+			lb::graphics::GraphicsDevice::MemoryUsage gpu_memory_usage = device->GetMemoryUsage();
+			lb::helper::MemoryUsage cpu_memory_usage = lb::helper::GetMemoryUsage();
 
 			static bool shaders_loaded = false;
 			if (!shaders_loaded)
 			{
 				shaders_loaded = true;
-				static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+				static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 				LoadShaders();
 			}
 
@@ -552,36 +552,36 @@ namespace wi::profiler
 			device->BindPipelineState(&pso_linelist, cmd);
 			device->Draw(sizeof(graph_memory_info) / sizeof(Vertex), graph_vertex_count * 4 + sizeof(graph_info) / sizeof(Vertex), cmd);
 
-			wi::font::Params params;
+			lb::font::Params params;
 			params.size = 10;
-			params.v_align = wi::font::WIFALIGN_CENTER;
+			params.v_align = lb::font::WIFALIGN_CENTER;
 			params.color = text_color;
 			params.position.x = x;
 			params.position.y = y;
 			std::stringstream ss;
 			ss.precision(1);
 			ss << std::fixed << graph_max << " ms";
-			wi::font::Draw(ss.str(), params, cmd);
+			lb::font::Draw(ss.str(), params, cmd);
 			params.position.y = y + graph_size.y - (16.6f / graph_max) * graph_size.y;
-			wi::font::Draw("16.6 ms", params, cmd);
+			lb::font::Draw("16.6 ms", params, cmd);
 
 			params.position.x = x + graph_left_offset - 40;
 			params.position.y = memory_graph_y;
 			ss.str("");
 			ss << graph_max_memory << " GB";
-			wi::font::Draw(ss.str(), params, cmd);
+			lb::font::Draw(ss.str(), params, cmd);
 			params.position.y = memory_graph_y + graph_size.y - 0.5f * graph_size.y;
 			ss.str("");
 			ss << graph_max_memory * 0.5f << " GB";
-			wi::font::Draw(ss.str(), params, cmd);
+			lb::font::Draw(ss.str(), params, cmd);
 
 			params.position.x = x + graph_size.x + 5;
 			params.position.y = y + graph_size.y - cpu_graph[0] / graph_max * graph_size.y;
-			params.color = wi::Color::fromFloat4(XMFLOAT4(1, 0.2f, 0.2f, 1));
+			params.color = lb::Color::fromFloat4(XMFLOAT4(1, 0.2f, 0.2f, 1));
 			ss.str("");
 			ss.clear();
 			ss << "cpu: " << cpu_graph[0] << " ms";
-			wi::font::Draw(ss.str(), params, cmd);
+			lb::font::Draw(ss.str(), params, cmd);
 
 			float cpu_position = params.position.y;
 			params.position.x = x + graph_size.x + 5;
@@ -597,19 +597,19 @@ namespace wi::profiler
 					params.position.y = cpu_position + params.size;
 				}
 			}
-			params.color = wi::Color::fromFloat4(XMFLOAT4(0.2f, 1, 0.2f, 1));
+			params.color = lb::Color::fromFloat4(XMFLOAT4(0.2f, 1, 0.2f, 1));
 			ss.str("");
 			ss.clear();
 			ss << "gpu: " << gpu_graph[0] << " ms";
-			wi::font::Draw(ss.str(), params, cmd);
+			lb::font::Draw(ss.str(), params, cmd);
 
 			params.position.x = x + graph_left_offset + graph_size.x - graph_left_offset + 5;
 			params.position.y = memory_graph_y + graph_size.y - cpu_memory_graph[0] / graph_max_memory * graph_size.y;
-			params.color = wi::Color::fromFloat4(XMFLOAT4(1, 0.2f, 1, 1));
+			params.color = lb::Color::fromFloat4(XMFLOAT4(1, 0.2f, 1, 1));
 			ss.str("");
 			ss.clear();
 			ss << "RAM: " << cpu_memory_graph[0] << " GB";
-			wi::font::Draw(ss.str(), params, cmd);
+			lb::font::Draw(ss.str(), params, cmd);
 
 			cpu_position = params.position.y;
 			params.position.y = memory_graph_y + graph_size.y - gpu_memory_graph[0] / graph_max_memory * graph_size.y;
@@ -624,26 +624,26 @@ namespace wi::profiler
 					params.position.y = cpu_position + params.size;
 				}
 			}
-			params.color = wi::Color::fromFloat4(XMFLOAT4(1, 1, 0.2f, 1));
+			params.color = lb::Color::fromFloat4(XMFLOAT4(1, 1, 0.2f, 1));
 			ss.str("");
 			ss.clear();
 			ss << "VRAM: " << gpu_memory_graph[0] << " GB";
-			wi::font::Draw(ss.str(), params, cmd);
+			lb::font::Draw(ss.str(), params, cmd);
 
-			params.h_align = wi::font::WIFALIGN_CENTER;
+			params.h_align = lb::font::WIFALIGN_CENTER;
 			params.color = text_color;
 			params.position.x = x + graph_left_offset + (graph_size.x - graph_left_offset) * 0.5f;
 			params.position.y = y + graph_size.y + 10;
-			wi::font::Draw("60 frames", params, cmd);
+			lb::font::Draw("60 frames", params, cmd);
 			params.position.x = x + graph_size.x;
-			wi::font::Draw("current frame", params, cmd);
+			lb::font::Draw("current frame", params, cmd);
 
 			// Memory graph:
 			params.position.x = x + graph_left_offset + (graph_size.x - graph_left_offset) * 0.5f;
 			params.position.y = memory_graph_y + graph_size.y + 10;
-			wi::font::Draw("60 frames", params, cmd);
+			lb::font::Draw("60 frames", params, cmd);
 			params.position.x = x + graph_left_offset + graph_size.x - graph_left_offset;
-			wi::font::Draw("current frame", params, cmd);
+			lb::font::Draw("current frame", params, cmd);
 		}
 	}
 	void DisableDrawForThisFrame()
@@ -663,11 +663,11 @@ namespace wi::profiler
 		return ENABLED;
 	}
 
-	void SetBackgroundColor(wi::Color color)
+	void SetBackgroundColor(lb::Color color)
 	{
 		background_color = color;
 	}
-	void SetTextColor(wi::Color color)
+	void SetTextColor(lb::Color color)
 	{
 		text_color = color;
 	}

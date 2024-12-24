@@ -5,7 +5,7 @@
 #include <vector>
 #include <unordered_map>
 
-namespace wi::config
+namespace lb::config
 {
 	struct File;
 	struct Section

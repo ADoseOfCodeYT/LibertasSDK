@@ -5,7 +5,7 @@
 #include <cassert>
 #include <algorithm>
 
-namespace wi::allocator
+namespace lb::allocator
 {
 	struct LinearAllocator
 	{
@@ -43,10 +43,10 @@ namespace wi::allocator
 	{
 		struct Block
 		{
-			wi::vector<uint8_t> mem;
+			lb::vector<uint8_t> mem;
 		};
-		wi::vector<Block> blocks;
-		wi::vector<T*> free_list;
+		lb::vector<Block> blocks;
+		lb::vector<T*> free_list;
 
 		template<typename... ARG>
 		inline T* allocate(ARG&&... args)

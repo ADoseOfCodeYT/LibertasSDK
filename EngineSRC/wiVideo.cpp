@@ -8,14 +8,14 @@
 
 //#define DEBUG_DUMP_H264
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi::video
+namespace lb::video
 {
 	bool CreateVideo(const std::string& filename, Video* video)
 	{
-		wi::vector<uint8_t> filedata;
-		if (!wi::helper::FileRead(filename, filedata))
+		lb::vector<uint8_t> filedata;
+		if (!lb::helper::FileRead(filename, filedata))
 			return false;
 		return CreateVideo(filedata.data(), filedata.size(), video);
 	}
@@ -76,7 +76,7 @@ namespace wi::video
 				MP4D_track_t& track = mp4.track[ntrack];
 
 #ifdef DEBUG_DUMP_H264
-				wi::vector<uint8_t> dump;
+				lb::vector<uint8_t> dump;
 				size_t dump_offset = 0;
 #endif // DEBUG_DUMP_H264
 
@@ -88,10 +88,10 @@ namespace wi::video
 						video->profile = VideoProfile::H264;
 						break;
 					case MP4_OBJECT_TYPE_HEVC:
-						wi::helper::messageBox("H265 (HEVC) video format is not supported yet!", "Error!");
+						lb::helper::messageBox("H265 (HEVC) video format is not supported yet!", "Error!");
 						return false;
 					default:
-						wi::helper::messageBox("Unknown video format!", "Error!");
+						lb::helper::messageBox("Unknown video format!", "Error!");
 						return false;
 					}
 
@@ -289,7 +289,7 @@ namespace wi::video
 					}
 
 #ifdef DEBUG_DUMP_H264
-					wi::helper::FileWrite("dump.h264", dump.data(), dump.size());
+					lb::helper::FileWrite("dump.h264", dump.data(), dump.size());
 #endif // DEBUG_DUMP_H264
 
 					video->frame_display_order.resize(video->frames_infos.size());
@@ -353,17 +353,17 @@ namespace wi::video
 					bd.misc_flags = ResourceMiscFlag::VIDEO_DECODE;
 					success = device->CreateBuffer2(&bd, copy_video_track, &video->data_stream);
 					assert(success);
-					device->SetName(&video->data_stream, "wi::Video::data_stream");
+					device->SetName(&video->data_stream, "lb::Video::data_stream");
 				}
 				else if (track.handler_type == MP4D_HANDLER_TYPE_SOUN)
 				{
-					wi::backlog::post("Audio from video file is not implemented yet!");
+					lb::backlog::post("Audio from video file is not implemented yet!");
 				}
 			}
 		}
 		else
 		{
-			wi::helper::messageBox("MP4 parsing failure!", "Error!");
+			lb::helper::messageBox("MP4 parsing failure!", "Error!");
 			return false;
 		}
 		MP4D_close(&mp4);
@@ -378,7 +378,7 @@ namespace wi::video
 		GraphicsDevice* device = GetDevice();
 		if (!device->CheckCapability(GraphicsDeviceCapability::VIDEO_DECODE_H264))
 		{
-			wi::helper::messageBox("Video decoding is not supported by your GPU!\nYou can attempt to update graphics driver.\nThere is no CPU decoding implemented yet, video will be disabled!", "Warning!");
+			lb::helper::messageBox("Video decoding is not supported by your GPU!\nYou can attempt to update graphics driver.\nThere is no CPU decoding implemented yet, video will be disabled!", "Warning!");
 			return false;
 		}
 
@@ -638,7 +638,7 @@ namespace wi::video
 		instance->output_textures_free.pop_back();
 		output.display_order = video->frames_infos[std::max(instance->current_frame - 1, 0)].display_order;
 
-		wi::renderer::YUV_to_RGB(
+		lb::renderer::YUV_to_RGB(
 			instance->dpb.texture,
 			instance->dpb.subresources_luminance[instance->dpb.current_slot],
 			instance->dpb.subresources_chrominance[instance->dpb.current_slot],
@@ -648,7 +648,7 @@ namespace wi::video
 
 		if (has_flag(instance->flags, VideoInstance::Flags::Mipmapped))
 		{
-			wi::renderer::GenerateMipChain(output.texture, wi::renderer::MIPGENFILTER_LINEAR, cmd);
+			lb::renderer::GenerateMipChain(output.texture, lb::renderer::MIPGENFILTER_LINEAR, cmd);
 		}
 
 		instance->output_textures_used.push_back(std::move(output));

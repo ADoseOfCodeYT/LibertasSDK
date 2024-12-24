@@ -10,7 +10,7 @@
 
 #pragma comment(lib,"Hid.lib")
 
-namespace wi::input::rawinput
+namespace lb::input::rawinput
 {
 	// Simple LinearAllocator that will enforce data alignment
 	class AlignedLinearAllocator
@@ -72,19 +72,19 @@ namespace wi::input::rawinput
 	};
 
 	AlignedLinearAllocator allocator;
-	wi::vector<uint8_t*> input_messages;
+	lb::vector<uint8_t*> input_messages;
 
-	wi::input::KeyboardState keyboard;
-	wi::input::MouseState mouse;
+	lb::input::KeyboardState keyboard;
+	lb::input::MouseState mouse;
 
 	struct Internal_ControllerState
 	{
 		HANDLE handle = NULL;
 		bool is_xinput = false;
 		std::wstring name;
-		wi::input::ControllerState state;
+		lb::input::ControllerState state;
 	};
-	wi::vector<Internal_ControllerState> controllers;
+	lb::vector<Internal_ControllerState> controllers;
 
 	void Initialize()
 	{
@@ -294,12 +294,12 @@ namespace wi::input::rawinput
 				);
 				assert(status == HIDP_STATUS_SUCCESS);
 
-				wi::input::ControllerState& controller = internal_controller.state;
+				lb::input::ControllerState& controller = internal_controller.state;
 
 				for (ULONG i = 0; i < numberOfButtons; i++)
 				{
 					int button = usage[i] - pButtonCaps->Range.UsageMin;
-					controller.buttons |= 1 << (button + wi::input::GAMEPAD_BUTTON_1 - wi::input::GAMEPAD_RANGE_START - 1);
+					controller.buttons |= 1 << (button + lb::input::GAMEPAD_BUTTON_1 - lb::input::GAMEPAD_RANGE_START - 1);
 				}
 
 				for (USHORT i = 0; i < Caps.NumberInputValueCaps; i++)
@@ -352,7 +352,7 @@ namespace wi::input::rawinput
 						case POV_UP:
 						case POV_UPRIGHT:
 						case POV_LEFTUP:
-							controller.buttons |= 1 << (wi::input::GAMEPAD_BUTTON_UP - wi::input::GAMEPAD_RANGE_START - 1);
+							controller.buttons |= 1 << (lb::input::GAMEPAD_BUTTON_UP - lb::input::GAMEPAD_RANGE_START - 1);
 							break;
 						}
 						switch (pov)
@@ -360,7 +360,7 @@ namespace wi::input::rawinput
 						case POV_RIGHT:
 						case POV_UPRIGHT:
 						case POV_RIGHTDOWN:
-							controller.buttons |= 1 << (wi::input::GAMEPAD_BUTTON_RIGHT - wi::input::GAMEPAD_RANGE_START - 1);
+							controller.buttons |= 1 << (lb::input::GAMEPAD_BUTTON_RIGHT - lb::input::GAMEPAD_RANGE_START - 1);
 							break;
 						}
 						switch (pov)
@@ -368,7 +368,7 @@ namespace wi::input::rawinput
 						case POV_DOWN:
 						case POV_RIGHTDOWN:
 						case POV_DOWNLEFT:
-							controller.buttons |= 1 << (wi::input::GAMEPAD_BUTTON_DOWN - wi::input::GAMEPAD_RANGE_START - 1);
+							controller.buttons |= 1 << (lb::input::GAMEPAD_BUTTON_DOWN - lb::input::GAMEPAD_RANGE_START - 1);
 							break;
 						}
 						switch (pov)
@@ -376,7 +376,7 @@ namespace wi::input::rawinput
 						case POV_LEFT:
 						case POV_DOWNLEFT:
 						case POV_LEFTUP:
-							controller.buttons |= 1 << (wi::input::GAMEPAD_BUTTON_LEFT - wi::input::GAMEPAD_RANGE_START - 1);
+							controller.buttons |= 1 << (lb::input::GAMEPAD_BUTTON_LEFT - lb::input::GAMEPAD_RANGE_START - 1);
 							break;
 						}
 					}
@@ -392,11 +392,11 @@ namespace wi::input::rawinput
 
 	void Update()
 	{
-		keyboard = wi::input::KeyboardState();
-		mouse = wi::input::MouseState();
+		keyboard = lb::input::KeyboardState();
+		mouse = lb::input::MouseState();
 		for (auto& internal_controller : controllers)
 		{
-			internal_controller.state = wi::input::ControllerState();
+			internal_controller.state = lb::input::ControllerState();
 		}
 
 		// Enumerate devices to detect lost devices:
@@ -504,12 +504,12 @@ namespace wi::input::rawinput
 		}
 	}
 
-	void GetKeyboardState(wi::input::KeyboardState* state)
+	void GetKeyboardState(lb::input::KeyboardState* state)
 	{
 		*state = keyboard;
 	}
 
-	void GetMouseState(wi::input::MouseState* state)
+	void GetMouseState(lb::input::MouseState* state)
 	{
 		*state = mouse;
 	}
@@ -518,7 +518,7 @@ namespace wi::input::rawinput
 	{
 		return (int)controllers.size();
 	}
-	bool GetControllerState(wi::input::ControllerState* state, int index)
+	bool GetControllerState(lb::input::ControllerState* state, int index)
 	{
 		if (index < (int)controllers.size() && controllers[index].handle && !controllers[index].is_xinput)
 		{
@@ -530,7 +530,7 @@ namespace wi::input::rawinput
 		}
 		return false;
 	}
-	void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index)
+	void SetControllerFeedback(const lb::input::ControllerFeedback& data, int index)
 	{
 		if (index < (int)controllers.size() && controllers[index].handle && !controllers[index].is_xinput)
 		{
@@ -560,14 +560,14 @@ namespace wi::input::rawinput
 }
 
 #else
-namespace wi::input::rawinput
+namespace lb::input::rawinput
 {
 	void Initialize() {}
 	void Update() {}
-	void GetKeyboardState(wi::input::KeyboardState* state) {}
-	void GetMouseState(wi::input::MouseState* state) {}
+	void GetKeyboardState(lb::input::KeyboardState* state) {}
+	void GetMouseState(lb::input::MouseState* state) {}
 	int GetMaxControllerCount() { return 0; }
-	bool GetControllerState(wi::input::ControllerState* state, int index) { return false; }
-	void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index) {}
+	bool GetControllerState(lb::input::ControllerState* state, int index) { return false; }
+	void SetControllerFeedback(const lb::input::ControllerFeedback& data, int index) {}
 }
 #endif // PLATFORM_WINDOWS_DESKTOP

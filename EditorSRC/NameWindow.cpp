@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "NameWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void NameWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_NAME " Name", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_NAME " Name", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(360, 60));
 
 	closeButton.SetTooltip("Delete NameComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -34,8 +34,8 @@ void NameWindow::Create(EditorComponent* _editor)
 	nameInput.SetDescription("Name: ");
 	nameInput.SetPos(XMFLOAT2(x, y));
 	nameInput.SetSize(XMFLOAT2(siz, hei));
-	nameInput.OnInputAccepted([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	nameInput.OnInputAccepted([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			NameComponent* name = scene.names.GetComponent(x.entity);
@@ -78,7 +78,7 @@ void NameWindow::SetEntity(Entity entity)
 
 void NameWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 
 	nameInput.SetPos(XMFLOAT2(60, 4));
 	nameInput.SetSize(XMFLOAT2(GetSize().x - 65, nameInput.GetSize().y));

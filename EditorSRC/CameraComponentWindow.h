@@ -1,33 +1,33 @@
 #pragma once
 class EditorComponent;
 
-class CameraPreview : public wi::gui::Widget
+class CameraPreview : public lb::gui::Widget
 {
 public:
-	wi::RenderPath3D renderpath;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
+	lb::RenderPath3D renderpath;
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
 
 	void RenderPreview();
 
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 };
 
-class CameraComponentWindow : public wi::gui::Window
+class CameraComponentWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::Slider farPlaneSlider;
-	wi::gui::Slider nearPlaneSlider;
-	wi::gui::Slider fovSlider;
-	wi::gui::Slider focalLengthSlider;
-	wi::gui::Slider apertureSizeSlider;
-	wi::gui::Slider apertureShapeXSlider;
-	wi::gui::Slider apertureShapeYSlider;
+	lb::gui::Slider farPlaneSlider;
+	lb::gui::Slider nearPlaneSlider;
+	lb::gui::Slider fovSlider;
+	lb::gui::Slider focalLengthSlider;
+	lb::gui::Slider apertureSizeSlider;
+	lb::gui::Slider apertureShapeXSlider;
+	lb::gui::Slider apertureShapeYSlider;
 
 	CameraPreview preview;
 

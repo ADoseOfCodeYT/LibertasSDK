@@ -37,9 +37,9 @@ static std::atomic<uint32_t> number_of_heap_allocations{ 0 };
 static std::atomic<size_t> size_of_heap_allocations{ 0 };
 #endif // LIBERTAS_ENGINE_HEAP_ALLOCATION_COUNTER
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi
+namespace lb
 {
 
 	void Application::Initialize()
@@ -50,17 +50,17 @@ namespace wi
 		}
 		initialized = true;
 
-		wi::initializer::InitializeComponentsAsync();
+		lb::initializer::InitializeComponentsAsync();
 
-		alwaysactive = wi::arguments::HasArgument("alwaysactive");
+		alwaysactive = lb::arguments::HasArgument("alwaysactive");
 
-		// Note: lua is always initialized immediately on main thread by wi::initializer, so this is safe to do:
-		assert(wi::initializer::IsInitializeFinished(wi::initializer::INITIALIZED_SYSTEM_LUA));
-		Luna<wi::lua::Application_BindLua>::push_global(wi::lua::GetLuaState(), "main", this);
-		Luna<wi::lua::Application_BindLua>::push_global(wi::lua::GetLuaState(), "application", this);
+		// Note: lua is always initialized immediately on main thread by lb::initializer, so this is safe to do:
+		assert(lb::initializer::IsInitializeFinished(lb::initializer::INITIALIZED_SYSTEM_LUA));
+		Luna<lb::lua::Application_BindLua>::push_global(lb::lua::GetLuaState(), "main", this);
+		Luna<lb::lua::Application_BindLua>::push_global(lb::lua::GetLuaState(), "application", this);
 	}
 
-	void Application::ActivatePath(RenderPath* component, float fadeSeconds, wi::Color fadeColor)
+	void Application::ActivatePath(RenderPath* component, float fadeSeconds, lb::Color fadeColor)
 	{
 		if (component != nullptr)
 		{
@@ -94,7 +94,7 @@ namespace wi
 			initialized = true;
 		}
 
-		wi::font::UpdateAtlas(canvas.GetDPIScaling());
+		lb::font::UpdateAtlas(canvas.GetDPIScaling());
 
 		ColorSpace colorspace = graphicsDevice->GetSwapChainColorSpace(&swapChain);
 		if (colorspace == ColorSpace::HDR10_ST2084)
@@ -120,7 +120,7 @@ namespace wi
 			rendertarget = {};
 		}
 
-		if (!wi::initializer::IsInitializeFinished())
+		if (!lb::initializer::IsInitializeFinished())
 		{
 			// Until engine is not loaded, present initialization screen...
 			CommandList cmd = graphicsDevice->BeginCommandList();
@@ -139,9 +139,9 @@ namespace wi
 			viewport.width = (float)swapChain.desc.width;
 			viewport.height = (float)swapChain.desc.height;
 			graphicsDevice->BindViewports(1, &viewport, cmd);
-			if (wi::initializer::IsInitializeFinished(wi::initializer::INITIALIZED_SYSTEM_FONT))
+			if (lb::initializer::IsInitializeFinished(lb::initializer::INITIALIZED_SYSTEM_FONT))
 			{
-				wi::backlog::DrawOutputText(canvas, cmd, colorspace);
+				lb::backlog::DrawOutputText(canvas, cmd, colorspace);
 			}
 			graphicsDevice->RenderPassEnd(cmd);
 
@@ -149,10 +149,10 @@ namespace wi
 			{
 				// In HDR10, we perform a final mapping from linear to HDR10, into the swapchain
 				graphicsDevice->RenderPassBegin(&swapChain, cmd);
-				wi::image::Params fx;
+				lb::image::Params fx;
 				fx.enableFullScreen();
 				fx.enableHDR10OutputMapping();
-				wi::image::Draw(&rendertarget, fx, cmd);
+				lb::image::Draw(&rendertarget, fx, cmd);
 				graphicsDevice->RenderPassEnd(cmd);
 			}
 			graphicsDevice->SubmitCommandLists();
@@ -163,20 +163,20 @@ namespace wi
 		if (!startup_script)
 		{
 			startup_script = true;
-			std::string startup_lua_filename = wi::helper::GetCurrentPath() + "/startup.lua";
-			if (wi::helper::FileExists(startup_lua_filename))
+			std::string startup_lua_filename = lb::helper::GetCurrentPath() + "/startup.lua";
+			if (lb::helper::FileExists(startup_lua_filename))
 			{
-				if (wi::lua::RunFile(startup_lua_filename))
+				if (lb::lua::RunFile(startup_lua_filename))
 				{
-					wi::backlog::post("Executed startup file: " + startup_lua_filename);
+					lb::backlog::post("Executed startup file: " + startup_lua_filename);
 				}
 			}
-			std::string startup_luab_filename = wi::helper::GetCurrentPath() + "/startup.luab";
-			if (wi::helper::FileExists(startup_luab_filename))
+			std::string startup_luab_filename = lb::helper::GetCurrentPath() + "/startup.luab";
+			if (lb::helper::FileExists(startup_luab_filename))
 			{
-				if (wi::lua::RunBinaryFile(startup_luab_filename))
+				if (lb::lua::RunBinaryFile(startup_luab_filename))
 				{
-					wi::backlog::post("Executed startup file: " + startup_luab_filename);
+					lb::backlog::post("Executed startup file: " + startup_luab_filename);
 				}
 			}
 		}
@@ -185,30 +185,30 @@ namespace wi
 		{
 			// If the application is not active, disable Update loops:
 			deltaTimeAccumulator = 0;
-			wi::helper::Sleep(10);
-			wi::input::Update(window, canvas); // update input while inactive, this solves a problem with past inputs processed immediately after activation
+			lb::helper::Sleep(10);
+			lb::input::Update(window, canvas); // update input while inactive, this solves a problem with past inputs processed immediately after activation
 			timer.record_elapsed_seconds(); // after application becomes active, delta time shouldn't spike, could blow up gameplay or physics
 			return;
 		}
 
-		wi::profiler::BeginFrame();
+		lb::profiler::BeginFrame();
 
 		deltaTime = float(timer.record_elapsed_seconds());
 
 		const float target_deltaTime = 1.0f / targetFrameRate;
 		if (framerate_lock && deltaTime < target_deltaTime)
 		{
-			wi::helper::QuickSleep((target_deltaTime - deltaTime) * 1000);
+			lb::helper::QuickSleep((target_deltaTime - deltaTime) * 1000);
 			deltaTime += float(timer.record_elapsed_seconds());
 		}
 
 		// avoid instability caused by large delta time
 		deltaTime = clamp(deltaTime, 0.0f, 0.5f);
 
-		wi::input::Update(window, canvas);
+		lb::input::Update(window, canvas);
 
 		// Wake up the events that need to be executed on the main thread, in thread safe manner:
-		wi::eventhandler::FireEvent(wi::eventhandler::EVENT_THREAD_SAFE_POINT, 0);
+		lb::eventhandler::FireEvent(lb::eventhandler::EVENT_THREAD_SAFE_POINT, 0);
 
 		fadeManager.Update(deltaTime);
 
@@ -220,7 +220,7 @@ namespace wi
 		}
 
 		// Fixed time update:
-		auto range = wi::profiler::BeginRangeCPU("Fixed Update");
+		auto range = lb::profiler::BeginRangeCPU("Fixed Update");
 		{
 			if (frameskip)
 			{
@@ -243,7 +243,7 @@ namespace wi
 				FixedUpdate();
 			}
 		}
-		wi::profiler::EndRange(range); // Fixed Update
+		lb::profiler::EndRange(range); // Fixed Update
 
 		// Variable-timed update:
 		Update(deltaTime);
@@ -252,8 +252,8 @@ namespace wi
 
 		// Begin final compositing:
 		CommandList cmd = graphicsDevice->BeginCommandList();
-		wi::image::SetCanvas(canvas);
-		wi::font::SetCanvas(canvas);
+		lb::image::SetCanvas(canvas);
+		lb::font::SetCanvas(canvas);
 		Viewport viewport;
 		viewport.width = (float)swapChain.desc.width;
 		viewport.height = (float)swapChain.desc.height;
@@ -277,30 +277,30 @@ namespace wi
 		{
 			// In HDR10, we perform a final mapping from linear to HDR10, into the swapchain
 			graphicsDevice->RenderPassBegin(&swapChain, cmd);
-			wi::image::Params fx;
+			lb::image::Params fx;
 			fx.enableFullScreen();
 			fx.enableHDR10OutputMapping();
-			wi::image::Draw(&rendertarget, fx, cmd);
+			lb::image::Draw(&rendertarget, fx, cmd);
 			graphicsDevice->RenderPassEnd(cmd);
 		}
 
-		wi::input::ClearForNextFrame();
-		wi::profiler::EndFrame(cmd);
+		lb::input::ClearForNextFrame();
+		lb::profiler::EndFrame(cmd);
 		graphicsDevice->SubmitCommandLists();
 	}
 
 	void Application::Update(float dt)
 	{
-		auto range = wi::profiler::BeginRangeCPU("Update");
+		auto range = lb::profiler::BeginRangeCPU("Update");
 
 		infoDisplay.rect = {};
 
-		wi::lua::SetDeltaTime(double(dt));
-		wi::lua::Update();
+		lb::lua::SetDeltaTime(double(dt));
+		lb::lua::Update();
 
-		wi::backlog::Update(canvas, dt);
+		lb::backlog::Update(canvas, dt);
 
-		wi::resourcemanager::UpdateStreamingResources(dt);
+		lb::resourcemanager::UpdateStreamingResources(dt);
 
 		if (GetActivePath() != nullptr)
 		{
@@ -308,12 +308,12 @@ namespace wi
 			GetActivePath()->PostUpdate();
 		}
 
-		wi::profiler::EndRange(range); // Update
+		lb::profiler::EndRange(range); // Update
 	}
 
 	void Application::FixedUpdate()
 	{
-		wi::lua::FixedUpdate();
+		lb::lua::FixedUpdate();
 
 		if (GetActivePath() != nullptr)
 		{
@@ -323,21 +323,21 @@ namespace wi
 
 	void Application::Render()
 	{
-		auto range = wi::profiler::BeginRangeCPU("Render");
+		auto range = lb::profiler::BeginRangeCPU("Render");
 
-		wi::lua::Render();
+		lb::lua::Render();
 
 		if (GetActivePath() != nullptr)
 		{
 			GetActivePath()->Render();
 		}
 
-		wi::profiler::EndRange(range); // Render
+		lb::profiler::EndRange(range); // Render
 	}
 
 	void Application::Compose(CommandList cmd)
 	{
-		auto range = wi::profiler::BeginRangeCPU("Compose");
+		auto range = lb::profiler::BeginRangeCPU("Compose");
 		ColorSpace colorspace = graphicsDevice->GetSwapChainColorSpace(&swapChain);
 
 		if (GetActivePath() != nullptr)
@@ -348,11 +348,11 @@ namespace wi
 		if (fadeManager.IsActive())
 		{
 			// display fade rect
-			wi::image::Params fx;
+			lb::image::Params fx;
 			fx.enableFullScreen();
 			fx.color = fadeManager.color;
 			fx.opacity = fadeManager.opacity;
-			wi::image::Draw(nullptr, fx, cmd);
+			lb::image::Draw(nullptr, fx, cmd);
 		}
 
 		// Draw the information display
@@ -367,7 +367,7 @@ namespace wi
 			if (infoDisplay.watermark)
 			{
 				infodisplay_str += "Libertas Engine ";
-				infodisplay_str += wi::version::GetVersionString();
+				infodisplay_str += lb::version::GetVersionString();
 				infodisplay_str += " ";
 
 #if defined(_ARM)
@@ -437,13 +437,13 @@ namespace wi
 				switch (colorSpace)
 				{
 				default:
-				case wi::graphics::ColorSpace::SRGB:
+				case lb::graphics::ColorSpace::SRGB:
 					infodisplay_str += "sRGB";
 					break;
-				case wi::graphics::ColorSpace::HDR10_ST2084:
+				case lb::graphics::ColorSpace::HDR10_ST2084:
 					infodisplay_str += "ST.2084 (HDR10)";
 					break;
-				case wi::graphics::ColorSpace::HDR_LINEAR:
+				case lb::graphics::ColorSpace::HDR_LINEAR:
 					infodisplay_str += "Linear (HDR)";
 					break;
 				}
@@ -485,19 +485,19 @@ namespace wi
 				infodisplay_str += std::to_string(graphicsDevice->GetActivePipelineCount());
 				infodisplay_str += "\n";
 			}
-			if (infoDisplay.pipeline_creation && wi::renderer::IsPipelineCreationActive())
+			if (infoDisplay.pipeline_creation && lb::renderer::IsPipelineCreationActive())
 			{
 				infodisplay_str += "Shader pipeline creation is running...\n";
 			}
 
-			wi::font::Params params = wi::font::Params(
+			lb::font::Params params = lb::font::Params(
 				4 + canvas.PhysicalToLogical((uint32_t)infoDisplay.rect.left),
 				4 + canvas.PhysicalToLogical((uint32_t)infoDisplay.rect.top),
 				infoDisplay.size,
-				wi::font::WIFALIGN_LEFT,
-				wi::font::WIFALIGN_TOP,
-				wi::Color::White(),
-				wi::Color::Shadow()
+				lb::font::WIFALIGN_LEFT,
+				lb::font::WIFALIGN_TOP,
+				lb::Color::White(),
+				lb::Color::Shadow()
 			);
 			params.shadow_softness = 0.4f;
 
@@ -508,7 +508,7 @@ namespace wi
 				params.enableLinearOutputMapping(9);
 			}
 
-			params.cursor = wi::font::Draw(infodisplay_str, params, cmd);
+			params.cursor = lb::font::Draw(infodisplay_str, params, cmd);
 
 			// VRAM:
 			{
@@ -516,51 +516,51 @@ namespace wi
 				bool warn = false;
 				if (vram.usage > vram.budget)
 				{
-					params.color = wi::Color::Error();
+					params.color = lb::Color::Error();
 					warn = true;
 				}
 				else if (float(vram.usage) / float(vram.budget) > 0.9f)
 				{
-					params.color = wi::Color::Warning();
+					params.color = lb::Color::Warning();
 					warn = true;
 				}
 				if (infoDisplay.vram_usage || warn)
 				{
-					params.cursor = wi::font::Draw("VRAM usage: " + std::to_string(vram.usage / 1024 / 1024) + "MB / " + std::to_string(vram.budget / 1024 / 1024) + "MB\n", params, cmd);
-					params.color = wi::Color::White();
+					params.cursor = lb::font::Draw("VRAM usage: " + std::to_string(vram.usage / 1024 / 1024) + "MB / " + std::to_string(vram.budget / 1024 / 1024) + "MB\n", params, cmd);
+					params.color = lb::Color::White();
 				}
 			}
 
 			// Write warnings below:
-			params.color = wi::Color::Warning();
+			params.color = lb::Color::Warning();
 #ifdef _DEBUG
-			params.cursor = wi::font::Draw("Warning: This is a [DEBUG] build, performance will be slow!\n", params, cmd);
+			params.cursor = lb::font::Draw("Warning: This is a [DEBUG] build, performance will be slow!\n", params, cmd);
 #endif
 			if (graphicsDevice->IsDebugDevice())
 			{
-				params.cursor = wi::font::Draw("Warning: Graphics is in [debugdevice] mode, performance will be slow!\n", params, cmd);
+				params.cursor = lb::font::Draw("Warning: Graphics is in [debugdevice] mode, performance will be slow!\n", params, cmd);
 			}
 
 			// Write errors below:
-			params.color = wi::Color::Error();
-			if (wi::renderer::GetShaderMissingCount() > 0)
+			params.color = lb::Color::Error();
+			if (lb::renderer::GetShaderMissingCount() > 0)
 			{
-				params.cursor = wi::font::Draw(std::to_string(wi::renderer::GetShaderMissingCount()) + " shaders missing! Check the backlog for more information!\n", params, cmd);
+				params.cursor = lb::font::Draw(std::to_string(lb::renderer::GetShaderMissingCount()) + " shaders missing! Check the backlog for more information!\n", params, cmd);
 			}
-			if (wi::renderer::GetShaderErrorCount() > 0)
+			if (lb::renderer::GetShaderErrorCount() > 0)
 			{
-				params.cursor = wi::font::Draw(std::to_string(wi::renderer::GetShaderErrorCount()) + " shader compilation errors! Check the backlog for more information!\n", params, cmd);
+				params.cursor = lb::font::Draw(std::to_string(lb::renderer::GetShaderErrorCount()) + " shader compilation errors! Check the backlog for more information!\n", params, cmd);
 			}
-			if (wi::backlog::GetUnseenLogLevelMax() >= wi::backlog::LogLevel::Error)
+			if (lb::backlog::GetUnseenLogLevelMax() >= lb::backlog::LogLevel::Error)
 			{
-				params.cursor = wi::font::Draw("Errors found, check the backlog for more information!", params, cmd);
+				params.cursor = lb::font::Draw("Errors found, check the backlog for more information!", params, cmd);
 			}
 
 			if (infoDisplay.colorgrading_helper)
 			{
-				wi::image::Draw(
-					wi::texturehelper::getColorGradeDefault(),
-					wi::image::Params(
+				lb::image::Draw(
+					lb::texturehelper::getColorGradeDefault(),
+					lb::image::Params(
 						canvas.PhysicalToLogical((uint32_t)infoDisplay.rect.left),
 						canvas.PhysicalToLogical((uint32_t)infoDisplay.rect.top),
 						canvas.PhysicalToLogical(256),
@@ -579,14 +579,14 @@ namespace wi
 			}
 		}
 
-		wi::profiler::DrawData(canvas, 4, 10, cmd, colorspace);
+		lb::profiler::DrawData(canvas, 4, 10, cmd, colorspace);
 
-		wi::backlog::Draw(canvas, cmd, colorspace);
+		lb::backlog::Draw(canvas, cmd, colorspace);
 
-		wi::profiler::EndRange(range); // Compose
+		lb::profiler::EndRange(range); // Compose
 	}
 
-	void Application::SetWindow(wi::platform::window_type window)
+	void Application::SetWindow(lb::platform::window_type window)
 	{
 		this->window = window;
 
@@ -594,42 +594,42 @@ namespace wi
 		if (graphicsDevice == nullptr)
 		{
 			ValidationMode validationMode = ValidationMode::Disabled;
-			if (wi::arguments::HasArgument("debugdevice"))
+			if (lb::arguments::HasArgument("debugdevice"))
 			{
 				validationMode = ValidationMode::Enabled;
 			}
-			if (wi::arguments::HasArgument("gpuvalidation"))
+			if (lb::arguments::HasArgument("gpuvalidation"))
 			{
 				validationMode = ValidationMode::GPU;
 			}
-			if (wi::arguments::HasArgument("gpu_verbose"))
+			if (lb::arguments::HasArgument("gpu_verbose"))
 			{
 				validationMode = ValidationMode::Verbose;
 			}
 
 			GPUPreference preference = GPUPreference::Discrete;
-			if (wi::arguments::HasArgument("igpu"))
+			if (lb::arguments::HasArgument("igpu"))
 			{
 				preference = GPUPreference::Integrated;
 			}
 
 #ifdef PLATFORM_PS5
-			wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "ps5/");
+			lb::renderer::SetShaderPath(lb::renderer::GetShaderPath() + "ps5/");
 			graphicsDevice = std::make_unique<GraphicsDevice_PS5>(validationMode);
 
 #else
-			bool use_dx12 = wi::arguments::HasArgument("dx12");
-			bool use_vulkan = wi::arguments::HasArgument("vulkan");
+			bool use_dx12 = lb::arguments::HasArgument("dx12");
+			bool use_vulkan = lb::arguments::HasArgument("vulkan");
 
 #ifndef LIBERTASENGINE_BUILD_DX12
 			if (use_dx12) {
-				wi::helper::messageBox("The engine was built without DX12 support!", "Error");
+				lb::helper::messageBox("The engine was built without DX12 support!", "Error");
 				use_dx12 = false;
 			}
 #endif // LIBERTASENGINE_BUILD_DX12
 #ifndef LIBERTASENGINE_BUILD_VULKAN
 			if (use_vulkan) {
-				wi::helper::messageBox("The engine was built without Vulkan support!", "Error");
+				lb::helper::messageBox("The engine was built without Vulkan support!", "Error");
 				use_vulkan = false;
 			}
 #endif // LIBERTASENGINE_BUILD_VULKAN
@@ -641,7 +641,7 @@ namespace wi
 #elif defined(LIBERTASENGINE_BUILD_VULKAN)
 				use_vulkan = true;
 #else
-				wi::backlog::post("No rendering backend is enabled! Please enable at least one so we can use it as default", wi::backlog::LogLevel::Error);
+				lb::backlog::post("No rendering backend is enabled! Please enable at least one so we can use it as default", lb::backlog::LogLevel::Error);
 				assert(false);
 #endif
 			}
@@ -650,7 +650,7 @@ namespace wi
 			if (use_vulkan)
 			{
 #ifdef LIBERTASENGINE_BUILD_VULKAN
-				wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "spirv/");
+				lb::renderer::SetShaderPath(lb::renderer::GetShaderPath() + "spirv/");
 				graphicsDevice = std::make_unique<GraphicsDevice_Vulkan>(window, validationMode, preference);
 #endif
 			}
@@ -658,16 +658,16 @@ namespace wi
 			{
 #ifdef LIBERTASENGINE_BUILD_DX12
 #ifdef PLATFORM_XBOX
-				wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "hlsl6_xs/");
+				lb::renderer::SetShaderPath(lb::renderer::GetShaderPath() + "hlsl6_xs/");
 #else
-				wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "hlsl6/");
+				lb::renderer::SetShaderPath(lb::renderer::GetShaderPath() + "hlsl6/");
 #endif // PLATFORM_XBOX
 				graphicsDevice = std::make_unique<GraphicsDevice_DX12>(validationMode, preference);
 #endif
 			}
 #endif // PLATFORM_PS5
 		}
-		wi::graphics::GetDevice() = graphicsDevice.get();
+		lb::graphics::GetDevice() = graphicsDevice.get();
 
 		rendertarget = {};
 		canvas.init(window);
@@ -702,7 +702,7 @@ namespace wi
 		canvas.init(swapChain.desc.width, swapChain.desc.height);
 #endif // PLATFORM_PS5
 
-		swapChainVsyncChangeEvent = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_SET_VSYNC, [this](uint64_t userdata) {
+		swapChainVsyncChangeEvent = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_SET_VSYNC, [this](uint64_t userdata) {
 			SwapChainDesc desc = swapChain.desc;
 			desc.vsync = userdata != 0;
 			bool success = graphicsDevice->CreateSwapChain(&desc, nullptr, &swapChain);

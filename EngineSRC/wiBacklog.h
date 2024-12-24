@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace wi::backlog
+namespace lb::backlog
 {
 	// Do not modify the order, as this is exposed to LUA scripts as int!
 	enum class LogLevel
@@ -19,16 +19,16 @@ namespace wi::backlog
 
 	void Toggle();
 	void Scroll(int direction);
-	void Update(const wi::Canvas& canvas, float dt = 1.0f / 60.0f);
+	void Update(const lb::Canvas& canvas, float dt = 1.0f / 60.0f);
 	void Draw(
-		const wi::Canvas& canvas,
-		wi::graphics::CommandList cmd,
-		wi::graphics::ColorSpace colorspace = wi::graphics::ColorSpace::SRGB
+		const lb::Canvas& canvas,
+		lb::graphics::CommandList cmd,
+		lb::graphics::ColorSpace colorspace = lb::graphics::ColorSpace::SRGB
 	);
 	void DrawOutputText(
-		const wi::Canvas& canvas,
-		wi::graphics::CommandList cmd,
-		wi::graphics::ColorSpace colorspace = wi::graphics::ColorSpace::SRGB
+		const lb::Canvas& canvas,
+		lb::graphics::CommandList cmd,
+		lb::graphics::ColorSpace colorspace = lb::graphics::ColorSpace::SRGB
 	);
 
 	std::string getText();
@@ -41,10 +41,10 @@ namespace wi::backlog
 
 	bool isActive();
 
-	void setBackground(wi::graphics::Texture* texture);
+	void setBackground(lb::graphics::Texture* texture);
 	void setFontSize(int value);
 	void setFontRowspacing(float value);
-	void setFontColor(wi::Color color);
+	void setFontColor(lb::Color color);
 
 	void Lock();
 	void Unlock();

@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "IKWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void IKWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_IK " Inverse Kinematics", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_IK " Inverse Kinematics", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(400, 120));
 
 	closeButton.SetTooltip("Delete InverseKinematicsComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -34,8 +34,8 @@ void IKWindow::Create(EditorComponent* _editor)
 	targetCombo.SetSize(XMFLOAT2(siz, hei));
 	targetCombo.SetPos(XMFLOAT2(x, y));
 	targetCombo.SetEnabled(false);
-	targetCombo.OnSelect([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	targetCombo.OnSelect([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			InverseKinematicsComponent* ik = scene.inverse_kinematics.GetComponent(x.entity);
@@ -58,8 +58,8 @@ void IKWindow::Create(EditorComponent* _editor)
 	disabledCheckBox.SetTooltip("Disable simulation.");
 	disabledCheckBox.SetPos(XMFLOAT2(x, y += step));
 	disabledCheckBox.SetSize(XMFLOAT2(hei, hei));
-	disabledCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	disabledCheckBox.OnClick([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			InverseKinematicsComponent* ik = scene.inverse_kinematics.GetComponent(x.entity);
@@ -74,8 +74,8 @@ void IKWindow::Create(EditorComponent* _editor)
 	chainLengthSlider.SetTooltip("How far the hierarchy chain is simulated backwards from this entity");
 	chainLengthSlider.SetPos(XMFLOAT2(x, y += step));
 	chainLengthSlider.SetSize(XMFLOAT2(siz, hei));
-	chainLengthSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	chainLengthSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			InverseKinematicsComponent* ik = scene.inverse_kinematics.GetComponent(x.entity);
@@ -90,8 +90,8 @@ void IKWindow::Create(EditorComponent* _editor)
 	iterationCountSlider.SetTooltip("How many iterations to compute the inverse kinematics for. Higher values are slower but more accurate.");
 	iterationCountSlider.SetPos(XMFLOAT2(x, y += step));
 	iterationCountSlider.SetSize(XMFLOAT2(siz, hei));
-	iterationCountSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	iterationCountSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			InverseKinematicsComponent* ik = scene.inverse_kinematics.GetComponent(x.entity);
@@ -146,7 +146,7 @@ void IKWindow::SetEntity(Entity entity)
 
 void IKWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -155,7 +155,7 @@ void IKWindow::ResizeLayout()
 	const float margin_left = 110;
 	const float margin_right = 30;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -163,14 +163,14 @@ void IKWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

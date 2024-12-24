@@ -6,10 +6,10 @@
 #include "Translator.h"
 #include "DummyVisualizer.h"
 
-using namespace wi::graphics;
-using namespace wi::primitive;
-using namespace wi::scene;
-using namespace wi::ecs;
+using namespace lb::graphics;
+using namespace lb::primitive;
+using namespace lb::scene;
+using namespace lb::ecs;
 
 enum class FileType
 {
@@ -27,7 +27,7 @@ enum class FileType
 	TEXT,
 	HEADER,
 };
-static wi::unordered_map<std::string, FileType> filetypes = {
+static lb::unordered_map<std::string, FileType> filetypes = {
 	{"LUA", FileType::LUA},
 	{"WISCENE", FileType::WISCENE},
 	{"OBJ", FileType::OBJ},
@@ -97,42 +97,42 @@ enum class EditorActions
 };
 struct HotkeyInfo
 {
-	wi::input::BUTTON button;
+	lb::input::BUTTON button;
 	bool press = false;
 	bool control = false;
 	bool shift = false;
 };
 HotkeyInfo hotkeyActions[size_t(EditorActions::COUNT)] = {
-	{wi::input::BUTTON('W'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_FORWARD,
-	{wi::input::BUTTON('S'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_BACKWARD,
-	{wi::input::BUTTON('A'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_LEFT,
-	{wi::input::BUTTON('D'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_RIGHT,
-	{wi::input::BUTTON('E'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_UP,
-	{wi::input::BUTTON('Q'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_DOWN,
-	{wi::input::BUTTON('D'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//DUPLICATE_ENTITY,
-	{wi::input::BUTTON('A'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//SELECT_ALL_ENTITIES,
-	{wi::input::BUTTON::KEYBOARD_BUTTON_ESCAPE,	/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//DESELECT_ALL_ENTITIES,
-	{wi::input::BUTTON('F'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//FOCUS_ON_SELECTION,
-	{wi::input::BUTTON('Z'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//UNDO_ACTION,
-	{wi::input::BUTTON('Y'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//REDO_ACTION,
-	{wi::input::BUTTON('C'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//COPY_ACTION,
-	{wi::input::BUTTON('X'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//CUT_ACTION,
-	{wi::input::BUTTON('V'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//PASTE_ACTION,
-	{wi::input::BUTTON::KEYBOARD_BUTTON_DELETE,	/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//DELETE_ACTION,
-	{wi::input::BUTTON('1'),					/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//MOVE_TOGGLE_ACTION,
-	{wi::input::BUTTON('2'),					/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//ROTATE_TOGGLE_ACTION,
-	{wi::input::BUTTON('3'),					/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//SCALE_TOGGLE_ACTION,
-	{wi::input::BUTTON::KEYBOARD_BUTTON_F2,		/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//MAKE_NEW_SCREENSHOT,
-	{wi::input::BUTTON('I'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//INSPECTOR_MODE,
-	{wi::input::BUTTON::MOUSE_BUTTON_LEFT,		/*press=*/ true,		/*control=*/ true,		/*shift=*/ true},	//PLACE_INSTANCES,
-	{wi::input::BUTTON('S'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ true},	//SAVE_SCENE_AS,
-	{wi::input::BUTTON('S'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//SAVE_SCENE,
-	{wi::input::BUTTON('T'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//ENABLE_TRANSFORM_TOOL,
-	{wi::input::BUTTON('W'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//WIREFRAME_MODE,
-	{wi::input::BUTTON('C'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//DEPTH_OF_FIELD_REFOCUS_TO_POINT,
-	{wi::input::BUTTON('G'),					/*press=*/ false,		/*control=*/ true,		/*shift=*/ false},	//COLOR_GRADING_REFERENCE,
-	{wi::input::BUTTON('P'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//RAGDOLL_AND_PHYSICS_IMPULSE_TESTER,
-	{wi::input::BUTTON('O'),					/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//ORTHO_CAMERA,
+	{lb::input::BUTTON('W'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_FORWARD,
+	{lb::input::BUTTON('S'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_BACKWARD,
+	{lb::input::BUTTON('A'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_LEFT,
+	{lb::input::BUTTON('D'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_RIGHT,
+	{lb::input::BUTTON('E'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_UP,
+	{lb::input::BUTTON('Q'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_DOWN,
+	{lb::input::BUTTON('D'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//DUPLICATE_ENTITY,
+	{lb::input::BUTTON('A'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//SELECT_ALL_ENTITIES,
+	{lb::input::BUTTON::KEYBOARD_BUTTON_ESCAPE,	/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//DESELECT_ALL_ENTITIES,
+	{lb::input::BUTTON('F'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//FOCUS_ON_SELECTION,
+	{lb::input::BUTTON('Z'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//UNDO_ACTION,
+	{lb::input::BUTTON('Y'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//REDO_ACTION,
+	{lb::input::BUTTON('C'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//COPY_ACTION,
+	{lb::input::BUTTON('X'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//CUT_ACTION,
+	{lb::input::BUTTON('V'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//PASTE_ACTION,
+	{lb::input::BUTTON::KEYBOARD_BUTTON_DELETE,	/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//DELETE_ACTION,
+	{lb::input::BUTTON('1'),					/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//MOVE_TOGGLE_ACTION,
+	{lb::input::BUTTON('2'),					/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//ROTATE_TOGGLE_ACTION,
+	{lb::input::BUTTON('3'),					/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//SCALE_TOGGLE_ACTION,
+	{lb::input::BUTTON::KEYBOARD_BUTTON_F2,		/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//MAKE_NEW_SCREENSHOT,
+	{lb::input::BUTTON('I'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//INSPECTOR_MODE,
+	{lb::input::BUTTON::MOUSE_BUTTON_LEFT,		/*press=*/ true,		/*control=*/ true,		/*shift=*/ true},	//PLACE_INSTANCES,
+	{lb::input::BUTTON('S'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ true},	//SAVE_SCENE_AS,
+	{lb::input::BUTTON('S'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//SAVE_SCENE,
+	{lb::input::BUTTON('T'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//ENABLE_TRANSFORM_TOOL,
+	{lb::input::BUTTON('W'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//WIREFRAME_MODE,
+	{lb::input::BUTTON('C'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//DEPTH_OF_FIELD_REFOCUS_TO_POINT,
+	{lb::input::BUTTON('G'),					/*press=*/ false,		/*control=*/ true,		/*shift=*/ false},	//COLOR_GRADING_REFERENCE,
+	{lb::input::BUTTON('P'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//RAGDOLL_AND_PHYSICS_IMPULSE_TESTER,
+	{lb::input::BUTTON('O'),					/*press=*/ true,		/*control=*/ false,		/*shift=*/ false},	//ORTHO_CAMERA,
 };
 static_assert(arraysize(hotkeyActions) == size_t(EditorActions::COUNT));
 bool CheckInput(EditorActions action)
@@ -141,25 +141,25 @@ bool CheckInput(EditorActions action)
 	bool ret = false;
 	if (hotkey.press)
 	{
-		ret |= wi::input::Press(hotkey.button);
+		ret |= lb::input::Press(hotkey.button);
 	}
 	else
 	{
-		ret |= wi::input::Down(hotkey.button);
+		ret |= lb::input::Down(hotkey.button);
 	}
 	if (hotkey.control)
 	{
-		ret &= wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCONTROL);
+		ret &= lb::input::Down(lb::input::KEYBOARD_BUTTON_LCONTROL) || lb::input::Down(lb::input::KEYBOARD_BUTTON_RCONTROL);
 	}
 	if (hotkey.shift)
 	{
-		ret &= wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RSHIFT);
+		ret &= lb::input::Down(lb::input::KEYBOARD_BUTTON_LSHIFT) || lb::input::Down(lb::input::KEYBOARD_BUTTON_RSHIFT);
 	}
 	return ret;
 }
 void HotkeyRemap(Editor* main)
 {
-	static const wi::unordered_map<std::string, EditorActions> actionMap = {
+	static const lb::unordered_map<std::string, EditorActions> actionMap = {
 		{"MOVE_CAMERA_FORWARD", EditorActions::MOVE_CAMERA_FORWARD},
 		{"MOVE_CAMERA_BACKWARD", EditorActions::MOVE_CAMERA_BACKWARD},
 		{"MOVE_CAMERA_LEFT", EditorActions::MOVE_CAMERA_LEFT},
@@ -191,38 +191,38 @@ void HotkeyRemap(Editor* main)
 		{"RAGDOLL_AND_PHYSICS_IMPULSE_TESTER", EditorActions::RAGDOLL_AND_PHYSICS_IMPULSE_TESTER},
 		{"ORTHO_CAMERA", EditorActions::ORTHO_CAMERA},
 	};
-	static const wi::unordered_map<std::string, wi::input::BUTTON> buttonMap = {
-		{"ESC", wi::input::KEYBOARD_BUTTON_ESCAPE},
-		{"INSERT", wi::input::KEYBOARD_BUTTON_INSERT},
-		{"DELETE", wi::input::KEYBOARD_BUTTON_DELETE},
-		{"HOME", wi::input::KEYBOARD_BUTTON_HOME},
-		{"PAGEUP", wi::input::KEYBOARD_BUTTON_PAGEUP},
-		{"PAGEDOWN", wi::input::KEYBOARD_BUTTON_PAGEDOWN},
-		{"MOUSELEFT", wi::input::MOUSE_BUTTON_LEFT},
-		{"MOUSERIGHT", wi::input::MOUSE_BUTTON_RIGHT},
-		{"F1", wi::input::KEYBOARD_BUTTON_F1},
-		{"F2", wi::input::KEYBOARD_BUTTON_F2},
-		{"F3", wi::input::KEYBOARD_BUTTON_F3},
-		{"F4", wi::input::KEYBOARD_BUTTON_F4},
-		{"F5", wi::input::KEYBOARD_BUTTON_F5},
-		{"F6", wi::input::KEYBOARD_BUTTON_F6},
-		{"F7", wi::input::KEYBOARD_BUTTON_F7},
-		{"F8", wi::input::KEYBOARD_BUTTON_F8},
-		{"F9", wi::input::KEYBOARD_BUTTON_F9},
-		{"F10", wi::input::KEYBOARD_BUTTON_F10},
-		{"F11", wi::input::KEYBOARD_BUTTON_F11},
-		{"F12", wi::input::KEYBOARD_BUTTON_F12}
+	static const lb::unordered_map<std::string, lb::input::BUTTON> buttonMap = {
+		{"ESC", lb::input::KEYBOARD_BUTTON_ESCAPE},
+		{"INSERT", lb::input::KEYBOARD_BUTTON_INSERT},
+		{"DELETE", lb::input::KEYBOARD_BUTTON_DELETE},
+		{"HOME", lb::input::KEYBOARD_BUTTON_HOME},
+		{"PAGEUP", lb::input::KEYBOARD_BUTTON_PAGEUP},
+		{"PAGEDOWN", lb::input::KEYBOARD_BUTTON_PAGEDOWN},
+		{"MOUSELEFT", lb::input::MOUSE_BUTTON_LEFT},
+		{"MOUSERIGHT", lb::input::MOUSE_BUTTON_RIGHT},
+		{"F1", lb::input::KEYBOARD_BUTTON_F1},
+		{"F2", lb::input::KEYBOARD_BUTTON_F2},
+		{"F3", lb::input::KEYBOARD_BUTTON_F3},
+		{"F4", lb::input::KEYBOARD_BUTTON_F4},
+		{"F5", lb::input::KEYBOARD_BUTTON_F5},
+		{"F6", lb::input::KEYBOARD_BUTTON_F6},
+		{"F7", lb::input::KEYBOARD_BUTTON_F7},
+		{"F8", lb::input::KEYBOARD_BUTTON_F8},
+		{"F9", lb::input::KEYBOARD_BUTTON_F9},
+		{"F10", lb::input::KEYBOARD_BUTTON_F10},
+		{"F11", lb::input::KEYBOARD_BUTTON_F11},
+		{"F12", lb::input::KEYBOARD_BUTTON_F12}
 	};
 
-	wi::config::Section hotkeyssection = main->config.GetSection("hotkeys");
+	lb::config::Section hotkeyssection = main->config.GetSection("hotkeys");
 	for (auto& x : hotkeyssection)
 	{
-		auto itAction = actionMap.find(wi::helper::toUpper(x.first));
+		auto itAction = actionMap.find(lb::helper::toUpper(x.first));
 		if (itAction == actionMap.end())
 			continue;
 		EditorActions action = itAction->second;
-		std::string hotkeyString = wi::helper::toUpper(x.second);
-		wi::input::BUTTON button = wi::input::BUTTON_NONE;
+		std::string hotkeyString = lb::helper::toUpper(x.second);
+		lb::input::BUTTON button = lb::input::BUTTON_NONE;
 
 		// Find the main key from the whole hotkey string:
 		std::string firstNonModifierKey;
@@ -250,13 +250,13 @@ void HotkeyRemap(Editor* main)
 				char c = firstNonModifierKey[0];
 				if (std::isalnum(c))
 				{
-					button = wi::input::BUTTON(c);
+					button = lb::input::BUTTON(c);
 				}
 			}
 		}
 
 		// Remap hotkey if button is successfully found:
-		if (button != wi::input::BUTTON_NONE)
+		if (button != lb::input::BUTTON_NONE)
 		{
 			hotkeyActions[size_t(action)] = HotkeyInfo{ button, hotkeyActions[size_t(action)].press, hotkeyString.find("CTRL") != std::string::npos, hotkeyString.find("SHIFT") != std::string::npos };
 		}
@@ -268,20 +268,20 @@ void Editor::Initialize()
 	if (config.Has("font"))
 	{
 		// Replace default font from config:
-		wi::font::AddFontStyle(config.GetText("font"));
+		lb::font::AddFontStyle(config.GetText("font"));
 	}
 
-	auto ext_video = wi::resourcemanager::GetSupportedVideoExtensions();
+	auto ext_video = lb::resourcemanager::GetSupportedVideoExtensions();
 	for (auto& x : ext_video)
 	{
 		filetypes[x] = FileType::VIDEO;
 	}
-	auto ext_sound = wi::resourcemanager::GetSupportedSoundExtensions();
+	auto ext_sound = lb::resourcemanager::GetSupportedSoundExtensions();
 	for (auto& x : ext_sound)
 	{
 		filetypes[x] = FileType::SOUND;
 	}
-	auto ext_image = wi::resourcemanager::GetSupportedImageExtensions();
+	auto ext_image = lb::resourcemanager::GetSupportedImageExtensions();
 	for (auto& x : ext_image)
 	{
 		filetypes[x] = FileType::IMAGE;
@@ -299,9 +299,9 @@ void Editor::Initialize()
 	//infoDisplay.heap_allocation_counter = true;
 	//infoDisplay.vram_usage = true;
 
-	wi::backlog::setFontColor(wi::Color(130, 210, 220, 255));
+	lb::backlog::setFontColor(lb::Color(130, 210, 220, 255));
 
-	wi::renderer::SetOcclusionCullingEnabled(true);
+	lb::renderer::SetOcclusionCullingEnabled(true);
 
 	renderComponent.main = this;
 	uint32_t msaa = 4;
@@ -313,47 +313,47 @@ void Editor::Initialize()
 	renderComponent.Load();
 	ActivatePath(&renderComponent, 0.2f);
 
-	wi::lua::EnableEditorFunctionality(this, &renderComponent);
+	lb::lua::EnableEditorFunctionality(this, &renderComponent);
 }
 void Editor::HotReload()
 {
-	if (!wi::initializer::IsInitializeFinished())
+	if (!lb::initializer::IsInitializeFinished())
 		return;
 
-	static wi::jobsystem::context hotreload_ctx;
-	wi::jobsystem::Wait(hotreload_ctx);
-	hotreload_ctx.priority = wi::jobsystem::Priority::Streaming;
+	static lb::jobsystem::context hotreload_ctx;
+	lb::jobsystem::Wait(hotreload_ctx);
+	hotreload_ctx.priority = lb::jobsystem::Priority::Streaming;
 
-	if (wi::shadercompiler::GetRegisteredShaderCount() > 0 && !wi::renderer::IsPipelineCreationActive())
+	if (lb::shadercompiler::GetRegisteredShaderCount() > 0 && !lb::renderer::IsPipelineCreationActive())
 	{
-		wi::jobsystem::Execute(hotreload_ctx, [](wi::jobsystem::JobArgs args) {
-			wi::backlog::post("[Shader check] Started checking " + std::to_string(wi::shadercompiler::GetRegisteredShaderCount()) + " registered shaders for changes...");
-			if (wi::shadercompiler::CheckRegisteredShadersOutdated())
+		lb::jobsystem::Execute(hotreload_ctx, [](lb::jobsystem::JobArgs args) {
+			lb::backlog::post("[Shader check] Started checking " + std::to_string(lb::shadercompiler::GetRegisteredShaderCount()) + " registered shaders for changes...");
+			if (lb::shadercompiler::CheckRegisteredShadersOutdated())
 			{
-				wi::backlog::post("[Shader check] Changes detected, initiating reload...");
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
-					wi::renderer::ReloadShaders();
+				lb::backlog::post("[Shader check] Changes detected, initiating reload...");
+				lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
+					lb::renderer::ReloadShaders();
 				});
 			}
 			else
 			{
-				wi::backlog::post("[Shader check] All up to date");
+				lb::backlog::post("[Shader check] All up to date");
 			}
 		});
 	}
 
-	wi::jobsystem::Execute(hotreload_ctx, [](wi::jobsystem::JobArgs args) {
-		wi::backlog::post("[Resource check] Started checking resource manager for changes...");
-		if (wi::resourcemanager::CheckResourcesOutdated())
+	lb::jobsystem::Execute(hotreload_ctx, [](lb::jobsystem::JobArgs args) {
+		lb::backlog::post("[Resource check] Started checking resource manager for changes...");
+		if (lb::resourcemanager::CheckResourcesOutdated())
 		{
-			wi::backlog::post("[Resource check] Changes detected, initiating reload...");
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
-				wi::resourcemanager::ReloadOutdatedResources();
+			lb::backlog::post("[Resource check] Changes detected, initiating reload...");
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
+				lb::resourcemanager::ReloadOutdatedResources();
 			});
 		}
 		else
 		{
-			wi::backlog::post("[Resource check] All up to date");
+			lb::backlog::post("[Resource check] All up to date");
 		}
 	});
 
@@ -398,27 +398,27 @@ void EditorComponent::Load()
 	//Load hotkeys here
 	HotkeyRemap(main);
 
-	wi::gui::CheckBox::SetCheckTextGlobal(ICON_CHECK);
+	lb::gui::CheckBox::SetCheckTextGlobal(ICON_CHECK);
 
-	loadmodel_workload.priority = wi::jobsystem::Priority::Low;
+	loadmodel_workload.priority = lb::jobsystem::Priority::Low;
 
 	loadmodel_font.SetText("Loading model...");
 	loadmodel_font.anim.typewriter.time = 2;
 	loadmodel_font.anim.typewriter.looped = true;
 	loadmodel_font.anim.typewriter.character_start = 13;
 	loadmodel_font.params.size = 22;
-	loadmodel_font.params.h_align = wi::font::WIFALIGN_LEFT;
-	loadmodel_font.params.v_align = wi::font::WIFALIGN_TOP;
+	loadmodel_font.params.h_align = lb::font::WIFALIGN_LEFT;
+	loadmodel_font.params.v_align = lb::font::WIFALIGN_TOP;
 	AddFont(&loadmodel_font);
 
-	topmenuWnd.Create("", wi::gui::Window::WindowControls::NONE);
+	topmenuWnd.Create("", lb::gui::Window::WindowControls::NONE);
 	topmenuWnd.SetShadowRadius(2);
 	GetGUI().AddWidget(&topmenuWnd);
 	topmenuWnd.scrollbar_horizontal.Detach();
 	topmenuWnd.scrollbar_vertical.Detach();
 
 	generalButton.Create(ICON_GENERALOPTIONS);
-	generalButton.OnClick([this](wi::gui::EventArgs args) {
+	generalButton.OnClick([this](lb::gui::EventArgs args) {
 		generalWnd.SetVisible(!generalWnd.IsVisible());
 		graphicsWnd.SetVisible(false);
 		cameraWnd.SetVisible(false);
@@ -427,11 +427,11 @@ void EditorComponent::Load()
 	});
 	generalButton.SetShadowRadius(0);
 	generalButton.SetTooltip("General options");
-	generalButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	generalButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	GetGUI().AddWidget(&generalButton);
 
 	graphicsButton.Create(ICON_GRAPHICSOPTIONS);
-	graphicsButton.OnClick([this](wi::gui::EventArgs args) {
+	graphicsButton.OnClick([this](lb::gui::EventArgs args) {
 		generalWnd.SetVisible(false);
 		graphicsWnd.SetVisible(!graphicsWnd.IsVisible());
 		cameraWnd.SetVisible(false);
@@ -440,11 +440,11 @@ void EditorComponent::Load()
 	});
 	graphicsButton.SetShadowRadius(0);
 	graphicsButton.SetTooltip("Graphics options");
-	graphicsButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	graphicsButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	GetGUI().AddWidget(&graphicsButton);
 
 	cameraButton.Create(ICON_CAMERAOPTIONS);
-	cameraButton.OnClick([this](wi::gui::EventArgs args) {
+	cameraButton.OnClick([this](lb::gui::EventArgs args) {
 		generalWnd.SetVisible(false);
 		graphicsWnd.SetVisible(false);
 		cameraWnd.SetVisible(!cameraWnd.IsVisible());
@@ -453,11 +453,11 @@ void EditorComponent::Load()
 	});
 	cameraButton.SetShadowRadius(0);
 	cameraButton.SetTooltip("Camera options");
-	cameraButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	cameraButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	GetGUI().AddWidget(&cameraButton);
 
 	materialsButton.Create(ICON_MATERIALBROWSER);
-	materialsButton.OnClick([this](wi::gui::EventArgs args) {
+	materialsButton.OnClick([this](lb::gui::EventArgs args) {
 		generalWnd.SetVisible(false);
 		graphicsWnd.SetVisible(false);
 		cameraWnd.SetVisible(false);
@@ -470,11 +470,11 @@ void EditorComponent::Load()
 	});
 	materialsButton.SetShadowRadius(0);
 	materialsButton.SetTooltip("Material browser");
-	materialsButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	materialsButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	GetGUI().AddWidget(&materialsButton);
 
 	paintToolButton.Create(ICON_PAINTTOOL);
-	paintToolButton.OnClick([this](wi::gui::EventArgs args) {
+	paintToolButton.OnClick([this](lb::gui::EventArgs args) {
 		generalWnd.SetVisible(false);
 		graphicsWnd.SetVisible(false);
 		cameraWnd.SetVisible(false);
@@ -483,7 +483,7 @@ void EditorComponent::Load()
 	});
 	paintToolButton.SetShadowRadius(0);
 	paintToolButton.SetTooltip("Paint tool");
-	paintToolButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	paintToolButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	GetGUI().AddWidget(&paintToolButton);
 
 	graphicsWnd.Create(this);
@@ -502,9 +502,9 @@ void EditorComponent::Load()
 	GetGUI().AddWidget(&generalWnd);
 
 	newSceneButton.Create("+");
-	newSceneButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	newSceneButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	newSceneButton.SetTooltip("New scene");
-	newSceneButton.OnClick([&](wi::gui::EventArgs args) {
+	newSceneButton.OnClick([&](lb::gui::EventArgs args) {
 		NewScene();
 		});
 	topmenuWnd.AddWidget(&newSceneButton);
@@ -571,7 +571,7 @@ void EditorComponent::Load()
 	newEntityCombo.AddItem("Font " ICON_FONT, NEW_FONT);
 	newEntityCombo.AddItem("Voxel Grid " ICON_VOXELGRID, NEW_VOXELGRID);
 	newEntityCombo.AddItem("Metadata " ICON_METADATA, NEW_METADATA);
-	newEntityCombo.OnSelect([this](wi::gui::EventArgs args) {
+	newEntityCombo.OnSelect([this](lb::gui::EventArgs args) {
 		newEntityCombo.SetSelectedWithoutCallback(-1);
 		const EditorComponent::EditorScene& editorscene = GetCurrentEditorScene();
 		const CameraComponent& camera = editorscene.camera;
@@ -615,21 +615,21 @@ void EditorComponent::Load()
 			if (scene.materials.Contains(pick.entity))
 			{
 				MaterialComponent* decal_material = scene.materials.GetComponent(pick.entity);
-				decal_material->textures[MaterialComponent::BASECOLORMAP].resource.SetTexture(*wi::texturehelper::getLogo());
+				decal_material->textures[MaterialComponent::BASECOLORMAP].resource.SetTexture(*lb::texturehelper::getLogo());
 			}
 			scene.transforms.GetComponent(pick.entity)->RotateRollPitchYaw(XMFLOAT3(XM_PIDIV2, 0, 0));
 			break;
 		case NEW_SOUND:
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			lb::helper::FileDialogParams params;
+			params.type = lb::helper::FileDialogParams::OPEN;
 			params.description = "Sound";
-			params.extensions = wi::resourcemanager::GetSupportedSoundExtensions();
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					Entity entity = GetCurrentScene().Entity_CreateSound(wi::helper::GetFileNameFromPath(fileName), fileName);
+			params.extensions = lb::resourcemanager::GetSupportedSoundExtensions();
+			lb::helper::FileDialog(params, [=](std::string fileName) {
+				lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					Entity entity = GetCurrentScene().Entity_CreateSound(lb::helper::GetFileNameFromPath(fileName), fileName);
 
-					wi::Archive& archive = AdvanceHistory();
+					lb::Archive& archive = AdvanceHistory();
 					archive << EditorComponent::HISTORYOP_ADD;
 					RecordSelection(archive);
 
@@ -648,15 +648,15 @@ void EditorComponent::Load()
 		break;
 		case NEW_VIDEO:
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			lb::helper::FileDialogParams params;
+			params.type = lb::helper::FileDialogParams::OPEN;
 			params.description = "Video";
-			params.extensions = wi::resourcemanager::GetSupportedVideoExtensions();
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					Entity entity = GetCurrentScene().Entity_CreateVideo(wi::helper::GetFileNameFromPath(fileName), fileName);
+			params.extensions = lb::resourcemanager::GetSupportedVideoExtensions();
+			lb::helper::FileDialog(params, [=](std::string fileName) {
+				lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					Entity entity = GetCurrentScene().Entity_CreateVideo(lb::helper::GetFileNameFromPath(fileName), fileName);
 
-					wi::Archive& archive = AdvanceHistory();
+					lb::Archive& archive = AdvanceHistory();
 					archive << EditorComponent::HISTORYOP_ADD;
 					RecordSelection(archive);
 
@@ -724,7 +724,7 @@ void EditorComponent::Load()
 		case NEW_SPRITE:
 		{
 			pick.entity = CreateEntity();
-			wi::Sprite& sprite = scene.sprites.Create(pick.entity);
+			lb::Sprite& sprite = scene.sprites.Create(pick.entity);
 			sprite.params.pivot = XMFLOAT2(0.5f, 0.5f);
 			sprite.anim.repeatable = true;
 			scene.transforms.Create(pick.entity).Translate(XMFLOAT3(0, 2, 0));
@@ -734,10 +734,10 @@ void EditorComponent::Load()
 		case NEW_FONT:
 		{
 			pick.entity = CreateEntity();
-			wi::SpriteFont& font = scene.fonts.Create(pick.entity);
+			lb::SpriteFont& font = scene.fonts.Create(pick.entity);
 			font.SetText("Text");
-			font.params.h_align = wi::font::Alignment::WIFALIGN_CENTER;
-			font.params.v_align = wi::font::Alignment::WIFALIGN_CENTER;
+			font.params.h_align = lb::font::Alignment::WIFALIGN_CENTER;
+			font.params.v_align = lb::font::Alignment::WIFALIGN_CENTER;
 			font.params.scaling = 0.1f;
 			font.params.size = 26;
 			font.anim.typewriter.looped = true;
@@ -766,7 +766,7 @@ void EditorComponent::Load()
 		}
 		if (pick.entity != INVALID_ENTITY)
 		{
-			wi::Archive& archive = AdvanceHistory();
+			lb::Archive& archive = AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_ADD;
 			RecordSelection(archive);
 
@@ -788,8 +788,8 @@ void EditorComponent::Load()
 	{
 		scaleButton.SetShadowRadius(2);
 		scaleButton.SetTooltip("Scale\nHotkey: 3");
-		scaleButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-		scaleButton.OnClick([&](wi::gui::EventArgs args) {
+		scaleButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+		scaleButton.OnClick([&](lb::gui::EventArgs args) {
 			translator.isScalator = true;
 			translator.isTranslator = false;
 			translator.isRotator = false;
@@ -798,8 +798,8 @@ void EditorComponent::Load()
 
 		rotateButton.SetShadowRadius(2);
 		rotateButton.SetTooltip("Rotate\nHotkey: 2");
-		rotateButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-		rotateButton.OnClick([&](wi::gui::EventArgs args) {
+		rotateButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+		rotateButton.OnClick([&](lb::gui::EventArgs args) {
 			translator.isRotator = true;
 			translator.isScalator = false;
 			translator.isTranslator = false;
@@ -808,8 +808,8 @@ void EditorComponent::Load()
 
 		translateButton.SetShadowRadius(2);
 		translateButton.SetTooltip("Translate/Move (Ctrl + T)\nHotkey: 1");
-		translateButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-		translateButton.OnClick([&](wi::gui::EventArgs args) {
+		translateButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+		translateButton.OnClick([&](lb::gui::EventArgs args) {
 			translator.isTranslator = true;
 			translator.isScalator = false;
 			translator.isRotator = false;
@@ -822,11 +822,11 @@ void EditorComponent::Load()
 	physicsButton.SetTooltip("Toggle Physics Simulation On/Off");
 	if (main->config.GetSection("options").Has("physics"))
 	{
-		wi::physics::SetSimulationEnabled(main->config.GetSection("options").GetBool("physics"));
+		lb::physics::SetSimulationEnabled(main->config.GetSection("options").GetBool("physics"));
 	}
-	physicsButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::physics::SetSimulationEnabled(!wi::physics::IsSimulationEnabled());
-		main->config.GetSection("options").Set("physics", wi::physics::IsSimulationEnabled());
+	physicsButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::physics::SetSimulationEnabled(!lb::physics::IsSimulationEnabled());
+		main->config.GetSection("options").Set("physics", lb::physics::IsSimulationEnabled());
 		main->config.Commit();
 		});
 	GetGUI().AddWidget(&physicsButton);
@@ -834,13 +834,13 @@ void EditorComponent::Load()
 	dummyButton.Create(ICON_DUMMY);
 	dummyButton.SetShadowRadius(2);
 	dummyButton.SetTooltip("Toggle reference dummy visualizer\n - Use the reference dummy to get an idea about object sizes compared to a human character size.\n - Position the dummy by clicking on something with the middle mouse button while the dummy is active.\n - Pressing this button while Ctrl key is held down will reset dummy position to the origin.\n - Pressing this button while the Shift key is held down will switch between male and female dummies.");
-	dummyButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-	dummyButton.OnClick([&](wi::gui::EventArgs args) {
-		if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCONTROL))
+	dummyButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+	dummyButton.OnClick([&](lb::gui::EventArgs args) {
+		if (lb::input::Down(lb::input::KEYBOARD_BUTTON_LCONTROL) || lb::input::Down(lb::input::KEYBOARD_BUTTON_RCONTROL))
 		{
 			dummy_pos = XMFLOAT3(0, 0, 0);
 		}
-		else if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RSHIFT))
+		else if (lb::input::Down(lb::input::KEYBOARD_BUTTON_LSHIFT) || lb::input::Down(lb::input::KEYBOARD_BUTTON_RSHIFT))
 		{
 			dummy_male = !dummy_male;
 		}
@@ -854,43 +854,43 @@ void EditorComponent::Load()
 	navtestButton.Create(ICON_NAVIGATION);
 	navtestButton.SetShadowRadius(2);
 	navtestButton.SetTooltip("Toggle navigation testing. When enabled, you can visualize path finding results.\nYou can put down START and GOAL waypoints inside voxel grids to test path finding.\nControls:\n----------\nF5 + middle click: put START to surface\nF6 + middle click: put GOAL to surface\nF7 + middle click: put START to air\nF8 + middle click: put GOAL to air");
-	navtestButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-	navtestButton.OnClick([&](wi::gui::EventArgs args) {
+	navtestButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+	navtestButton.OnClick([&](lb::gui::EventArgs args) {
 		navtest_enabled = !navtest_enabled;
 	});
 	GetGUI().AddWidget(&navtestButton);
 
 	playButton.Create(ICON_PLAY);
-	playButton.font.params.shadowColor = wi::Color::Transparent();
+	playButton.font.params.shadowColor = lb::Color::Transparent();
 	playButton.SetShadowRadius(2);
-	playButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	playButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	playButton.SetTooltip("Execute the last used (standalone) script.\nTo use a new script, use the Open button.");
-	playButton.OnClick([&](wi::gui::EventArgs args) {
-		if (last_script_path.empty() || !wi::helper::FileExists(last_script_path))
+	playButton.OnClick([&](lb::gui::EventArgs args) {
+		if (last_script_path.empty() || !lb::helper::FileExists(last_script_path))
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			lb::helper::FileDialogParams params;
+			params.type = lb::helper::FileDialogParams::OPEN;
 			params.description = ".lua";
 			params.extensions.push_back("lua");
-			wi::helper::FileDialog(params, [&](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			lb::helper::FileDialog(params, [&](std::string fileName) {
+				lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-					std::string extension = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(fileName));
+					std::string extension = lb::helper::toUpper(lb::helper::GetExtensionFromFileName(fileName));
 					if (!extension.compare("LUA"))
 					{
 						last_script_path = fileName;
 						main->config.Set("last_script_path", last_script_path);
 						main->config.Commit();
 						playButton.SetScriptTip("dofile(\"" + last_script_path + "\")");
-						wi::lua::RunFile(fileName);
+						lb::lua::RunFile(fileName);
 					}
 				});
 			});
 		}
 		else
 		{
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-				wi::lua::RunFile(last_script_path);
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+				lb::lua::RunFile(last_script_path);
 			});
 		}
 	});
@@ -904,44 +904,44 @@ void EditorComponent::Load()
 
 
 	stopButton.Create(ICON_STOP);
-	stopButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-	stopButton.font.params.shadowColor = wi::Color::Transparent();
+	stopButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+	stopButton.font.params.shadowColor = lb::Color::Transparent();
 	stopButton.SetShadowRadius(2);
 	stopButton.SetTooltip("Stops every script background processes that are still running.");
 	stopButton.SetScriptTip("killProcesses()");
-	stopButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::lua::KillProcesses();
+	stopButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::lua::KillProcesses();
 	});
 	topmenuWnd.AddWidget(&stopButton);
 
 
 
 	saveButton.Create("Save");
-	saveButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-	saveButton.font.params.shadowColor = wi::Color::Transparent();
+	saveButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+	saveButton.font.params.shadowColor = lb::Color::Transparent();
 	saveButton.SetShadowRadius(2);
 	saveButton.SetTooltip("Save the current scene to a new file (Ctrl + Shift + S)\nBy default, the scene will be saved into .wiscene, but you can specify .gltf or .glb extensions to export into GLTF.\nYou can also use Ctrl + S to quicksave, without browsing.");
-	saveButton.SetColor(wi::Color(50, 180, 100, 180), wi::gui::WIDGETSTATE::IDLE);
-	saveButton.SetColor(wi::Color(50, 220, 140, 255), wi::gui::WIDGETSTATE::FOCUS);
-	saveButton.OnClick([&](wi::gui::EventArgs args) {
+	saveButton.SetColor(lb::Color(50, 180, 100, 180), lb::gui::WIDGETSTATE::IDLE);
+	saveButton.SetColor(lb::Color(50, 220, 140, 255), lb::gui::WIDGETSTATE::FOCUS);
+	saveButton.OnClick([&](lb::gui::EventArgs args) {
 		SaveAs();
 		});
 	topmenuWnd.AddWidget(&saveButton);
 
 
 	openButton.Create("Open");
-	openButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	openButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	openButton.SetShadowRadius(2);
-	openButton.font.params.shadowColor = wi::Color::Transparent();
+	openButton.font.params.shadowColor = lb::Color::Transparent();
 	openButton.SetTooltip("Open a scene, import an asset or execute a Lua script...\nSupported file types: .wiscene, .obj, .gltf, .glb, .vrm, .fbx, .lua, images, videos, sounds, etc.");
 #ifdef PLATFORM_WINDOWS_DESKTOP
 	openButton.SetTooltip(openButton.GetTooltip() + "\nYou can also drag and drop a file onto the window to open it in the Editor.");
 #endif // PLATFORM_WINDOWS_DESKTOP
-	openButton.SetColor(wi::Color(50, 100, 255, 180), wi::gui::WIDGETSTATE::IDLE);
-	openButton.SetColor(wi::Color(120, 160, 255, 255), wi::gui::WIDGETSTATE::FOCUS);
-	openButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::OPEN;
+	openButton.SetColor(lb::Color(50, 100, 255, 180), lb::gui::WIDGETSTATE::IDLE);
+	openButton.SetColor(lb::Color(120, 160, 255, 255), lb::gui::WIDGETSTATE::FOCUS);
+	openButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::helper::FileDialogParams params;
+		params.type = lb::helper::FileDialogParams::OPEN;
 		params.description = ".wiscene, .obj, .gltf, .glb, .vrm, .fbx, .lua, .mp4, .png, ...";
 		params.extensions.push_back("wiscene");
 		params.extensions.push_back("obj");
@@ -951,23 +951,23 @@ void EditorComponent::Load()
 		params.extensions.push_back("fbx");
 		params.extensions.push_back("lua");
 		params.extensions.push_back("txt");
-		auto ext_video = wi::resourcemanager::GetSupportedVideoExtensions();
+		auto ext_video = lb::resourcemanager::GetSupportedVideoExtensions();
 		for (auto& x : ext_video)
 		{
 			params.extensions.push_back(x);
 		}
-		auto ext_sound = wi::resourcemanager::GetSupportedSoundExtensions();
+		auto ext_sound = lb::resourcemanager::GetSupportedSoundExtensions();
 		for (auto& x : ext_sound)
 		{
 			params.extensions.push_back(x);
 		}
-		auto ext_image = wi::resourcemanager::GetSupportedImageExtensions();
+		auto ext_image = lb::resourcemanager::GetSupportedImageExtensions();
 		for (auto& x : ext_image)
 		{
 			params.extensions.push_back(x);
 		}
-		wi::helper::FileDialog(params, [&](std::string fileName) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+		lb::helper::FileDialog(params, [&](std::string fileName) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 				Open(fileName);
 				});
 			});
@@ -976,13 +976,13 @@ void EditorComponent::Load()
 
 
 	contentBrowserButton.Create("Content Browser");
-	contentBrowserButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	contentBrowserButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	contentBrowserButton.SetShadowRadius(2);
-	contentBrowserButton.font.params.shadowColor = wi::Color::Transparent();
+	contentBrowserButton.font.params.shadowColor = lb::Color::Transparent();
 	contentBrowserButton.SetTooltip("Browse content.");
-	contentBrowserButton.SetColor(wi::Color(50, 100, 255, 180), wi::gui::WIDGETSTATE::IDLE);
-	contentBrowserButton.SetColor(wi::Color(120, 160, 255, 255), wi::gui::WIDGETSTATE::FOCUS);
-	contentBrowserButton.OnClick([&](wi::gui::EventArgs args) {
+	contentBrowserButton.SetColor(lb::Color(50, 100, 255, 180), lb::gui::WIDGETSTATE::IDLE);
+	contentBrowserButton.SetColor(lb::Color(120, 160, 255, 255), lb::gui::WIDGETSTATE::FOCUS);
+	contentBrowserButton.OnClick([&](lb::gui::EventArgs args) {
 		contentBrowserWnd.SetVisible(!contentBrowserWnd.IsVisible());
 		if (contentBrowserWnd.IsVisible())
 		{
@@ -993,65 +993,65 @@ void EditorComponent::Load()
 
 
 	logButton.Create("Backlog");
-	logButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	logButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	logButton.SetShadowRadius(2);
-	logButton.font.params.shadowColor = wi::Color::Transparent();
+	logButton.font.params.shadowColor = lb::Color::Transparent();
 	logButton.SetTooltip("Open the backlog (toggle with HOME button)");
-	logButton.SetColor(wi::Color(50, 160, 200, 180), wi::gui::WIDGETSTATE::IDLE);
-	logButton.SetColor(wi::Color(120, 200, 200, 255), wi::gui::WIDGETSTATE::FOCUS);
-	logButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::backlog::Toggle();
+	logButton.SetColor(lb::Color(50, 160, 200, 180), lb::gui::WIDGETSTATE::IDLE);
+	logButton.SetColor(lb::Color(120, 200, 200, 255), lb::gui::WIDGETSTATE::FOCUS);
+	logButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::backlog::Toggle();
 		});
 	topmenuWnd.AddWidget(&logButton);
 
 
 	profilerButton.Create("Profiler");
-	profilerButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	profilerButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	profilerButton.SetShadowRadius(2);
-	profilerButton.font.params.shadowColor = wi::Color::Transparent();
+	profilerButton.font.params.shadowColor = lb::Color::Transparent();
 	profilerButton.SetTooltip("View the profiler frame timings");
-	profilerButton.SetColor(wi::Color(50, 160, 200, 180), wi::gui::WIDGETSTATE::IDLE);
-	profilerButton.SetColor(wi::Color(120, 200, 200, 255), wi::gui::WIDGETSTATE::FOCUS);
-	profilerButton.OnClick([&](wi::gui::EventArgs args) {
-		profilerWnd.SetVisible(!wi::profiler::IsEnabled());
-		wi::profiler::SetEnabled(!wi::profiler::IsEnabled());
+	profilerButton.SetColor(lb::Color(50, 160, 200, 180), lb::gui::WIDGETSTATE::IDLE);
+	profilerButton.SetColor(lb::Color(120, 200, 200, 255), lb::gui::WIDGETSTATE::FOCUS);
+	profilerButton.OnClick([&](lb::gui::EventArgs args) {
+		profilerWnd.SetVisible(!lb::profiler::IsEnabled());
+		lb::profiler::SetEnabled(!lb::profiler::IsEnabled());
 	});
 	topmenuWnd.AddWidget(&profilerButton);
 
 
 	cinemaButton.Create(ICON_CINEMA_MODE);
-	cinemaButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	cinemaButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	cinemaButton.SetShadowRadius(2);
-	cinemaButton.font.params.shadowColor = wi::Color::Transparent();
+	cinemaButton.font.params.shadowColor = lb::Color::Transparent();
 	cinemaButton.SetTooltip("Enter cinema mode (all HUD disabled). Press ESC to return to normal.");
-	cinemaButton.SetColor(wi::Color(50, 160, 200, 180), wi::gui::WIDGETSTATE::IDLE);
-	cinemaButton.SetColor(wi::Color(120, 200, 200, 255), wi::gui::WIDGETSTATE::FOCUS);
-	cinemaButton.OnClick([&](wi::gui::EventArgs args) {
+	cinemaButton.SetColor(lb::Color(50, 160, 200, 180), lb::gui::WIDGETSTATE::IDLE);
+	cinemaButton.SetColor(lb::Color(120, 200, 200, 255), lb::gui::WIDGETSTATE::FOCUS);
+	cinemaButton.OnClick([&](lb::gui::EventArgs args) {
 		if (renderPath != nullptr)
 		{
 			renderPath->GetGUI().SetVisible(false);
 		}
 		GetGUI().SetVisible(false);
-		wi::profiler::SetEnabled(false);
+		lb::profiler::SetEnabled(false);
 		profilerWnd.SetVisible(false);
 	});
 	GetGUI().AddWidget(&cinemaButton);
 
 
 	fullscreenButton.Create("Full screen");
-	fullscreenButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	fullscreenButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	fullscreenButton.SetShadowRadius(2);
-	fullscreenButton.font.params.shadowColor = wi::Color::Transparent();
+	fullscreenButton.font.params.shadowColor = lb::Color::Transparent();
 	fullscreenButton.SetTooltip("Toggle full screen");
-	fullscreenButton.SetColor(wi::Color(50, 160, 200, 180), wi::gui::WIDGETSTATE::IDLE);
-	fullscreenButton.SetColor(wi::Color(120, 200, 200, 255), wi::gui::WIDGETSTATE::FOCUS);
-	fullscreenButton.OnClick([&](wi::gui::EventArgs args) {
+	fullscreenButton.SetColor(lb::Color(50, 160, 200, 180), lb::gui::WIDGETSTATE::IDLE);
+	fullscreenButton.SetColor(lb::Color(120, 200, 200, 255), lb::gui::WIDGETSTATE::FOCUS);
+	fullscreenButton.OnClick([&](lb::gui::EventArgs args) {
 		bool fullscreen = main->config.GetBool("fullscreen");
 		fullscreen = !fullscreen;
 		main->config.Set("fullscreen", fullscreen);
 		main->config.Commit();
 
-		wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t) {
+		lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t) {
 
 			main->SetFullScreen(fullscreen);
 
@@ -1061,26 +1061,26 @@ void EditorComponent::Load()
 
 
 	bugButton.Create("Bug report");
-	bugButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	bugButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	bugButton.SetShadowRadius(2);
-	bugButton.font.params.shadowColor = wi::Color::Transparent();
+	bugButton.font.params.shadowColor = lb::Color::Transparent();
 	bugButton.SetTooltip("Opens a browser window where you can report a bug or an issue.\nURL: https://github.com/turanszkij/WickedEngine/issues/new");
-	bugButton.SetColor(wi::Color(50, 160, 200, 180), wi::gui::WIDGETSTATE::IDLE);
-	bugButton.SetColor(wi::Color(120, 200, 200, 255), wi::gui::WIDGETSTATE::FOCUS);
-	bugButton.OnClick([](wi::gui::EventArgs args) {
-		wi::helper::OpenUrl("https://github.com/turanszkij/WickedEngine/issues/new");
+	bugButton.SetColor(lb::Color(50, 160, 200, 180), lb::gui::WIDGETSTATE::IDLE);
+	bugButton.SetColor(lb::Color(120, 200, 200, 255), lb::gui::WIDGETSTATE::FOCUS);
+	bugButton.OnClick([](lb::gui::EventArgs args) {
+		lb::helper::OpenUrl("https://github.com/turanszkij/WickedEngine/issues/new");
 	});
 	topmenuWnd.AddWidget(&bugButton);
 
 
 	aboutButton.Create("About");
-	aboutButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	aboutButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	aboutButton.SetShadowRadius(2);
-	aboutButton.font.params.shadowColor = wi::Color::Transparent();
+	aboutButton.font.params.shadowColor = lb::Color::Transparent();
 	aboutButton.SetTooltip("About...");
-	aboutButton.SetColor(wi::Color(50, 160, 200, 180), wi::gui::WIDGETSTATE::IDLE);
-	aboutButton.SetColor(wi::Color(120, 200, 200, 255), wi::gui::WIDGETSTATE::FOCUS);
-	aboutButton.OnClick([&](wi::gui::EventArgs args) {
+	aboutButton.SetColor(lb::Color(50, 160, 200, 180), lb::gui::WIDGETSTATE::IDLE);
+	aboutButton.SetColor(lb::Color(120, 200, 200, 255), lb::gui::WIDGETSTATE::FOCUS);
+	aboutButton.OnClick([&](lb::gui::EventArgs args) {
 		aboutWindow.SetVisible(!aboutWindow.IsVisible());
 		});
 	topmenuWnd.AddWidget(&aboutButton);
@@ -1088,7 +1088,7 @@ void EditorComponent::Load()
 	{
 		std::string ss;
 		ss += "Wicked Editor v";
-		ss += wi::version::GetVersionString();
+		ss += lb::version::GetVersionString();
 		ss += "\n\nWebsite: https://wickedengine.net/";
 		ss += "\nSource code: https://github.com/turanszkij/WickedEngine";
 		ss += "\nDiscord chat: https://discord.gg/CFjRYmE";
@@ -1147,17 +1147,17 @@ void EditorComponent::Load()
 		ss += "\nFor questions, bug reports, feedback, requests, please open an issue at:\n";
 		ss += "https://github.com/turanszkij/WickedEngine/issues\n";
 		ss += "\n\n";
-		ss += wi::version::GetCreditsString();
+		ss += lb::version::GetCreditsString();
 
 		aboutLabel.Create("AboutLabel");
 		aboutLabel.SetText(ss);
 		aboutLabel.SetSize(XMFLOAT2(600,4000));
-		aboutLabel.SetColor(wi::Color(113, 183, 214, 100));
+		aboutLabel.SetColor(lb::Color(113, 183, 214, 100));
 		aboutLabel.SetLocalizationEnabled(false);
 		aboutWindow.AddWidget(&aboutLabel);
 
-		auto wctrl = wi::gui::Window::WindowControls::ALL;
-		wctrl &= ~wi::gui::Window::WindowControls::RESIZE_BOTTOMLEFT;
+		auto wctrl = lb::gui::Window::WindowControls::ALL;
+		wctrl &= ~lb::gui::Window::WindowControls::RESIZE_BOTTOMLEFT;
 		aboutWindow.Create("About", wctrl);
 		aboutWindow.SetVisible(false);
 		aboutWindow.SetPos(XMFLOAT2(100, 100));
@@ -1165,8 +1165,8 @@ void EditorComponent::Load()
 		aboutWindow.OnResize([this]() {
 			aboutLabel.SetSize(XMFLOAT2(aboutWindow.GetWidgetAreaSize().x - 20, aboutLabel.GetSize().y));
 		});
-		aboutWindow.OnCollapse([&](wi::gui::EventArgs args) {
-			for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+		aboutWindow.OnCollapse([&](lb::gui::EventArgs args) {
+			for (int i = 0; i < arraysize(lb::gui::Widget::sprites); ++i)
 			{
 				aboutWindow.sprites[i].params.enableCornerRounding();
 				aboutWindow.sprites[i].params.corners_rounding[0].radius = 10;
@@ -1179,14 +1179,14 @@ void EditorComponent::Load()
 	}
 
 	exitButton.Create("Exit");
-	exitButton.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	exitButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	exitButton.SetShadowRadius(2);
-	exitButton.font.params.shadowColor = wi::Color::Transparent();
+	exitButton.font.params.shadowColor = lb::Color::Transparent();
 	exitButton.SetTooltip("Exit");
-	exitButton.SetColor(wi::Color(160, 50, 50, 180), wi::gui::WIDGETSTATE::IDLE);
-	exitButton.SetColor(wi::Color(200, 50, 50, 255), wi::gui::WIDGETSTATE::FOCUS);
-	exitButton.OnClick([this](wi::gui::EventArgs args) {
-		wi::platform::Exit();
+	exitButton.SetColor(lb::Color(160, 50, 50, 180), lb::gui::WIDGETSTATE::IDLE);
+	exitButton.SetColor(lb::Color(200, 50, 50, 255), lb::gui::WIDGETSTATE::FOCUS);
+	exitButton.OnClick([this](lb::gui::EventArgs args) {
+		lb::platform::Exit();
 		});
 	topmenuWnd.AddWidget(&exitButton);
 
@@ -1230,9 +1230,9 @@ void EditorComponent::Load()
 
 	auto load_font = [this](std::string filename) {
 		font_datas.emplace_back().name = filename;
-		wi::helper::FileRead(filename, font_datas.back().filedata);
+		lb::helper::FileRead(filename, font_datas.back().filedata);
 	};
-	wi::helper::GetFileNamesInDirectory("fonts/", load_font, "TTF");
+	lb::helper::GetFileNamesInDirectory("fonts/", load_font, "TTF");
 
 	{
 		size_t current_recent = 0;
@@ -1263,12 +1263,12 @@ void EditorComponent::Start()
 	// Font icon is from #include "FontAwesomeV6.h"
 	//	We will not directly use this font style, but let the font renderer fall back on it
 	//	when an icon character is not found in the default font.
-	wi::font::AddFontStyle("FontAwesomeV6", font_awesome_v6, font_awesome_v6_size);
+	lb::font::AddFontStyle("FontAwesomeV6", font_awesome_v6, font_awesome_v6_size);
 
 	// Add other fonts that were loaded from fonts directory as fallback fonts:
 	for (auto& x : font_datas)
 	{
-		wi::font::AddFontStyle(x.name, x.filedata.data(), x.filedata.size());
+		lb::font::AddFontStyle(x.name, x.filedata.data(), x.filedata.size());
 	}
 
 	graphicsWnd.ApplySamplerSettings();
@@ -1289,11 +1289,11 @@ void EditorComponent::FixedUpdate()
 }
 void EditorComponent::Update(float dt)
 {
-	wi::profiler::range_id profrange = wi::profiler::BeginRangeCPU("Editor Update");
+	lb::profiler::range_id profrange = lb::profiler::BeginRangeCPU("Editor Update");
 
 	if (CheckInput(EditorActions::MAKE_NEW_SCREENSHOT))
 	{
-		std::string filename = wi::helper::screenshot(main->swapChain);
+		std::string filename = lb::helper::screenshot(main->swapChain);
 		PostSaveText(filename);
 		if (filename.empty())
 		{
@@ -1305,7 +1305,7 @@ void EditorComponent::Update(float dt)
 		}
 	}
 
-	loadmodel_font.SetHidden(!wi::jobsystem::IsBusy(loadmodel_workload));
+	loadmodel_font.SetHidden(!lb::jobsystem::IsBusy(loadmodel_workload));
 
 	Scene& scene = GetCurrentScene();
 	EditorScene& editorscene = GetCurrentEditorScene();
@@ -1348,16 +1348,16 @@ void EditorComponent::Update(float dt)
 		}
 	}
 
-	if (!wi::backlog::isActive() && paintToolWnd.GetMode() == PaintToolWindow::MODE::MODE_DISABLED)
+	if (!lb::backlog::isActive() && paintToolWnd.GetMode() == PaintToolWindow::MODE::MODE_DISABLED)
 	{
 		translator.Update(camera, currentMouse, *renderPath);
 	}
 
 	// Camera control:
-	if (!wi::backlog::isActive() && !GetGUI().HasFocus())
+	if (!lb::backlog::isActive() && !GetGUI().HasFocus())
 	{
 		deleting = CheckInput(EditorActions::DELETE_ACTION);
-		currentMouse = wi::input::GetPointer();
+		currentMouse = lb::input::GetPointer();
 		if (camControlStart)
 		{
 			originalMouse = currentMouse;
@@ -1368,9 +1368,9 @@ void EditorComponent::Update(float dt)
 			!translator.IsInteracting() && // translator shouldn't be active
 			paintToolWnd.GetMode() == PaintToolWindow::MODE::MODE_DISABLED && // paint tool shouldn't be active
 			(!componentsWnd.decalWnd.IsEnabled() || !componentsWnd.decalWnd.placementCheckBox.GetCheck()) && // decal placement shouldn't be active
-			!(wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) && wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT)) && // instance placement shouldn't be active
+			!(lb::input::Down(lb::input::KEYBOARD_BUTTON_LCONTROL) && lb::input::Down(lb::input::KEYBOARD_BUTTON_LSHIFT)) && // instance placement shouldn't be active
 			viewport3D_hitbox.intersects(XMFLOAT2(currentMouse.x, currentMouse.y)) &&
-			wi::input::Press(wi::input::MOUSE_BUTTON_LEFT);
+			lb::input::Press(lb::input::MOUSE_BUTTON_LEFT);
 
 		// After originalMouse is saved, currentMouse is remapped inside 3D viewport:
 		//	originalMouse shouldn't be remapped, because that will be used to reset mouse position
@@ -1379,43 +1379,43 @@ void EditorComponent::Update(float dt)
 
 		float xDif = 0, yDif = 0;
 
-		if (wi::input::Down(wi::input::MOUSE_BUTTON_RIGHT))
+		if (lb::input::Down(lb::input::MOUSE_BUTTON_RIGHT))
 		{
 			camControlStart = false;
-			xDif = wi::input::GetMouseState().delta_position.x;
-			yDif = wi::input::GetMouseState().delta_position.y;
+			xDif = lb::input::GetMouseState().delta_position.x;
+			yDif = lb::input::GetMouseState().delta_position.y;
 			xDif = 0.1f * xDif * (1.0f / 60.0f);
 			yDif = 0.1f * yDif * (1.0f / 60.0f);
-			wi::input::SetPointer(originalMouse);
-			wi::input::HidePointer(true);
+			lb::input::SetPointer(originalMouse);
+			lb::input::HidePointer(true);
 		}
 		else
 		{
 			camControlStart = true;
-			wi::input::HidePointer(false);
+			lb::input::HidePointer(false);
 		}
 
 		const float buttonrotSpeed = 2.0f * dt;
-		if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LEFT) || wi::input::Down(wi::input::KEYBOARD_BUTTON_NUMPAD4))
+		if (lb::input::Down(lb::input::KEYBOARD_BUTTON_LEFT) || lb::input::Down(lb::input::KEYBOARD_BUTTON_NUMPAD4))
 		{
 			xDif -= buttonrotSpeed;
 		}
-		if (wi::input::Down(wi::input::KEYBOARD_BUTTON_RIGHT) || wi::input::Down(wi::input::KEYBOARD_BUTTON_NUMPAD6))
+		if (lb::input::Down(lb::input::KEYBOARD_BUTTON_RIGHT) || lb::input::Down(lb::input::KEYBOARD_BUTTON_NUMPAD6))
 		{
 			xDif += buttonrotSpeed;
 		}
-		if (wi::input::Down(wi::input::KEYBOARD_BUTTON_UP) || wi::input::Down(wi::input::KEYBOARD_BUTTON_NUMPAD8))
+		if (lb::input::Down(lb::input::KEYBOARD_BUTTON_UP) || lb::input::Down(lb::input::KEYBOARD_BUTTON_NUMPAD8))
 		{
 			yDif -= buttonrotSpeed;
 		}
-		if (wi::input::Down(wi::input::KEYBOARD_BUTTON_DOWN) || wi::input::Down(wi::input::KEYBOARD_BUTTON_NUMPAD2))
+		if (lb::input::Down(lb::input::KEYBOARD_BUTTON_DOWN) || lb::input::Down(lb::input::KEYBOARD_BUTTON_NUMPAD2))
 		{
 			yDif += buttonrotSpeed;
 		}
 
-		const XMFLOAT4 leftStick = wi::input::GetAnalog(wi::input::GAMEPAD_ANALOG_THUMBSTICK_L, 0);
-		const XMFLOAT4 rightStick = wi::input::GetAnalog(wi::input::GAMEPAD_ANALOG_THUMBSTICK_R, 0);
-		const XMFLOAT4 rightTrigger = wi::input::GetAnalog(wi::input::GAMEPAD_ANALOG_TRIGGER_R, 0);
+		const XMFLOAT4 leftStick = lb::input::GetAnalog(lb::input::GAMEPAD_ANALOG_THUMBSTICK_L, 0);
+		const XMFLOAT4 rightStick = lb::input::GetAnalog(lb::input::GAMEPAD_ANALOG_THUMBSTICK_R, 0);
+		const XMFLOAT4 rightTrigger = lb::input::GetAnalog(lb::input::GAMEPAD_ANALOG_TRIGGER_R, 0);
 
 		const float joystickrotspeed = 0.05f;
 		xDif += rightStick.x * joystickrotspeed;
@@ -1428,7 +1428,7 @@ void EditorComponent::Update(float dt)
 		if (CheckInput(EditorActions::ORTHO_CAMERA))
 		{
 			camera.SetOrtho(!camera.IsOrtho());
-			camera.ortho_vertical_size = camera.ComputeOrthoVerticalSizeFromPerspective(wi::math::Length(camera.Eye)); // camera distance from origin
+			camera.ortho_vertical_size = camera.ComputeOrthoVerticalSizeFromPerspective(lb::math::Length(camera.Eye)); // camera distance from origin
 			cameraWnd.orthoCheckBox.SetCheck(camera.IsOrtho());
 		}
 
@@ -1437,19 +1437,19 @@ void EditorComponent::Update(float dt)
 			// FPS Camera
 			const float clampedDT = std::min(dt, 0.1f); // if dt > 100 millisec, don't allow the camera to jump too far...
 
-			const float speed = ((wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT) ? 10.0f : 1.0f) + rightTrigger.x * 10.0f) * cameraWnd.movespeedSlider.GetValue() * clampedDT;
+			const float speed = ((lb::input::Down(lb::input::KEYBOARD_BUTTON_LSHIFT) ? 10.0f : 1.0f) + rightTrigger.x * 10.0f) * cameraWnd.movespeedSlider.GetValue() * clampedDT;
 			XMVECTOR move = XMLoadFloat3(&editorscene.cam_move);
 			XMVECTOR moveNew = XMVectorSet(0, 0, 0, 0);
 
-			if (!wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL))
+			if (!lb::input::Down(lb::input::KEYBOARD_BUTTON_LCONTROL))
 			{
 				// Only move camera if control not pressed
-				if (CheckInput(EditorActions::MOVE_CAMERA_LEFT) || wi::input::Down(wi::input::GAMEPAD_BUTTON_LEFT)) { moveNew += XMVectorSet(-1, 0, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_RIGHT) || wi::input::Down(wi::input::GAMEPAD_BUTTON_RIGHT)) { moveNew += XMVectorSet(1, 0, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_FORWARD) || wi::input::Down(wi::input::GAMEPAD_BUTTON_UP)) { moveNew += XMVectorSet(0, 0, 1, 0); camera.ortho_vertical_size -= 0.1f; }
-				if (CheckInput(EditorActions::MOVE_CAMERA_BACKWARD) || wi::input::Down(wi::input::GAMEPAD_BUTTON_DOWN)) { moveNew += XMVectorSet(0, 0, -1, 0); camera.ortho_vertical_size += 0.1f; }
-				if (CheckInput(EditorActions::MOVE_CAMERA_UP) || wi::input::Down(wi::input::GAMEPAD_BUTTON_2)) { moveNew += XMVectorSet(0, 1, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_DOWN) || wi::input::Down(wi::input::GAMEPAD_BUTTON_1)) { moveNew += XMVectorSet(0, -1, 0, 0); }
+				if (CheckInput(EditorActions::MOVE_CAMERA_LEFT) || lb::input::Down(lb::input::GAMEPAD_BUTTON_LEFT)) { moveNew += XMVectorSet(-1, 0, 0, 0); }
+				if (CheckInput(EditorActions::MOVE_CAMERA_RIGHT) || lb::input::Down(lb::input::GAMEPAD_BUTTON_RIGHT)) { moveNew += XMVectorSet(1, 0, 0, 0); }
+				if (CheckInput(EditorActions::MOVE_CAMERA_FORWARD) || lb::input::Down(lb::input::GAMEPAD_BUTTON_UP)) { moveNew += XMVectorSet(0, 0, 1, 0); camera.ortho_vertical_size -= 0.1f; }
+				if (CheckInput(EditorActions::MOVE_CAMERA_BACKWARD) || lb::input::Down(lb::input::GAMEPAD_BUTTON_DOWN)) { moveNew += XMVectorSet(0, 0, -1, 0); camera.ortho_vertical_size += 0.1f; }
+				if (CheckInput(EditorActions::MOVE_CAMERA_UP) || lb::input::Down(lb::input::GAMEPAD_BUTTON_2)) { moveNew += XMVectorSet(0, 1, 0, 0); }
+				if (CheckInput(EditorActions::MOVE_CAMERA_DOWN) || lb::input::Down(lb::input::GAMEPAD_BUTTON_1)) { moveNew += XMVectorSet(0, -1, 0, 0); }
 				moveNew = XMVector3Normalize(moveNew);
 			}
 			moveNew += XMVectorSet(leftStick.x, 0, leftStick.y, 0);
@@ -1481,14 +1481,14 @@ void EditorComponent::Update(float dt)
 		{
 			// Orbital Camera
 
-			if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT))
+			if (lb::input::Down(lb::input::KEYBOARD_BUTTON_LSHIFT))
 			{
 				XMVECTOR V = XMVectorAdd(camera.GetRight() * xDif, camera.GetUp() * yDif) * 10;
 				XMFLOAT3 vec;
 				XMStoreFloat3(&vec, V);
 				editorscene.camera_target.Translate(vec);
 			}
-			else if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || currentMouse.z != 0.0f)
+			else if (lb::input::Down(lb::input::KEYBOARD_BUTTON_LCONTROL) || currentMouse.z != 0.0f)
 			{
 				editorscene.camera_transform.Translate(XMFLOAT3(0, 0, yDif * 4 + currentMouse.z));
 				editorscene.camera_transform.translation_local.z = std::min(0.0f, editorscene.camera_transform.translation_local.z);
@@ -1513,9 +1513,9 @@ void EditorComponent::Update(float dt)
 		inspector_mode = CheckInput(EditorActions::INSPECTOR_MODE);
 
 		// Begin picking:
-		pickRay = wi::renderer::GetPickRay((long)currentMouse.x, (long)currentMouse.y, *renderPath, camera);
+		pickRay = lb::renderer::GetPickRay((long)currentMouse.x, (long)currentMouse.y, *renderPath, camera);
 		{
-			hovered = wi::scene::PickResult();
+			hovered = lb::scene::PickResult();
 
 			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Light))
 			{
@@ -1526,9 +1526,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), XMLoadFloat3(&light.position));
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(light.position, pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(light.position, pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1537,7 +1537,7 @@ void EditorComponent::Update(float dt)
 						if (light.GetType() == LightComponent::DIRECTIONAL || light.GetType() == LightComponent::SPOT)
 						{
 							// Light direction visualizer picking:
-							const float dist = wi::math::Distance(light.position, camera.Eye);
+							const float dist = lb::math::Distance(light.position, camera.Eye);
 							float siz = 0.02f * dist;
 							const XMMATRIX M =
 								XMMatrixScaling(siz, siz, siz) *
@@ -1558,7 +1558,7 @@ void EditorComponent::Update(float dt)
 							{
 								if (dis < hovered.distance)
 								{
-									hovered = wi::scene::PickResult();
+									hovered = lb::scene::PickResult();
 									hovered.entity = entity;
 									hovered.distance = dis;
 								}
@@ -1578,9 +1578,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1597,9 +1597,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1616,9 +1616,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1635,9 +1635,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1654,10 +1654,10 @@ void EditorComponent::Update(float dt)
 
 					if (Sphere(transform.GetPosition(), 1).intersects(pickRay))
 					{
-						float dis = wi::math::Distance(transform.GetPosition(), pickRay.origin);
+						float dis = lb::math::Distance(transform.GetPosition(), pickRay.origin);
 						if (dis < hovered.distance)
 						{
-							hovered = wi::scene::PickResult();
+							hovered = lb::scene::PickResult();
 							hovered.entity = entity;
 							hovered.distance = dis;
 						}
@@ -1675,9 +1675,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1694,9 +1694,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1713,9 +1713,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1732,9 +1732,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1751,9 +1751,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1770,9 +1770,9 @@ void EditorComponent::Update(float dt)
 
 					XMVECTOR disV = XMVector3LinePointDistance(XMLoadFloat3(&pickRay.origin), XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction), transform.GetPositionV());
 					float dis = XMVectorGetX(disV);
-					if (dis > 0.01f && dis < wi::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
+					if (dis > 0.01f && dis < lb::math::Distance(transform.GetPosition(), pickRay.origin) * 0.05f && dis < hovered.distance)
 					{
-						hovered = wi::scene::PickResult();
+						hovered = lb::scene::PickResult();
 						hovered.entity = entity;
 						hovered.distance = dis;
 					}
@@ -1842,8 +1842,8 @@ void EditorComponent::Update(float dt)
 						}
 						XMVECTOR ab = XMVector3Normalize(b - a);
 
-						wi::primitive::Capsule capsule;
-						capsule.radius = wi::math::Distance(a, b) * 0.1f;
+						lb::primitive::Capsule capsule;
+						capsule.radius = lb::math::Distance(a, b) * 0.1f;
 						a -= ab * capsule.radius;
 						b += ab * capsule.radius;
 						XMStoreFloat3(&capsule.base, a);
@@ -1852,7 +1852,7 @@ void EditorComponent::Update(float dt)
 						float dis = -1;
 						if (pickRay.intersects(capsule, dis) && dis < hovered.distance)
 						{
-							hovered = wi::scene::PickResult();
+							hovered = lb::scene::PickResult();
 							hovered.entity = entity;
 							hovered.distance = dis;
 						}
@@ -1866,11 +1866,11 @@ void EditorComponent::Update(float dt)
 				if (!translator.IsInteracting() && paintToolWnd.GetMode() == PaintToolWindow::MODE_DISABLED)
 				{
 					if (
-						wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) ||
+						lb::input::Down(lb::input::MOUSE_BUTTON_LEFT) ||
 						inspector_mode
 						)
 					{
-						hovered = wi::scene::Pick(pickRay, wi::enums::FILTER_OBJECT_ALL, ~0u, scene);
+						hovered = lb::scene::Pick(pickRay, lb::enums::FILTER_OBJECT_ALL, ~0u, scene);
 					}
 				}
 			}
@@ -1878,7 +1878,7 @@ void EditorComponent::Update(float dt)
 
 		if (hovered.entity != INVALID_ENTITY &&
 			CheckInput(EditorActions::DEPTH_OF_FIELD_REFOCUS_TO_POINT) &&
-			wi::input::Down(wi::input::MOUSE_BUTTON_LEFT))
+			lb::input::Down(lb::input::MOUSE_BUTTON_LEFT))
 		{
 			camera.focal_length = hovered.distance;
 			camera.SetDirty();
@@ -1892,10 +1892,10 @@ void EditorComponent::Update(float dt)
 			bool interaction_happened = false;
 			if (CheckInput(EditorActions::RAGDOLL_AND_PHYSICS_IMPULSE_TESTER))
 			{
-				if (wi::input::Press(wi::input::MOUSE_BUTTON_MIDDLE))
+				if (lb::input::Press(lb::input::MOUSE_BUTTON_MIDDLE))
 				{
 					// Physics impulse tester:
-					wi::physics::RayIntersectionResult result = wi::physics::Intersects(scene, pickRay);
+					lb::physics::RayIntersectionResult result = lb::physics::Intersects(scene, pickRay);
 					if (result.IsValid())
 					{
 						interaction_happened = true;
@@ -1908,7 +1908,7 @@ void EditorComponent::Update(float dt)
 							if (humanoid != nullptr)
 							{
 								humanoid->SetRagdollPhysicsEnabled(true);
-								wi::physics::ApplyImpulseAt(*humanoid, result.humanoid_bone, impulse, result.position_local);
+								lb::physics::ApplyImpulseAt(*humanoid, result.humanoid_bone, impulse, result.position_local);
 							}
 						}
 						else
@@ -1917,7 +1917,7 @@ void EditorComponent::Update(float dt)
 							RigidBodyPhysicsComponent* rigidbody = scene.rigidbodies.GetComponent(result.entity);
 							if (rigidbody != nullptr)
 							{
-								wi::physics::ApplyImpulseAt(*rigidbody, impulse, result.position_local);
+								lb::physics::ApplyImpulseAt(*rigidbody, impulse, result.position_local);
 							}
 						}
 					}
@@ -1926,9 +1926,9 @@ void EditorComponent::Update(float dt)
 			else
 			{
 				// Physics pick dragger:
-				if (wi::input::Down(wi::input::MOUSE_BUTTON_MIDDLE))
+				if (lb::input::Down(lb::input::MOUSE_BUTTON_MIDDLE))
 				{
-					wi::physics::PickDrag(scene, pickRay, physicsDragOp);
+					lb::physics::PickDrag(scene, pickRay, physicsDragOp);
 					if (physicsDragOp.IsValid())
 					{
 						interaction_happened = true;
@@ -1941,7 +1941,7 @@ void EditorComponent::Update(float dt)
 			}
 
 			// Decal placement:
-			if (componentsWnd.decalWnd.IsEnabled() && componentsWnd.decalWnd.placementCheckBox.GetCheck() && wi::input::Press(wi::input::MOUSE_BUTTON_LEFT))
+			if (componentsWnd.decalWnd.IsEnabled() && componentsWnd.decalWnd.placementCheckBox.GetCheck() && lb::input::Press(lb::input::MOUSE_BUTTON_LEFT))
 			{
 				// if not water, put a decal on it:
 				Entity entity = scene.Entity_CreateDecal("editorDecal", "");
@@ -1960,7 +1960,7 @@ void EditorComponent::Update(float dt)
 				transform.RotateRollPitchYaw(XMFLOAT3(XM_PIDIV2, 0, 0));
 				scene.Component_Attach(entity, hovered.entity);
 
-				wi::Archive& archive = AdvanceHistory();
+				lb::Archive& archive = AdvanceHistory();
 				archive << EditorComponent::HISTORYOP_ADD;
 				RecordSelection(archive);
 				RecordSelection(archive);
@@ -1971,9 +1971,9 @@ void EditorComponent::Update(float dt)
 			}
 
 			// Other:
-			if (!interaction_happened && wi::input::Down(wi::input::MOUSE_BUTTON_MIDDLE))
+			if (!interaction_happened && lb::input::Down(lb::input::MOUSE_BUTTON_MIDDLE))
 			{
-				hovered = wi::scene::Pick(pickRay, wi::enums::FILTER_OBJECT_ALL, ~0u, scene);
+				hovered = lb::scene::Pick(pickRay, lb::enums::FILTER_OBJECT_ALL, ~0u, scene);
 				if (hovered.entity != INVALID_ENTITY)
 				{
 					if (dummy_enabled)
@@ -1985,7 +1985,7 @@ void EditorComponent::Update(float dt)
 						const ObjectComponent* object = scene.objects.GetComponent(hovered.entity);
 						if (object != nullptr)
 						{
-							if (object->GetFilterMask() & wi::enums::FILTER_WATER)
+							if (object->GetFilterMask() & lb::enums::FILTER_WATER)
 							{
 								// if water, then put a water ripple onto it:
 								scene.PutWaterRipple(hovered.position);
@@ -2024,7 +2024,7 @@ void EditorComponent::Update(float dt)
 		// Select...
 		if (leftmouse_select || selectAll || clear_selected)
 		{
-			wi::Archive& archive = AdvanceHistory();
+			lb::Archive& archive = AdvanceHistory();
 			archive << HISTORYOP_SELECTION;
 			// record PREVIOUS selection state...
 			RecordSelection(archive);
@@ -2046,12 +2046,12 @@ void EditorComponent::Update(float dt)
 			{
 				// Add the hovered item to the selection:
 
-				if (!translator.selected.empty() && (wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT) || wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL)))
+				if (!translator.selected.empty() && (lb::input::Down(lb::input::KEYBOARD_BUTTON_LSHIFT) || lb::input::Down(lb::input::KEYBOARD_BUTTON_LCONTROL)))
 				{
 					// Union selection:
-					wi::vector<wi::scene::PickResult> saved = translator.selected;
+					lb::vector<lb::scene::PickResult> saved = translator.selected;
 					translator.selected.clear();
-					for (const wi::scene::PickResult& picked : saved)
+					for (const lb::scene::PickResult& picked : saved)
 					{
 						AddSelected(picked);
 					}
@@ -2086,10 +2086,10 @@ void EditorComponent::Update(float dt)
 	main->infoDisplay.colorgrading_helper = false;
 
 	// Control operations...
-	if (!GetGUI().IsTyping() && wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCONTROL))
+	if (!GetGUI().IsTyping() && lb::input::Down(lb::input::KEYBOARD_BUTTON_LCONTROL) || lb::input::Down(lb::input::KEYBOARD_BUTTON_RCONTROL))
 	{
-		bool isCtrlDown = wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCONTROL);
-		bool isShiftDown = wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RSHIFT);
+		bool isCtrlDown = lb::input::Down(lb::input::KEYBOARD_BUTTON_LCONTROL) || lb::input::Down(lb::input::KEYBOARD_BUTTON_RCONTROL);
+		bool isShiftDown = lb::input::Down(lb::input::KEYBOARD_BUTTON_LSHIFT) || lb::input::Down(lb::input::KEYBOARD_BUTTON_RSHIFT);
 
 		// Color Grading helper
 		if (CheckInput(EditorActions::COLOR_GRADING_REFERENCE))
@@ -2104,8 +2104,8 @@ void EditorComponent::Update(float dt)
 		// Toggle wireframe mode
 		if (CheckInput(EditorActions::WIREFRAME_MODE))
 		{
-			wi::renderer::SetWireRender(!wi::renderer::IsWireRender());
-			generalWnd.wireFrameCheckBox.SetCheck(wi::renderer::IsWireRender());
+			lb::renderer::SetWireRender(!lb::renderer::IsWireRender());
+			generalWnd.wireFrameCheckBox.SetCheck(lb::renderer::IsWireRender());
 		}
 
 		// Enable transform tool
@@ -2169,7 +2169,7 @@ void EditorComponent::Update(float dt)
 		// Paste
 		if (CheckInput(EditorActions::PASTE_ACTION))
 		{
-			wi::Archive& archive = AdvanceHistory();
+			lb::Archive& archive = AdvanceHistory();
 			archive << HISTORYOP_ADD;
 			RecordSelection(archive);
 
@@ -2179,10 +2179,10 @@ void EditorComponent::Update(float dt)
 			clipboard.SetReadModeAndResetPos(true);
 			size_t count;
 			clipboard >> count;
-			wi::vector<Entity> addedEntities;
+			lb::vector<Entity> addedEntities;
 			for (size_t i = 0; i < count; ++i)
 			{
-				wi::scene::PickResult picked;
+				lb::scene::PickResult picked;
 				picked.entity = scene.Entity_Serialize(clipboard, seri, INVALID_ENTITY, Scene::EntitySerializeFlags::RECURSIVE);
 				AddSelected(picked);
 				addedEntities.push_back(picked.entity);
@@ -2197,15 +2197,15 @@ void EditorComponent::Update(float dt)
 		// Duplicate Entity
 		if (CheckInput(EditorActions::DUPLICATE_ENTITY))
 		{
-			wi::Archive& archive = AdvanceHistory();
+			lb::Archive& archive = AdvanceHistory();
 			archive << HISTORYOP_ADD;
 			RecordSelection(archive);
 
 			auto& prevSel = translator.selectedEntitiesNonRecursive;
-			wi::vector<Entity> addedEntities;
+			lb::vector<Entity> addedEntities;
 			for (auto& x : prevSel)
 			{
-				wi::scene::PickResult picked;
+				lb::scene::PickResult picked;
 				picked.entity = scene.Entity_Duplicate(x);
 				addedEntities.push_back(picked.entity);
 			}
@@ -2226,7 +2226,7 @@ void EditorComponent::Update(float dt)
 		// Duplicate/Put Instances
 		if (CheckInput(EditorActions::PLACE_INSTANCES))
 		{
-			wi::vector<Entity> addedEntities;
+			lb::vector<Entity> addedEntities;
 			EntitySerializer seri;
 			clipboard.SetReadModeAndResetPos(true);
 			size_t count;
@@ -2248,7 +2248,7 @@ void EditorComponent::Update(float dt)
 					transform->MatrixTransform(hovered.orientation);
 #else
 					// orient in random vertical rotation only:
-					transform->RotateRollPitchYaw(XMFLOAT3(0, wi::random::GetRandom(XM_PI), 0));
+					transform->RotateRollPitchYaw(XMFLOAT3(0, lb::random::GetRandom(XM_PI), 0));
 					transform->Translate(hovered.position);
 #endif
 					transform->UpdateTransform();
@@ -2260,7 +2260,7 @@ void EditorComponent::Update(float dt)
 				addedEntities.push_back(entity);
 				}
 
-			wi::Archive& archive = AdvanceHistory();
+			lb::Archive& archive = AdvanceHistory();
 			archive << HISTORYOP_ADD;
 			// because selection didn't change here, we record same selection state twice, it's not a bug:
 			RecordSelection(archive);
@@ -2288,7 +2288,7 @@ void EditorComponent::Update(float dt)
 	}
 
 	// These keys work but for some reason in my keyboard 1 returns TAB and 2 returns TILDE keys.
-	if (!wi::backlog::isActive() && !GetGUI().IsTyping())
+	if (!lb::backlog::isActive() && !GetGUI().IsTyping())
 	{
 		if (CheckInput(EditorActions::MOVE_TOGGLE_ACTION))
 		{
@@ -2314,7 +2314,7 @@ void EditorComponent::Update(float dt)
 	if (deleting)
 	{
 		deleting = false;
-		wi::Archive& archive = AdvanceHistory();
+		lb::Archive& archive = AdvanceHistory();
 		archive << HISTORYOP_DELETE;
 		RecordSelection(archive);
 
@@ -2373,7 +2373,7 @@ void EditorComponent::Update(float dt)
 	}
 	else
 	{
-		const wi::scene::PickResult& picked = translator.selected.back();
+		const lb::scene::PickResult& picked = translator.selected.back();
 
 		assert(picked.entity != INVALID_ENTITY);
 		cameraWnd.SetEntity(picked.entity);
@@ -2505,7 +2505,7 @@ void EditorComponent::Update(float dt)
 	if (translator.IsDragEnded())
 	{
 		EntitySerializer seri;
-		wi::Archive& archive = AdvanceHistory();
+		lb::Archive& archive = AdvanceHistory();
 		archive << HISTORYOP_TRANSLATOR;
 		archive << translator.isTranslator;
 		archive << translator.isRotator;
@@ -2540,7 +2540,7 @@ void EditorComponent::Update(float dt)
 	camera.TransformCamera(editorscene.camera_transform);
 	camera.UpdateCamera();
 
-	wi::RenderPath3D_PathTracing* pathtracer = dynamic_cast<wi::RenderPath3D_PathTracing*>(renderPath.get());
+	lb::RenderPath3D_PathTracing* pathtracer = dynamic_cast<lb::RenderPath3D_PathTracing*>(renderPath.get());
 	if (pathtracer != nullptr)
 	{
 		pathtracer->setTargetSampleCount((int)graphicsWnd.pathTraceTargetSlider.GetValue());
@@ -2562,7 +2562,7 @@ void EditorComponent::Update(float dt)
 		graphicsWnd.pathTraceStatisticsLabel.SetText(ss);
 	}
 
-	wi::profiler::EndRange(profrange);
+	lb::profiler::EndRange(profrange);
 
 	RenderPath2D::Update(dt);
 
@@ -2574,24 +2574,24 @@ void EditorComponent::Update(float dt)
 
 	if (navtest_enabled)
 	{
-		if (wi::input::Down(wi::input::MOUSE_BUTTON_MIDDLE))
+		if (lb::input::Down(lb::input::MOUSE_BUTTON_MIDDLE))
 		{
-			hovered = wi::scene::Pick(pickRay, wi::enums::FILTER_OBJECT_ALL, ~0u, scene);
+			hovered = lb::scene::Pick(pickRay, lb::enums::FILTER_OBJECT_ALL, ~0u, scene);
 		}
-		if (hovered.entity != INVALID_ENTITY && wi::input::Down(wi::input::KEYBOARD_BUTTON_F5))
+		if (hovered.entity != INVALID_ENTITY && lb::input::Down(lb::input::KEYBOARD_BUTTON_F5))
 		{
 			navtest_start_pick = hovered;
 		}
-		if (hovered.entity != INVALID_ENTITY && wi::input::Down(wi::input::KEYBOARD_BUTTON_F6))
+		if (hovered.entity != INVALID_ENTITY && lb::input::Down(lb::input::KEYBOARD_BUTTON_F6))
 		{
 			navtest_goal_pick = hovered;
 		}
-		if (wi::input::Down(wi::input::KEYBOARD_BUTTON_F7) && wi::input::Down(wi::input::MOUSE_BUTTON_MIDDLE))
+		if (lb::input::Down(lb::input::KEYBOARD_BUTTON_F7) && lb::input::Down(lb::input::MOUSE_BUTTON_MIDDLE))
 		{
 			navtest_start_pick.entity = INVALID_ENTITY;
 			XMStoreFloat3(&navtest_start_pick.position, XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction) * 2);
 		}
-		if (wi::input::Down(wi::input::KEYBOARD_BUTTON_F8) && wi::input::Down(wi::input::MOUSE_BUTTON_MIDDLE))
+		if (lb::input::Down(lb::input::KEYBOARD_BUTTON_F8) && lb::input::Down(lb::input::MOUSE_BUTTON_MIDDLE))
 		{
 			navtest_goal_pick.entity = INVALID_ENTITY;
 			XMStoreFloat3(&navtest_goal_pick.position, XMLoadFloat3(&pickRay.origin) + XMLoadFloat3(&pickRay.direction) * 2);
@@ -2628,18 +2628,18 @@ void EditorComponent::Update(float dt)
 
 		for (size_t i = 0; i < scene.voxel_grids.GetCount(); ++i)
 		{
-			const wi::VoxelGrid& voxelgrid = scene.voxel_grids[i];
+			const lb::VoxelGrid& voxelgrid = scene.voxel_grids[i];
 			AABB aabb = voxelgrid.get_aabb();
 			if (aabb.intersects(navtest_start_pick.position) && aabb.intersects(navtest_goal_pick.position))
 			{
-				auto range = wi::profiler::BeginRangeCPU("NAVTEST PATHQUERY");
+				auto range = lb::profiler::BeginRangeCPU("NAVTEST PATHQUERY");
 				navtest_pathquery.process(
 					navtest_start_pick.position,
 					navtest_goal_pick.position,
 					voxelgrid
 				);
-				wi::profiler::EndRange(range);
-				wi::renderer::DrawPathQuery(&navtest_pathquery);
+				lb::profiler::EndRange(range);
+				lb::renderer::DrawPathQuery(&navtest_pathquery);
 				break;
 			}
 		}
@@ -2661,19 +2661,19 @@ void EditorComponent::Update(float dt)
 	}
 	if (force_collider_visualizer)
 	{
-		wi::renderer::SetToDrawDebugColliders(true);
+		lb::renderer::SetToDrawDebugColliders(true);
 	}
 	else
 	{
-		wi::renderer::SetToDrawDebugColliders(generalWnd.colliderVisCheckBox.GetCheck());
+		lb::renderer::SetToDrawDebugColliders(generalWnd.colliderVisCheckBox.GetCheck());
 	}
 	if (force_spring_visualizer)
 	{
-		wi::renderer::SetToDrawDebugSprings(true);
+		lb::renderer::SetToDrawDebugSprings(true);
 	}
 	else
 	{
-		wi::renderer::SetToDrawDebugSprings(generalWnd.springVisCheckBox.GetCheck());
+		lb::renderer::SetToDrawDebugSprings(generalWnd.springVisCheckBox.GetCheck());
 	}
 }
 void EditorComponent::PostUpdate()
@@ -2695,7 +2695,7 @@ void EditorComponent::PostUpdate()
 		// Draw all voxel grids:
 		for (size_t i = 0; i < scene.voxel_grids.GetCount(); ++i)
 		{
-			wi::renderer::DrawVoxelGrid(&scene.voxel_grids[i]);
+			lb::renderer::DrawVoxelGrid(&scene.voxel_grids[i]);
 		}
 	}
 	else
@@ -2703,7 +2703,7 @@ void EditorComponent::PostUpdate()
 		// Draw only selected:
 		if (scene.voxel_grids.Contains(componentsWnd.voxelGridWnd.entity))
 		{
-			wi::renderer::DrawVoxelGrid(scene.voxel_grids.GetComponent(componentsWnd.voxelGridWnd.entity));
+			lb::renderer::DrawVoxelGrid(scene.voxel_grids.GetComponent(componentsWnd.voxelGridWnd.entity));
 		}
 	}
 }
@@ -2730,7 +2730,7 @@ void EditorComponent::Render() const
 
 				XMFLOAT4X4 hoverBox;
 				XMStoreFloat4x4(&hoverBox, aabb.getAsBoxMatrix());
-				wi::renderer::DrawBox(hoverBox, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f));
+				lb::renderer::DrawBox(hoverBox, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f));
 			}
 
 			const LightComponent* light = scene.lights.GetComponent(hovered.entity);
@@ -2740,13 +2740,13 @@ void EditorComponent::Render() const
 
 				XMFLOAT4X4 hoverBox;
 				XMStoreFloat4x4(&hoverBox, aabb.getAsBoxMatrix());
-				wi::renderer::DrawBox(hoverBox, XMFLOAT4(0.5f, 0.5f, 0, 0.5f));
+				lb::renderer::DrawBox(hoverBox, XMFLOAT4(0.5f, 0.5f, 0, 0.5f));
 			}
 
 			const DecalComponent* decal = scene.decals.GetComponent(hovered.entity);
 			if (decal != nullptr)
 			{
-				wi::renderer::DrawBox(decal->world, XMFLOAT4(0.5f, 0, 0.5f, 0.5f));
+				lb::renderer::DrawBox(decal->world, XMFLOAT4(0.5f, 0, 0.5f, 0.5f));
 			}
 
 			const EnvironmentProbeComponent* probe = scene.probes.GetComponent(hovered.entity);
@@ -2756,15 +2756,15 @@ void EditorComponent::Render() const
 
 				XMFLOAT4X4 hoverBox;
 				XMStoreFloat4x4(&hoverBox, aabb.getAsBoxMatrix());
-				wi::renderer::DrawBox(hoverBox, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f));
+				lb::renderer::DrawBox(hoverBox, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f));
 			}
 
-			const wi::HairParticleSystem* hair = scene.hairs.GetComponent(hovered.entity);
+			const lb::HairParticleSystem* hair = scene.hairs.GetComponent(hovered.entity);
 			if (hair != nullptr)
 			{
 				XMFLOAT4X4 hoverBox;
 				XMStoreFloat4x4(&hoverBox, hair->aabb.getAsBoxMatrix());
-				wi::renderer::DrawBox(hoverBox, XMFLOAT4(0, 0.5f, 0, 0.5f));
+				lb::renderer::DrawBox(hoverBox, XMFLOAT4(0, 0.5f, 0, 0.5f));
 			}
 		}
 	}
@@ -2802,7 +2802,7 @@ void EditorComponent::Render() const
 					// also display decal OBB:
 					XMFLOAT4X4 selectionBox;
 					selectionBox = decal->world;
-					wi::renderer::DrawBox(selectionBox, XMFLOAT4(1, 0, 1, 1));
+					lb::renderer::DrawBox(selectionBox, XMFLOAT4(1, 0, 1, 1));
 				}
 
 				const EnvironmentProbeComponent* probe = scene.probes.GetComponent(picked.entity);
@@ -2812,7 +2812,7 @@ void EditorComponent::Render() const
 					selectedAABB = AABB::Merge(selectedAABB, aabb);
 				}
 
-				const wi::HairParticleSystem* hair = scene.hairs.GetComponent(picked.entity);
+				const lb::HairParticleSystem* hair = scene.hairs.GetComponent(picked.entity);
 				if (hair != nullptr)
 				{
 					selectedAABB = AABB::Merge(selectedAABB, hair->aabb);
@@ -2823,7 +2823,7 @@ void EditorComponent::Render() const
 
 		XMFLOAT4X4 selectionBox;
 		XMStoreFloat4x4(&selectionBox, selectedAABB.getAsBoxMatrix());
-		wi::renderer::DrawBox(selectionBox, XMFLOAT4(1, 1, 1, 1));
+		lb::renderer::DrawBox(selectionBox, XMFLOAT4(1, 1, 1, 1));
 	}
 
 	renderPath->Render();
@@ -2831,7 +2831,7 @@ void EditorComponent::Render() const
 	// Editor custom render:
 	if (GetGUI().IsVisible())
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		CommandList cmd = device->BeginCommandList();
 		device->EventBegin("Editor", cmd);
 
@@ -2845,13 +2845,13 @@ void EditorComponent::Render() const
 			vp.height = (float)rt_selectionOutline[0].GetDesc().height;
 			device->BindViewports(1, &vp, cmd);
 
-			wi::image::Params fx;
+			lb::image::Params fx;
 			fx.enableFullScreen();
-			fx.stencilComp = wi::image::STENCILMODE::STENCILMODE_EQUAL;
+			fx.stencilComp = lb::image::STENCILMODE::STENCILMODE_EQUAL;
 
 			// We will specify the stencil ref in user-space, don't care about engine stencil refs here:
 			//	Otherwise would need to take into account engine ref and draw multiple permutations of stencil refs.
-			fx.stencilRefMode = wi::image::STENCILREFMODE_USER;
+			fx.stencilRefMode = lb::image::STENCILREFMODE_USER;
 
 			// Materials outline:
 			{
@@ -2883,7 +2883,7 @@ void EditorComponent::Render() const
 
 				// Draw solid blocks of selected materials
 				fx.stencilRef = EDITORSTENCILREF_HIGHLIGHT_MATERIAL;
-				wi::image::Draw(nullptr, fx, cmd);
+				lb::image::Draw(nullptr, fx, cmd);
 
 				device->RenderPassEnd(cmd);
 			}
@@ -2918,7 +2918,7 @@ void EditorComponent::Render() const
 
 				// Draw solid blocks of selected objects
 				fx.stencilRef = EDITORSTENCILREF_HIGHLIGHT_OBJECT;
-				wi::image::Draw(nullptr, fx, cmd);
+				lb::image::Draw(nullptr, fx, cmd);
 
 				device->RenderPassEnd(cmd);
 			}
@@ -2984,12 +2984,12 @@ void EditorComponent::Render() const
 			float sca = lerp(0.4f, 0.8f, std::abs(std::sin(tim * 2)));
 
 			XMMATRIX ROT = XMLoadFloat3x3(&camera.rotationMatrix);
-			wi::font::Params fp;
+			lb::font::Params fp;
 			fp.customProjection = &VP;
 			fp.customRotation = &ROT;
 			fp.scaling = 0.02f;
-			fp.h_align = wi::font::WIFALIGN_CENTER;
-			fp.v_align = wi::font::WIFALIGN_BOTTOM;
+			fp.h_align = lb::font::WIFALIGN_CENTER;
+			fp.v_align = lb::font::WIFALIGN_BOTTOM;
 			fp.enableDepthTest();
 
 			for (size_t i = 0; i < scene.metadatas.GetCount(); ++i)
@@ -3008,35 +3008,35 @@ void EditorComponent::Render() const
 					break;
 				case MetadataComponent::Preset::Waypoint:
 					fp.position.y += 1;
-					fp.color = wi::Color::fromFloat4(XMFLOAT4(1, 0.2f, 0.5f, 1));
-					wi::font::Draw("Waypoint", fp, cmd);
+					fp.color = lb::Color::fromFloat4(XMFLOAT4(1, 0.2f, 0.5f, 1));
+					lb::font::Draw("Waypoint", fp, cmd);
 					dummy::draw_waypoint(XMLoadFloat4x4(&transform.world) * VP, fp.color, true, cmd);
 					break;
 				case MetadataComponent::Preset::Enemy:
 					fp.position.y += 2;
-					fp.color = wi::Color::fromFloat4(XMFLOAT4(0.8f, 0.2f, 0.2f, 1));
-					wi::font::Draw("Enemy", fp, cmd);
+					fp.color = lb::Color::fromFloat4(XMFLOAT4(0.8f, 0.2f, 0.2f, 1));
+					lb::font::Draw("Enemy", fp, cmd);
 					dummy::draw_direction(XMMatrixRotationY(XM_PI) * XMMatrixTranslation(0, 0.1f, 0) * XMLoadFloat4x4(&transform.world) * VP, fp.color, true, cmd);
 					dummy::draw_soldier(XMLoadFloat4x4(&transform.world) * VP, fp.color, true, cmd);
 					break;
 				case MetadataComponent::Preset::Player:
 					fp.position.y += 2;
-					fp.color = wi::Color::fromFloat4(XMFLOAT4(0.2f, 0.8f, 0.6f, 1));
-					wi::font::Draw("Player", fp, cmd);
+					fp.color = lb::Color::fromFloat4(XMFLOAT4(0.2f, 0.8f, 0.6f, 1));
+					lb::font::Draw("Player", fp, cmd);
 					dummy::draw_direction(XMMatrixRotationY(XM_PI) * XMMatrixTranslation(0, 0.1f, 0) * XMLoadFloat4x4(&transform.world) * VP, fp.color, true, cmd);
 					dummy::draw_male(XMLoadFloat4x4(&transform.world) * VP, fp.color, true, cmd);
 					break;
 				case MetadataComponent::Preset::NPC:
 					fp.position.y += 1.8f;
-					fp.color = wi::Color::fromFloat4(XMFLOAT4(0.2f, 0.6f, 0.8f, 1));
-					wi::font::Draw("NPC", fp, cmd);
+					fp.color = lb::Color::fromFloat4(XMFLOAT4(0.2f, 0.6f, 0.8f, 1));
+					lb::font::Draw("NPC", fp, cmd);
 					dummy::draw_direction(XMMatrixRotationY(XM_PI) * XMMatrixTranslation(0, 0.1f, 0) * XMLoadFloat4x4(&transform.world) * VP, fp.color, true, cmd);
 					dummy::draw_female(XMLoadFloat4x4(&transform.world) * VP, fp.color, true, cmd);
 					break;
 				case MetadataComponent::Preset::Pickup:
 					fp.position.y += 1;
-					fp.color = wi::Color::fromFloat4(XMFLOAT4(1, 0.8f, 0.4f, 1));
-					wi::font::Draw("Pickup", fp, cmd);
+					fp.color = lb::Color::fromFloat4(XMFLOAT4(1, 0.8f, 0.4f, 1));
+					lb::font::Draw("Pickup", fp, cmd);
 					dummy::draw_pickup(XMMatrixScaling(sca, sca, sca) * XMMatrixTranslation(0, 0.5f, 0) * XMLoadFloat4x4(&transform.world) * VP, fp.color, true, cmd);
 					break;
 				}
@@ -3091,34 +3091,34 @@ void EditorComponent::Render() const
 
 			// Selection color:
 			float selectionColorIntensity = std::sin(outlineTimer * XM_2PI * 0.8f) * 0.5f + 0.5f;
-			XMFLOAT4 glow = wi::math::Lerp(wi::math::Lerp(XMFLOAT4(1, 1, 1, 1), selectionColor, 0.4f), selectionColor, selectionColorIntensity);
-			wi::Color selectedEntityColor = wi::Color::fromFloat4(glow);
+			XMFLOAT4 glow = lb::math::Lerp(lb::math::Lerp(XMFLOAT4(1, 1, 1, 1), selectionColor, 0.4f), selectionColor, selectionColorIntensity);
+			lb::Color selectedEntityColor = lb::Color::fromFloat4(glow);
 
 			// Draw selection outline to the screen:
 			if (renderPath->GetDepthStencil() != nullptr && !translator.selected.empty())
 			{
 				device->EventBegin("Selection Outline Edge", cmd);
-				wi::renderer::BindCommonResources(cmd);
-				float opacity = wi::math::Lerp(0.4f, 1.0f, selectionColorIntensity);
+				lb::renderer::BindCommonResources(cmd);
+				float opacity = lb::math::Lerp(0.4f, 1.0f, selectionColorIntensity);
 				XMFLOAT4 col = selectionColor2;
 				col.w *= opacity;
-				wi::renderer::Postprocess_Outline(rt_selectionOutline[0], cmd, 0.1f, 1, col);
+				lb::renderer::Postprocess_Outline(rt_selectionOutline[0], cmd, 0.1f, 1, col);
 				col = selectionColor;
 				col.w *= opacity;
-				wi::renderer::Postprocess_Outline(rt_selectionOutline[1], cmd, 0.1f, 1, col);
+				lb::renderer::Postprocess_Outline(rt_selectionOutline[1], cmd, 0.1f, 1, col);
 				device->EventEnd(cmd);
 			}
 
 			if (dummy_enabled)
 			{
-				wi::image::Params fx;
+				lb::image::Params fx;
 				fx.enableFullScreen();
-				fx.blendFlag = wi::enums::BLENDMODE_PREMULTIPLIED;
+				fx.blendFlag = lb::enums::BLENDMODE_PREMULTIPLIED;
 				fx.color = XMFLOAT4(0, 0, 0, 0.4f);
-				wi::image::Draw(&rt_dummyOutline, fx, cmd);
+				lb::image::Draw(&rt_dummyOutline, fx, cmd);
 				XMFLOAT4 dummyColorBlinking = dummyColor;
-				dummyColorBlinking.w = wi::math::Lerp(0.4f, 1, selectionColorIntensity);
-				wi::renderer::Postprocess_Outline(rt_dummyOutline, cmd, 0.1f, 1, dummyColorBlinking);
+				dummyColorBlinking.w = lb::math::Lerp(0.4f, 1, selectionColorIntensity);
+				lb::renderer::Postprocess_Outline(rt_dummyOutline, cmd, 0.1f, 1, dummyColorBlinking);
 			}
 
 			MiscCB sb;
@@ -3128,13 +3128,13 @@ void EditorComponent::Render() const
 
 			const XMMATRIX R = XMLoadFloat3x3(&cam.rotationMatrix);
 
-			wi::font::Params fp;
+			lb::font::Params fp;
 			fp.customRotation = &R;
 			fp.customProjection = &VP;
 			fp.size = 32; // icon font render quality
 			const float scaling = 0.0025f;
-			fp.h_align = wi::font::WIFALIGN_CENTER;
-			fp.v_align = wi::font::WIFALIGN_CENTER;
+			fp.h_align = lb::font::WIFALIGN_CENTER;
+			fp.v_align = lb::font::WIFALIGN_CENTER;
 			fp.shadowColor = backgroundEntityColor;
 			fp.shadow_softness = 1;
 
@@ -3147,7 +3147,7 @@ void EditorComponent::Render() const
 					if (!scene.transforms.Contains(entity))
 						continue;
 
-					const float dist = wi::math::Distance(light.position, camera.Eye);
+					const float dist = lb::math::Distance(light.position, camera.Eye);
 
 					fp.position = light.position;
 					fp.scaling = scaling * dist;
@@ -3169,13 +3169,13 @@ void EditorComponent::Render() const
 					switch (light.GetType())
 					{
 					case LightComponent::POINT:
-						wi::font::Draw(ICON_POINTLIGHT, fp, cmd);
+						lb::font::Draw(ICON_POINTLIGHT, fp, cmd);
 						break;
 					case LightComponent::SPOT:
-						wi::font::Draw(ICON_SPOTLIGHT, fp, cmd);
+						lb::font::Draw(ICON_SPOTLIGHT, fp, cmd);
 						break;
 					case LightComponent::DIRECTIONAL:
-						wi::font::Draw(ICON_DIRECTIONALLIGHT, fp, cmd);
+						lb::font::Draw(ICON_DIRECTIONALLIGHT, fp, cmd);
 						break;
 					default:
 						break;
@@ -3190,16 +3190,16 @@ void EditorComponent::Render() const
 						{
 							static auto LoadShaders = [] {
 								PipelineStateDesc desc;
-								desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-								desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-								desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-								desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEFAULT);
-								desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-								desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+								desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+								desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+								desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+								desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEFAULT);
+								desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_DOUBLESIDED);
+								desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 								desc.pt = PrimitiveTopology::TRIANGLELIST;
-								wi::graphics::GetDevice()->CreatePipelineState(&desc, &pso);
+								lb::graphics::GetDevice()->CreatePipelineState(&desc, &pso);
 							};
-							static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+							static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 							LoadShaders();
 						}
 						struct Vertex
@@ -3296,7 +3296,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3313,7 +3313,7 @@ void EditorComponent::Render() const
 					}
 
 
-					wi::font::Draw(ICON_DECAL, fp, cmd);
+					lb::font::Draw(ICON_DECAL, fp, cmd);
 
 				}
 			}
@@ -3328,7 +3328,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3345,7 +3345,7 @@ void EditorComponent::Render() const
 					}
 
 
-					wi::font::Draw(ICON_FORCE, fp, cmd);
+					lb::font::Draw(ICON_FORCE, fp, cmd);
 				}
 			}
 
@@ -3359,7 +3359,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3376,7 +3376,7 @@ void EditorComponent::Render() const
 					}
 
 
-					wi::font::Draw(ICON_CAMERA, fp, cmd);
+					lb::font::Draw(ICON_CAMERA, fp, cmd);
 				}
 			}
 
@@ -3390,7 +3390,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3407,7 +3407,7 @@ void EditorComponent::Render() const
 					}
 
 
-					wi::font::Draw(ICON_ARMATURE, fp, cmd);
+					lb::font::Draw(ICON_ARMATURE, fp, cmd);
 				}
 			}
 
@@ -3421,7 +3421,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3438,7 +3438,7 @@ void EditorComponent::Render() const
 					}
 
 
-					wi::font::Draw(ICON_EMITTER, fp, cmd);
+					lb::font::Draw(ICON_EMITTER, fp, cmd);
 				}
 			}
 
@@ -3452,7 +3452,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3469,7 +3469,7 @@ void EditorComponent::Render() const
 					}
 
 
-					wi::font::Draw(ICON_HAIR, fp, cmd);
+					lb::font::Draw(ICON_HAIR, fp, cmd);
 				}
 			}
 
@@ -3483,7 +3483,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3500,7 +3500,7 @@ void EditorComponent::Render() const
 					}
 
 
-					wi::font::Draw(ICON_SOUND, fp, cmd);
+					lb::font::Draw(ICON_SOUND, fp, cmd);
 				}
 			}
 			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Video))
@@ -3513,7 +3513,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3530,7 +3530,7 @@ void EditorComponent::Render() const
 					}
 
 
-					wi::font::Draw(ICON_VIDEO, fp, cmd);
+					lb::font::Draw(ICON_VIDEO, fp, cmd);
 				}
 			}
 			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::VoxelGrid))
@@ -3543,7 +3543,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3559,22 +3559,22 @@ void EditorComponent::Render() const
 						}
 					}
 
-					wi::font::Draw(ICON_VOXELGRID, fp, cmd);
+					lb::font::Draw(ICON_VOXELGRID, fp, cmd);
 				}
 			}
 			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Metadata))
 			{
 				if (scene.metadatas.GetCount() > 0)
 				{
-					wi::image::Params fx;
+					lb::image::Params fx;
 					fx.enableFullScreen();
-					fx.blendFlag = wi::enums::BLENDMODE_PREMULTIPLIED;
-					fx.color.x = wi::math::Lerp(fx.color.x * 0.4f, fx.color.x, selectionColorIntensity);
-					fx.color.y = wi::math::Lerp(fx.color.y * 0.4f, fx.color.y, selectionColorIntensity);
-					fx.color.z = wi::math::Lerp(fx.color.z * 0.4f, fx.color.z, selectionColorIntensity);
+					fx.blendFlag = lb::enums::BLENDMODE_PREMULTIPLIED;
+					fx.color.x = lb::math::Lerp(fx.color.x * 0.4f, fx.color.x, selectionColorIntensity);
+					fx.color.y = lb::math::Lerp(fx.color.y * 0.4f, fx.color.y, selectionColorIntensity);
+					fx.color.z = lb::math::Lerp(fx.color.z * 0.4f, fx.color.z, selectionColorIntensity);
 					fx.color.w = 0.6f;
-					//fx.color.w = wi::math::Lerp(fx.color.w * 0.8f, fx.color.w, selectionColorIntensity);
-					wi::image::Draw(&rt_metadataDummies, fx, cmd);
+					//fx.color.w = lb::math::Lerp(fx.color.w * 0.8f, fx.color.w, selectionColorIntensity);
+					lb::image::Draw(&rt_metadataDummies, fx, cmd);
 				}
 
 				for (size_t i = 0; i < scene.metadatas.GetCount(); ++i)
@@ -3585,7 +3585,7 @@ void EditorComponent::Render() const
 					const TransformComponent& transform = *scene.transforms.GetComponent(entity);
 
 					fp.position = transform.GetPosition();
-					fp.scaling = scaling * wi::math::Distance(transform.GetPosition(), camera.Eye);
+					fp.scaling = scaling * lb::math::Distance(transform.GetPosition(), camera.Eye);
 					fp.color = inactiveEntityColor;
 
 					if (hovered.entity == entity)
@@ -3601,7 +3601,7 @@ void EditorComponent::Render() const
 						}
 					}
 
-					wi::font::Draw(ICON_METADATA, fp, cmd);
+					lb::font::Draw(ICON_METADATA, fp, cmd);
 				}
 			}
 			if (bone_picking)
@@ -3611,16 +3611,16 @@ void EditorComponent::Render() const
 				{
 					static auto LoadShaders = [] {
 						PipelineStateDesc desc;
-						desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-						desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-						desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-						desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHDISABLED);
-						desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-						desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+						desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+						desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+						desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+						desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEPTHDISABLED);
+						desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_DOUBLESIDED);
+						desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 						desc.pt = PrimitiveTopology::TRIANGLELIST;
-						wi::graphics::GetDevice()->CreatePipelineState(&desc, &pso);
+						lb::graphics::GetDevice()->CreatePipelineState(&desc, &pso);
 					};
-					static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+					static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 					LoadShaders();
 				}
 
@@ -3721,8 +3721,8 @@ void EditorComponent::Render() const
 							}
 							XMVECTOR ab = XMVector3Normalize(b - a);
 
-							wi::primitive::Capsule capsule;
-							capsule.radius = wi::math::Distance(a, b) * 0.1f;
+							lb::primitive::Capsule capsule;
+							capsule.radius = lb::math::Distance(a, b) * 0.1f;
 							a -= ab * capsule.radius;
 							b += ab * capsule.radius;
 							XMStoreFloat3(&capsule.base, a);
@@ -3843,7 +3843,7 @@ void EditorComponent::Render() const
 					float distance;
 					XMFLOAT3 position;
 				};
-				static wi::vector<DebugNameEntitySorter> debugNameEntitiesSorted;
+				static lb::vector<DebugNameEntitySorter> debugNameEntitiesSorted;
 				debugNameEntitiesSorted.clear();
 				for (size_t i = 0; i < scene.names.GetCount(); ++i)
 				{
@@ -3859,7 +3859,7 @@ void EditorComponent::Render() const
 						{
 							x.position = object->center;
 						}
-						x.distance = wi::math::Distance(x.position, camera.Eye);
+						x.distance = lb::math::Distance(x.position, camera.Eye);
 					}
 				}
 				std::sort(debugNameEntitiesSorted.begin(), debugNameEntitiesSorted.end(), [](const DebugNameEntitySorter& a, const DebugNameEntitySorter& b)
@@ -3869,11 +3869,11 @@ void EditorComponent::Render() const
 				for (auto& x : debugNameEntitiesSorted)
 				{
 					Entity entity = scene.names.GetEntity(x.name_index);
-					wi::font::Params params;
+					lb::font::Params params;
 					params.position = x.position;
-					params.size = wi::font::WIFONTSIZE_DEFAULT;
+					params.size = lb::font::WIFONTSIZE_DEFAULT;
 					params.scaling = 1.0f / params.size * x.distance * 0.03f;
-					params.color = wi::Color::White();
+					params.color = lb::Color::White();
 					for (auto& picked : translator.selected)
 					{
 						if (picked.entity == entity)
@@ -3882,14 +3882,14 @@ void EditorComponent::Render() const
 							break;
 						}
 					}
-					params.h_align = wi::font::WIFALIGN_CENTER;
-					params.v_align = wi::font::WIFALIGN_CENTER;
+					params.h_align = lb::font::WIFALIGN_CENTER;
+					params.v_align = lb::font::WIFALIGN_CENTER;
 					params.softness = 0.1f;
-					params.shadowColor = wi::Color::Black();
+					params.shadowColor = lb::Color::Black();
 					params.shadow_softness = 0.5f;
 					params.customProjection = &VP;
 					params.customRotation = &R;
-					wi::font::Draw(scene.names[x.name_index].name, params, cmd);
+					lb::font::Draw(scene.names[x.name_index].name, params, cmd);
 				}
 				device->EventEnd(cmd);
 			}
@@ -3903,13 +3903,13 @@ void EditorComponent::Render() const
 				{
 					str += "\nName: " + name->name;
 				}
-				XMFLOAT4 pointer = wi::input::GetPointer();
-				wi::font::Params params;
+				XMFLOAT4 pointer = lb::input::GetPointer();
+				lb::font::Params params;
 				params.position = XMFLOAT3(pointer.x - 10, pointer.y, 0);
-				params.shadowColor = wi::Color::Black();
-				params.h_align = wi::font::WIFALIGN_RIGHT;
-				params.v_align = wi::font::WIFALIGN_CENTER;
-				wi::font::Draw(str, params, cmd);
+				params.shadowColor = lb::Color::Black();
+				params.h_align = lb::font::WIFALIGN_RIGHT;
+				params.v_align = lb::font::WIFALIGN_CENTER;
+				lb::font::Draw(str, params, cmd);
 			}
 
 			paintToolWnd.DrawBrush(*this, cmd);
@@ -3943,21 +3943,21 @@ void EditorComponent::Compose(CommandList cmd) const
 
 	if (save_text_alpha > 0)
 	{
-		wi::font::Params params;
+		lb::font::Params params;
 		params.color = save_text_color;
-		params.shadowColor = wi::Color::Black();
+		params.shadowColor = lb::Color::Black();
 		params.color.setA(uint8_t(std::min(1.0f, save_text_alpha) * 255));
 		params.shadowColor.setA(params.color.getA());
 		params.position = XMFLOAT3(GetLogicalWidth() * 0.5f, GetLogicalHeight() * 0.5f, 0);
-		params.h_align = wi::font::WIFALIGN_CENTER;
-		params.v_align = wi::font::WIFALIGN_CENTER;
+		params.h_align = lb::font::WIFALIGN_CENTER;
+		params.v_align = lb::font::WIFALIGN_CENTER;
 		params.size = 30;
 		params.shadow_softness = 1;
-		wi::font::Cursor cursor = wi::font::Draw(save_text_message, params, cmd);
+		lb::font::Cursor cursor = lb::font::Draw(save_text_message, params, cmd);
 
 		params.size = 24;
 		params.position.y += cursor.size.y;
-		wi::font::Draw(save_text_filename, params, cmd);
+		lb::font::Draw(save_text_filename, params, cmd);
 	}
 
 #ifdef TERRAIN_VIRTUAL_TEXTURE_DEBUG
@@ -4044,7 +4044,7 @@ void EditorComponent::ResizeViewport3D()
 		viewport3D.width = (float)renderPath->width;
 		viewport3D.height = (float)renderPath->height;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		XMUINT2 internalResolution = renderPath->GetInternalResolution();
 
@@ -4138,7 +4138,7 @@ void EditorComponent::ResizeViewport3D()
 		main->infoDisplay.rect.left = LogicalToPhysical(generalButton.translation_local.x + generalButton.scale_local.x + 10);
 	}
 	loadmodel_font.params.posX = PhysicalToLogical(uint32_t(viewport3D.top_left_x + viewport3D.width * 0.5f));
-	loadmodel_font.params.posX -= wi::font::TextWidth(loadmodel_font.GetText(), loadmodel_font.params) * 0.5f;
+	loadmodel_font.params.posX -= lb::font::TextWidth(loadmodel_font.GetText(), loadmodel_font.params) * 0.5f;
 	loadmodel_font.params.posY = PhysicalToLogical(uint32_t(viewport3D.top_left_y)) + 15;
 
 	viewport3D_hitbox = Hitbox2D(
@@ -4153,13 +4153,13 @@ void EditorComponent::ClearSelected()
 }
 void EditorComponent::AddSelected(Entity entity, bool allow_refocus)
 {
-	wi::scene::PickResult res;
+	lb::scene::PickResult res;
 	res.entity = entity;
 	AddSelected(res, allow_refocus);
 }
 void EditorComponent::AddSelected(const PickResult& picked, bool allow_refocus)
 {
-	wi::scene::Scene& scene = GetCurrentScene();
+	lb::scene::Scene& scene = GetCurrentScene();
 
 	bool removal = false;
 	for (size_t i = 0; i < translator.selected.size(); ++i)
@@ -4195,7 +4195,7 @@ bool EditorComponent::IsSelected(Entity entity) const
 	return false;
 }
 
-void EditorComponent::RecordSelection(wi::Archive& archive) const
+void EditorComponent::RecordSelection(lb::Archive& archive) const
 {
 	archive << translator.selected.size();
 	for (auto& x : translator.selected)
@@ -4207,12 +4207,12 @@ void EditorComponent::RecordSelection(wi::Archive& archive) const
 		archive << x.distance;
 	}
 }
-void EditorComponent::RecordEntity(wi::Archive& archive, wi::ecs::Entity entity)
+void EditorComponent::RecordEntity(lb::Archive& archive, lb::ecs::Entity entity)
 {
-	const wi::vector<Entity> entities = { entity };
+	const lb::vector<Entity> entities = { entity };
 	RecordEntity(archive, entities);
 }
-void EditorComponent::RecordEntity(wi::Archive& archive, const wi::vector<wi::ecs::Entity>& entities)
+void EditorComponent::RecordEntity(lb::Archive& archive, const lb::vector<lb::ecs::Entity>& entities)
 {
 	Scene& scene = GetCurrentScene();
 	EntitySerializer seri;
@@ -4230,7 +4230,7 @@ void EditorComponent::ResetHistory()
 	editorscene.historyPos = -1;
 	editorscene.history.clear();
 }
-wi::Archive& EditorComponent::AdvanceHistory()
+lb::Archive& EditorComponent::AdvanceHistory()
 {
 	EditorScene& editorscene = GetCurrentEditorScene();
 	editorscene.historyPos++;
@@ -4258,7 +4258,7 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 
 		Scene& scene = GetCurrentScene();
 
-		wi::Archive& archive = editorscene.history[editorscene.historyPos];
+		lb::Archive& archive = editorscene.history[editorscene.historyPos];
 		archive.SetReadModeAndResetPos(true);
 
 		int temp;
@@ -4274,12 +4274,12 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 				archive >> translator.isScalator;
 
 				EntitySerializer seri;
-				wi::scene::TransformComponent start;
-				wi::scene::TransformComponent end;
+				lb::scene::TransformComponent start;
+				lb::scene::TransformComponent end;
 				start.Serialize(archive, seri);
 				end.Serialize(archive, seri);
-				wi::vector<XMFLOAT4X4> matrices_start;
-				wi::vector<XMFLOAT4X4> matrices_end;
+				lb::vector<XMFLOAT4X4> matrices_start;
+				lb::vector<XMFLOAT4X4> matrices_end;
 				archive >> matrices_start;
 				archive >> matrices_end;
 
@@ -4302,12 +4302,12 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 		{
 			// Read selections states from archive:
 
-			wi::vector<wi::scene::PickResult> selectedBEFORE;
+			lb::vector<lb::scene::PickResult> selectedBEFORE;
 			size_t selectionCountBEFORE;
 			archive >> selectionCountBEFORE;
 			for (size_t i = 0; i < selectionCountBEFORE; ++i)
 			{
-				wi::scene::PickResult sel;
+				lb::scene::PickResult sel;
 				archive >> sel.entity;
 				archive >> sel.position;
 				archive >> sel.normal;
@@ -4317,12 +4317,12 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 				selectedBEFORE.push_back(sel);
 			}
 
-			wi::vector<wi::scene::PickResult> selectedAFTER;
+			lb::vector<lb::scene::PickResult> selectedAFTER;
 			size_t selectionCountAFTER;
 			archive >> selectionCountAFTER;
 			for (size_t i = 0; i < selectionCountAFTER; ++i)
 			{
-				wi::scene::PickResult sel;
+				lb::scene::PickResult sel;
 				archive >> sel.entity;
 				archive >> sel.position;
 				archive >> sel.normal;
@@ -4347,12 +4347,12 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 		{
 			// Read selections states from archive:
 
-			wi::vector<wi::scene::PickResult> selectedBEFORE;
+			lb::vector<lb::scene::PickResult> selectedBEFORE;
 			size_t selectionCountBEFORE;
 			archive >> selectionCountBEFORE;
 			for (size_t i = 0; i < selectionCountBEFORE; ++i)
 			{
-				wi::scene::PickResult sel;
+				lb::scene::PickResult sel;
 				archive >> sel.entity;
 				archive >> sel.position;
 				archive >> sel.normal;
@@ -4362,12 +4362,12 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 				selectedBEFORE.push_back(sel);
 			}
 
-			wi::vector<wi::scene::PickResult> selectedAFTER;
+			lb::vector<lb::scene::PickResult> selectedAFTER;
 			size_t selectionCountAFTER;
 			archive >> selectionCountAFTER;
 			for (size_t i = 0; i < selectionCountAFTER; ++i)
 			{
-				wi::scene::PickResult sel;
+				lb::scene::PickResult sel;
 				archive >> sel.entity;
 				archive >> sel.position;
 				archive >> sel.normal;
@@ -4377,7 +4377,7 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 				selectedAFTER.push_back(sel);
 			}
 
-			wi::vector<Entity> addedEntities;
+			lb::vector<Entity> addedEntities;
 			archive >> addedEntities;
 
 			ClearSelected();
@@ -4406,12 +4406,12 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 			{
 				// Read selections states from archive:
 
-				wi::vector<wi::scene::PickResult> selectedBEFORE;
+				lb::vector<lb::scene::PickResult> selectedBEFORE;
 				size_t selectionCountBEFORE;
 				archive >> selectionCountBEFORE;
 				for (size_t i = 0; i < selectionCountBEFORE; ++i)
 				{
-					wi::scene::PickResult sel;
+					lb::scene::PickResult sel;
 					archive >> sel.entity;
 					archive >> sel.position;
 					archive >> sel.normal;
@@ -4421,7 +4421,7 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 					selectedBEFORE.push_back(sel);
 				}
 
-				wi::vector<Entity> deletedEntities;
+				lb::vector<Entity> deletedEntities;
 				archive >> deletedEntities;
 
 				ClearSelected();
@@ -4448,7 +4448,7 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 		case HISTORYOP_COMPONENT_DATA:
 			{
 				Scene before, after;
-				wi::vector<Entity> entities_before, entities_after;
+				lb::vector<Entity> entities_before, entities_after;
 
 				archive >> entities_before;
 				for (auto& x : entities_before)
@@ -4530,7 +4530,7 @@ void EditorComponent::RegisterRecentlyUsed(const std::string& filename)
 		}
 	}
 	{
-		std::string folder = wi::helper::GetDirectoryFromPath(filename);
+		std::string folder = lb::helper::GetDirectoryFromPath(filename);
 		for (size_t i = 0; i < recentFolders.size();)
 		{
 			if (recentFolders[i].compare(folder) == 0)
@@ -4559,7 +4559,7 @@ void EditorComponent::RegisterRecentlyUsed(const std::string& filename)
 
 void EditorComponent::Open(std::string filename)
 {
-	std::string extension = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(filename));
+	std::string extension = lb::helper::toUpper(lb::helper::GetExtensionFromFileName(filename));
 
 	FileType type = FileType::INVALID;
 	auto it = filetypes.find(extension);
@@ -4576,37 +4576,37 @@ void EditorComponent::Open(std::string filename)
 		main->config.Set("last_script_path", last_script_path);
 		main->config.Commit();
 		playButton.SetScriptTip("dofile(\"" + last_script_path + "\")");
-		wi::lua::RunFile(filename);
+		lb::lua::RunFile(filename);
 		componentsWnd.RefreshEntityTree();
 		RegisterRecentlyUsed(filename);
 		return;
 	}
 	if (type == FileType::VIDEO)
 	{
-		GetCurrentScene().Entity_CreateVideo(wi::helper::GetFileNameFromPath(filename), filename);
+		GetCurrentScene().Entity_CreateVideo(lb::helper::GetFileNameFromPath(filename), filename);
 		componentsWnd.RefreshEntityTree();
 		return;
 	}
 	if (type == FileType::SOUND)
 	{
-		GetCurrentScene().Entity_CreateSound(wi::helper::GetFileNameFromPath(filename), filename);
+		GetCurrentScene().Entity_CreateSound(lb::helper::GetFileNameFromPath(filename), filename);
 		componentsWnd.RefreshEntityTree();
 		return;
 	}
 	if (type == FileType::TEXT)
 	{
 		Entity entity = CreateEntity();
-		wi::SpriteFont& font = GetCurrentScene().fonts.Create(entity);
-		font.params.h_align = wi::font::Alignment::WIFALIGN_CENTER;
-		font.params.v_align = wi::font::Alignment::WIFALIGN_CENTER;
+		lb::SpriteFont& font = GetCurrentScene().fonts.Create(entity);
+		font.params.h_align = lb::font::Alignment::WIFALIGN_CENTER;
+		font.params.v_align = lb::font::Alignment::WIFALIGN_CENTER;
 		font.params.scaling = 0.1f;
 		font.params.size = 26;
 		font.anim.typewriter.looped = true;
 		GetCurrentScene().transforms.Create(entity).Translate(XMFLOAT3(0, 2, 0));
 		GetCurrentScene().names.Create(entity) = "font";
 
-		wi::vector<uint8_t> filedata;
-		wi::helper::FileRead(filename, filedata);
+		lb::vector<uint8_t> filedata;
+		lb::helper::FileRead(filename, filedata);
 		std::string fileText;
 		fileText.resize(filedata.size() + 1);
 		std::memcpy(fileText.data(), filedata.data(), filedata.size());
@@ -4619,8 +4619,8 @@ void EditorComponent::Open(std::string filename)
 	{
 		Scene& scene = GetCurrentScene();
 		Entity entity = CreateEntity();
-		wi::Sprite& sprite = scene.sprites.Create(entity);
-		sprite = wi::Sprite(filename);
+		lb::Sprite& sprite = scene.sprites.Create(entity);
+		sprite = lb::Sprite(filename);
 		if (sprite.textureResource.IsValid())
 		{
 			const TextureDesc& desc = sprite.textureResource.GetTexture().GetDesc();
@@ -4633,7 +4633,7 @@ void EditorComponent::Open(std::string filename)
 		sprite.params.pivot = XMFLOAT2(0.5f, 0.5f);
 		sprite.anim.repeatable = true;
 		scene.transforms.Create(entity).Translate(XMFLOAT3(0, 2, 0));
-		scene.names.Create(entity) = wi::helper::GetFileNameFromPath(filename);
+		scene.names.Create(entity) = lb::helper::GetFileNameFromPath(filename);
 		componentsWnd.RefreshEntityTree();
 		return;
 	}
@@ -4642,12 +4642,12 @@ void EditorComponent::Open(std::string filename)
 
 	size_t camera_count_prev = GetCurrentScene().cameras.GetCount();
 
-	wi::jobsystem::Execute(loadmodel_workload, [=] (wi::jobsystem::JobArgs) {
-		wi::backlog::post("[Editor] started loading model: " + filename);
+	lb::jobsystem::Execute(loadmodel_workload, [=] (lb::jobsystem::JobArgs) {
+		lb::backlog::post("[Editor] started loading model: " + filename);
 		std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 		if (type == FileType::WISCENE)
 		{
-			wi::scene::LoadModel(*scene, filename);
+			lb::scene::LoadModel(*scene, filename);
 		}
 		else if (type == FileType::OBJ)
 		{
@@ -4662,7 +4662,7 @@ void EditorComponent::Open(std::string filename)
 			ImportModel_FBX(filename, *scene);
 		}
 
-		wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=] (uint64_t userdata) {
+		lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=] (uint64_t userdata) {
 
 			if (type == FileType::WISCENE && GetCurrentEditorScene().path.empty())
 			{
@@ -4709,13 +4709,13 @@ void EditorComponent::Open(std::string filename)
 
 			componentsWnd.weatherWnd.Update();
 			componentsWnd.RefreshEntityTree();
-			wi::backlog::post("[Editor] finished loading model: " + filename);
+			lb::backlog::post("[Editor] finished loading model: " + filename);
 		});
 	});
 }
 void EditorComponent::Save(const std::string& filename)
 {
-	std::string extension = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(filename));
+	std::string extension = lb::helper::toUpper(lb::helper::GetExtensionFromFileName(filename));
 
 	FileType type = FileType::INVALID;
 	auto it = filetypes.find(extension);
@@ -4730,26 +4730,26 @@ void EditorComponent::Save(const std::string& filename)
 	{
 		const bool dump_to_header = type == FileType::HEADER;
 
-		wi::Archive archive = dump_to_header ? wi::Archive() : wi::Archive(filename, false);
+		lb::Archive archive = dump_to_header ? lb::Archive() : lb::Archive(filename, false);
 		if (archive.IsOpen())
 		{
 			archive.SetThumbnailAndResetPos(CreateThumbnailScreenshot());
 
 			Scene& scene = GetCurrentScene();
 
-			wi::resourcemanager::Mode embed_mode = (wi::resourcemanager::Mode)generalWnd.saveModeComboBox.GetItemUserData(generalWnd.saveModeComboBox.GetSelected());
-			wi::resourcemanager::SetMode(embed_mode);
+			lb::resourcemanager::Mode embed_mode = (lb::resourcemanager::Mode)generalWnd.saveModeComboBox.GetItemUserData(generalWnd.saveModeComboBox.GetSelected());
+			lb::resourcemanager::SetMode(embed_mode);
 
 			scene.Serialize(archive);
 
 			if (dump_to_header)
 			{
-				archive.SaveHeaderFile(filename, wi::helper::RemoveExtension(wi::helper::GetFileNameFromPath(filename)));
+				archive.SaveHeaderFile(filename, lb::helper::RemoveExtension(lb::helper::GetFileNameFromPath(filename)));
 			}
 		}
 		else
 		{
-			wi::helper::messageBox("Could not create " + filename + "!");
+			lb::helper::messageBox("Could not create " + filename + "!");
 			return;
 		}
 	}
@@ -4767,17 +4767,17 @@ void EditorComponent::Save(const std::string& filename)
 }
 void EditorComponent::SaveAs()
 {
-	wi::helper::FileDialogParams params;
-	params.type = wi::helper::FileDialogParams::SAVE;
+	lb::helper::FileDialogParams params;
+	params.type = lb::helper::FileDialogParams::SAVE;
 	params.description = "Wicked Scene (.wiscene) | GLTF Model (.gltf) | GLTF Binary Model (.glb) | C++ header (.h)";
 	params.extensions.push_back("wiscene");
 	params.extensions.push_back("gltf");
 	params.extensions.push_back("glb");
 	params.extensions.push_back("h");
-	wi::helper::FileDialog(params, [=](std::string fileName) {
-		wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-			auto extension = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(fileName));
-			std::string filename = (!extension.compare("GLTF") || !extension.compare("GLB") || !extension.compare("H")) ? fileName : wi::helper::ForceExtension(fileName, params.extensions.front());
+	lb::helper::FileDialog(params, [=](std::string fileName) {
+		lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			auto extension = lb::helper::toUpper(lb::helper::GetExtensionFromFileName(fileName));
+			std::string filename = (!extension.compare("GLTF") || !extension.compare("GLB") || !extension.compare("H")) ? fileName : lb::helper::ForceExtension(fileName, params.extensions.front());
 			Save(filename);
 		});
 	});
@@ -4818,13 +4818,13 @@ Texture EditorComponent::CreateThumbnailScreenshot() const
 		RenderPassImage rp = RenderPassImage::RenderTarget(&upsized, RenderPassImage::LoadOp::CLEAR);
 		device->RenderPassBegin(&rp, 1, cmd);
 
-		wi::Canvas canvas;
+		lb::Canvas canvas;
 		canvas.width = desc.width;
 		canvas.height = desc.height;
-		wi::image::SetCanvas(canvas);
+		lb::image::SetCanvas(canvas);
 
-		wi::image::Params fx;
-		fx.blendFlag = wi::enums::BLENDMODE_OPAQUE;
+		lb::image::Params fx;
+		fx.blendFlag = lb::enums::BLENDMODE_OPAQUE;
 
 		const float canvas_aspect = canvas.GetLogicalWidth() / canvas.GetLogicalHeight();
 		const float image_aspect = float(thumbnail.desc.width) / float(thumbnail.desc.height);
@@ -4845,11 +4845,11 @@ Texture EditorComponent::CreateThumbnailScreenshot() const
 		fx.pos = XMFLOAT3(canvas.GetLogicalWidth() * 0.5f, canvas.GetLogicalHeight() * 0.5f, 0);
 		fx.pivot = XMFLOAT2(0.5f, 0.5f);
 
-		wi::image::Draw(&thumbnail, fx, cmd);
+		lb::image::Draw(&thumbnail, fx, cmd);
 
 		device->RenderPassEnd(cmd);
 
-		wi::image::SetCanvas(*this);
+		lb::image::SetCanvas(*this);
 
 		thumbnail = upsized;
 	}
@@ -4863,7 +4863,7 @@ Texture EditorComponent::CreateThumbnailScreenshot() const
 		desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::RENDER_TARGET | BindFlag::UNORDERED_ACCESS;
 		Texture downsized;
 		device->CreateTexture(&desc, nullptr, &downsized);
-		wi::renderer::Postprocess_Downsample4x(thumbnail, downsized, cmd);
+		lb::renderer::Postprocess_Downsample4x(thumbnail, downsized, cmd);
 		thumbnail = downsized;
 	}
 
@@ -4875,7 +4875,7 @@ void EditorComponent::PostSaveText(const std::string& message, const std::string
 	save_text_message = message;
 	save_text_filename = filename;
 	save_text_alpha = time_seconds;
-	wi::backlog::post(message + filename);
+	lb::backlog::post(message + filename);
 }
 
 void EditorComponent::CheckBonePickingEnabled()
@@ -4929,7 +4929,7 @@ void EditorComponent::UpdateDynamicWidgets()
 
 	static std::string tmp;
 
-	if (saveButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Save) != nullptr)
+	if (saveButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Save) != nullptr)
 	{
 		tmp = ICON_SAVE " ";
 		tmp += current_localization.Get((size_t)EditorLocalization::Save);
@@ -4937,10 +4937,10 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		saveButton.SetText(saveButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_SAVE " Save" : ICON_SAVE);
+		saveButton.SetText(saveButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_SAVE " Save" : ICON_SAVE);
 	}
 
-	if (openButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Open) != nullptr)
+	if (openButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Open) != nullptr)
 	{
 		tmp = ICON_OPEN " ";
 		tmp += current_localization.Get((size_t)EditorLocalization::Open);
@@ -4948,10 +4948,10 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		openButton.SetText(openButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_OPEN " Open" : ICON_OPEN);
+		openButton.SetText(openButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_OPEN " Open" : ICON_OPEN);
 	}
 
-	if (contentBrowserButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::ContentBrowser) != nullptr)
+	if (contentBrowserButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::ContentBrowser) != nullptr)
 	{
 		tmp = ICON_CONTENT_BROWSER " ";
 		tmp += current_localization.Get((size_t)EditorLocalization::ContentBrowser);
@@ -4959,11 +4959,11 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		contentBrowserButton.SetText(contentBrowserButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_CONTENT_BROWSER " Content" : ICON_CONTENT_BROWSER);
+		contentBrowserButton.SetText(contentBrowserButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_CONTENT_BROWSER " Content" : ICON_CONTENT_BROWSER);
 	}
 
 
-	if (logButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Backlog) != nullptr)
+	if (logButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Backlog) != nullptr)
 	{
 		tmp = ICON_BACKLOG " ";
 		tmp += current_localization.Get((size_t)EditorLocalization::Backlog);
@@ -4971,10 +4971,10 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		logButton.SetText(logButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_BACKLOG " Backlog" : ICON_BACKLOG);
+		logButton.SetText(logButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_BACKLOG " Backlog" : ICON_BACKLOG);
 	}
 
-	if (profilerButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Profiler) != nullptr)
+	if (profilerButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Profiler) != nullptr)
 	{
 		tmp = ICON_PROFILER " ";
 		tmp += current_localization.Get((size_t)EditorLocalization::Profiler);
@@ -4982,10 +4982,10 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		profilerButton.SetText(profilerButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_PROFILER " Profiler" : ICON_PROFILER);
+		profilerButton.SetText(profilerButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_PROFILER " Profiler" : ICON_PROFILER);
 	}
 
-	if (bugButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::BugReport) != nullptr)
+	if (bugButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::BugReport) != nullptr)
 	{
 		tmp = ICON_BUG " ";
 		tmp += current_localization.Get((size_t)EditorLocalization::BugReport);
@@ -4993,12 +4993,12 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		bugButton.SetText(bugButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_BUG " Bug report" : ICON_BUG);
+		bugButton.SetText(bugButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_BUG " Bug report" : ICON_BUG);
 	}
 
 	if (fullscreen)
 	{
-		if (fullscreenButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Windowed) != nullptr)
+		if (fullscreenButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Windowed) != nullptr)
 		{
 			tmp = ICON_WINDOWED " ";
 			tmp += current_localization.Get((size_t)EditorLocalization::Windowed);
@@ -5006,12 +5006,12 @@ void EditorComponent::UpdateDynamicWidgets()
 		}
 		else
 		{
-			fullscreenButton.SetText(fullscreenButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_WINDOWED " Windowed" : ICON_WINDOWED);
+			fullscreenButton.SetText(fullscreenButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_WINDOWED " Windowed" : ICON_WINDOWED);
 		}
 	}
 	else
 	{
-		if (fullscreenButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::FullScreen) != nullptr)
+		if (fullscreenButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::FullScreen) != nullptr)
 		{
 			tmp = ICON_FULLSCREEN " ";
 			tmp += current_localization.Get((size_t)EditorLocalization::FullScreen);
@@ -5019,11 +5019,11 @@ void EditorComponent::UpdateDynamicWidgets()
 		}
 		else
 		{
-			fullscreenButton.SetText(fullscreenButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_FULLSCREEN " Full screen" : ICON_FULLSCREEN);
+			fullscreenButton.SetText(fullscreenButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_FULLSCREEN " Full screen" : ICON_FULLSCREEN);
 		}
 	}
 
-	if (aboutButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::About) != nullptr)
+	if (aboutButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::About) != nullptr)
 	{
 		tmp = ICON_HELP " ";
 		tmp += current_localization.Get((size_t)EditorLocalization::About);
@@ -5031,10 +5031,10 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		aboutButton.SetText(aboutButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_HELP " About" : ICON_HELP);
+		aboutButton.SetText(aboutButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_HELP " About" : ICON_HELP);
 	}
 
-	if (exitButton.GetState() > wi::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Exit) != nullptr)
+	if (exitButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Exit) != nullptr)
 	{
 		tmp = ICON_EXIT " ";
 		tmp += current_localization.Get((size_t)EditorLocalization::Exit);
@@ -5042,21 +5042,21 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		exitButton.SetText(exitButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? ICON_EXIT " Exit" : ICON_EXIT);
+		exitButton.SetText(exitButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_EXIT " Exit" : ICON_EXIT);
 	}
 
 	float hei = topmenuWnd.GetSize().y - topmenuWnd.GetShadowRadius() - 2;
 	float y = topmenuWnd.GetShadowRadius() + 2;
 
-	exitButton.SetSize(XMFLOAT2(wi::math::Lerp(exitButton.GetSize().x, exitButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
-	aboutButton.SetSize(XMFLOAT2(wi::math::Lerp(aboutButton.GetSize().x, aboutButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
-	fullscreenButton.SetSize(XMFLOAT2(wi::math::Lerp(fullscreenButton.GetSize().x, fullscreenButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
-	bugButton.SetSize(XMFLOAT2(wi::math::Lerp(bugButton.GetSize().x, bugButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
-	profilerButton.SetSize(XMFLOAT2(wi::math::Lerp(profilerButton.GetSize().x, profilerButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
-	logButton.SetSize(XMFLOAT2(wi::math::Lerp(logButton.GetSize().x, logButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
-	contentBrowserButton.SetSize(XMFLOAT2(wi::math::Lerp(contentBrowserButton.GetSize().x, contentBrowserButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
-	openButton.SetSize(XMFLOAT2(wi::math::Lerp(openButton.GetSize().x, openButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
-	saveButton.SetSize(XMFLOAT2(wi::math::Lerp(saveButton.GetSize().x, saveButton.GetState() > wi::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	exitButton.SetSize(XMFLOAT2(lb::math::Lerp(exitButton.GetSize().x, exitButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	aboutButton.SetSize(XMFLOAT2(lb::math::Lerp(aboutButton.GetSize().x, aboutButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	fullscreenButton.SetSize(XMFLOAT2(lb::math::Lerp(fullscreenButton.GetSize().x, fullscreenButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	bugButton.SetSize(XMFLOAT2(lb::math::Lerp(bugButton.GetSize().x, bugButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	profilerButton.SetSize(XMFLOAT2(lb::math::Lerp(profilerButton.GetSize().x, profilerButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	logButton.SetSize(XMFLOAT2(lb::math::Lerp(logButton.GetSize().x, logButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	contentBrowserButton.SetSize(XMFLOAT2(lb::math::Lerp(contentBrowserButton.GetSize().x, contentBrowserButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	openButton.SetSize(XMFLOAT2(lb::math::Lerp(openButton.GetSize().x, openButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
+	saveButton.SetSize(XMFLOAT2(lb::math::Lerp(saveButton.GetSize().x, saveButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? wid_focus : wid_idle, lerp), hei));
 
 	exitButton.SetPos(XMFLOAT2(screenW - exitButton.GetSize().x, y));
 	aboutButton.SetPos(XMFLOAT2(exitButton.GetPos().x - aboutButton.GetSize().x - padding, y));
@@ -5151,68 +5151,68 @@ void EditorComponent::UpdateDynamicWidgets()
 	newEntityCombo.SetText(""); // override localization
 
 
-	XMFLOAT4 color_on = playButton.sprites[wi::gui::FOCUS].params.color;
-	XMFLOAT4 color_off = playButton.sprites[wi::gui::IDLE].params.color;
+	XMFLOAT4 color_on = playButton.sprites[lb::gui::FOCUS].params.color;
+	XMFLOAT4 color_off = playButton.sprites[lb::gui::IDLE].params.color;
 
 	if (translator.isTranslator)
 	{
-		translateButton.sprites[wi::gui::IDLE].params.color = color_on;
-		rotateButton.sprites[wi::gui::IDLE].params.color = color_off;
-		scaleButton.sprites[wi::gui::IDLE].params.color = color_off;
+		translateButton.sprites[lb::gui::IDLE].params.color = color_on;
+		rotateButton.sprites[lb::gui::IDLE].params.color = color_off;
+		scaleButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 	else if (translator.isRotator)
 	{
-		translateButton.sprites[wi::gui::IDLE].params.color = color_off;
-		rotateButton.sprites[wi::gui::IDLE].params.color = color_on;
-		scaleButton.sprites[wi::gui::IDLE].params.color = color_off;
+		translateButton.sprites[lb::gui::IDLE].params.color = color_off;
+		rotateButton.sprites[lb::gui::IDLE].params.color = color_on;
+		scaleButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 	else if (translator.isScalator)
 	{
-		translateButton.sprites[wi::gui::IDLE].params.color = color_off;
-		rotateButton.sprites[wi::gui::IDLE].params.color = color_off;
-		scaleButton.sprites[wi::gui::IDLE].params.color = color_on;
+		translateButton.sprites[lb::gui::IDLE].params.color = color_off;
+		rotateButton.sprites[lb::gui::IDLE].params.color = color_off;
+		scaleButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 
 	if (dummy_enabled)
 	{
-		dummyButton.sprites[wi::gui::IDLE].params.color = color_on;
+		dummyButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 	else
 	{
-		dummyButton.sprites[wi::gui::IDLE].params.color = color_off;
+		dummyButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 
 	if (navtest_enabled)
 	{
-		navtestButton.sprites[wi::gui::IDLE].params.color = color_on;
+		navtestButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 	else
 	{
-		navtestButton.sprites[wi::gui::IDLE].params.color = color_off;
+		navtestButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 
-	if (wi::physics::IsSimulationEnabled())
+	if (lb::physics::IsSimulationEnabled())
 	{
-		physicsButton.sprites[wi::gui::IDLE].params.color = color_on;
+		physicsButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 	else
 	{
-		physicsButton.sprites[wi::gui::IDLE].params.color = color_off;
+		physicsButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 
 
 
-	if (wi::backlog::GetUnseenLogLevelMax() >= wi::backlog::LogLevel::Error)
+	if (lb::backlog::GetUnseenLogLevelMax() >= lb::backlog::LogLevel::Error)
 	{
-		logButton.sprites[wi::gui::IDLE].params.color = wi::Color::Error();
+		logButton.sprites[lb::gui::IDLE].params.color = lb::Color::Error();
 	}
-	else if (wi::backlog::GetUnseenLogLevelMax() >= wi::backlog::LogLevel::Warning)
+	else if (lb::backlog::GetUnseenLogLevelMax() >= lb::backlog::LogLevel::Warning)
 	{
-		logButton.sprites[wi::gui::IDLE].params.color = wi::Color::Warning();
+		logButton.sprites[lb::gui::IDLE].params.color = lb::Color::Warning();
 	}
 	else
 	{
-		logButton.sprites[wi::gui::IDLE].params.color = color_off;
+		logButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 
 
@@ -5223,55 +5223,55 @@ void EditorComponent::UpdateDynamicWidgets()
 		generalWnd.SetPos(XMFLOAT2(0, topmenuWnd.scale_local.y + topmenuWnd.GetShadowRadius()));
 		generalWnd.SetSize(XMFLOAT2(generalWnd.scale_local.x, screenH - topmenuWnd.scale_local.y - topmenuWnd.GetShadowRadius()));
 		ofs += generalWnd.scale_local.x + generalWnd.GetShadowRadius();
-		generalButton.sprites[wi::gui::IDLE].params.color = color_on;
+		generalButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 	else
 	{
-		generalButton.sprites[wi::gui::IDLE].params.color = color_off;
+		generalButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 	if (graphicsWnd.IsVisible())
 	{
 		graphicsWnd.SetPos(XMFLOAT2(0, topmenuWnd.scale_local.y + topmenuWnd.GetShadowRadius()));
 		graphicsWnd.SetSize(XMFLOAT2(graphicsWnd.scale_local.x, screenH - topmenuWnd.scale_local.y - topmenuWnd.GetShadowRadius()));
 		ofs += graphicsWnd.scale_local.x + graphicsWnd.GetShadowRadius();
-		graphicsButton.sprites[wi::gui::IDLE].params.color = color_on;
+		graphicsButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 	else
 	{
-		graphicsButton.sprites[wi::gui::IDLE].params.color = color_off;
+		graphicsButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 	if (cameraWnd.IsVisible())
 	{
 		cameraWnd.SetPos(XMFLOAT2(0, topmenuWnd.scale_local.y + topmenuWnd.GetShadowRadius()));
 		cameraWnd.SetSize(XMFLOAT2(cameraWnd.scale_local.x, screenH - topmenuWnd.scale_local.y - topmenuWnd.GetShadowRadius()));
 		ofs += cameraWnd.scale_local.x + cameraWnd.GetShadowRadius();
-		cameraButton.sprites[wi::gui::IDLE].params.color = color_on;
+		cameraButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 	else
 	{
-		cameraButton.sprites[wi::gui::IDLE].params.color = color_off;
+		cameraButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 	if (materialPickerWnd.IsVisible())
 	{
 		materialPickerWnd.SetPos(XMFLOAT2(0, topmenuWnd.scale_local.y + topmenuWnd.GetShadowRadius()));
 		materialPickerWnd.SetSize(XMFLOAT2(materialPickerWnd.scale_local.x, screenH - topmenuWnd.scale_local.y - topmenuWnd.GetShadowRadius()));
 		ofs += materialPickerWnd.scale_local.x + materialPickerWnd.GetShadowRadius();
-		materialsButton.sprites[wi::gui::IDLE].params.color = color_on;
+		materialsButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 	else
 	{
-		materialsButton.sprites[wi::gui::IDLE].params.color = color_off;
+		materialsButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 	if (paintToolWnd.IsVisible())
 	{
 		paintToolWnd.SetPos(XMFLOAT2(0, topmenuWnd.scale_local.y + topmenuWnd.GetShadowRadius()));
 		paintToolWnd.SetSize(XMFLOAT2(paintToolWnd.scale_local.x, screenH - topmenuWnd.scale_local.y - topmenuWnd.GetShadowRadius()));
 		ofs += paintToolWnd.scale_local.x + paintToolWnd.GetShadowRadius();
-		paintToolButton.sprites[wi::gui::IDLE].params.color = color_on;
+		paintToolButton.sprites[lb::gui::IDLE].params.color = color_on;
 	}
 	else
 	{
-		paintToolButton.sprites[wi::gui::IDLE].params.color = color_off;
+		paintToolButton.sprites[lb::gui::IDLE].params.color = color_off;
 	}
 	y = padding + topmenuWnd.GetSize().y + topmenuWnd.GetShadowRadius();
 	hei = 40;
@@ -5308,8 +5308,8 @@ void EditorComponent::SetCurrentScene(int index)
 	current_scene = index;
 	this->renderPath->scene = &scenes[current_scene].get()->scene;
 	this->renderPath->camera = &scenes[current_scene].get()->camera;
-	wi::lua::scene::SetGlobalScene(renderPath->scene);
-	wi::lua::scene::SetGlobalCamera(renderPath->camera);
+	lb::lua::scene::SetGlobalScene(renderPath->scene);
+	lb::lua::scene::SetGlobalCamera(renderPath->camera);
 	componentsWnd.RefreshEntityTree();
 	RefreshSceneList();
 }
@@ -5333,57 +5333,57 @@ void EditorComponent::RefreshSceneList()
 		}
 		else
 		{
-			editorscene->tabSelectButton.SetText(wi::helper::GetFileNameFromPath(editorscene->path));
+			editorscene->tabSelectButton.SetText(lb::helper::GetFileNameFromPath(editorscene->path));
 			editorscene->tabSelectButton.SetTooltip(editorscene->path);
 		}
 
-		editorscene->tabSelectButton.OnClick([this, i](wi::gui::EventArgs args) {
+		editorscene->tabSelectButton.OnClick([this, i](lb::gui::EventArgs args) {
 			SetCurrentScene(i);
 			});
-		editorscene->tabCloseButton.OnClick([this, i](wi::gui::EventArgs args) {
-			wi::lua::KillProcesses();
+		editorscene->tabCloseButton.OnClick([this, i](lb::gui::EventArgs args) {
+			lb::lua::KillProcesses();
 
 			translator.selected.clear();
-			wi::scene::Scene& scene = scenes[i]->scene;
-			wi::renderer::ClearWorld(scene);
-			cameraWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.objectWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.meshWnd.SetEntity(wi::ecs::INVALID_ENTITY, -1);
-			componentsWnd.lightWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.soundWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.videoWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.decalWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.envProbeWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.materialWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.emitterWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.hairWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.forceFieldWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.springWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.ikWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.transformWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.layerWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.nameWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.animWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.scriptWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.rigidWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.softWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.colliderWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.hierarchyWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.cameraComponentWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.expressionWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.armatureWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.humanoidWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.terrainWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.spriteWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.fontWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.voxelGridWnd.SetEntity(wi::ecs::INVALID_ENTITY);
-			componentsWnd.metadataWnd.SetEntity(wi::ecs::INVALID_ENTITY);
+			lb::scene::Scene& scene = scenes[i]->scene;
+			lb::renderer::ClearWorld(scene);
+			cameraWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.objectWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.meshWnd.SetEntity(lb::ecs::INVALID_ENTITY, -1);
+			componentsWnd.lightWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.soundWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.videoWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.decalWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.envProbeWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.materialWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.emitterWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.hairWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.forceFieldWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.springWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.ikWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.transformWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.layerWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.nameWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.animWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.scriptWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.rigidWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.softWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.colliderWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.hierarchyWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.cameraComponentWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.expressionWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.armatureWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.humanoidWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.terrainWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.spriteWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.fontWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.voxelGridWnd.SetEntity(lb::ecs::INVALID_ENTITY);
+			componentsWnd.metadataWnd.SetEntity(lb::ecs::INVALID_ENTITY);
 
 			componentsWnd.RefreshEntityTree();
 			ResetHistory();
 			scenes[i]->path.clear();
 
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 				if (scenes.size() > 1)
 				{
 					topmenuWnd.RemoveWidget(&scenes[i]->tabSelectButton);
@@ -5495,7 +5495,7 @@ void EditorComponent::SetDefaultLocalization()
 
 	current_localization = default_localization;
 }
-void EditorComponent::SetLocalization(wi::Localization& loc)
+void EditorComponent::SetLocalization(lb::Localization& loc)
 {
 	current_localization = loc;
 	GetGUI().ImportLocalization(current_localization);

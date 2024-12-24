@@ -5,9 +5,9 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::ecs;
+using namespace lb::graphics;
+using namespace lb::scene;
+using namespace lb::ecs;
 
 struct membuf : std::streambuf
 {
@@ -35,8 +35,8 @@ public:
 			filepath = matId;
 		}
 
-		wi::vector<uint8_t> filedata;
-		if (!wi::helper::FileRead(filepath, filedata))
+		lb::vector<uint8_t> filedata;
+		if (!lb::helper::FileRead(filepath, filedata))
 		{
 			std::string ss;
 			ss += "WARN: Material file [ " + filepath + " ] not found.\n";
@@ -70,16 +70,16 @@ static const bool transform_to_LH = true;
 
 void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 {
-	std::string directory = wi::helper::GetDirectoryFromPath(fileName);
-	std::string name = wi::helper::GetFileNameFromPath(fileName);
+	std::string directory = lb::helper::GetDirectoryFromPath(fileName);
+	std::string name = lb::helper::GetFileNameFromPath(fileName);
 
 	tinyobj::attrib_t obj_attrib;
 	std::vector<tinyobj::shape_t> obj_shapes;
 	std::vector<tinyobj::material_t> obj_materials;
 	std::string obj_errors;
 
-	wi::vector<uint8_t> filedata;
-	bool success = wi::helper::FileRead(fileName, filedata);
+	lb::vector<uint8_t> filedata;
+	bool success = lb::helper::FileRead(fileName, filedata);
 
 	if (success)
 	{
@@ -95,7 +95,7 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 
 	if (!obj_errors.empty())
 	{
-		wi::backlog::post(obj_errors, wi::backlog::LogLevel::Error);
+		lb::backlog::post(obj_errors, lb::backlog::LogLevel::Error);
 	}
 
 	if (success)
@@ -105,7 +105,7 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 		scene.names.Create(rootEntity) = name;
 
 		// Load material library:
-		wi::vector<Entity> materialLibrary = {};
+		lb::vector<Entity> materialLibrary = {};
 		for (auto& obj_material : obj_materials)
 		{
 			Entity materialEntity = scene.Entity_CreateMaterial(obj_material.name);
@@ -168,8 +168,8 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 
 			object.meshID = meshEntity;
 
-			wi::unordered_map<int, int> registered_materialIndices = {};
-			wi::unordered_map<size_t, uint32_t> uniqueVertices = {};
+			lb::unordered_map<int, int> registered_materialIndices = {};
+			lb::unordered_map<size_t, uint32_t> uniqueVertices = {};
 
 			for (size_t i = 0; i < shape.mesh.indices.size(); i += 3)
 			{
@@ -231,10 +231,10 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 
 					// eliminate duplicate vertices by means of hashing:
 					size_t vertexHash = 0;
-					wi::helper::hash_combine(vertexHash, index.vertex_index);
-					wi::helper::hash_combine(vertexHash, index.normal_index);
-					wi::helper::hash_combine(vertexHash, index.texcoord_index);
-					wi::helper::hash_combine(vertexHash, materialIndex);
+					lb::helper::hash_combine(vertexHash, index.vertex_index);
+					lb::helper::hash_combine(vertexHash, index.normal_index);
+					lb::helper::hash_combine(vertexHash, index.texcoord_index);
+					lb::helper::hash_combine(vertexHash, materialIndex);
 
 					if (uniqueVertices.count(vertexHash) == 0)
 					{
@@ -253,6 +253,6 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 	}
 	else
 	{
-		wi::helper::messageBox("OBJ import failed! Check backlog for errors!", "Error!");
+		lb::helper::messageBox("OBJ import failed! Check backlog for errors!", "Error!");
 	}
 }

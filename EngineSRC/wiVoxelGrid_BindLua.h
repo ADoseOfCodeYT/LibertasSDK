@@ -4,14 +4,14 @@
 #include "wiLuna.h"
 #include "wiVoxelGrid.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 	class VoxelGrid_BindLua
 	{
 	private:
-		wi::VoxelGrid owning;
+		lb::VoxelGrid owning;
 	public:
-		wi::VoxelGrid* voxelgrid = nullptr;
+		lb::VoxelGrid* voxelgrid = nullptr;
 
 		inline static constexpr char className[] = "VoxelGrid";
 		static Luna<VoxelGrid_BindLua>::FunctionType methods[];
@@ -19,8 +19,8 @@ namespace wi::lua
 
 		VoxelGrid_BindLua() = default;
 		VoxelGrid_BindLua(lua_State* L);
-		VoxelGrid_BindLua(wi::VoxelGrid& ref) : voxelgrid(&ref) {}
-		VoxelGrid_BindLua(wi::VoxelGrid* ref) : voxelgrid(ref) {}
+		VoxelGrid_BindLua(lb::VoxelGrid& ref) : voxelgrid(&ref) {}
+		VoxelGrid_BindLua(lb::VoxelGrid* ref) : voxelgrid(ref) {}
 
 		int Init(lua_State* L);
 		int ClearData(lua_State* L);

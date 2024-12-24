@@ -3,12 +3,12 @@
 #include "wiLuna.h"
 #include "wiJobSystem.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 	class Async_BindLua
 	{
 	public:
-		wi::jobsystem::context ctx;
+		lb::jobsystem::context ctx;
 		inline static constexpr char className[] = "Async";
 		static Luna<Async_BindLua>::FunctionType methods[];
 		static Luna<Async_BindLua>::PropertyType properties[];

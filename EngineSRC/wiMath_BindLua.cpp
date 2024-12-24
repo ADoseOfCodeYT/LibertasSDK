@@ -1,6 +1,6 @@
 #include "wiMath_BindLua.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	Luna<Vector_BindLua>::FunctionType Vector_BindLua::methods[] = {
@@ -74,20 +74,20 @@ namespace wi::lua
 		data.z = 0;
 		data.w = 0;
 
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 
 		if (argc > 0)
 		{
-			data.x = wi::lua::SGetFloat(L, 1);
+			data.x = lb::lua::SGetFloat(L, 1);
 			if (argc > 1)
 			{
-				data.y = wi::lua::SGetFloat(L, 2);
+				data.y = lb::lua::SGetFloat(L, 2);
 				if (argc > 2)
 				{
-					data.z = wi::lua::SGetFloat(L, 3);
+					data.z = lb::lua::SGetFloat(L, 3);
 					if (argc > 3)
 					{
-						data.w = wi::lua::SGetFloat(L, 4);
+						data.w = lb::lua::SGetFloat(L, 4);
 					}
 				}
 			}
@@ -98,73 +98,73 @@ namespace wi::lua
 
 	int Vector_BindLua::GetX(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, data.x);
+		lb::lua::SSetFloat(L, data.x);
 		return 1;
 	}
 	int Vector_BindLua::GetY(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, data.y);
+		lb::lua::SSetFloat(L, data.y);
 		return 1;
 	}
 	int Vector_BindLua::GetZ(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, data.z);
+		lb::lua::SSetFloat(L, data.z);
 		return 1;
 	}
 	int Vector_BindLua::GetW(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, data.w);
+		lb::lua::SSetFloat(L, data.w);
 		return 1;
 	}
 
 	int Vector_BindLua::SetX(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			data.x = wi::lua::SGetFloat(L, 1);
+			data.x = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetX(float value) not enough arguments!");
+			lb::lua::SError(L, "SetX(float value) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::SetY(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			data.y = wi::lua::SGetFloat(L, 1);
+			data.y = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetY(float value) not enough arguments!");
+			lb::lua::SError(L, "SetY(float value) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::SetZ(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			data.z = wi::lua::SGetFloat(L, 1);
+			data.z = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetZ(float value) not enough arguments!");
+			lb::lua::SError(L, "SetZ(float value) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::SetW(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			data.w = wi::lua::SGetFloat(L, 1);
+			data.w = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetW(float value) not enough arguments!");
+			lb::lua::SError(L, "SetW(float value) not enough arguments!");
 		return 0;
 	}
 
 	int Vector_BindLua::Transform(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -174,14 +174,14 @@ namespace wi::lua
 				Luna<Vector_BindLua>::push(L, XMVector4Transform(XMLoadFloat4(&vec->data), XMLoadFloat4x4(&mat->data)));
 				return 1;
 			}
-			wi::lua::SError(L, "Transform(Vector vec, Matrix matrix) argument types mismatch!");
+			lb::lua::SError(L, "Transform(Vector vec, Matrix matrix) argument types mismatch!");
 		}
-		wi::lua::SError(L, "Transform(Vector vec, Matrix matrix) not enough arguments!");
+		lb::lua::SError(L, "Transform(Vector vec, Matrix matrix) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::TransformNormal(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -192,14 +192,14 @@ namespace wi::lua
 				return 1;
 			}
 			else
-				wi::lua::SError(L, "TransformNormal(Vector vec, Matrix matrix) argument types mismatch!");
+				lb::lua::SError(L, "TransformNormal(Vector vec, Matrix matrix) argument types mismatch!");
 		}
-		wi::lua::SError(L, "TransformNormal(Vector vec, Matrix matrix) not enough arguments!");
+		lb::lua::SError(L, "TransformNormal(Vector vec, Matrix matrix) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::TransformCoord(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -210,92 +210,92 @@ namespace wi::lua
 				return 1;
 			}
 			else
-				wi::lua::SError(L, "TransformCoord(Vector vec, Matrix matrix) argument types mismatch!");
+				lb::lua::SError(L, "TransformCoord(Vector vec, Matrix matrix) argument types mismatch!");
 		}
-		wi::lua::SError(L, "TransformCoord(Vector vec, Matrix matrix) not enough arguments!");
+		lb::lua::SError(L, "TransformCoord(Vector vec, Matrix matrix) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Length(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec)
 			{
 				// Additional syntax support for static access
-				wi::lua::SSetFloat(L, XMVectorGetX(XMVector3Length(XMLoadFloat4(&vec->data))));
+				lb::lua::SSetFloat(L, XMVectorGetX(XMVector3Length(XMLoadFloat4(&vec->data))));
 				return 1;
 			}
 		}
-		wi::lua::SSetFloat(L, XMVectorGetX(XMVector3Length(XMLoadFloat4(&data))));
+		lb::lua::SSetFloat(L, XMVectorGetX(XMVector3Length(XMLoadFloat4(&data))));
 		return 1;
 	}
 	int Vector_BindLua::LengthSquared(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec)
 			{
 				// Additional syntax support for static access
-				wi::lua::SSetFloat(L, XMVectorGetX(XMVector3LengthSq(XMLoadFloat4(&vec->data))));
+				lb::lua::SSetFloat(L, XMVectorGetX(XMVector3LengthSq(XMLoadFloat4(&vec->data))));
 				return 1;
 			}
 		}
-		wi::lua::SSetFloat(L, XMVectorGetX(XMVector3LengthSq(XMLoadFloat4(&data))));
+		lb::lua::SSetFloat(L, XMVectorGetX(XMVector3LengthSq(XMLoadFloat4(&data))));
 		return 1;
 	}
 	int Vector_BindLua::Distance(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (v1 == nullptr)
 			{
-				wi::lua::SError(L, "Distance(Vector v1, v2) first argument is not a Vector!");
+				lb::lua::SError(L, "Distance(Vector v1, v2) first argument is not a Vector!");
 				return 0;
 			}
 			Vector_BindLua* v2 = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (v2 == nullptr)
 			{
-				wi::lua::SError(L, "Distance(Vector v1, v2) second argument is not a Vector!");
+				lb::lua::SError(L, "Distance(Vector v1, v2) second argument is not a Vector!");
 				return 0;
 			}
-			wi::lua::SSetFloat(L, XMVectorGetX(XMVector3Length(XMLoadFloat4(&v1->data) - XMLoadFloat4(&v2->data))));
+			lb::lua::SSetFloat(L, XMVectorGetX(XMVector3Length(XMLoadFloat4(&v1->data) - XMLoadFloat4(&v2->data))));
 			return 1;
 		}
-		wi::lua::SError(L, "Distance(Vector v1, v2) not enough arguments!");
+		lb::lua::SError(L, "Distance(Vector v1, v2) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::DistanceSquared(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (v1 == nullptr)
 			{
-				wi::lua::SError(L, "DistanceSquared(Vector v1, v2) first argument is not a Vector!");
+				lb::lua::SError(L, "DistanceSquared(Vector v1, v2) first argument is not a Vector!");
 				return 0;
 			}
 			Vector_BindLua* v2 = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (v2 == nullptr)
 			{
-				wi::lua::SError(L, "DistanceSquared(Vector v1, v2) second argument is not a Vector!");
+				lb::lua::SError(L, "DistanceSquared(Vector v1, v2) second argument is not a Vector!");
 				return 0;
 			}
-			wi::lua::SSetFloat(L, XMVectorGetX(XMVector3LengthSq(XMLoadFloat4(&v1->data) - XMLoadFloat4(&v2->data))));
+			lb::lua::SSetFloat(L, XMVectorGetX(XMVector3LengthSq(XMLoadFloat4(&v1->data) - XMLoadFloat4(&v2->data))));
 			return 1;
 		}
-		wi::lua::SError(L, "DistanceSquared(Vector v1, v2) not enough arguments!");
+		lb::lua::SError(L, "DistanceSquared(Vector v1, v2) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Normalize(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -311,7 +311,7 @@ namespace wi::lua
 	}
 	int Vector_BindLua::QuaternionNormalize(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -327,32 +327,32 @@ namespace wi::lua
 	}
 	int Vector_BindLua::Clamp(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 2)
 		{
 			// Additional syntax support for static access
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec)
 			{
-				float a = wi::lua::SGetFloat(L, 2);
-				float b = wi::lua::SGetFloat(L, 3);
+				float a = lb::lua::SGetFloat(L, 2);
+				float b = lb::lua::SGetFloat(L, 3);
 				Luna<Vector_BindLua>::push(L, XMVectorClamp(XMLoadFloat4(&vec->data), XMVectorReplicate(a), XMVectorReplicate(b)));
 				return 1;
 			}
 		}
 		if (argc > 1)
 		{
-			float a = wi::lua::SGetFloat(L, 1);
-			float b = wi::lua::SGetFloat(L, 2);
+			float a = lb::lua::SGetFloat(L, 1);
+			float b = lb::lua::SGetFloat(L, 2);
 			Luna<Vector_BindLua>::push(L, XMVectorClamp(XMLoadFloat4(&data), XMVectorReplicate(a), XMVectorReplicate(b)));
 			return 1;
 		}
-		wi::lua::SError(L, "Clamp(float min,max) not enough arguments!");
+		lb::lua::SError(L, "Clamp(float min,max) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Saturate(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -371,23 +371,23 @@ namespace wi::lua
 
 	int Vector_BindLua::Dot(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
 			Vector_BindLua* v2 = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (v1 && v2)
 			{
-				wi::lua::SSetFloat(L, XMVectorGetX(XMVector3Dot(XMLoadFloat4(&v1->data), XMLoadFloat4(&v2->data))));
+				lb::lua::SSetFloat(L, XMVectorGetX(XMVector3Dot(XMLoadFloat4(&v1->data), XMLoadFloat4(&v2->data))));
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Dot(Vector v1,v2) not enough arguments!");
+		lb::lua::SError(L, "Dot(Vector v1,v2) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Cross(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -398,12 +398,12 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Cross(Vector v1,v2) not enough arguments!");
+		lb::lua::SError(L, "Cross(Vector v1,v2) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Multiply(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -415,21 +415,21 @@ namespace wi::lua
 			}
 			else if (v1)
 			{
-				Luna<Vector_BindLua>::push(L, XMLoadFloat4(&v1->data) * wi::lua::SGetFloat(L, 2));
+				Luna<Vector_BindLua>::push(L, XMLoadFloat4(&v1->data) * lb::lua::SGetFloat(L, 2));
 				return 1;
 			}
 			else if (v2)
 			{
-				Luna<Vector_BindLua>::push(L, wi::lua::SGetFloat(L, 1) * XMLoadFloat4(&v2->data));
+				Luna<Vector_BindLua>::push(L, lb::lua::SGetFloat(L, 1) * XMLoadFloat4(&v2->data));
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Multiply(Vector v1,v2) not enough arguments!");
+		lb::lua::SError(L, "Multiply(Vector v1,v2) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Add(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -440,12 +440,12 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Add(Vector v1,v2) not enough arguments!");
+		lb::lua::SError(L, "Add(Vector v1,v2) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Subtract(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -456,29 +456,29 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Subtract(Vector v1,v2) not enough arguments!");
+		lb::lua::SError(L, "Subtract(Vector v1,v2) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Lerp(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 2)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
 			Vector_BindLua* v2 = Luna<Vector_BindLua>::lightcheck(L, 2);
-			float t = wi::lua::SGetFloat(L, 3);
+			float t = lb::lua::SGetFloat(L, 3);
 			if (v1 && v2)
 			{
 				Luna<Vector_BindLua>::push(L, XMVectorLerp(XMLoadFloat4(&v1->data), XMLoadFloat4(&v2->data), t));
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Lerp(Vector v1,v2, float t) not enough arguments!");
+		lb::lua::SError(L, "Lerp(Vector v1,v2, float t) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Rotate(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -489,7 +489,7 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Rotate(Vector v1,quaternion) not enough arguments!");
+		lb::lua::SError(L, "Rotate(Vector v1,quaternion) not enough arguments!");
 		return 0;
 	}
 
@@ -501,7 +501,7 @@ namespace wi::lua
 	}
 	int Vector_BindLua::QuaternionInverse(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -511,12 +511,12 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "QuaternionInverse(Vector quaternion) not enough arguments!");
+		lb::lua::SError(L, "QuaternionInverse(Vector quaternion) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::QuaternionMultiply(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -527,12 +527,12 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "QuaternionMultiply(Vector quaternion1,quaternion2) not enough arguments!");
+		lb::lua::SError(L, "QuaternionMultiply(Vector quaternion1,quaternion2) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::QuaternionFromRollPitchYaw(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -542,63 +542,63 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "QuaternionFromRollPitchYaw(Vector rotXYZ) not enough arguments!");
+		lb::lua::SError(L, "QuaternionFromRollPitchYaw(Vector rotXYZ) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::QuaternionToRollPitchYaw(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (v1)
 			{
-				XMFLOAT3 xyz = wi::math::QuaternionToRollPitchYaw(v1->data);
+				XMFLOAT3 xyz = lb::math::QuaternionToRollPitchYaw(v1->data);
 				Luna<Vector_BindLua>::push(L, XMFLOAT4(xyz.x, xyz.y, xyz.z, 0));
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "QuaternionToRollPitchYaw(Vector quaternion) not enough arguments!");
+		lb::lua::SError(L, "QuaternionToRollPitchYaw(Vector quaternion) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::Slerp(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 2)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
 			Vector_BindLua* v2 = Luna<Vector_BindLua>::lightcheck(L, 2);
-			float t = wi::lua::SGetFloat(L, 3);
+			float t = lb::lua::SGetFloat(L, 3);
 			if (v1 && v2)
 			{
 				Luna<Vector_BindLua>::push(L, XMQuaternionSlerp(XMLoadFloat4(&v1->data), XMLoadFloat4(&v2->data), t));
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Slerp(Vector quaternion1,quaternion2, float t) not enough arguments!");
+		lb::lua::SError(L, "Slerp(Vector quaternion1,quaternion2, float t) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::QuaternionSlerp(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 2)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
 			Vector_BindLua* v2 = Luna<Vector_BindLua>::lightcheck(L, 2);
-			float t = wi::lua::SGetFloat(L, 3);
+			float t = lb::lua::SGetFloat(L, 3);
 			if (v1 && v2)
 			{
 				Luna<Vector_BindLua>::push(L, XMQuaternionSlerp(XMLoadFloat4(&v1->data), XMLoadFloat4(&v2->data), t));
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "QuaternionSlerp(Vector quaternion1,quaternion2, float t) not enough arguments!");
+		lb::lua::SError(L, "QuaternionSlerp(Vector quaternion1,quaternion2, float t) not enough arguments!");
 		return 0;
 	}
 
 	int Vector_BindLua::PlaneFromPointNormal(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -609,12 +609,12 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "PlaneFromPointNormal(Vector a,b,c) not enough arguments!");
+		lb::lua::SError(L, "PlaneFromPointNormal(Vector a,b,c) not enough arguments!");
 		return 0;
 	}
 	int Vector_BindLua::PlaneFromPoints(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 2)
 		{
 			Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -626,13 +626,13 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "PlaneFromPoints(Vector a,b,c) not enough arguments!");
+		lb::lua::SError(L, "PlaneFromPoints(Vector a,b,c) not enough arguments!");
 		return 0;
 	}
 
 	int Vector_BindLua::GetAngle(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 2)
 		{
 			Vector_BindLua* a = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -641,19 +641,19 @@ namespace wi::lua
 			float max_value = XM_2PI;
 			if (argc > 3)
 			{
-				max_value = wi::lua::SGetFloat(L, 4);
+				max_value = lb::lua::SGetFloat(L, 4);
 			}
 			if (a && b && axis)
 			{
-				wi::lua::SSetFloat(L, wi::math::GetAngle(XMLoadFloat4(&a->data), XMLoadFloat4(&b->data), XMLoadFloat4(&axis->data), max_value));
+				lb::lua::SSetFloat(L, lb::math::GetAngle(XMLoadFloat4(&a->data), XMLoadFloat4(&b->data), XMLoadFloat4(&axis->data), max_value));
 				return 1;
 			}
 			else
 			{
-				wi::lua::SError(L, "GetAngle(Vector a,b,axis, opt float max) first 3 arguments are not vectors!");
+				lb::lua::SError(L, "GetAngle(Vector a,b,axis, opt float max) first 3 arguments are not vectors!");
 			}
 		}
-		wi::lua::SError(L, "GetAngle(Vector a,b,axis, opt float max) not enough arguments!");
+		lb::lua::SError(L, "GetAngle(Vector a,b,axis, opt float max) not enough arguments!");
 		return 0;
 	}
 
@@ -664,8 +664,8 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Vector_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<Vector_BindLua>::push_global(wi::lua::GetLuaState(), "vector");
+			Luna<Vector_BindLua>::Register(lb::lua::GetLuaState());
+			Luna<Vector_BindLua>::push_global(lb::lua::GetLuaState(), "vector");
 		}
 	}
 
@@ -749,9 +749,9 @@ namespace wi::lua
 	}
 	Matrix_BindLua::Matrix_BindLua(lua_State* L)
 	{
-		std::memcpy(this, &wi::math::IDENTITY_MATRIX, sizeof(wi::math::IDENTITY_MATRIX));
+		std::memcpy(this, &lb::math::IDENTITY_MATRIX, sizeof(lb::math::IDENTITY_MATRIX));
 
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 
 		// fill out all the four rows of the matrix
 		for (int i = 0; i < 4; ++i)
@@ -759,16 +759,16 @@ namespace wi::lua
 			float x = 0.f, y = 0.f, z = 0.f, w = 0.f;
 			if (argc > i * 4)
 			{
-				x = wi::lua::SGetFloat(L, i * 4 + 1);
+				x = lb::lua::SGetFloat(L, i * 4 + 1);
 				if (argc > i * 4 + 1)
 				{
-					y = wi::lua::SGetFloat(L, i * 4 + 2);
+					y = lb::lua::SGetFloat(L, i * 4 + 2);
 					if (argc > i * 4 + 2)
 					{
-						z = wi::lua::SGetFloat(L, i * 4 + 3);
+						z = lb::lua::SGetFloat(L, i * 4 + 3);
 						if (argc > i * 4 + 3)
 						{
-							w = wi::lua::SGetFloat(L, i * 4 + 4);
+							w = lb::lua::SGetFloat(L, i * 4 + 4);
 						}
 					}
 				}
@@ -783,11 +783,11 @@ namespace wi::lua
 
 	int Matrix_BindLua::GetRow(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		int row = 0;
 		if (argc > 1)
 		{
-			row = wi::lua::SGetInt(L, 2);
+			row = lb::lua::SGetInt(L, 2);
 			if (row < 0 || row > 3)
 				row = 0;
 		}
@@ -800,7 +800,7 @@ namespace wi::lua
 
 	int Matrix_BindLua::Translation(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		XMMATRIX mat = XMMatrixIdentity();
 		if (argc > 0)
 		{
@@ -816,7 +816,7 @@ namespace wi::lua
 
 	int Matrix_BindLua::Rotation(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		XMMATRIX mat = XMMatrixIdentity();
 		if (argc > 0)
 		{
@@ -832,11 +832,11 @@ namespace wi::lua
 
 	int Matrix_BindLua::RotationX(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		XMMATRIX mat = XMMatrixIdentity();
 		if (argc > 0)
 		{
-			mat = XMMatrixRotationX(wi::lua::SGetFloat(L, 1));
+			mat = XMMatrixRotationX(lb::lua::SGetFloat(L, 1));
 		}
 		Luna<Matrix_BindLua>::push(L, mat);
 		return 1;
@@ -844,11 +844,11 @@ namespace wi::lua
 
 	int Matrix_BindLua::RotationY(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		XMMATRIX mat = XMMatrixIdentity();
 		if (argc > 0)
 		{
-			mat = XMMatrixRotationY(wi::lua::SGetFloat(L, 1));
+			mat = XMMatrixRotationY(lb::lua::SGetFloat(L, 1));
 		}
 		Luna<Matrix_BindLua>::push(L, mat);
 		return 1;
@@ -856,11 +856,11 @@ namespace wi::lua
 
 	int Matrix_BindLua::RotationZ(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		XMMATRIX mat = XMMatrixIdentity();
 		if (argc > 0)
 		{
-			mat = XMMatrixRotationZ(wi::lua::SGetFloat(L, 1));
+			mat = XMMatrixRotationZ(lb::lua::SGetFloat(L, 1));
 		}
 		Luna<Matrix_BindLua>::push(L, mat);
 		return 1;
@@ -868,7 +868,7 @@ namespace wi::lua
 
 	int Matrix_BindLua::RotationQuaternion(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		XMMATRIX mat = XMMatrixIdentity();
 		if (argc > 0)
 		{
@@ -884,7 +884,7 @@ namespace wi::lua
 
 	int Matrix_BindLua::Scale(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		XMMATRIX mat = XMMatrixIdentity();
 		if (argc > 0)
 		{
@@ -895,7 +895,7 @@ namespace wi::lua
 			}
 			else
 			{
-				float value = wi::lua::SGetFloat(L, 1);
+				float value = lb::lua::SGetFloat(L, 1);
 				mat = XMMatrixScaling(value, value, value);
 			}
 		}
@@ -905,7 +905,7 @@ namespace wi::lua
 
 	int Matrix_BindLua::LookTo(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* pos = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -923,16 +923,16 @@ namespace wi::lua
 				Luna<Matrix_BindLua>::push(L, XMMatrixLookToLH(XMLoadFloat4(&pos->data), XMLoadFloat4(&dir->data), Up));
 			}
 			else
-				wi::lua::SError(L, "LookTo(Vector eye, Vector direction, opt Vector up) argument is not a Vector!");
+				lb::lua::SError(L, "LookTo(Vector eye, Vector direction, opt Vector up) argument is not a Vector!");
 		}
 		else
-			wi::lua::SError(L, "LookTo(Vector eye, Vector direction, opt Vector up) not enough arguments!");
+			lb::lua::SError(L, "LookTo(Vector eye, Vector direction, opt Vector up) not enough arguments!");
 		return 1;
 	}
 
 	int Matrix_BindLua::LookAt(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* pos = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -950,16 +950,16 @@ namespace wi::lua
 				Luna<Matrix_BindLua>::push(L, XMMatrixLookAtLH(XMLoadFloat4(&pos->data), XMLoadFloat4(&dir->data), Up));
 			}
 			else
-				wi::lua::SError(L, "LookAt(Vector eye, Vector focusPos, opt Vector up) argument is not a Vector!");
+				lb::lua::SError(L, "LookAt(Vector eye, Vector focusPos, opt Vector up) argument is not a Vector!");
 		}
 		else
-			wi::lua::SError(L, "LookAt(Vector eye, Vector focusPos, opt Vector up) not enough arguments!");
+			lb::lua::SError(L, "LookAt(Vector eye, Vector focusPos, opt Vector up) not enough arguments!");
 		return 1;
 	}
 
 	int Matrix_BindLua::Multiply(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Matrix_BindLua* m1 = Luna<Matrix_BindLua>::lightcheck(L, 1);
@@ -970,12 +970,12 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Multiply(Matrix m1,m2) not enough arguments!");
+		lb::lua::SError(L, "Multiply(Matrix m1,m2) not enough arguments!");
 		return 0;
 	}
 	int Matrix_BindLua::Add(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Matrix_BindLua* m1 = Luna<Matrix_BindLua>::lightcheck(L, 1);
@@ -986,12 +986,12 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Add(Matrix m1,m2) not enough arguments!");
+		lb::lua::SError(L, "Add(Matrix m1,m2) not enough arguments!");
 		return 0;
 	}
 	int Matrix_BindLua::Transpose(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Matrix_BindLua* m1 = Luna<Matrix_BindLua>::lightcheck(L, 1);
@@ -1001,12 +1001,12 @@ namespace wi::lua
 				return 1;
 			}
 		}
-		wi::lua::SError(L, "Transpose(Matrix m) not enough arguments!");
+		lb::lua::SError(L, "Transpose(Matrix m) not enough arguments!");
 		return 0;
 	}
 	int Matrix_BindLua::Inverse(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Matrix_BindLua* m1 = Luna<Matrix_BindLua>::lightcheck(L, 1);
@@ -1014,56 +1014,56 @@ namespace wi::lua
 			{
 				XMVECTOR det;
 				Luna<Matrix_BindLua>::push(L, XMMatrixInverse(&det, XMLoadFloat4x4(&m1->data)));
-				wi::lua::SSetFloat(L, XMVectorGetX(det));
+				lb::lua::SSetFloat(L, XMVectorGetX(det));
 				return 2;
 			}
 		}
-		wi::lua::SError(L, "Inverse(Matrix m) not enough arguments!");
+		lb::lua::SError(L, "Inverse(Matrix m) not enough arguments!");
 		return 0;
 	}
 	int Matrix_BindLua::GetForward(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Matrix_BindLua* m1 = Luna<Matrix_BindLua>::lightcheck(L, 1);
 			if (m1)
 			{
-				Luna<Vector_BindLua>::push(L, wi::math::GetForward(m1->data));
+				Luna<Vector_BindLua>::push(L, lb::math::GetForward(m1->data));
 				return 1;
 			}
 		}
-		Luna<Vector_BindLua>::push(L, wi::math::GetForward(data));
+		Luna<Vector_BindLua>::push(L, lb::math::GetForward(data));
 		return 1;
 	}
 	int Matrix_BindLua::GetUp(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Matrix_BindLua* m1 = Luna<Matrix_BindLua>::lightcheck(L, 1);
 			if (m1)
 			{
-				Luna<Vector_BindLua>::push(L, wi::math::GetUp(m1->data));
+				Luna<Vector_BindLua>::push(L, lb::math::GetUp(m1->data));
 				return 1;
 			}
 		}
-		Luna<Vector_BindLua>::push(L, wi::math::GetUp(data));
+		Luna<Vector_BindLua>::push(L, lb::math::GetUp(data));
 		return 1;
 	}
 	int Matrix_BindLua::GetRight(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Matrix_BindLua* m1 = Luna<Matrix_BindLua>::lightcheck(L, 1);
 			if (m1)
 			{
-				Luna<Vector_BindLua>::push(L, wi::math::GetRight(m1->data));
+				Luna<Vector_BindLua>::push(L, lb::math::GetRight(m1->data));
 				return 1;
 			}
 		}
-		Luna<Vector_BindLua>::push(L, wi::math::GetRight(data));
+		Luna<Vector_BindLua>::push(L, lb::math::GetRight(data));
 		return 1;
 	}
 
@@ -1073,8 +1073,8 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Matrix_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<Matrix_BindLua>::push_global(wi::lua::GetLuaState(), "matrix");
+			Luna<Matrix_BindLua>::Register(lb::lua::GetLuaState());
+			Luna<Matrix_BindLua>::push_global(lb::lua::GetLuaState(), "matrix");
 		}
 	}
 

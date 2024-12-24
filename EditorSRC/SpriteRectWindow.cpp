@@ -4,31 +4,31 @@
 
 void SpriteRectWindow::Create(EditorComponent* editor)
 {
-	wi::gui::Window::Create("Select an area within the atlas...");
+	lb::gui::Window::Create("Select an area within the atlas...");
 	SetLocalizationEnabled(false);
 
 	SetSize(XMFLOAT2(300, 300));
 
 	spriteButton.Create("");
-	spriteButton.OnDragStart([=](wi::gui::EventArgs args) {
+	spriteButton.OnDragStart([=](lb::gui::EventArgs args) {
 		XMFLOAT2 pos = spriteButton.GetPos();
 		XMFLOAT2 size = spriteButton.GetSize();
-		dragStartUV = wi::math::InverseLerp(pos, XMFLOAT2(pos.x + size.x, pos.y + size.y), args.clickPos);
+		dragStartUV = lb::math::InverseLerp(pos, XMFLOAT2(pos.x + size.x, pos.y + size.y), args.clickPos);
 		dragStartUV.x = saturate(dragStartUV.x);
 		dragStartUV.y = saturate(dragStartUV.y);
 		dragEndUV = dragStartUV;
 	});
-	spriteButton.OnDrag([=](wi::gui::EventArgs args) {
+	spriteButton.OnDrag([=](lb::gui::EventArgs args) {
 		XMFLOAT2 pos = spriteButton.GetPos();
 		XMFLOAT2 size = spriteButton.GetSize();
-		dragEndUV = wi::math::InverseLerp(pos, XMFLOAT2(pos.x + size.x, pos.y + size.y), args.clickPos);
+		dragEndUV = lb::math::InverseLerp(pos, XMFLOAT2(pos.x + size.x, pos.y + size.y), args.clickPos);
 		dragEndUV.x = saturate(dragEndUV.x);
 		dragEndUV.y = saturate(dragEndUV.y);
 	});
-	spriteButton.OnDragEnd([=](wi::gui::EventArgs args) {
+	spriteButton.OnDragEnd([=](lb::gui::EventArgs args) {
 		XMFLOAT2 pos = spriteButton.GetPos();
 		XMFLOAT2 size = spriteButton.GetSize();
-		dragEndUV = wi::math::InverseLerp(pos, XMFLOAT2(pos.x + size.x, pos.y + size.y), args.clickPos);
+		dragEndUV = lb::math::InverseLerp(pos, XMFLOAT2(pos.x + size.x, pos.y + size.y), args.clickPos);
 		dragEndUV.x = saturate(dragEndUV.x);
 		dragEndUV.y = saturate(dragEndUV.y);
 
@@ -42,7 +42,7 @@ void SpriteRectWindow::Create(EditorComponent* editor)
 	AddWidget(&spriteButton);
 
 	okButton.Create("OK");
-	okButton.OnClick([=](wi::gui::EventArgs args) {
+	okButton.OnClick([=](lb::gui::EventArgs args) {
 
 		if (onAccepted != nullptr)
 			onAccepted();
@@ -56,7 +56,7 @@ void SpriteRectWindow::Create(EditorComponent* editor)
 
 void SpriteRectWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 
 	XMFLOAT2 size = GetWidgetAreaSize();
 
@@ -66,21 +66,21 @@ void SpriteRectWindow::ResizeLayout()
 	okButton.SetSize(XMFLOAT2(size.x, okButton.GetSize().y));
 	okButton.SetPos(XMFLOAT2(0, spriteButton.GetSize().y));
 }
-void SpriteRectWindow::Update(const wi::Canvas& canvas, float dt)
+void SpriteRectWindow::Update(const lb::Canvas& canvas, float dt)
 {
-	wi::gui::Window::Update(canvas, dt);
+	lb::gui::Window::Update(canvas, dt);
 
 	if (!IsVisible())
 		return;
 
 	if (GetPointerHitbox().intersects(spriteButton.hitBox))
 	{
-		wi::input::SetCursor(wi::input::CURSOR_CROSS);
+		lb::input::SetCursor(lb::input::CURSOR_CROSS);
 	}
 }
-void SpriteRectWindow::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+void SpriteRectWindow::Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const
 {
-	wi::gui::Window::Render(canvas, cmd);
+	lb::gui::Window::Render(canvas, cmd);
 
 	if (!IsVisible())
 		return;
@@ -91,31 +91,31 @@ void SpriteRectWindow::Render(const wi::Canvas& canvas, wi::graphics::CommandLis
 	XMFLOAT2 size = spriteButton.GetSize();
 	XMFLOAT2 end = XMFLOAT2(pos.x + size.x, pos.y + size.y);
 
-	wi::image::Params params;
-	params.sampleFlag = wi::image::SAMPLEMODE_WRAP;
-	params.quality = wi::image::QUALITY_NEAREST;
+	lb::image::Params params;
+	params.sampleFlag = lb::image::SAMPLEMODE_WRAP;
+	params.quality = lb::image::QUALITY_NEAREST;
 	params.pos = XMFLOAT3(pos.x, pos.y, 0);
 	params.siz = size;
 	params.color = XMFLOAT4(1.7f, 1.7f, 1.7f, 1);
 	params.enableDrawRect(XMFLOAT4(0, 0, size.x / 8, size.y / 8));
-	wi::image::Draw(wi::texturehelper::getCheckerBoard(), params, cmd);
+	lb::image::Draw(lb::texturehelper::getCheckerBoard(), params, cmd);
 
 	params.disableDrawRect();
-	params.quality = wi::image::QUALITY_LINEAR;
+	params.quality = lb::image::QUALITY_LINEAR;
 	params.color = XMFLOAT4(1, 1, 1, 1);
-	wi::image::Draw(sprite.getTexture(), params, cmd);
+	lb::image::Draw(sprite.getTexture(), params, cmd);
 
-	XMFLOAT2 rectstart = wi::math::Lerp(pos, end, dragStartUV);
-	XMFLOAT2 rectend = wi::math::Lerp(pos, end, dragEndUV);
+	XMFLOAT2 rectstart = lb::math::Lerp(pos, end, dragStartUV);
+	XMFLOAT2 rectend = lb::math::Lerp(pos, end, dragEndUV);
 
 	params.pos = XMFLOAT3(rectstart.x, rectstart.y, 0);
 	params.siz = XMFLOAT2(rectend.x - rectstart.x, rectend.y - rectstart.y);
 	params.color = shadow_color;
 	params.color.w = 0.5f;
-	wi::image::Draw(nullptr, params, cmd);
+	lb::image::Draw(nullptr, params, cmd);
 }
 
-void SpriteRectWindow::SetSprite(const wi::Sprite& sprite)
+void SpriteRectWindow::SetSprite(const lb::Sprite& sprite)
 {
 	this->sprite = sprite;
 }

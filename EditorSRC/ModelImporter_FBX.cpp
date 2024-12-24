@@ -7,17 +7,17 @@
 #include "ufbx.h"
 #include "ufbx.c"
 
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::ecs;
+using namespace lb::graphics;
+using namespace lb::scene;
+using namespace lb::ecs;
 
-void FlipZAxis(Scene& scene, Entity rootEntity, wi::unordered_map<size_t, TransformComponent>& transforms_original);
+void FlipZAxis(Scene& scene, Entity rootEntity, lb::unordered_map<size_t, TransformComponent>& transforms_original);
 void Import_Mixamo_Bone(Scene& scene, Entity rootEntity, Entity boneEntity);
 
 // File callbacks are implemented for platforms that don't support default c++ filesystem correctly (like UWP)
 struct FileDataStream
 {
-	wi::vector<uint8_t> data;
+	lb::vector<uint8_t> data;
 	size_t offset = 0;
 };
 size_t read_cb(void* user, void* data, size_t size)
@@ -43,8 +43,8 @@ void close_cb(void* user)
 }
 bool open_file_cb(void* user, ufbx_stream* stream, const char* path, size_t path_len, const ufbx_open_file_info* info)
 {
-	wi::vector<uint8_t> filedata;
-	if (wi::helper::FileRead(path, filedata))
+	lb::vector<uint8_t> filedata;
+	if (lb::helper::FileRead(path, filedata))
 	{
 		FileDataStream* datastream = new FileDataStream;
 		datastream->data = std::move(filedata);
@@ -57,7 +57,7 @@ bool open_file_cb(void* user, ufbx_stream* stream, const char* path, size_t path
 	return false;
 }
 
-void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
+void ImportModel_FBX(const std::string& filename, lb::scene::Scene& scene)
 {
 	ufbx_load_opts opts = {};
 	//opts.target_axes = ufbx_axes_left_handed_y_up;
@@ -75,19 +75,19 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 	{
 		std::string str = "FBX import error: ";
 		str += error.description.data;
-		wi::backlog::post(str, wi::backlog::LogLevel::Error);
-		wi::helper::messageBox(str, "Error!");
+		lb::backlog::post(str, lb::backlog::LogLevel::Error);
+		lb::helper::messageBox(str, "Error!");
 		return;
 	}
 
-	wi::unordered_map<const ufbx_material*, Entity> material_lookup;
-	wi::unordered_map<const ufbx_skin_deformer*, Entity> skin_lookup;
-	wi::unordered_map<const ufbx_mesh*, Entity> mesh_lookup;
-	wi::unordered_map<const ufbx_node*, Entity> node_lookup;
+	lb::unordered_map<const ufbx_material*, Entity> material_lookup;
+	lb::unordered_map<const ufbx_skin_deformer*, Entity> skin_lookup;
+	lb::unordered_map<const ufbx_mesh*, Entity> mesh_lookup;
+	lb::unordered_map<const ufbx_node*, Entity> node_lookup;
 
 	Entity rootEntity = CreateEntity();
 	{
-		scene.names.Create(rootEntity) = wi::helper::GetFileNameFromPath(filename);
+		scene.names.Create(rootEntity) = lb::helper::GetFileNameFromPath(filename);
 		const ufbx_node* node = fbxscene->root_node;
 		node_lookup[node] = rootEntity;
 		TransformComponent& transform = scene.transforms.Create(rootEntity);
@@ -103,7 +103,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 		transform.translation_local.z = node->local_transform.translation.z;
 	}
 
-	wi::vector<wi::Resource> embedded_resources;
+	lb::vector<lb::Resource> embedded_resources;
 	auto preload_embedded_texture = [&](ufbx_texture* texture) {
 		if (texture->content.data == nullptr)
 			return;
@@ -114,13 +114,13 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 			// Force some image resource name:
 			do {
 				filename.clear();
-				filename += "fbximport_" + std::to_string(wi::random::GetRandom(std::numeric_limits<uint32_t>::max())) + ".png";
-			} while (wi::resourcemanager::Contains(filename)); // this is to avoid overwriting an existing imported image
+				filename += "fbximport_" + std::to_string(lb::random::GetRandom(std::numeric_limits<uint32_t>::max())) + ".png";
+			} while (lb::resourcemanager::Contains(filename)); // this is to avoid overwriting an existing imported image
 		}
 
-		auto resource = wi::resourcemanager::Load(
+		auto resource = lb::resourcemanager::Load(
 			filename,
-			wi::resourcemanager::Flags::IMPORT_RETAIN_FILEDATA | wi::resourcemanager::Flags::IMPORT_DELAY,
+			lb::resourcemanager::Flags::IMPORT_RETAIN_FILEDATA | lb::resourcemanager::Flags::IMPORT_DELAY,
 			(const uint8_t*)texture->content.data,
 			texture->content.size
 		);
@@ -236,7 +236,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 		}
 		MeshComponent& meshcomponent = scene.meshes.Create(entity);
 		uint32_t vertexOffset = 0;
-		wi::vector<uint32_t> tri_indices(mesh->max_face_triangles * 3);
+		lb::vector<uint32_t> tri_indices(mesh->max_face_triangles * 3);
 		const ufbx_skin_deformer* skin = nullptr;
 		if (mesh->skin_deformers.count > 0)
 		{
@@ -256,16 +256,16 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 		}
 		for (const ufbx_mesh_part& part : mesh->material_parts)
 		{
-			wi::vector<XMFLOAT3> positions;
-			wi::vector<XMFLOAT3> normals;
-			wi::vector<XMFLOAT2> uvset0;
-			wi::vector<XMFLOAT2> uvset1;
-			wi::vector<wi::Color> colors;
-			wi::vector<XMUINT4> boneindices;
-			wi::vector<XMFLOAT4> boneweights;
-			wi::vector<XMUINT4> boneindices2;
-			wi::vector<XMFLOAT4> boneweights2;
-			wi::vector<MeshComponent::MorphTarget> morphs(meshcomponent.morph_targets.size());
+			lb::vector<XMFLOAT3> positions;
+			lb::vector<XMFLOAT3> normals;
+			lb::vector<XMFLOAT2> uvset0;
+			lb::vector<XMFLOAT2> uvset1;
+			lb::vector<lb::Color> colors;
+			lb::vector<XMUINT4> boneindices;
+			lb::vector<XMFLOAT4> boneweights;
+			lb::vector<XMUINT4> boneindices2;
+			lb::vector<XMFLOAT4> boneweights2;
+			lb::vector<MeshComponent::MorphTarget> morphs(meshcomponent.morph_targets.size());
 
 			for (uint32_t face_index : part.face_indices)
 			{
@@ -296,7 +296,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 					}
 					if (mesh->vertex_color.exists)
 					{
-						colors.push_back(wi::Color::fromFloat4(XMFLOAT4(mesh->vertex_color[index].v)));
+						colors.push_back(lb::Color::fromFloat4(XMFLOAT4(mesh->vertex_color[index].v)));
 					}
 
 					if (skin)
@@ -349,10 +349,10 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 			}
 			assert(positions.size() == part.num_triangles * 3);
 
-			wi::vector<uint32_t> indices;
+			lb::vector<uint32_t> indices;
 			indices.resize(part.num_triangles * 3);
 
-			wi::vector<ufbx_vertex_stream> streams;
+			lb::vector<ufbx_vertex_stream> streams;
 			if (!positions.empty())
 			{
 				streams.push_back({ positions.data(), positions.size(), sizeof(positions[0]) });
@@ -564,7 +564,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 			CameraComponent& camera = scene.cameras.Create(entity);
 			camera.zNearP = node->camera->near_plane * 0.01f;
 			camera.zFarP = node->camera->far_plane * 0.01f;
-			camera.fov = wi::math::DegreesToRadians(node->camera->field_of_view_deg.y);
+			camera.fov = lb::math::DegreesToRadians(node->camera->field_of_view_deg.y);
 		}
 	}
 
@@ -597,7 +597,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 			Entity boneEntity = node_lookup[cluster->bone_node];
 			armature->boneCollection.push_back(boneEntity);
 
-			XMFLOAT4X4 inverseBindMatrix = wi::math::IDENTITY_MATRIX;
+			XMFLOAT4X4 inverseBindMatrix = lb::math::IDENTITY_MATRIX;
 			inverseBindMatrix._11 = cluster->geometry_to_bone.m00;
 			inverseBindMatrix._12 = cluster->geometry_to_bone.m10;
 			inverseBindMatrix._13 = cluster->geometry_to_bone.m20;
@@ -633,7 +633,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 
 			armatureWithoutMesh.boneCollection.push_back(boneEntity);
 
-			XMFLOAT4X4 inverseBindMatrix = wi::math::IDENTITY_MATRIX;
+			XMFLOAT4X4 inverseBindMatrix = lb::math::IDENTITY_MATRIX;
 			inverseBindMatrix._11 = node->geometry_to_world.m00;
 			inverseBindMatrix._12 = node->geometry_to_world.m10;
 			inverseBindMatrix._13 = node->geometry_to_world.m20;
@@ -747,13 +747,13 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 
 	// Note: we use custom FlipZAxis function for transforming to left-handed space
 	//	because it works better than ufbx library's space conversion helpers, especially for ragdolls that will be generated
-	wi::unordered_map<size_t, TransformComponent> transforms_original; // original transform states, can be used to restore after flip (like GLTF export)
+	lb::unordered_map<size_t, TransformComponent> transforms_original; // original transform states, can be used to restore after flip (like GLTF export)
 	FlipZAxis(scene, rootEntity, transforms_original);
 
 	scene.Update(0);
 }
 
-void FlipZAxis(Scene& scene, Entity rootEntity, wi::unordered_map<size_t, TransformComponent>& transforms_original)
+void FlipZAxis(Scene& scene, Entity rootEntity, lb::unordered_map<size_t, TransformComponent>& transforms_original)
 {
 	// Flip mesh data first
 	for (size_t i = 0; i < scene.meshes.GetCount(); ++i)
@@ -789,8 +789,8 @@ void FlipZAxis(Scene& scene, Entity rootEntity, wi::unordered_map<size_t, Transf
 	bool state_restore = (transforms_original.size() > 0);
 	if (!state_restore)
 	{
-		wi::unordered_map<wi::ecs::Entity, wi::ecs::Entity> hierarchy_list;
-		wi::unordered_map<size_t, wi::scene::TransformComponent> correction_queue;
+		lb::unordered_map<lb::ecs::Entity, lb::ecs::Entity> hierarchy_list;
+		lb::unordered_map<size_t, lb::scene::TransformComponent> correction_queue;
 
 		for (size_t i = 0; i < scene.transforms.GetCount(); ++i)
 		{
@@ -893,14 +893,14 @@ void FlipZAxis(Scene& scene, Entity rootEntity, wi::unordered_map<size_t, Transf
 		{
 			auto data = scene.animation_datas.GetComponent(animation.samplers[channel.samplerIndex].data);
 
-			if (channel.path == wi::scene::AnimationComponent::AnimationChannel::Path::TRANSLATION)
+			if (channel.path == lb::scene::AnimationComponent::AnimationChannel::Path::TRANSLATION)
 			{
 				for (size_t k = 0; k < data->keyframe_data.size() / 3; ++k)
 				{
 					data->keyframe_data[k * 3 + 2] *= -1.f;
 				}
 			}
-			if (channel.path == wi::scene::AnimationComponent::AnimationChannel::Path::ROTATION)
+			if (channel.path == lb::scene::AnimationComponent::AnimationChannel::Path::ROTATION)
 			{
 				for (size_t k = 0; k < data->keyframe_data.size() / 4; ++k)
 				{

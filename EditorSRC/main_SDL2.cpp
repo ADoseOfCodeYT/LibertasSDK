@@ -44,21 +44,21 @@ int sdl_loop(Editor &editor)
                     if(event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE 
                         || event.key.keysym.scancode == SDL_SCANCODE_DELETE
                         || event.key.keysym.scancode == SDL_SCANCODE_KP_BACKSPACE){
-                            wi::gui::TextInputField::DeleteFromInput();
+                            lb::gui::TextInputField::DeleteFromInput();
                             textinput_action_delete = true;
                         }
                     break;
                 case SDL_TEXTINPUT:
                     if(!textinput_action_delete){
                         if(event.text.text[0] >= 21){
-                            wi::gui::TextInputField::AddInput(event.text.text[0]);
+                            lb::gui::TextInputField::AddInput(event.text.text[0]);
                         }
                     }
                     break;
                 default:
                     break;
             }
-            wi::input::sdlinput::ProcessEvent(event);
+            lb::input::sdlinput::ProcessEvent(event);
         }
     }
 
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 {
     Editor editor;
 
-    wi::arguments::Parse(argc, argv);
+    lb::arguments::Parse(argc, argv);
 
     sdl2::sdlsystem_ptr_t system = sdl2::make_sdlsystem(SDL_INIT_EVERYTHING | SDL_INIT_EVENTS);
     if (*system) {
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 	int height = 1080;
 	bool fullscreen = false;
 
-	wi::Timer timer;
+	lb::Timer timer;
 	if (editor.config.Open("config.ini"))
 	{
 		if (editor.config.Has("width"))
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 		fullscreen = editor.config.GetBool("fullscreen");
 		editor.allow_hdr = editor.config.GetBool("allow_hdr");
 
-		wi::backlog::post("config.ini loaded in " + std::to_string(timer.elapsed_milliseconds()) + " milliseconds\n");
+		lb::backlog::post("config.ini loaded in " + std::to_string(timer.elapsed_milliseconds()) + " milliseconds\n");
 	}
 
 	width = std::max(100, width);

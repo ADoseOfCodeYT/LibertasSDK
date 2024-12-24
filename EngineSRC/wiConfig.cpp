@@ -3,7 +3,7 @@
 
 #include <unordered_set>
 
-namespace wi::config
+namespace lb::config
 {
 	bool Section::Has(const char* name) const
 	{
@@ -95,8 +95,8 @@ namespace wi::config
 	bool File::Open(const char* filename)
 	{
 		this->filename = filename; // even if file couldn't be loaded, we remember the filename so it can be created on commit
-		wi::vector<uint8_t> filedata;
-		if (!wi::helper::FileRead(filename, filedata))
+		lb::vector<uint8_t> filedata;
+		if (!lb::helper::FileRead(filename, filedata))
 			return false;
 
 		std::string text = std::string(filedata.begin(), filedata.end());
@@ -308,7 +308,7 @@ namespace wi::config
 				}
 			}
 		}
-		wi::helper::FileWrite(filename, (const uint8_t*)text.c_str(), text.length());
+		lb::helper::FileWrite(filename, (const uint8_t*)text.c_str(), text.length());
 	}
 	Section& File::GetSection(const char* name)
 	{

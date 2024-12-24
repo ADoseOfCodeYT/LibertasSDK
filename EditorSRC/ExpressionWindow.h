@@ -1,28 +1,28 @@
 #pragma once
 class EditorComponent;
 
-class ExpressionWindow : public wi::gui::Window
+class ExpressionWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::CheckBox talkCheckBox;
-	wi::gui::Slider blinkFrequencySlider;
-	wi::gui::Slider blinkLengthSlider;
-	wi::gui::Slider blinkCountSlider;
-	wi::gui::Slider lookFrequencySlider;
-	wi::gui::Slider lookLengthSlider;
-	wi::gui::TreeList expressionList;
-	wi::gui::Slider weightSlider;
-	wi::gui::CheckBox binaryCheckBox;
-	wi::gui::ComboBox overrideMouthCombo;
-	wi::gui::ComboBox overrideBlinkCombo;
-	wi::gui::ComboBox overrideLookCombo;
+	lb::gui::Label infoLabel;
+	lb::gui::CheckBox talkCheckBox;
+	lb::gui::Slider blinkFrequencySlider;
+	lb::gui::Slider blinkLengthSlider;
+	lb::gui::Slider blinkCountSlider;
+	lb::gui::Slider lookFrequencySlider;
+	lb::gui::Slider lookLengthSlider;
+	lb::gui::TreeList expressionList;
+	lb::gui::Slider weightSlider;
+	lb::gui::CheckBox binaryCheckBox;
+	lb::gui::ComboBox overrideMouthCombo;
+	lb::gui::ComboBox overrideBlinkCombo;
+	lb::gui::ComboBox overrideLookCombo;
 
 	void ResizeLayout() override;
 };

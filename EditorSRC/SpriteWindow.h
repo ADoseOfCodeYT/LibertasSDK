@@ -1,52 +1,52 @@
 #pragma once
 class EditorComponent;
 
-class SpriteWindow : public wi::gui::Window
+class SpriteWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::Button textureButton;
-	wi::gui::Button maskButton;
-	wi::gui::Slider pivotXSlider;
-	wi::gui::Slider pivotYSlider;
-	wi::gui::Slider intensitySlider;
-	wi::gui::Slider rotationSlider;
-	wi::gui::Slider saturationSlider;
-	wi::gui::Slider alphaStartSlider;
-	wi::gui::Slider alphaEndSlider;
-	wi::gui::Slider borderSoftenSlider;
-	wi::gui::Slider cornerRounding0Slider;
-	wi::gui::Slider cornerRounding1Slider;
-	wi::gui::Slider cornerRounding2Slider;
-	wi::gui::Slider cornerRounding3Slider;
-	wi::gui::ComboBox qualityCombo;
-	wi::gui::ComboBox samplemodeCombo;
-	wi::gui::ComboBox blendModeCombo;
-	wi::gui::CheckBox mirrorCheckBox;
-	wi::gui::CheckBox hiddenCheckBox;
-	wi::gui::CheckBox cameraFacingCheckBox;
-	wi::gui::CheckBox cameraScalingCheckBox;
-	wi::gui::CheckBox depthTestCheckBox;
-	wi::gui::CheckBox distortionCheckBox;
-	wi::gui::ColorPicker colorPicker;
+	lb::gui::Button textureButton;
+	lb::gui::Button maskButton;
+	lb::gui::Slider pivotXSlider;
+	lb::gui::Slider pivotYSlider;
+	lb::gui::Slider intensitySlider;
+	lb::gui::Slider rotationSlider;
+	lb::gui::Slider saturationSlider;
+	lb::gui::Slider alphaStartSlider;
+	lb::gui::Slider alphaEndSlider;
+	lb::gui::Slider borderSoftenSlider;
+	lb::gui::Slider cornerRounding0Slider;
+	lb::gui::Slider cornerRounding1Slider;
+	lb::gui::Slider cornerRounding2Slider;
+	lb::gui::Slider cornerRounding3Slider;
+	lb::gui::ComboBox qualityCombo;
+	lb::gui::ComboBox samplemodeCombo;
+	lb::gui::ComboBox blendModeCombo;
+	lb::gui::CheckBox mirrorCheckBox;
+	lb::gui::CheckBox hiddenCheckBox;
+	lb::gui::CheckBox cameraFacingCheckBox;
+	lb::gui::CheckBox cameraScalingCheckBox;
+	lb::gui::CheckBox depthTestCheckBox;
+	lb::gui::CheckBox distortionCheckBox;
+	lb::gui::ColorPicker colorPicker;
 
-	wi::gui::Slider movingTexXSlider;
-	wi::gui::Slider movingTexYSlider;
+	lb::gui::Slider movingTexXSlider;
+	lb::gui::Slider movingTexYSlider;
 
-	wi::gui::Slider drawrectFrameRateSlider;
-	wi::gui::TextInputField drawrectFrameCountInput;
-	wi::gui::TextInputField drawrectHorizontalFrameCountInput;
+	lb::gui::Slider drawrectFrameRateSlider;
+	lb::gui::TextInputField drawrectFrameCountInput;
+	lb::gui::TextInputField drawrectHorizontalFrameCountInput;
 
-	wi::gui::Slider wobbleXSlider;
-	wi::gui::Slider wobbleYSlider;
-	wi::gui::Slider wobbleSpeedSlider;
+	lb::gui::Slider wobbleXSlider;
+	lb::gui::Slider wobbleYSlider;
+	lb::gui::Slider wobbleSpeedSlider;
 
 	void ResizeLayout() override;
 
-	void UpdateSpriteDrawRectParams(wi::Sprite* sprite);
+	void UpdateSpriteDrawRectParams(lb::Sprite* sprite);
 };

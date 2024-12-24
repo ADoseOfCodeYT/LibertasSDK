@@ -2,7 +2,7 @@
 #include "wiAudio.h"
 #include "wiMath_BindLua.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	Luna<Audio_BindLua>::FunctionType Audio_BindLua::methods[] = {
@@ -26,223 +26,223 @@ namespace wi::lua
 
 	int Audio_BindLua::CreateSound(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Sound_BindLua* sound = Luna<Sound_BindLua>::lightcheck(L, 2);
 			if (sound != nullptr)
 			{
-				sound->soundResource = wi::resourcemanager::Load(wi::lua::SGetString(L, 1));
+				sound->soundResource = lb::resourcemanager::Load(lb::lua::SGetString(L, 1));
 				if (!sound->soundResource.IsValid())
 				{
-					wi::lua::SSetBool(L, false);
+					lb::lua::SSetBool(L, false);
 					return 1;
 				}
-				wi::lua::SSetBool(L, sound->soundResource.GetSound().IsValid());
+				lb::lua::SSetBool(L, sound->soundResource.GetSound().IsValid());
 				return 1;
 			}
 			else
 			{
-				wi::lua::SError(L, "CreateSound(string filename, Sound sound) second argument is not a Sound!");
+				lb::lua::SError(L, "CreateSound(string filename, Sound sound) second argument is not a Sound!");
 			}
 		}
 		else
-			wi::lua::SError(L, "CreateSound(string filename, Sound sound) not enough arguments!");
+			lb::lua::SError(L, "CreateSound(string filename, Sound sound) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::CreateSoundInstance(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Sound_BindLua* s = Luna<Sound_BindLua>::lightcheck(L, 1);
 			if (s == nullptr)
 			{
-				wi::lua::SError(L, "CreateSoundInstance(Sound sound, SoundInstance soundinstance) first argument is not a Sound!");
+				lb::lua::SError(L, "CreateSoundInstance(Sound sound, SoundInstance soundinstance) first argument is not a Sound!");
 				return 0;
 			}
 			if (!s->soundResource.IsValid())
 			{
-				wi::lua::SError(L, "CreateSoundInstance(Sound sound, SoundInstance soundinstance) first argument Sound resource is not valid, probably it was not loaded successfully!");
+				lb::lua::SError(L, "CreateSoundInstance(Sound sound, SoundInstance soundinstance) first argument Sound resource is not valid, probably it was not loaded successfully!");
 				return 0;
 			}
 			SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 2);
 			if (soundinstance == nullptr)
 			{
-				wi::lua::SError(L, "CreateSoundInstance(Sound sound, SoundInstance soundinstance) second argument is not a SoundInstance!");
+				lb::lua::SError(L, "CreateSoundInstance(Sound sound, SoundInstance soundinstance) second argument is not a SoundInstance!");
 				return 0;
 			}
 
-			const wi::audio::Sound& sound = s->soundResource.GetSound();
-			bool result = wi::audio::CreateSoundInstance(&sound, &soundinstance->soundinstance);
-			wi::lua::SSetBool(L, result);
+			const lb::audio::Sound& sound = s->soundResource.GetSound();
+			bool result = lb::audio::CreateSoundInstance(&sound, &soundinstance->soundinstance);
+			lb::lua::SSetBool(L, result);
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "CreateSoundInstance(Sound sound, SoundInstance soundinstance) not enough arguments!");
+			lb::lua::SError(L, "CreateSoundInstance(Sound sound, SoundInstance soundinstance) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::Play(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 1);
 			if (soundinstance != nullptr)
 			{
-				wi::audio::Play(&soundinstance->soundinstance);
+				lb::audio::Play(&soundinstance->soundinstance);
 			}
 			else
 			{
-				wi::lua::SError(L, "Play(SoundInstance soundinstance) argument is not a SoundInstance!");
+				lb::lua::SError(L, "Play(SoundInstance soundinstance) argument is not a SoundInstance!");
 			}
 		}
 		else
-			wi::lua::SError(L, "Play(SoundInstance soundinstance) not enough arguments!");
+			lb::lua::SError(L, "Play(SoundInstance soundinstance) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::Pause(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 1);
 			if (soundinstance != nullptr)
 			{
-				wi::audio::Pause(&soundinstance->soundinstance);
+				lb::audio::Pause(&soundinstance->soundinstance);
 			}
 			else
 			{
-				wi::lua::SError(L, "Pause(SoundInstance soundinstance) argument is not a SoundInstance!");
+				lb::lua::SError(L, "Pause(SoundInstance soundinstance) argument is not a SoundInstance!");
 			}
 		}
 		else
-			wi::lua::SError(L, "Pause(SoundInstance soundinstance) not enough arguments!");
+			lb::lua::SError(L, "Pause(SoundInstance soundinstance) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::Stop(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 1);
 			if (soundinstance != nullptr)
 			{
-				wi::audio::Stop(&soundinstance->soundinstance);
+				lb::audio::Stop(&soundinstance->soundinstance);
 			}
 			else
 			{
-				wi::lua::SError(L, "Stop(SoundInstance soundinstance) argument is not a SoundInstance!");
+				lb::lua::SError(L, "Stop(SoundInstance soundinstance) argument is not a SoundInstance!");
 			}
 		}
 		else
-			wi::lua::SError(L, "Stop(SoundInstance soundinstance) not enough arguments!");
+			lb::lua::SError(L, "Stop(SoundInstance soundinstance) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::GetVolume(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 1);
-			float volume = wi::audio::GetVolume(soundinstance == nullptr ? nullptr : &soundinstance->soundinstance);
-			wi::lua::SSetFloat(L, volume);
+			float volume = lb::audio::GetVolume(soundinstance == nullptr ? nullptr : &soundinstance->soundinstance);
+			lb::lua::SSetFloat(L, volume);
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetVolume(opt SoundInstance soundinstance) not enough arguments!");
+			lb::lua::SError(L, "GetVolume(opt SoundInstance soundinstance) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::SetVolume(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			float volume = wi::lua::SGetFloat(L, 1);
+			float volume = lb::lua::SGetFloat(L, 1);
 			SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 2);
-			wi::audio::SetVolume(volume, soundinstance == nullptr ? nullptr : &soundinstance->soundinstance);
+			lb::audio::SetVolume(volume, soundinstance == nullptr ? nullptr : &soundinstance->soundinstance);
 			return 0;
 		}
 		else
-			wi::lua::SError(L, "SetVolume(float volume, opt SoundInstance soundinstance) not enough arguments!");
+			lb::lua::SError(L, "SetVolume(float volume, opt SoundInstance soundinstance) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::ExitLoop(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 1);
 			if (soundinstance != nullptr)
 			{
-				wi::audio::ExitLoop(&soundinstance->soundinstance);
+				lb::audio::ExitLoop(&soundinstance->soundinstance);
 			}
 			else
 			{
-				wi::lua::SError(L, "ExitLoop(SoundInstance soundinstance) argument is not a SoundInstance!");
+				lb::lua::SError(L, "ExitLoop(SoundInstance soundinstance) argument is not a SoundInstance!");
 			}
 		}
 		else
-			wi::lua::SError(L, "ExitLoop(SoundInstance soundinstance) not enough arguments!");
+			lb::lua::SError(L, "ExitLoop(SoundInstance soundinstance) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::GetSubmixVolume(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::audio::SUBMIX_TYPE type = (wi::audio::SUBMIX_TYPE)wi::lua::SGetInt(L, 1);
-			float volume = wi::audio::GetSubmixVolume(type);
-			wi::lua::SSetFloat(L, volume);
+			lb::audio::SUBMIX_TYPE type = (lb::audio::SUBMIX_TYPE)lb::lua::SGetInt(L, 1);
+			float volume = lb::audio::GetSubmixVolume(type);
+			lb::lua::SSetFloat(L, volume);
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetSubmixVolume(int submixtype) not enough arguments!");
+			lb::lua::SError(L, "GetSubmixVolume(int submixtype) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::SetSubmixVolume(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			wi::audio::SUBMIX_TYPE type = (wi::audio::SUBMIX_TYPE)wi::lua::SGetInt(L, 1);
-			float volume = wi::lua::SGetFloat(L, 2);
-			wi::audio::SetSubmixVolume(type, volume);
+			lb::audio::SUBMIX_TYPE type = (lb::audio::SUBMIX_TYPE)lb::lua::SGetInt(L, 1);
+			float volume = lb::lua::SGetFloat(L, 2);
+			lb::audio::SetSubmixVolume(type, volume);
 			return 0;
 		}
 		else
-			wi::lua::SError(L, "SetSubmixVolume(int submixtype, float volume) not enough arguments!");
+			lb::lua::SError(L, "SetSubmixVolume(int submixtype, float volume) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::Update3D(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 1);
 			SoundInstance3D_BindLua* soundinstance3D = Luna<SoundInstance3D_BindLua>::lightcheck(L, 2);
 			if (soundinstance != nullptr && soundinstance3D != nullptr)
 			{
-				wi::audio::Update3D(&soundinstance->soundinstance, soundinstance3D->soundinstance3D);
+				lb::audio::Update3D(&soundinstance->soundinstance, soundinstance3D->soundinstance3D);
 			}
 			else
 			{
-				wi::lua::SError(L, "Update3D(SoundInstance soundinstance, SoundInstance3D instance3D) argument types mismatch!");
+				lb::lua::SError(L, "Update3D(SoundInstance soundinstance, SoundInstance3D instance3D) argument types mismatch!");
 			}
 		}
 		else
-			wi::lua::SError(L, "Update3D(SoundInstance soundinstance, SoundInstance3D instance3D) not enough arguments!");
+			lb::lua::SError(L, "Update3D(SoundInstance soundinstance, SoundInstance3D instance3D) not enough arguments!");
 		return 0;
 	}
 	int Audio_BindLua::SetReverb(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::audio::SetReverb((wi::audio::REVERB_PRESET)wi::lua::SGetInt(L, 1));
+			lb::audio::SetReverb((lb::audio::REVERB_PRESET)lb::lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetReverb(int reverbtype) not enough arguments!");
+			lb::lua::SError(L, "SetReverb(int reverbtype) not enough arguments!");
 		return 0;
 	}
 
@@ -252,9 +252,9 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Audio_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Audio_BindLua>::Register(lb::lua::GetLuaState());
 
-			wi::lua::RunText(R"(
+			lb::lua::RunText(R"(
 audio = Audio()
 
 SUBMIX_TYPE_SOUNDEFFECT = 0
@@ -313,16 +313,16 @@ REVERB_PRESET_PLATE = 29
 
 	Sound_BindLua::Sound_BindLua(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			soundResource = wi::resourcemanager::Load(wi::lua::SGetString(L, 1));
+			soundResource = lb::resourcemanager::Load(lb::lua::SGetString(L, 1));
 		}
 	}
 
 	int Sound_BindLua::IsValid(lua_State* L)
 	{
-		wi::lua::SSetBool(L, soundResource.IsValid() && soundResource.GetSound().IsValid());
+		lb::lua::SSetBool(L, soundResource.IsValid() && soundResource.GetSound().IsValid());
 		return 1;
 	}
 
@@ -332,7 +332,7 @@ REVERB_PRESET_PLATE = 29
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Sound_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Sound_BindLua>::Register(lb::lua::GetLuaState());
 		}
 	}
 
@@ -362,154 +362,154 @@ REVERB_PRESET_PLATE = 29
 
 	SoundInstance_BindLua::SoundInstance_BindLua(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Sound_BindLua* s = Luna<Sound_BindLua>::lightcheck(L, 1);
 			if (s == nullptr)
 			{
-				wi::lua::SError(L, "SoundInstance(Sound sound, opt float begin,length) : first argument is not a Sound!");
+				lb::lua::SError(L, "SoundInstance(Sound sound, opt float begin,length) : first argument is not a Sound!");
 				return;
 			}
 			if (argc > 1)
 			{
-				soundinstance.begin = wi::lua::SGetFloat(L, 2);
+				soundinstance.begin = lb::lua::SGetFloat(L, 2);
 				if (argc > 2)
 				{
-					soundinstance.length = wi::lua::SGetFloat(L, 3);
+					soundinstance.length = lb::lua::SGetFloat(L, 3);
 				}
 			}
 			if (!s->soundResource.IsValid())
 			{
-				wi::lua::SError(L, "SoundInstance(Sound sound, opt float begin,end) : Sound is not valid!");
+				lb::lua::SError(L, "SoundInstance(Sound sound, opt float begin,end) : Sound is not valid!");
 				return;
 			}
-			const wi::audio::Sound& sound = s->soundResource.GetSound();
+			const lb::audio::Sound& sound = s->soundResource.GetSound();
 			if (!sound.IsValid())
 			{
-				wi::lua::SError(L, "SoundInstance(Sound sound, opt float begin,end) : Sound is not valid!");
+				lb::lua::SError(L, "SoundInstance(Sound sound, opt float begin,end) : Sound is not valid!");
 				return;
 			}
-			wi::audio::CreateSoundInstance(&sound, &soundinstance);
+			lb::audio::CreateSoundInstance(&sound, &soundinstance);
 		}
 	}
 
 	int SoundInstance_BindLua::SetSubmixType(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::audio::SUBMIX_TYPE type = (wi::audio::SUBMIX_TYPE)wi::lua::SGetInt(L, 1);
+			lb::audio::SUBMIX_TYPE type = (lb::audio::SUBMIX_TYPE)lb::lua::SGetInt(L, 1);
 			soundinstance.type = type;
 		}
 		else
-			wi::lua::SError(L, "SetSubmixType(int submixtype) not enough arguments!");
+			lb::lua::SError(L, "SetSubmixType(int submixtype) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance_BindLua::SetBegin(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			soundinstance.begin = wi::lua::SGetFloat(L, 1);
+			soundinstance.begin = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetBegin(float seconds) not enough arguments!");
+			lb::lua::SError(L, "SetBegin(float seconds) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance_BindLua::SetLength(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			soundinstance.length = wi::lua::SGetFloat(L, 1);
+			soundinstance.length = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetLength(float seconds) not enough arguments!");
+			lb::lua::SError(L, "SetLength(float seconds) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance_BindLua::SetLoopBegin(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			soundinstance.loop_begin = wi::lua::SGetFloat(L, 1);
+			soundinstance.loop_begin = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetLoopBegin(float seconds) not enough arguments!");
+			lb::lua::SError(L, "SetLoopBegin(float seconds) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance_BindLua::SetLoopLength(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			soundinstance.loop_length = wi::lua::SGetFloat(L, 1);
+			soundinstance.loop_length = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetLoopLength(float seconds) not enough arguments!");
+			lb::lua::SError(L, "SetLoopLength(float seconds) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance_BindLua::SetEnableReverb(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			soundinstance.SetEnableReverb(wi::lua::SGetBool(L, 1));
+			soundinstance.SetEnableReverb(lb::lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetEnableReverb(bool value) not enough arguments!");
+			lb::lua::SError(L, "SetEnableReverb(bool value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance_BindLua::SetLooped(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			soundinstance.SetLooped(wi::lua::SGetBool(L, 1));
+			soundinstance.SetLooped(lb::lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetLooped(bool value) not enough arguments!");
+			lb::lua::SError(L, "SetLooped(bool value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance_BindLua::GetSubmixType(lua_State* L)
 	{
-		wi::lua::SSetInt(L, (int)soundinstance.type);
+		lb::lua::SSetInt(L, (int)soundinstance.type);
 		return 1;
 	}
 	int SoundInstance_BindLua::GetBegin(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, soundinstance.begin);
+		lb::lua::SSetFloat(L, soundinstance.begin);
 		return 1;
 	}
 	int SoundInstance_BindLua::GetLength(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, soundinstance.length);
+		lb::lua::SSetFloat(L, soundinstance.length);
 		return 1;
 	}
 	int SoundInstance_BindLua::GetLoopBegin(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, soundinstance.loop_begin);
+		lb::lua::SSetFloat(L, soundinstance.loop_begin);
 		return 1;
 	}
 	int SoundInstance_BindLua::GetLoopLength(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, soundinstance.loop_length);
+		lb::lua::SSetFloat(L, soundinstance.loop_length);
 		return 1;
 	}
 	int SoundInstance_BindLua::IsEnableReverb(lua_State* L)
 	{
-		wi::lua::SSetBool(L, soundinstance.IsEnableReverb());
+		lb::lua::SSetBool(L, soundinstance.IsEnableReverb());
 		return 1;
 	}
 	int SoundInstance_BindLua::IsLooped(lua_State* L)
 	{
-		wi::lua::SSetBool(L, soundinstance.IsLooped());
+		lb::lua::SSetBool(L, soundinstance.IsLooped());
 		return 1;
 	}
 	int SoundInstance_BindLua::IsValid(lua_State* L)
 	{
-		wi::lua::SSetBool(L, soundinstance.IsValid());
+		lb::lua::SSetBool(L, soundinstance.IsValid());
 		return 1;
 	}
 
@@ -519,7 +519,7 @@ REVERB_PRESET_PLATE = 29
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<SoundInstance_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<SoundInstance_BindLua>::Register(lb::lua::GetLuaState());
 		}
 	}
 
@@ -544,7 +544,7 @@ REVERB_PRESET_PLATE = 29
 
 	int SoundInstance3D_BindLua::SetListenerPos(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -554,12 +554,12 @@ REVERB_PRESET_PLATE = 29
 			}
 		}
 		else
-			wi::lua::SError(L, "SetListenerPos(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetListenerPos(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance3D_BindLua::SetListenerUp(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -569,12 +569,12 @@ REVERB_PRESET_PLATE = 29
 			}
 		}
 		else
-			wi::lua::SError(L, "SetListenerUp(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetListenerUp(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance3D_BindLua::SetListenerFront(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -584,12 +584,12 @@ REVERB_PRESET_PLATE = 29
 			}
 		}
 		else
-			wi::lua::SError(L, "SetListenerFront(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetListenerFront(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance3D_BindLua::SetListenerVelocity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -599,13 +599,13 @@ REVERB_PRESET_PLATE = 29
 			}
 		}
 		else
-			wi::lua::SError(L, "SetListenerVelocity(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetListenerVelocity(Vector value) not enough arguments!");
 		return 0;
 	}
 
 	int SoundInstance3D_BindLua::SetEmitterPos(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -615,12 +615,12 @@ REVERB_PRESET_PLATE = 29
 			}
 		}
 		else
-			wi::lua::SError(L, "SetEmitterPos(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetEmitterPos(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance3D_BindLua::SetEmitterUp(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -630,12 +630,12 @@ REVERB_PRESET_PLATE = 29
 			}
 		}
 		else
-			wi::lua::SError(L, "SetEmitterUp(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetEmitterUp(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance3D_BindLua::SetEmitterFront(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -645,12 +645,12 @@ REVERB_PRESET_PLATE = 29
 			}
 		}
 		else
-			wi::lua::SError(L, "SetEmitterFront(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetEmitterFront(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance3D_BindLua::SetEmitterVelocity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -660,18 +660,18 @@ REVERB_PRESET_PLATE = 29
 			}
 		}
 		else
-			wi::lua::SError(L, "SetEmitterVelocity(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetEmitterVelocity(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SoundInstance3D_BindLua::SetEmitterRadius(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			soundinstance3D.emitterRadius = wi::lua::SGetFloat(L, 1);
+			soundinstance3D.emitterRadius = lb::lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetEmitterVelocity(Vector value) not enough arguments!");
+			lb::lua::SError(L, "SetEmitterVelocity(Vector value) not enough arguments!");
 		return 0;
 	}
 
@@ -681,7 +681,7 @@ REVERB_PRESET_PLATE = 29
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<SoundInstance3D_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<SoundInstance3D_BindLua>::Register(lb::lua::GetLuaState());
 		}
 	}
 

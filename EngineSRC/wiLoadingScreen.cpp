@@ -4,14 +4,14 @@
 
 #include <thread>
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi
+namespace lb
 {
 
 	bool LoadingScreen::isActive() const
 	{
-		return wi::jobsystem::IsBusy(ctx);
+		return lb::jobsystem::IsBusy(ctx);
 	}
 
 	bool LoadingScreen::isFinished() const
@@ -28,7 +28,7 @@ namespace wi
 		return (int)std::round(percent * 100);
 	}
 
-	void LoadingScreen::addLoadingFunction(std::function<void(wi::jobsystem::JobArgs)> loadingFunction)
+	void LoadingScreen::addLoadingFunction(std::function<void(lb::jobsystem::JobArgs)> loadingFunction)
 	{
 		if (loadingFunction != nullptr)
 		{
@@ -36,9 +36,9 @@ namespace wi
 		}
 	}
 
-	void LoadingScreen::addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds, wi::Color fadeColor)
+	void LoadingScreen::addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds, lb::Color fadeColor)
 	{
-		addLoadingFunction([=](wi::jobsystem::JobArgs args) {
+		addLoadingFunction([=](lb::jobsystem::JobArgs args) {
 			component->Load();
 			});
 		onFinished([=] {
@@ -57,11 +57,11 @@ namespace wi
 		launchedTasks = (uint32_t)tasks.size();
 		for (auto& x : tasks)
 		{
-			wi::jobsystem::Execute(ctx, x);
+			lb::jobsystem::Execute(ctx, x);
 		}
 		std::thread([this]() {
-			wi::jobsystem::Wait(ctx);
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t) {
+			lb::jobsystem::Wait(ctx);
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t) {
 				if (finish != nullptr)
 					finish();
 				tasks.clear();
@@ -73,11 +73,11 @@ namespace wi
 		RenderPath2D::Start();
 	}
 
-	void LoadingScreen::Compose(wi::graphics::CommandList cmd) const
+	void LoadingScreen::Compose(lb::graphics::CommandList cmd) const
 	{
 		if (backgroundTexture.IsValid())
 		{
-			wi::image::Params fx;
+			lb::image::Params fx;
 			const Texture& tex = backgroundTexture.GetTexture();
 			const TextureDesc& desc = tex.GetDesc();
 
@@ -87,7 +87,7 @@ namespace wi
 			switch (background_mode)
 			{
 			default:
-			case wi::LoadingScreen::BackgroundMode::Fill:
+			case lb::LoadingScreen::BackgroundMode::Fill:
 				if (canvas_aspect > image_aspect)
 				{
 					// display aspect is wider than image:
@@ -103,7 +103,7 @@ namespace wi
 				fx.pos = XMFLOAT3(GetLogicalWidth() * 0.5f, GetLogicalHeight() * 0.5f, 0);
 				fx.pivot = XMFLOAT2(0.5f, 0.5f);
 				break;
-			case wi::LoadingScreen::BackgroundMode::Fit:
+			case lb::LoadingScreen::BackgroundMode::Fit:
 				if (canvas_aspect > image_aspect)
 				{
 					// display aspect is wider than image:
@@ -119,18 +119,18 @@ namespace wi
 				fx.pos = XMFLOAT3(GetLogicalWidth() * 0.5f, GetLogicalHeight() * 0.5f, 0);
 				fx.pivot = XMFLOAT2(0.5f, 0.5f);
 				break;
-			case wi::LoadingScreen::BackgroundMode::Stretch:
+			case lb::LoadingScreen::BackgroundMode::Stretch:
 				fx.enableFullScreen();
 				break;
 			}
 
-			fx.blendFlag = wi::enums::BLENDMODE_ALPHA;
+			fx.blendFlag = lb::enums::BLENDMODE_ALPHA;
 			if (colorspace != ColorSpace::SRGB)
 			{
 				fx.enableLinearOutputMapping(hdr_scaling);
 			}
 
-			wi::image::Draw(&tex, fx, cmd);
+			lb::image::Draw(&tex, fx, cmd);
 		}
 
 		RenderPath2D::Compose(cmd);

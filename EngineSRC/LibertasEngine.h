@@ -89,92 +89,92 @@
 #endif // PLATFORM_PS5
 
 
-// After version 0.59.11, namespaces were refactored into nested namespaces under the wi:: root namespace.
+// After version 0.59.11, namespaces were refactored into nested namespaces under the lb:: root namespace.
 // To allow compatibility with older user code, the backwards compatibility definitions are included below.
 // If you need backwards compatibility features, define the following before including this file:
 //#define LIBERTASENGINE_BACKWARDS_COMPATIBILITY_0_59
 #ifdef LIBERTASENGINE_BACKWARDS_COMPATIBILITY_0_59
 
-using namespace wi;
-using namespace wi::enums;
+using namespace lb;
+using namespace lb::enums;
 
-namespace wiGraphics = wi::graphics;
-namespace wiShaderCompiler = wi::shadercompiler;
-namespace wiFFTGenerator = wi::fftgenerator;
-namespace wiFont = wi::font;
-namespace wiImage = wi::image;
-namespace wiGPUSortLib = wi::gpusortlib;
-namespace wiRenderer = wi::renderer;
-namespace wiTextureHelper = wi::texturehelper;
-namespace wiHelper = wi::helper;
-namespace wiMath = wi::math;
-namespace wiRandom = wi::random;
-namespace wiRectPacker = wi::rectpacker;
-namespace wiResourceManager = wi::resourcemanager;
-namespace wiStartupArguments = wi::arguments;
-namespace wiInput = wi::input;
-namespace wiXInput = wi::input::xinput;
-namespace wiRawInput = wi::input::rawinput;
-namespace wiSDLInput = wi::input::sdlinput;
-namespace wiAudio = wi::audio;
-namespace wiNetwork = wi::network;
-namespace wiPhysicsEngine = wi::physics;
-namespace wiLua = wi::lua;
-namespace wiECS = wi::ecs;
-namespace wiEvent = wi::eventhandler;
-namespace wiInitializer = wi::initializer;
-namespace wiJobSystem = wi::jobsystem;
-namespace wiPlatform = wi::platform;
-namespace wiScene = wi::scene;
-namespace wiBackLog = wi::backlog;
-namespace wiProfiler = wi::profiler;
-namespace wiVersion = wi::version;
+namespace lbGraphics = lb::graphics;
+namespace lbShaderCompiler = lb::shadercompiler;
+namespace lbFFTGenerator = lb::fftgenerator;
+namespace lbFont = lb::font;
+namespace lbImage = lb::image;
+namespace lbGPUSortLib = lb::gpusortlib;
+namespace lbRenderer = lb::renderer;
+namespace lbTextureHelper = lb::texturehelper;
+namespace lbHelper = lb::helper;
+namespace lbMath = lb::math;
+namespace lbRandom = lb::random;
+namespace lbRectPacker = lb::rectpacker;
+namespace lbResourceManager = lb::resourcemanager;
+namespace lbStartupArguments = lb::arguments;
+namespace lbInput = lb::input;
+namespace lbXInput = lb::input::xinput;
+namespace lbRawInput = lb::input::rawinput;
+namespace lbSDLInput = lb::input::sdlinput;
+namespace lbAudio = lb::audio;
+namespace lbNetwork = lb::network;
+namespace lbPhysicsEngine = lb::physics;
+namespace lbLua = lb::lua;
+namespace lbECS = lb::ecs;
+namespace lbEvent = lb::eventhandler;
+namespace lbInitializer = lb::initializer;
+namespace lbJobSystem = lb::jobsystem;
+namespace lbPlatform = lb::platform;
+namespace lbScene = lb::scene;
+namespace lbBackLog = lb::backlog;
+namespace lbProfiler = lb::profiler;
+namespace lbVersion = lb::version;
 
-using MainComponent = wi::Application;
-using wiFontParams = wi::font::Params;
-using wiImageParams = wi::image::Params;
-using wiGPUBVH = wi::GPUBVH;
-using wiEmittedParticle = wi::EmittedParticleSystem;
-using wiHairParticle = wi::HairParticleSystem;
-using wiOcean = wi::Ocean;
-using wiSprite = wi::Sprite;
-using wiSpriteFont = wi::SpriteFont;
-using wiGUI = wi::gui::GUI;
-using wiEventArgs = wi::gui::EventArgs;
-using wiWidget = wi::gui::Widget;
-using wiButton = wi::gui::Button;
-using wiLabel = wi::gui::Label;
-using wiTextInputField = wi::gui::TextInputField;
-using wiSlider = wi::gui::Slider;
-using wiCheckBox = wi::gui::CheckBox;
-using wiComboBox = wi::gui::ComboBox;
-using wiWindow = wi::gui::Window;
-using wiColorPicker = wi::gui::ColorPicker;
-using wiTreeList = wi::gui::TreeList;
-using wiArchive = wi::Archive;
-using wiColor = wi::Color;
-using wiFadeManager = wi::FadeManager;
-using wiResource = wi::Resource;
-using wiSpinLock = wi::SpinLock;
-using wiTimer = wi::Timer;
-using wiCanvas = wi::Canvas;
-using AABB = wi::primitive::AABB;
-using SPHERE = wi::primitive::Sphere;
-using CAPSULE = wi::primitive::Capsule;
-using RAY = wi::primitive::Ray;
-using Frustum = wi::primitive::Frustum;
-using Hitbox2D = wi::primitive::Hitbox2D;
+using MainComponent = lb::Application;
+using wiFontParams = lb::font::Params;
+using wiImageParams = lb::image::Params;
+using wiGPUBVH = lb::GPUBVH;
+using wiEmittedParticle = lb::EmittedParticleSystem;
+using wiHairParticle = lb::HairParticleSystem;
+using wiOcean = lb::Ocean;
+using wiSprite = lb::Sprite;
+using wiSpriteFont = lb::SpriteFont;
+using wiGUI = lb::gui::GUI;
+using wiEventArgs = lb::gui::EventArgs;
+using wiWidget = lb::gui::Widget;
+using wiButton = lb::gui::Button;
+using wiLabel = lb::gui::Label;
+using wiTextInputField = lb::gui::TextInputField;
+using wiSlider = lb::gui::Slider;
+using wiCheckBox = lb::gui::CheckBox;
+using wiComboBox = lb::gui::ComboBox;
+using wiWindow = lb::gui::Window;
+using wiColorPicker = lb::gui::ColorPicker;
+using wiTreeList = lb::gui::TreeList;
+using wiArchive = lb::Archive;
+using wiColor = lb::Color;
+using wiFadeManager = lb::FadeManager;
+using wiResource = lb::Resource;
+using wiSpinLock = lb::SpinLock;
+using wiTimer = lb::Timer;
+using wiCanvas = lb::Canvas;
+using AABB = lb::primitive::AABB;
+using SPHERE = lb::primitive::Sphere;
+using CAPSULE = lb::primitive::Capsule;
+using RAY = lb::primitive::Ray;
+using Frustum = lb::primitive::Frustum;
+using Hitbox2D = lb::primitive::Hitbox2D;
 
-using wi::image::STENCILMODE;
-using wi::image::STENCILREFMODE;
-using wi::image::SAMPLEMODE;
-using wi::image::QUALITY;
-using wi::font::Alignment;
+using lb::image::STENCILMODE;
+using lb::image::STENCILREFMODE;
+using lb::image::SAMPLEMODE;
+using lb::image::QUALITY;
+using lb::font::Alignment;
 
-static constexpr int SYSTEM_EVENT_THREAD_SAFE_POINT = wi::eventhandler::EVENT_THREAD_SAFE_POINT;
-static constexpr int SYSTEM_EVENT_RELOAD_SHADERS = wi::eventhandler::EVENT_RELOAD_SHADERS;
-static constexpr int SYSTEM_EVENT_SET_VSYNC = wi::eventhandler::EVENT_SET_VSYNC;
-static constexpr XMFLOAT4X4 IDENTITYMATRIX = wi::math::IDENTITY_MATRIX;
+static constexpr int SYSTEM_EVENT_THREAD_SAFE_POINT = lb::eventhandler::EVENT_THREAD_SAFE_POINT;
+static constexpr int SYSTEM_EVENT_RELOAD_SHADERS = lb::eventhandler::EVENT_RELOAD_SHADERS;
+static constexpr int SYSTEM_EVENT_SET_VSYNC = lb::eventhandler::EVENT_SET_VSYNC;
+static constexpr XMFLOAT4X4 IDENTITYMATRIX = lb::math::IDENTITY_MATRIX;
 
 #endif // LIBERTASENGINE_BACKWARDS_COMPATIBILITY_0_59
 

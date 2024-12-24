@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include "DecalWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 
 void DecalWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_DECAL " Decal", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_DECAL " Decal", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(300, 200));
 
 	closeButton.SetTooltip("Delete DecalComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -42,8 +42,8 @@ void DecalWindow::Create(EditorComponent* _editor)
 	onlyalphaCheckBox.Create("Alpha only basecolor: ");
 	onlyalphaCheckBox.SetSize(XMFLOAT2(hei, hei));
 	onlyalphaCheckBox.SetTooltip("You can enable this to only use alpha channel from basecolor map. Useful for blending normalmap-only decals.");
-	onlyalphaCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	onlyalphaCheckBox.OnClick([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			DecalComponent* decal = scene.decals.GetComponent(x.entity);
@@ -57,8 +57,8 @@ void DecalWindow::Create(EditorComponent* _editor)
 	slopeBlendPowerSlider.Create(0, 8, 0, 1000, "Slope Blend: ");
 	slopeBlendPowerSlider.SetSize(XMFLOAT2(100, hei));
 	slopeBlendPowerSlider.SetTooltip("Set a power factor for blending on surface slopes. 0 = no slope blend, increasing = more slope blend");
-	slopeBlendPowerSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	slopeBlendPowerSlider.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			DecalComponent* decal = scene.decals.GetComponent(x.entity);
@@ -75,7 +75,7 @@ void DecalWindow::Create(EditorComponent* _editor)
 	infoLabel.SetText("Set decal properties in the Material component. Decals support the following material properties:\n - Base color\n - Base color texture\n - Emissive strength\n - Normalmap texture\n - Normalmap strength\n - Surfacemap texture\n - Texture tiling (TexMulAdd)");
 	infoLabel.SetSize(XMFLOAT2(300, 100));
 	infoLabel.SetPos(XMFLOAT2(10, y));
-	infoLabel.SetColor(wi::Color::Transparent());
+	infoLabel.SetColor(lb::Color::Transparent());
 	AddWidget(&infoLabel);
 	y += infoLabel.GetScale().y - step + 5;
 
@@ -106,13 +106,13 @@ void DecalWindow::SetEntity(Entity entity)
 
 void DecalWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
 	float jump = 20;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = 100;
@@ -122,7 +122,7 @@ void DecalWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_right = padding;
@@ -130,7 +130,7 @@ void DecalWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

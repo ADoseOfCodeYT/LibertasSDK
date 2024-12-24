@@ -2,7 +2,7 @@
 #include "wiLua.h"
 #include "wiLuna.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	class Network_BindLua

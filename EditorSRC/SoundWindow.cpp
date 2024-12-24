@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "SoundWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::graphics;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 namespace SoundWindow_Internal
 {
@@ -12,15 +12,15 @@ namespace SoundWindow_Internal
 
 	void LoadShaders()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		PipelineStateDesc desc;
-		desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-		desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-		desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-		desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHDISABLED);
-		desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_WIRE_SMOOTH);
-		desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+		desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+		desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+		desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+		desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEPTHDISABLED);
+		desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_WIRE_SMOOTH);
+		desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 		desc.pt = PrimitiveTopology::LINESTRIP;
 		bool success = device->CreatePipelineState(&desc, &pso_linestrip);
 
@@ -34,13 +34,13 @@ using namespace SoundWindow_Internal;
 void SoundWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_SOUND " Sound", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_SOUND " Sound", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(440, 400));
 
 	closeButton.SetTooltip("Delete SoundComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -62,27 +62,27 @@ void SoundWindow::Create(EditorComponent* _editor)
 	openButton.SetTooltip("Open sound file.\nSupported extensions: WAV, OGG");
 	openButton.SetPos(XMFLOAT2(x, y));
 	openButton.SetSize(XMFLOAT2(wid, hei));
-	openButton.OnClick([&](wi::gui::EventArgs args) {
+	openButton.OnClick([&](lb::gui::EventArgs args) {
 		SoundComponent* sound = editor->GetCurrentScene().sounds.GetComponent(entity);
 		if (sound != nullptr)
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			lb::helper::FileDialogParams params;
+			params.type = lb::helper::FileDialogParams::OPEN;
 			params.description = "Sound (.wav, .ogg)";
-			params.extensions = wi::resourcemanager::GetSupportedSoundExtensions();
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					wi::scene::Scene& scene = editor->GetCurrentScene();
+			params.extensions = lb::resourcemanager::GetSupportedSoundExtensions();
+			lb::helper::FileDialog(params, [=](std::string fileName) {
+				lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					lb::scene::Scene& scene = editor->GetCurrentScene();
 					for (auto& x : editor->translator.selected)
 					{
 						SoundComponent* sound = scene.sounds.GetComponent(x.entity);
 						if (sound == nullptr)
 							continue;
 						sound->filename = fileName;
-						sound->soundResource = wi::resourcemanager::Load(fileName);
-						wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+						sound->soundResource = lb::resourcemanager::Load(fileName);
+						lb::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 					}
-					filenameLabel.SetText(wi::helper::GetFileNameFromPath(sound->filename));
+					filenameLabel.SetText(lb::helper::GetFileNameFromPath(sound->filename));
 					});
 				});
 		}
@@ -98,8 +98,8 @@ void SoundWindow::Create(EditorComponent* _editor)
 	playstopButton.SetTooltip("Play/Stop selected sound instance.");
 	playstopButton.SetPos(XMFLOAT2(x, y += step));
 	playstopButton.SetSize(XMFLOAT2(wid, hei));
-	playstopButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	playstopButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
@@ -125,8 +125,8 @@ void SoundWindow::Create(EditorComponent* _editor)
 	loopedCheckbox.SetPos(XMFLOAT2(x, y += step));
 	loopedCheckbox.SetSize(XMFLOAT2(hei, hei));
 	loopedCheckbox.SetCheckText(ICON_LOOP);
-	loopedCheckbox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	loopedCheckbox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
@@ -142,15 +142,15 @@ void SoundWindow::Create(EditorComponent* _editor)
 	reverbCheckbox.SetTooltip("Enable/disable reverb.");
 	reverbCheckbox.SetPos(XMFLOAT2(x, y += step));
 	reverbCheckbox.SetSize(XMFLOAT2(hei, hei));
-	reverbCheckbox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	reverbCheckbox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
 			if (sound == nullptr)
 				continue;
 			sound->soundinstance.SetEnableReverb(args.bValue);
-			wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+			lb::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 		}
 	});
 	AddWidget(&reverbCheckbox);
@@ -160,8 +160,8 @@ void SoundWindow::Create(EditorComponent* _editor)
 	disable3dCheckbox.SetTooltip("Sounds in the scene are 3D spatial by default. Select this to disable 3D effect.");
 	disable3dCheckbox.SetPos(XMFLOAT2(x, y += step));
 	disable3dCheckbox.SetSize(XMFLOAT2(hei, hei));
-	disable3dCheckbox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	disable3dCheckbox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
@@ -177,8 +177,8 @@ void SoundWindow::Create(EditorComponent* _editor)
 	volumeSlider.SetTooltip("Set volume level for the selected sound instance.");
 	volumeSlider.SetPos(XMFLOAT2(x, y += step));
 	volumeSlider.SetSize(XMFLOAT2(wid, hei));
-	volumeSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	volumeSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
@@ -193,15 +193,15 @@ void SoundWindow::Create(EditorComponent* _editor)
 	submixComboBox.Create("Submix: ");
 	submixComboBox.SetPos(XMFLOAT2(x, y += step));
 	submixComboBox.SetSize(XMFLOAT2(wid, hei));
-	submixComboBox.OnSelect([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	submixComboBox.OnSelect([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
 			if (sound == nullptr)
 				continue;
-			sound->soundinstance.type = (wi::audio::SUBMIX_TYPE)args.iValue;
-			wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+			sound->soundinstance.type = (lb::audio::SUBMIX_TYPE)args.iValue;
+			lb::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 		}
 	});
 	submixComboBox.AddItem("SOUNDEFFECT");
@@ -215,8 +215,8 @@ void SoundWindow::Create(EditorComponent* _editor)
 	reverbComboBox.Create("Reverb: ");
 	reverbComboBox.SetPos(XMFLOAT2(x, y += step));
 	reverbComboBox.SetSize(XMFLOAT2(wid, hei));
-	reverbComboBox.OnSelect([&](wi::gui::EventArgs args) {
-		wi::audio::SetReverb((wi::audio::REVERB_PRESET)args.iValue);
+	reverbComboBox.OnSelect([&](lb::gui::EventArgs args) {
+		lb::audio::SetReverb((lb::audio::REVERB_PRESET)args.iValue);
 	});
 	reverbComboBox.AddItem("DEFAULT");
 	reverbComboBox.AddItem("GENERIC");
@@ -259,15 +259,15 @@ void SoundWindow::Create(EditorComponent* _editor)
 	beginInput.SetDescription("Begin: ");
 	beginInput.SetTooltip("Beginning of the playback in seconds, relative to the Sound it will be created from (0 = from beginning).");
 	beginInput.SetSize(XMFLOAT2(wid, hei));
-	beginInput.OnInputAccepted([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	beginInput.OnInputAccepted([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
 			if (sound == nullptr)
 				continue;
 			sound->soundinstance.begin = args.fValue;
-			wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+			lb::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 		}
 	});
 	AddWidget(&beginInput);
@@ -276,15 +276,15 @@ void SoundWindow::Create(EditorComponent* _editor)
 	lengthInput.SetDescription("Length: ");
 	lengthInput.SetTooltip("Length in seconds (0 = until end)");
 	lengthInput.SetSize(XMFLOAT2(wid, hei));
-	lengthInput.OnInputAccepted([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	lengthInput.OnInputAccepted([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
 			if (sound == nullptr)
 				continue;
 			sound->soundinstance.length = args.fValue;
-			wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+			lb::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 		}
 	});
 	AddWidget(&lengthInput);
@@ -293,15 +293,15 @@ void SoundWindow::Create(EditorComponent* _editor)
 	loopBeginInput.SetDescription("Loop Begin: ");
 	loopBeginInput.SetTooltip("Loop region begin in seconds, relative to the instance begin time (0 = from beginning)");
 	loopBeginInput.SetSize(XMFLOAT2(wid, hei));
-	loopBeginInput.OnInputAccepted([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	loopBeginInput.OnInputAccepted([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
 			if (sound == nullptr)
 				continue;
 			sound->soundinstance.loop_begin = args.fValue;
-			wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+			lb::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 		}
 	});
 	AddWidget(&loopBeginInput);
@@ -310,15 +310,15 @@ void SoundWindow::Create(EditorComponent* _editor)
 	loopLengthInput.SetDescription("Loop Length: ");
 	loopLengthInput.SetTooltip("Loop region length in seconds (0 = until the end)");
 	loopLengthInput.SetSize(XMFLOAT2(wid, hei));
-	loopLengthInput.OnInputAccepted([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	loopLengthInput.OnInputAccepted([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoundComponent* sound = scene.sounds.GetComponent(x.entity);
 			if (sound == nullptr)
 				continue;
 			sound->soundinstance.loop_length = args.fValue;
-			wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+			lb::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 		}
 	});
 	AddWidget(&loopLengthInput);
@@ -329,16 +329,16 @@ void SoundWindow::Create(EditorComponent* _editor)
 	SetEntity(INVALID_ENTITY);
 }
 
-void WaveGraph::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+void WaveGraph::Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const
 {
-	GraphicsDevice* device = wi::graphics::GetDevice();
+	GraphicsDevice* device = lb::graphics::GetDevice();
 	device->EventBegin("Sound Wave", cmd);
 
 	static bool shaders_loaded = false;
 	if (!shaders_loaded)
 	{
 		shaders_loaded = true;
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { SoundWindow_Internal::LoadShaders(); });
+		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { SoundWindow_Internal::LoadShaders(); });
 		SoundWindow_Internal::LoadShaders();
 	}
 
@@ -367,11 +367,11 @@ void WaveGraph::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) 
 	else
 	{
 		// Vertices for [-1, 1] second range of current sound sample:
-		wi::audio::SampleInfo info = wi::audio::GetSampleInfo(&sound->soundResource.GetSound());
+		lb::audio::SampleInfo info = lb::audio::GetSampleInfo(&sound->soundResource.GetSound());
 		const uint32_t step = uint32_t(info.sample_rate * 2) / vertexCount;
 		const uint32_t instance_sample_offset = uint32_t(sound->soundinstance.begin * info.sample_rate);
 		const uint32_t instance_sample_count = uint32_t(sound->soundinstance.length > 0 ? uint32_t(sound->soundinstance.length * info.sample_rate) : uint32_t(info.sample_count));
-		uint64_t current_instance_sample = wi::audio::GetTotalSamplesPlayed(&sound->soundinstance);
+		uint64_t current_instance_sample = lb::audio::GetTotalSamplesPlayed(&sound->soundinstance);
 		if (sound->IsLooped())
 		{
 			float total_time = float(current_instance_sample) / float(info.sample_rate);
@@ -478,7 +478,7 @@ void SoundWindow::SetEntity(Entity entity)
 
 	if (sound != nullptr && sound->soundResource.IsValid())
 	{
-		filenameLabel.SetText(wi::helper::GetFileNameFromPath(sound->filename));
+		filenameLabel.SetText(lb::helper::GetFileNameFromPath(sound->filename));
 		playstopButton.SetEnabled(true);
 		loopedCheckbox.SetEnabled(true);
 		loopedCheckbox.SetCheck(sound->IsLooped());
@@ -521,13 +521,13 @@ void SoundWindow::SetEntity(Entity entity)
 
 void SoundWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
 	float jump = 20;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = 100;
@@ -537,7 +537,7 @@ void SoundWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_right = 40;
@@ -545,7 +545,7 @@ void SoundWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

@@ -3,7 +3,7 @@
 #include "wiLuna.h"
 #include "wiInput.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	class Input_BindLua
@@ -40,13 +40,13 @@ namespace wi::lua
 	class Touch_BindLua
 	{
 	public:
-		wi::input::Touch touch;
+		lb::input::Touch touch;
 		inline static constexpr char className[] = "Touch";
 		static Luna<Touch_BindLua>::FunctionType methods[];
 		static Luna<Touch_BindLua>::PropertyType properties[];
 
 		Touch_BindLua(lua_State* L) {}
-		Touch_BindLua(const wi::input::Touch& touch) :touch(touch) {}
+		Touch_BindLua(const lb::input::Touch& touch) :touch(touch) {}
 
 		int GetState(lua_State* L);
 		int GetPos(lua_State* L);
@@ -57,13 +57,13 @@ namespace wi::lua
 	class ControllerFeedback_BindLua
 	{
 	public:
-		wi::input::ControllerFeedback feedback;
+		lb::input::ControllerFeedback feedback;
 		inline static constexpr char className[] = "ControllerFeedback";
 		static Luna<ControllerFeedback_BindLua>::FunctionType methods[];
 		static Luna<ControllerFeedback_BindLua>::PropertyType properties[];
 
 		ControllerFeedback_BindLua(lua_State* L) {}
-		ControllerFeedback_BindLua(const wi::input::ControllerFeedback& feedback) :feedback(feedback) {}
+		ControllerFeedback_BindLua(const lb::input::ControllerFeedback& feedback) :feedback(feedback) {}
 
 		int SetVibrationLeft(lua_State* L);
 		int SetVibrationRight(lua_State* L);

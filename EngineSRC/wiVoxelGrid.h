@@ -7,7 +7,7 @@
 #include "wiArchive.h"
 #include "wiECS.h"
 
-namespace wi
+namespace lb
 {
 	struct VoxelGrid
 	{
@@ -20,7 +20,7 @@ namespace wi
 		XMUINT3 resolution = XMUINT3(0, 0, 0);
 		XMUINT3 resolution_div4 = XMUINT3(0, 0, 0);
 		XMFLOAT3 resolution_rcp = XMFLOAT3(0, 0, 0);
-		wi::vector<uint64_t> voxels; // 1 array element stores 4 * 4 * 4 = 64 voxels
+		lb::vector<uint64_t> voxels; // 1 array element stores 4 * 4 * 4 = 64 voxels
 
 		XMFLOAT3 center = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 voxelSize = XMFLOAT3(0.25f, 0.25f, 0.25f);
@@ -32,9 +32,9 @@ namespace wi
 		void init(uint32_t dimX, uint32_t dimY, uint32_t dimZ);
 		void cleardata();
 		void inject_triangle(XMVECTOR A, XMVECTOR B, XMVECTOR C, bool subtract = false);
-		void inject_aabb(const wi::primitive::AABB& aabb, bool subtract = false);
-		void inject_sphere(const wi::primitive::Sphere& sphere, bool subtract = false);
-		void inject_capsule(const wi::primitive::Capsule& capsule, bool subtract = false);
+		void inject_aabb(const lb::primitive::AABB& aabb, bool subtract = false);
+		void inject_sphere(const lb::primitive::Sphere& sphere, bool subtract = false);
+		void inject_capsule(const lb::primitive::Capsule& capsule, bool subtract = false);
 		XMUINT3 world_to_coord(const XMFLOAT3& worldpos) const;
 		XMINT3 world_to_coord_signed(const XMFLOAT3& worldpos) const;
 		XMFLOAT3 coord_to_world(const XMUINT3& coord) const;
@@ -50,19 +50,19 @@ namespace wi
 		size_t get_memory_size() const;
 		void set_voxelsize(float size);
 		void set_voxelsize(const XMFLOAT3& size);
-		wi::primitive::AABB get_aabb() const;
-		void from_aabb(const wi::primitive::AABB& aabb);
+		lb::primitive::AABB get_aabb() const;
+		void from_aabb(const lb::primitive::AABB& aabb);
 		bool is_visible(const XMUINT3& observer, const XMUINT3& subject) const;
 		bool is_visible(const XMFLOAT3& observer, const XMFLOAT3& subject) const;
-		bool is_visible(const XMFLOAT3& observer, const wi::primitive::AABB& subject) const;
+		bool is_visible(const XMFLOAT3& observer, const lb::primitive::AABB& subject) const;
 		void add(const VoxelGrid& other);
 		void subtract(const VoxelGrid& other);
 		void flood_fill();
-		void debugdraw(const XMFLOAT4X4& ViewProjection, wi::graphics::CommandList cmd) const;
+		void debugdraw(const XMFLOAT4X4& ViewProjection, lb::graphics::CommandList cmd) const;
 
 		inline bool IsValid() const { return !voxels.empty(); }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 
 		inline static XMVECTOR XM_CALLCONV world_to_uvw(XMVECTOR P, XMVECTOR center, XMVECTOR resolution_rcp, XMVECTOR voxelSize_rcp)
 		{
@@ -82,16 +82,16 @@ namespace wi
 
 		// Create a polygon mesh from the voxel grid:
 		void create_mesh(
-			wi::vector<uint32_t>& indices,
-			wi::vector<XMFLOAT3>& vertices,
+			lb::vector<uint32_t>& indices,
+			lb::vector<XMFLOAT3>& vertices,
 			bool simplify
 		);
 
 //#define DEBUG_VOXEL_OCCLUSION
 #ifdef DEBUG_VOXEL_OCCLUSION
-		mutable wi::vector<XMUINT3> debug_subject_coords;
-		mutable wi::vector<XMUINT3> debug_visible_coords;
-		mutable wi::vector<XMUINT3> debug_occluded_coords;
+		mutable lb::vector<XMUINT3> debug_subject_coords;
+		mutable lb::vector<XMUINT3> debug_visible_coords;
+		mutable lb::vector<XMUINT3> debug_occluded_coords;
 #endif // DEBUG_VOXEL_OCCLUSION
 	};
 

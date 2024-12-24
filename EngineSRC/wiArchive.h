@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace wi
+namespace lb
 {
 	// This is a data container used for serialization purposes.
 	//	It can be used to READ or WRITE data, but not both at the same time.
@@ -19,7 +19,7 @@ namespace wi
 		uint64_t version = 0; // the version number is used for maintaining backwards compatibility with earlier archive versions
 		bool readMode = false; // archive can be either read or write mode, but not both
 		size_t pos = 0; // position of the next memory operation, relative to the data's beginning
-		wi::vector<uint8_t> DATA; // data suitable for read/write operations
+		lb::vector<uint8_t> DATA; // data suitable for read/write operations
 		const uint8_t* data_ptr = nullptr; // this can either be a memory mapped pointer (read only), or the DATA's pointer
 		size_t data_ptr_size = 0;
 
@@ -47,7 +47,7 @@ namespace wi
 		Archive& operator=(const Archive&) = default;
 		Archive& operator=(Archive&&) = default;
 
-		void WriteData(wi::vector<uint8_t>& dest) const { dest.resize(pos); std::memcpy(dest.data(), data_ptr, pos); }
+		void WriteData(lb::vector<uint8_t>& dest) const { dest.resize(pos); std::memcpy(dest.data(), data_ptr, pos); }
 		const uint8_t* GetData() const { return data_ptr; }
 		const size_t GetSize() const { return data_ptr_size; }
 		size_t GetPos() const { return pos; }
@@ -74,13 +74,13 @@ namespace wi
 		const std::string& GetSourceFileName() const;
 
 		// If Archive contains thumbnail image data, then creates a Texture from it:
-		wi::graphics::Texture CreateThumbnailTexture() const;
+		lb::graphics::Texture CreateThumbnailTexture() const;
 
 		// Set a Texture as the thumbnail. This resets the archive, so you should usually do this before writing data:
-		void SetThumbnailAndResetPos(const wi::graphics::Texture& texture);
+		void SetThumbnailAndResetPos(const lb::graphics::Texture& texture);
 
 		// Open just the tumbnail data from an archive, and return it as a Texture:
-		static wi::graphics::Texture PeekThumbnail(const std::string& filename);
+		static lb::graphics::Texture PeekThumbnail(const std::string& filename);
 
 		// Appends the current archive write offset as uint64_t to the archive
 		//	Returns the previous write offset of the archive, which can be used by PatchUnknownJumpPosition()
@@ -230,7 +230,7 @@ namespace wi
 			_write(data);
 			return *this;
 		}
-		inline Archive& operator<<(const wi::Color& data)
+		inline Archive& operator<<(const lb::Color& data)
 		{
 			_write(data.rgba);
 			return *this;
@@ -245,7 +245,7 @@ namespace wi
 			return *this;
 		}
 		template<typename T>
-		inline Archive& operator<<(const wi::vector<T>& data)
+		inline Archive& operator<<(const lb::vector<T>& data)
 		{
 			// Here we will use the << operator so that non-specified types will have compile error!
 			(*this) << data.size();
@@ -255,7 +255,7 @@ namespace wi
 			}
 			return *this;
 		}
-		inline Archive& operator<<(const wi::Archive& other)
+		inline Archive& operator<<(const lb::Archive& other)
 		{
 			// Here we will use the << operator so that non-specified types will have compile error!
 			//	Note: version and thumbnail data is skipped, only data is appended
@@ -400,7 +400,7 @@ namespace wi
 			_read(data);
 			return *this;
 		}
-		inline Archive& operator>>(wi::Color& data)
+		inline Archive& operator>>(lb::Color& data)
 		{
 			_read(data.rgba);
 			return *this;
@@ -422,7 +422,7 @@ namespace wi
 			return *this;
 		}
 		template<typename T>
-		inline Archive& operator>>(wi::vector<T>& data)
+		inline Archive& operator>>(lb::vector<T>& data)
 		{
 			// Here we will use the >> operator so that non-specified types will have compile error!
 			size_t count;

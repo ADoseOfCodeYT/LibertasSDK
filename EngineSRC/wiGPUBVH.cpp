@@ -12,11 +12,11 @@
 
 //#define BVH_VALIDATE // slow but great for debug!
 
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::ecs;
+using namespace lb::graphics;
+using namespace lb::scene;
+using namespace lb::ecs;
 
-namespace wi
+namespace lb
 {
 
 	enum CSTYPES_BVH
@@ -28,9 +28,9 @@ namespace wi
 	};
 	static Shader computeShaders[CSTYPE_BVH_COUNT];
 
-	void GPUBVH::Update(const wi::scene::Scene& scene)
+	void GPUBVH::Update(const lb::scene::Scene& scene)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		// Pre-gather scene properties:
 		uint totalTriangles = 0;
@@ -47,7 +47,7 @@ namespace wi
 		}
 		for (size_t i = 0; i < scene.hairs.GetCount(); ++i)
 		{
-			const wi::HairParticleSystem& hair = scene.hairs[i];
+			const lb::HairParticleSystem& hair = scene.hairs[i];
 
 			if (hair.meshID != INVALID_ENTITY)
 			{
@@ -56,7 +56,7 @@ namespace wi
 		}
 		for (size_t i = 0; i < scene.emitters.GetCount(); ++i)
 		{
-			const wi::EmittedParticleSystem& emitter = scene.emitters[i];
+			const lb::EmittedParticleSystem& emitter = scene.emitters[i];
 			totalTriangles += emitter.GetMaxParticleCount() * 2;
 		}
 
@@ -134,9 +134,9 @@ namespace wi
 	}
 	void GPUBVH::Build(const Scene& scene, CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
-		auto range = wi::profiler::BeginRangeGPU("BVH Rebuild", cmd);
+		auto range = lb::profiler::BeginRangeGPU("BVH Rebuild", cmd);
 
 		uint32_t primitiveCount = 0;
 
@@ -187,7 +187,7 @@ namespace wi
 
 			for (size_t i = 0; i < scene.hairs.GetCount(); ++i)
 			{
-				const wi::HairParticleSystem& hair = scene.hairs[i];
+				const lb::HairParticleSystem& hair = scene.hairs[i];
 
 				if (hair.meshID != INVALID_ENTITY)
 				{
@@ -211,7 +211,7 @@ namespace wi
 
 			for (size_t i = 0; i < scene.emitters.GetCount(); ++i)
 			{
-				const wi::EmittedParticleSystem& emitter = scene.emitters[i];
+				const lb::EmittedParticleSystem& emitter = scene.emitters[i];
 
 				if (emitter.GetMaxParticleCount() > 0)
 				{
@@ -256,7 +256,7 @@ namespace wi
 		device->EventEnd(cmd);
 
 		device->EventBegin("BVH - Sort Primitive Mortons", cmd);
-		wi::gpusortlib::Sort(primitiveCount, primitiveMortonBuffer, primitiveCounterBuffer, 0, primitiveIDBuffer, cmd);
+		lb::gpusortlib::Sort(primitiveCount, primitiveMortonBuffer, primitiveCounterBuffer, 0, primitiveIDBuffer, cmd);
 		device->EventEnd(cmd);
 
 		device->EventBegin("BVH - Build Hierarchy", cmd);
@@ -313,7 +313,7 @@ namespace wi
 		}
 		device->EventEnd(cmd);
 
-		wi::profiler::EndRange(range); // BVH rebuild
+		lb::profiler::EndRange(range); // BVH rebuild
 
 #ifdef BVH_VALIDATE
 		{
@@ -411,19 +411,19 @@ namespace wi
 	{
 		void LoadShaders()
 		{
-			wi::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PRIMITIVES], "bvh_primitivesCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_HIERARCHY], "bvh_hierarchyCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PROPAGATEAABB], "bvh_propagateaabbCS.cso");
+			lb::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PRIMITIVES], "bvh_primitivesCS.cso");
+			lb::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_HIERARCHY], "bvh_hierarchyCS.cso");
+			lb::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PROPAGATEAABB], "bvh_propagateaabbCS.cso");
 		}
 	}
 
 	void GPUBVH::Initialize()
 	{
-		wi::Timer timer;
+		lb::Timer timer;
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { GPUBVH_Internal::LoadShaders(); });
+		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { GPUBVH_Internal::LoadShaders(); });
 		GPUBVH_Internal::LoadShaders();
 
-		wi::backlog::post("wi::GPUBVH Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("lb::GPUBVH Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 }

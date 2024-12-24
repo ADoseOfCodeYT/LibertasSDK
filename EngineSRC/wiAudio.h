@@ -9,7 +9,7 @@
 #include <SDL2/SDL.h>
 #endif
 
-namespace wi::audio
+namespace lb::audio
 {
 	void Initialize();
 

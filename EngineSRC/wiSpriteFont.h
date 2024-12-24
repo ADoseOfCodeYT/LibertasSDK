@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace wi
+namespace lb
 {
 	class SpriteFont
 	{
@@ -22,24 +22,24 @@ namespace wi
 		};
 		uint32_t _flags = EMPTY;
 		std::wstring text;
-		wi::font::Params params;
-		wi::Resource fontStyleResource;
+		lb::font::Params params;
+		lb::Resource fontStyleResource;
 		std::string fontStyleName;
 
 		SpriteFont() = default;
-		SpriteFont(const std::string& value, const wi::font::Params& params = wi::font::Params(), const std::string& fontStyleName = "") :params(params), fontStyleName(fontStyleName)
+		SpriteFont(const std::string& value, const lb::font::Params& params = lb::font::Params(), const std::string& fontStyleName = "") :params(params), fontStyleName(fontStyleName)
 		{
 			SetText(value);
 			if (!fontStyleName.empty())
 			{
-				fontStyleResource = wi::resourcemanager::Load(fontStyleName);
+				fontStyleResource = lb::resourcemanager::Load(fontStyleName);
 			}
 		}
 		virtual ~SpriteFont() = default;
 
 		virtual void FixedUpdate();
 		virtual void Update(float dt);
-		virtual void Draw(wi::graphics::CommandList cmd) const;
+		virtual void Draw(lb::graphics::CommandList cmd) const;
 
 		constexpr void SetHidden(bool value = true) { if (value) { _flags |= HIDDEN; } else { _flags &= ~HIDDEN; } }
 		constexpr bool IsHidden() const { return _flags & HIDDEN; }
@@ -72,8 +72,8 @@ namespace wi
 				float time = 0; // time to fully type the text in seconds (0: disable)
 				bool looped = false; // if true, typing starts over when finished
 				size_t character_start = 0; // starting character for the animation
-				wi::audio::Sound sound;
-				wi::audio::SoundInstance soundinstance;
+				lb::audio::Sound sound;
+				lb::audio::SoundInstance soundinstance;
 
 				float elapsed = 0; // internal use; you don't need to initialize
 
@@ -92,6 +92,6 @@ namespace wi
 			} typewriter;
 		} anim;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 }

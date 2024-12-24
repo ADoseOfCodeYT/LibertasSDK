@@ -4,9 +4,9 @@
 #include "wiTextureHelper.h"
 #include "wiHelper.h"
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi
+namespace lb
 {
 
 	Sprite::Sprite(const std::string& newTexture, const std::string& newMask)
@@ -14,12 +14,12 @@ namespace wi
 		if (!newTexture.empty())
 		{
 			textureName = newTexture;
-			textureResource = wi::resourcemanager::Load(newTexture);
+			textureResource = lb::resourcemanager::Load(newTexture);
 		}
 		if (!newMask.empty())
 		{
 			maskName = newMask;
-			maskResource = wi::resourcemanager::Load(newMask);
+			maskResource = lb::resourcemanager::Load(newMask);
 			params.setMaskMap(&maskResource.GetTexture());
 		}
 	}
@@ -28,7 +28,7 @@ namespace wi
 	{
 		if (IsHidden())
 			return;
-		wi::image::Draw(GetTexture(), params, cmd);
+		lb::image::Draw(GetTexture(), params, cmd);
 	}
 
 	void Sprite::FixedUpdate()
@@ -119,7 +119,7 @@ namespace wi
 			// Rotate each corner on a scaled circle (ellipsoid):
 			//	Since the rotations are randomized, it will look like a wobble effect
 			//	Also use two circles on each other to achieve more random look
-			wi::image::Params default_params; // contains corners in idle positions
+			lb::image::Params default_params; // contains corners in idle positions
 			for (int i = 0; i < 4; ++i)
 			{
 				anim.wobbleAnim.corner_angles[i] += XM_2PI * anim.wobbleAnim.speed * anim.wobbleAnim.corner_speeds[i] * dt;
@@ -134,12 +134,12 @@ namespace wi
 
 	}
 
-	const wi::graphics::Texture* Sprite::GetTexture() const
+	const lb::graphics::Texture* Sprite::GetTexture() const
 	{
-		return textureResource.IsValid() ? &textureResource.GetTexture() : wi::texturehelper::getWhite();
+		return textureResource.IsValid() ? &textureResource.GetTexture() : lb::texturehelper::getWhite();
 	}
 
-	void Sprite::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void Sprite::Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -206,16 +206,16 @@ namespace wi
 
 			if (!textureName.empty() || !maskName.empty())
 			{
-				wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+				lb::jobsystem::Execute(seri.ctx, [&](lb::jobsystem::JobArgs args) {
 					if (!textureName.empty())
 					{
 						textureName = dir + textureName;
-						textureResource = wi::resourcemanager::Load(textureName);
+						textureResource = lb::resourcemanager::Load(textureName);
 					}
 					if (!maskName.empty())
 					{
 						maskName = dir + maskName;
-						maskResource = wi::resourcemanager::Load(maskName);
+						maskResource = lb::resourcemanager::Load(maskName);
 					}
 				});
 			}
@@ -226,8 +226,8 @@ namespace wi
 			seri.RegisterResource(maskName);
 
 			archive << _flags;
-			archive << wi::helper::GetPathRelative(dir, textureName);
-			archive << wi::helper::GetPathRelative(dir, maskName);
+			archive << lb::helper::GetPathRelative(dir, textureName);
+			archive << lb::helper::GetPathRelative(dir, maskName);
 
 			archive << params._flags;
 			archive << params.pos;

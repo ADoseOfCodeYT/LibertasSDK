@@ -3,23 +3,23 @@
 #include "wiGraphicsDevice.h"
 #include "wiScene_Decl.h"
 
-namespace wi
+namespace lb
 {
 	struct GPUBVH
 	{
 		// Scene BVH intersection resources:
-		wi::graphics::GPUBuffer bvhNodeBuffer;
-		wi::graphics::GPUBuffer bvhParentBuffer;
-		wi::graphics::GPUBuffer bvhFlagBuffer;
-		wi::graphics::GPUBuffer primitiveCounterBuffer;
-		wi::graphics::GPUBuffer primitiveIDBuffer;
-		wi::graphics::GPUBuffer primitiveBuffer;
-		wi::graphics::GPUBuffer primitiveMortonBuffer;
+		lb::graphics::GPUBuffer bvhNodeBuffer;
+		lb::graphics::GPUBuffer bvhParentBuffer;
+		lb::graphics::GPUBuffer bvhFlagBuffer;
+		lb::graphics::GPUBuffer primitiveCounterBuffer;
+		lb::graphics::GPUBuffer primitiveIDBuffer;
+		lb::graphics::GPUBuffer primitiveBuffer;
+		lb::graphics::GPUBuffer primitiveMortonBuffer;
 		uint32_t primitiveCapacity = 0;
 		bool IsValid() const { return primitiveCounterBuffer.IsValid(); }
 
-		void Update(const wi::scene::Scene& scene);
-		void Build(const wi::scene::Scene& scene, wi::graphics::CommandList cmd) const;
+		void Update(const lb::scene::Scene& scene);
+		void Build(const lb::scene::Scene& scene, lb::graphics::CommandList cmd) const;
 
 		void Clear();
 

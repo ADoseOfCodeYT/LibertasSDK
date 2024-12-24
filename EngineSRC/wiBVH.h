@@ -2,7 +2,7 @@
 #include "CommonInclude.h"
 #include "wiPrimitive.h"
 
-namespace wi
+namespace lb
 {
 	// Simple fast update BVH
 	//	https://jacco.ompf2.com/2022/04/13/how-to-build-a-bvh-part-1-basics/
@@ -10,13 +10,13 @@ namespace wi
 	{
 		struct Node
 		{
-			wi::primitive::AABB aabb;
+			lb::primitive::AABB aabb;
 			uint32_t left = 0;
 			uint32_t offset = 0;
 			uint32_t count = 0;
 			constexpr bool isLeaf() const { return count > 0; }
 		};
-		wi::vector<uint8_t> allocation;
+		lb::vector<uint8_t> allocation;
 		Node* nodes = nullptr;
 		uint32_t node_count = 0;
 		uint32_t* leaf_indices = nullptr;
@@ -24,7 +24,7 @@ namespace wi
 
 		constexpr bool IsValid() const { return nodes != nullptr; }
 
-		void Build(const wi::primitive::AABB* aabbs, uint32_t aabb_count)
+		void Build(const lb::primitive::AABB* aabbs, uint32_t aabb_count)
 		{
 			node_count = 0;
 			if (aabb_count == 0)
@@ -44,13 +44,13 @@ namespace wi
 			node.count = aabb_count;
 			for (uint32_t i = 0; i < aabb_count; ++i)
 			{
-				node.aabb = wi::primitive::AABB::Merge(node.aabb, aabbs[i]);
+				node.aabb = lb::primitive::AABB::Merge(node.aabb, aabbs[i]);
 				leaf_indices[i] = i;
 			}
 			Subdivide(0, aabbs);
 		}
 
-		void Subdivide(uint32_t nodeIndex, const wi::primitive::AABB* leaf_aabb_data)
+		void Subdivide(uint32_t nodeIndex, const lb::primitive::AABB* leaf_aabb_data)
 		{
 			Node& node = nodes[nodeIndex];
 			if (node.count <= 2)
@@ -105,7 +105,7 @@ namespace wi
 			Subdivide(right_child_index, leaf_aabb_data);
 		}
 
-		void UpdateNodeBounds(uint32_t nodeIndex, const wi::primitive::AABB* leaf_aabb_data)
+		void UpdateNodeBounds(uint32_t nodeIndex, const lb::primitive::AABB* leaf_aabb_data)
 		{
 			Node& node = nodes[nodeIndex];
 			node.aabb = {};
@@ -113,7 +113,7 @@ namespace wi
 			{
 				uint32_t offset = node.offset + i;
 				uint32_t index = leaf_indices[offset];
-				node.aabb = wi::primitive::AABB::Merge(node.aabb, leaf_aabb_data[index]);
+				node.aabb = lb::primitive::AABB::Merge(node.aabb, leaf_aabb_data[index]);
 			}
 		}
 

@@ -37,7 +37,7 @@ typedef void* HMODULE;
 #endif
 
 
-namespace wi::platform
+namespace lb::platform
 {
 #ifdef _WIN32
 	using window_type = HWND;

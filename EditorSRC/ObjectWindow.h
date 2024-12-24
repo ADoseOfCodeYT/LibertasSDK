@@ -1,46 +1,46 @@
 #pragma once
 class EditorComponent;
 
-class ObjectWindow : public wi::gui::Window
+class ObjectWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::ComboBox meshCombo;
-	wi::gui::CheckBox renderableCheckBox;
-	wi::gui::CheckBox shadowCheckBox;
-	wi::gui::CheckBox navmeshCheckBox;
-	wi::gui::CheckBox foregroundCheckBox;
-	wi::gui::CheckBox notVisibleInMainCameraCheckBox;
-	wi::gui::CheckBox notVisibleInReflectionsCheckBox;
-	wi::gui::CheckBox wetmapCheckBox;
-	wi::gui::Slider ditherSlider;
-	wi::gui::Slider alphaRefSlider;
-	wi::gui::Slider rimHighlightIntesitySlider;
-	wi::gui::Slider rimHighlightFalloffSlider;
-	wi::gui::Slider cascadeMaskSlider;
-	wi::gui::Slider lodSlider;
-	wi::gui::Slider drawdistanceSlider;
-	wi::gui::Slider sortPrioritySlider;
+	lb::gui::ComboBox meshCombo;
+	lb::gui::CheckBox renderableCheckBox;
+	lb::gui::CheckBox shadowCheckBox;
+	lb::gui::CheckBox navmeshCheckBox;
+	lb::gui::CheckBox foregroundCheckBox;
+	lb::gui::CheckBox notVisibleInMainCameraCheckBox;
+	lb::gui::CheckBox notVisibleInReflectionsCheckBox;
+	lb::gui::CheckBox wetmapCheckBox;
+	lb::gui::Slider ditherSlider;
+	lb::gui::Slider alphaRefSlider;
+	lb::gui::Slider rimHighlightIntesitySlider;
+	lb::gui::Slider rimHighlightFalloffSlider;
+	lb::gui::Slider cascadeMaskSlider;
+	lb::gui::Slider lodSlider;
+	lb::gui::Slider drawdistanceSlider;
+	lb::gui::Slider sortPrioritySlider;
 
-	wi::gui::ComboBox colorComboBox;
-	wi::gui::ColorPicker colorPicker;
+	lb::gui::ComboBox colorComboBox;
+	lb::gui::ColorPicker colorPicker;
 
-	wi::gui::Slider lightmapResolutionSlider;
-	wi::gui::CheckBox lightmapBlockCompressionCheckBox;
-	wi::gui::ComboBox lightmapSourceUVSetComboBox;
-	wi::gui::Button generateLightmapButton;
-	wi::gui::Button stopLightmapGenButton;
-	wi::gui::Button clearLightmapButton;
+	lb::gui::Slider lightmapResolutionSlider;
+	lb::gui::CheckBox lightmapBlockCompressionCheckBox;
+	lb::gui::ComboBox lightmapSourceUVSetComboBox;
+	lb::gui::Button generateLightmapButton;
+	lb::gui::Button stopLightmapGenButton;
+	lb::gui::Button clearLightmapButton;
 
-	wi::gui::Button vertexAOButton;
+	lb::gui::Button vertexAOButton;
 	bool deleteAOMode = false;
-	wi::gui::Slider vertexAORayCountSlider;
-	wi::gui::Slider vertexAORayLengthSlider;
+	lb::gui::Slider vertexAORayCountSlider;
+	lb::gui::Slider vertexAORayLengthSlider;
 
 	void ResizeLayout() override;
 };

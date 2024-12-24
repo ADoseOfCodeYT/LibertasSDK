@@ -21,7 +21,7 @@
 #include "wiJobSystem_PS5.h"
 #endif // PLATFORM_PS5
 
-namespace wi::jobsystem
+namespace lb::jobsystem
 {
 	struct Job
 	{
@@ -81,7 +81,7 @@ namespace wi::jobsystem
 	struct PriorityResources
 	{
 		uint32_t numThreads = 0;
-		wi::vector<std::thread> threads;
+		lb::vector<std::thread> threads;
 		std::unique_ptr<JobQueue[]> jobQueuePerThread;
 		std::atomic<uint32_t> nextQueue{ 0 };
 		std::condition_variable wakeCondition;
@@ -153,7 +153,7 @@ namespace wi::jobsystem
 			return;
 		maxThreadCount = std::max(1u, maxThreadCount);
 
-		wi::Timer timer;
+		lb::Timer timer;
 
 		// Retrieve the number of hardware threads in this system:
 		internal_state.numCores = std::thread::hardware_concurrency();
@@ -245,7 +245,7 @@ namespace wi::jobsystem
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_NORMAL);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"wi::job_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"lb::job_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
@@ -254,7 +254,7 @@ namespace wi::jobsystem
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_LOWEST);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"wi::job_lo_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"lb::job_lo_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
@@ -263,7 +263,7 @@ namespace wi::jobsystem
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_LOWEST);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"wi::job_st_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"lb::job_st_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
@@ -285,14 +285,14 @@ namespace wi::jobsystem
 
 				if (priority == Priority::High)
 				{
-					std::string thread_name = "wi::job_" + std::to_string(threadID);
+					std::string thread_name = "lb::job_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
 				}
 				else if (priority == Priority::Low)
 				{
-					std::string thread_name = "wi::job_lo_" + std::to_string(threadID);
+					std::string thread_name = "lb::job_lo_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
@@ -300,7 +300,7 @@ namespace wi::jobsystem
 				}
 				else if (priority == Priority::Streaming)
 				{
-					std::string thread_name = "wi::job_st_" + std::to_string(threadID);
+					std::string thread_name = "lb::job_st_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
@@ -309,14 +309,14 @@ namespace wi::jobsystem
 
 #undef handle_error_en
 #elif defined(PLATFORM_PS5)
-				wi::jobsystem::ps5::SetupWorker(worker, threadID, core, priority);
+				lb::jobsystem::ps5::SetupWorker(worker, threadID, core, priority);
 #endif // _WIN32
 			}
 		}
 
 		char msg[256] = {};
-		snprintf(msg, arraysize(msg), "wi::jobsystem Initialized with %d cores in %.2f ms\n\tHigh priority threads: %d\n\tLow priority threads: %d\n\tStreaming threads: %d", internal_state.numCores, timer.elapsed(), GetThreadCount(Priority::High), GetThreadCount(Priority::Low), GetThreadCount(Priority::Streaming));
-		wi::backlog::post(msg);
+		snprintf(msg, arraysize(msg), "lb::jobsystem Initialized with %d cores in %.2f ms\n\tHigh priority threads: %d\n\tLow priority threads: %d\n\tStreaming threads: %d", internal_state.numCores, timer.elapsed(), GetThreadCount(Priority::High), GetThreadCount(Priority::Low), GetThreadCount(Priority::Streaming));
+		lb::backlog::post(msg);
 	}
 
 	void ShutDown()

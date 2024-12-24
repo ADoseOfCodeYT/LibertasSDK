@@ -35,7 +35,7 @@ DEFINE_GUID(D3D12_VIDEO_DECODE_PROFILE_H264, 0x1b81be68, 0xa0c7, 0x11d3, 0xb9, 0
 
 using namespace Microsoft::WRL;
 
-namespace wi::graphics
+namespace lb::graphics
 {
 namespace dx12_internal
 {
@@ -824,15 +824,15 @@ namespace dx12_internal
 		switch (value)
 		{
 		default:
-		case wi::graphics::ImageAspect::COLOR:
+		case lb::graphics::ImageAspect::COLOR:
 			return 0;
-		case wi::graphics::ImageAspect::DEPTH:
+		case lb::graphics::ImageAspect::DEPTH:
 			return 0;
-		case wi::graphics::ImageAspect::STENCIL:
+		case lb::graphics::ImageAspect::STENCIL:
 			return 1;
-		case wi::graphics::ImageAspect::LUMINANCE:
+		case lb::graphics::ImageAspect::LUMINANCE:
 			return 0;
-		case wi::graphics::ImageAspect::CHROMINANCE:
+		case lb::graphics::ImageAspect::CHROMINANCE:
 			return 1;
 		}
 	}
@@ -841,17 +841,17 @@ namespace dx12_internal
 		switch (value)
 		{
 		default:
-		case wi::graphics::ComponentSwizzle::R:
+		case lb::graphics::ComponentSwizzle::R:
 			return D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_0;
-		case wi::graphics::ComponentSwizzle::G:
+		case lb::graphics::ComponentSwizzle::G:
 			return D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_1;
-		case wi::graphics::ComponentSwizzle::B:
+		case lb::graphics::ComponentSwizzle::B:
 			return D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_2;
-		case wi::graphics::ComponentSwizzle::A:
+		case lb::graphics::ComponentSwizzle::A:
 			return D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_3;
-		case wi::graphics::ComponentSwizzle::ZERO:
+		case lb::graphics::ComponentSwizzle::ZERO:
 			return D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_0;
-		case wi::graphics::ComponentSwizzle::ONE:
+		case lb::graphics::ComponentSwizzle::ONE:
 			return D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_1;
 		}
 	}
@@ -1043,7 +1043,7 @@ namespace dx12_internal
 			uint32_t descriptorCopyCount = 0u;
 			bool sampler_table = false;
 		};
-		wi::vector<RootParameterStatistics> root_stats;
+		lb::vector<RootParameterStatistics> root_stats;
 		const D3D12_VERSIONED_ROOT_SIGNATURE_DESC* rootsig_desc = nullptr;
 
 		void init(const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& desc)
@@ -1331,16 +1331,16 @@ namespace dx12_internal
 		ComPtr<ID3D12Resource> resource;
 		SingleDescriptor srv;
 		SingleDescriptor uav;
-		wi::vector<SingleDescriptor> subresources_srv;
-		wi::vector<SingleDescriptor> subresources_uav;
+		lb::vector<SingleDescriptor> subresources_srv;
+		lb::vector<SingleDescriptor> subresources_uav;
 		SingleDescriptor uav_raw;
 
 		D3D12_GPU_VIRTUAL_ADDRESS gpu_address = 0;
 
 		UINT64 total_size = 0;
-		wi::vector<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> footprints;
-		wi::vector<UINT64> rowSizesInBytes;
-		wi::vector<UINT> numRows;
+		lb::vector<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> footprints;
+		lb::vector<UINT64> rowSizesInBytes;
+		lb::vector<UINT> numRows;
 		SparseTextureProperties sparse_texture_properties;
 
 		void destroy_subresources()
@@ -1373,10 +1373,10 @@ namespace dx12_internal
 	{
 		SingleDescriptor rtv = {};
 		SingleDescriptor dsv = {};
-		wi::vector<SingleDescriptor> subresources_rtv;
-		wi::vector<SingleDescriptor> subresources_dsv;
+		lb::vector<SingleDescriptor> subresources_rtv;
+		lb::vector<SingleDescriptor> subresources_dsv;
 
-		wi::vector<SubresourceData> mapped_subresources;
+		lb::vector<SubresourceData> mapped_subresources;
 
 		~Texture_DX12() override
 		{
@@ -1430,8 +1430,8 @@ namespace dx12_internal
 		ComPtr<ID3D12RootSignature> rootSignature;
 		size_t hash = 0;
 
-		wi::vector<uint8_t> shadercode;
-		wi::vector<D3D12_INPUT_ELEMENT_DESC> input_elements;
+		lb::vector<uint8_t> shadercode;
+		lb::vector<D3D12_INPUT_ELEMENT_DESC> input_elements;
 		D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
 
 		ComPtr<ID3D12VersionedRootSignatureDeserializer> rootsig_deserializer;
@@ -1479,7 +1479,7 @@ namespace dx12_internal
 	struct BVH_DX12 : public Resource_DX12
 	{
 		D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS desc = {};
-		wi::vector<D3D12_RAYTRACING_GEOMETRY_DESC> geometries;
+		lb::vector<D3D12_RAYTRACING_GEOMETRY_DESC> geometries;
 		D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO info = {};
 		GPUBuffer scratch;
 	};
@@ -1490,11 +1490,11 @@ namespace dx12_internal
 
 		ComPtr<ID3D12StateObjectProperties> stateObjectProperties;
 
-		wi::vector<std::wstring> export_strings;
-		wi::vector<D3D12_EXPORT_DESC> exports;
-		wi::vector<D3D12_DXIL_LIBRARY_DESC> library_descs;
-		wi::vector<std::wstring> group_strings;
-		wi::vector<D3D12_HIT_GROUP_DESC> hitgroup_descs;
+		lb::vector<std::wstring> export_strings;
+		lb::vector<D3D12_EXPORT_DESC> exports;
+		lb::vector<D3D12_DXIL_LIBRARY_DESC> library_descs;
+		lb::vector<std::wstring> group_strings;
+		lb::vector<D3D12_HIT_GROUP_DESC> hitgroup_descs;
 
 		~RTPipelineState_DX12()
 		{
@@ -1512,8 +1512,8 @@ namespace dx12_internal
 #else
 		ComPtr<IDXGISwapChain3> swapChain;
 #endif // PLATFORM_XBOX
-		wi::vector<ComPtr<ID3D12Resource>> backBuffers;
-		wi::vector<D3D12_CPU_DESCRIPTOR_HANDLE> backbufferRTV;
+		lb::vector<ComPtr<ID3D12Resource>> backBuffers;
+		lb::vector<D3D12_CPU_DESCRIPTOR_HANDLE> backbufferRTV;
 
 		Texture dummyTexture;
 		ColorSpace colorSpace = ColorSpace::SRGB;
@@ -1669,8 +1669,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "ID3D12Device::CreateCommandQueue[CopyAllocator] failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 		hr = queue->SetName(L"CopyAllocator");
 		assert(SUCCEEDED(hr));
@@ -1713,7 +1713,7 @@ std::mutex queue_locker;
 			assert(SUCCEEDED(hr));
 
 			GPUBufferDesc uploadBufferDesc;
-			uploadBufferDesc.size = wi::math::GetNextPowerOfTwo(staging_size);
+			uploadBufferDesc.size = lb::math::GetNextPowerOfTwo(staging_size);
 			uploadBufferDesc.usage = Usage::UPLOAD;
 			bool upload_success = device->CreateBuffer(&uploadBufferDesc, nullptr, &cmd.uploadbuffer);
 			assert(upload_success);
@@ -2206,7 +2206,7 @@ std::mutex queue_locker;
 	// Engine functions
 	GraphicsDevice_DX12::GraphicsDevice_DX12(ValidationMode validationMode_, GPUPreference preference)
 	{
-		wi::Timer timer;
+		lb::Timer timer;
 
 		SHADER_IDENTIFIER_SIZE = D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES;
 		TOPLEVEL_ACCELERATION_STRUCTURE_INSTANCE_SIZE = sizeof(D3D12_RAYTRACING_INSTANCE_DESC);
@@ -2223,8 +2223,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "Failed to load dxgi.dll! ERROR: 0x" << std::hex << GetLastError();
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		HMODULE dx12 = LoadLibraryEx(L"d3d12.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
@@ -2232,8 +2232,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "Failed to load d3d12.dll! ERROR: 0x" << std::hex << GetLastError();
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		CreateDXGIFactory2 = (PFN_CREATE_DXGI_FACTORY_2)wiGetProcAddress(dxgi, "CreateDXGIFactory2");
@@ -2242,8 +2242,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "Failed to load CreateDXGIFactory2! ERROR: 0x" << std::hex << GetLastError();
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 #ifdef _DEBUG
@@ -2260,8 +2260,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "Failed to load D3D12CreateDevice! ERROR: 0x" << std::hex << GetLastError();
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		D3D12CreateVersionedRootSignatureDeserializer = (PFN_D3D12_CREATE_VERSIONED_ROOT_SIGNATURE_DESERIALIZER)wiGetProcAddress(dx12, "D3D12CreateVersionedRootSignatureDeserializer");
@@ -2270,8 +2270,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "Failed to load D3D12CreateVersionedRootSignatureDeserializer! ERROR: 0x" << std::hex << GetLastError();
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		if (validationMode != ValidationMode::Disabled)
@@ -2332,7 +2332,7 @@ std::mutex queue_locker;
 
 #ifdef PLATFORM_XBOX
 
-		hr = wi::graphics::xbox::CreateDevice(device, dxgiAdapter, validationMode);
+		hr = lb::graphics::xbox::CreateDevice(device, dxgiAdapter, validationMode);
 
 #else
 		hr = CreateDXGIFactory2((validationMode != ValidationMode::Disabled) ? DXGI_CREATE_FACTORY_DEBUG : 0u, PPV_ARGS(dxgiFactory));
@@ -2340,8 +2340,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "CreateDXGIFactory2 failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		// Determines whether tearing support is available for fullscreen borderless windows.
@@ -2358,7 +2358,7 @@ std::mutex queue_locker;
 			if (FAILED(hr) || !allowTearing)
 			{
 				tearingSupported = false;
-				wi::helper::DebugOut("WARNING: Variable refresh rate displays not supported\n");
+				lb::helper::DebugOut("WARNING: Variable refresh rate displays not supported\n");
 			}
 			else
 			{
@@ -2413,15 +2413,15 @@ std::mutex queue_locker;
 		assert(dxgiAdapter != nullptr);
 		if (dxgiAdapter == nullptr)
 		{
-			wi::helper::messageBox("DXGI: No capable adapter found!", "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox("DXGI: No capable adapter found!", "Error!");
+			lb::platform::Exit();
 		}
 
 		assert(device != nullptr);
 		if (device == nullptr)
 		{
-			wi::helper::messageBox("D3D12: Device couldn't be created!", "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox("D3D12: Device couldn't be created!", "Error!");
+			lb::platform::Exit();
 		}
 
 		if (validationMode != ValidationMode::Disabled)
@@ -2481,8 +2481,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "D3D12MA::CreateAllocator failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		{
@@ -2496,8 +2496,8 @@ std::mutex queue_locker;
 			{
 				std::stringstream ss("");
 				ss << "ID3D12Device::CreateCommandQueue[QUEUE_GRAPHICS] failed! ERROR: 0x" << std::hex << hr;
-				wi::helper::messageBox(ss.str(), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox(ss.str(), "Error!");
+				lb::platform::Exit();
 			}
 			hr = queues[QUEUE_GRAPHICS].queue->SetName(L"QUEUE_GRAPHICS");
 			assert(SUCCEEDED(hr));
@@ -2514,8 +2514,8 @@ std::mutex queue_locker;
 			{
 				std::stringstream ss("");
 				ss << "ID3D12Device::CreateCommandQueue[QUEUE_COMPUTE] failed! ERROR: 0x" << std::hex << hr;
-				wi::helper::messageBox(ss.str(), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox(ss.str(), "Error!");
+				lb::platform::Exit();
 			}
 			hr = queues[QUEUE_COMPUTE].queue->SetName(L"QUEUE_COMPUTE");
 			assert(SUCCEEDED(hr));
@@ -2532,8 +2532,8 @@ std::mutex queue_locker;
 			{
 				std::stringstream ss("");
 				ss << "ID3D12Device::CreateCommandQueue[QUEUE_COPY] failed! ERROR: 0x" << std::hex << hr;
-				wi::helper::messageBox(ss.str(), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox(ss.str(), "Error!");
+				lb::platform::Exit();
 			}
 			hr = queues[QUEUE_COPY].queue->SetName(L"QUEUE_COPY");
 			assert(SUCCEEDED(hr));
@@ -2572,8 +2572,8 @@ std::mutex queue_locker;
 			{
 				std::stringstream ss("");
 				ss << "ID3D12Device::CreateDescriptorHeap[CBV_SRV_UAV] failed! ERROR: 0x" << std::hex << hr;
-				wi::helper::messageBox(ss.str(), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox(ss.str(), "Error!");
+				lb::platform::Exit();
 			}
 
 			descriptorheap_res.start_cpu = descriptorheap_res.heap_GPU->GetCPUDescriptorHandleForHeapStart();
@@ -2585,8 +2585,8 @@ std::mutex queue_locker;
 			{
 				std::stringstream ss("");
 				ss << "ID3D12Device::CreateFence[CBV_SRV_UAV] failed! ERROR: 0x" << std::hex << hr;
-				wi::helper::messageBox(ss.str(), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox(ss.str(), "Error!");
+				lb::platform::Exit();
 			}
 			descriptorheap_res.fenceValue = descriptorheap_res.fence->GetCompletedValue();
 
@@ -2608,8 +2608,8 @@ std::mutex queue_locker;
 			{
 				std::stringstream ss("");
 				ss << "ID3D12Device::CreateDescriptorHeap[SAMPLER] failed! ERROR: 0x" << std::hex << hr;
-				wi::helper::messageBox(ss.str(), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox(ss.str(), "Error!");
+				lb::platform::Exit();
 			}
 
 			descriptorheap_sam.start_cpu = descriptorheap_sam.heap_GPU->GetCPUDescriptorHandleForHeapStart();
@@ -2621,8 +2621,8 @@ std::mutex queue_locker;
 			{
 				std::stringstream ss("");
 				ss << "ID3D12Device::CreateFence[SAMPLER] failed! ERROR: 0x" << std::hex << hr;
-				wi::helper::messageBox(ss.str(), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox(ss.str(), "Error!");
+				lb::platform::Exit();
 			}
 			descriptorheap_sam.fenceValue = descriptorheap_sam.fence->GetCompletedValue();
 
@@ -2643,8 +2643,8 @@ std::mutex queue_locker;
 				{
 					std::stringstream ss("");
 					ss << "ID3D12Device::CreateFence[FRAME] failed! ERROR: 0x" << std::hex << hr;
-					wi::helper::messageBox(ss.str(), "Error!");
-					wi::platform::Exit();
+					lb::helper::messageBox(ss.str(), "Error!");
+					lb::platform::Exit();
 				}
 			}
 		}
@@ -2659,7 +2659,7 @@ std::mutex queue_locker;
 		capabilities |= GraphicsDeviceCapability::STENCIL_RESOLVE_MIN_MAX;
 
 #ifdef PLATFORM_XBOX
-		adapterName = wi::graphics::xbox::GetAdapterName();
+		adapterName = lb::graphics::xbox::GetAdapterName();
 		//capabilities |= GraphicsDeviceCapability::MESH_SHADER; // TODO Mesh shader XBOX
 		capabilities |= GraphicsDeviceCapability::DEPTH_BOUNDS_TEST;
 		capabilities |= GraphicsDeviceCapability::GENERIC_SPARSE_TILE_POOL;
@@ -2696,7 +2696,7 @@ std::mutex queue_locker;
 
 			vendorId = adapterDesc.VendorId;
 			deviceId = adapterDesc.DeviceId;
-			wi::helper::StringConvert(adapterDesc.Description, adapterName);
+			lb::helper::StringConvert(adapterDesc.Description, adapterName);
 
 			// Convert the adapter's D3D12 driver version to a readable string like "24.21.13.9793".
 			LARGE_INTEGER umdVersion;
@@ -2733,16 +2733,16 @@ std::mutex queue_locker;
 			error += "Adapter type: ";
 			switch (adapterType)
 			{
-			case wi::graphics::AdapterType::IntegratedGpu:
+			case lb::graphics::AdapterType::IntegratedGpu:
 				error += "Integrated GPU";
 				break;
-			case wi::graphics::AdapterType::DiscreteGpu:
+			case lb::graphics::AdapterType::DiscreteGpu:
 				error += "Discrete GPU";
 				break;
-			case wi::graphics::AdapterType::VirtualGpu:
+			case lb::graphics::AdapterType::VirtualGpu:
 				error += "Virtual GPU";
 				break;
-			case wi::graphics::AdapterType::Cpu:
+			case lb::graphics::AdapterType::Cpu:
 				error += "CPU";
 				break;
 			default:
@@ -2750,9 +2750,9 @@ std::mutex queue_locker;
 				break;
 			}
 			error += "\nExiting.";
-			wi::helper::messageBox(error, "Error!");
-			wi::backlog::post(error, wi::backlog::LogLevel::Error);
-			wi::platform::Exit();
+			lb::helper::messageBox(error, "Error!");
+			lb::backlog::post(error, lb::backlog::LogLevel::Error);
+			lb::platform::Exit();
 		}
 
 		if (features.ConservativeRasterizationTier() >= D3D12_CONSERVATIVE_RASTERIZATION_TIER_1)
@@ -2831,8 +2831,8 @@ std::mutex queue_locker;
 		if (features.HighestRootSignatureVersion() < D3D_ROOT_SIGNATURE_VERSION_1_1)
 		{
 			assert(0);
-			wi::helper::messageBox("DX12: Root signature version 1.1 not supported!", "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox("DX12: Root signature version 1.1 not supported!", "Error!");
+			lb::platform::Exit();
 		}
 
 		// Fully typed casting: https://microsoft.github.io/DirectX-Specs/d3d/RelaxedCasting.html#casting-rules-for-rs2-drivers
@@ -2901,8 +2901,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "ID3D12Device::CreateCommandSignature[dispatchIndirect] failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		cmd_desc.ByteStride = sizeof(D3D12_DRAW_ARGUMENTS);
@@ -2914,8 +2914,8 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "ID3D12Device::CreateCommandSignature[drawInstancedIndirect] failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		cmd_desc.ByteStride = sizeof(D3D12_DRAW_INDEXED_ARGUMENTS);
@@ -2927,15 +2927,15 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "ID3D12Device::CreateCommandSignature[drawIndexedInstancedIndirect] failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Error!");
-			wi::platform::Exit();
+			lb::helper::messageBox(ss.str(), "Error!");
+			lb::platform::Exit();
 		}
 
 		if (CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
 		{
 			D3D12_INDIRECT_ARGUMENT_DESC dispatchMeshArgs[1];
 #ifdef PLATFORM_XBOX
-			wi::graphics::xbox::FillDispatchMeshIndirectArgumentDesc(dispatchMeshArgs[0], cmd_desc);
+			lb::graphics::xbox::FillDispatchMeshIndirectArgumentDesc(dispatchMeshArgs[0], cmd_desc);
 #else
 			dispatchMeshArgs[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH_MESH;
 			cmd_desc.ByteStride = sizeof(D3D12_DISPATCH_MESH_ARGUMENTS);
@@ -2948,8 +2948,8 @@ std::mutex queue_locker;
 			{
 				std::stringstream ss("");
 				ss << "ID3D12Device::CreateCommandSignature[dispatchMeshIndirect] failed! ERROR: 0x" << std::hex << hr;
-				wi::helper::messageBox(ss.str(), "Error!");
-				wi::platform::Exit();
+				lb::helper::messageBox(ss.str(), "Error!");
+				lb::platform::Exit();
 			}
 		}
 
@@ -2967,7 +2967,7 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "ID3D12Device::CreateDescriptorHeap[nulldescriptorheap_cbv_srv_uav] failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Error!");
+			lb::helper::messageBox(ss.str(), "Error!");
 		}
 
 		nullHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
@@ -2978,7 +2978,7 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "ID3D12Device::CreateDescriptorHeap[nulldescriptorheap_sampler] failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Error!");
+			lb::helper::messageBox(ss.str(), "Error!");
 		}
 
 		nullCBV = nulldescriptorheap_cbv_srv_uav->GetCPUDescriptorHandleForHeapStart();
@@ -3035,10 +3035,10 @@ std::mutex queue_locker;
 		{
 			std::stringstream ss("");
 			ss << "ID3D12CommandQueue::GetTimestampFrequency[QUEUE_GRAPHICS] failed! ERROR: 0x" << std::hex << hr;
-			wi::helper::messageBox(ss.str(), "Warning!");
+			lb::helper::messageBox(ss.str(), "Warning!");
 		}
 
-		wi::backlog::post("Created GraphicsDevice_DX12 (" + std::to_string((int)std::round(timer.elapsed())) + " ms)\nAdapter: " + adapterName);
+		lb::backlog::post("Created GraphicsDevice_DX12 (" + std::to_string((int)std::round(timer.elapsed())) + " ms)\nAdapter: " + adapterName);
 	}
 	GraphicsDevice_DX12::~GraphicsDevice_DX12()
 	{
@@ -3050,7 +3050,7 @@ std::mutex queue_locker;
 #endif // PLATFORM_WINDOWS_DESKTOP
 	}
 
-	bool GraphicsDevice_DX12::CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const
+	bool GraphicsDevice_DX12::CreateSwapChain(const SwapChainDesc* desc, lb::platform::window_type window, SwapChain* swapchain) const
 	{
 		auto internal_state = std::static_pointer_cast<SwapChain_DX12>(swapchain->internal_state);
 		if (swapchain->internal_state == nullptr)
@@ -3329,7 +3329,7 @@ std::mutex queue_locker;
 		}
 
 #ifdef PLATFORM_XBOX
-		wi::graphics::xbox::ApplyBufferCreationFlags(*desc, resourceDesc.Flags, allocationDesc.ExtraHeapFlags);
+		lb::graphics::xbox::ApplyBufferCreationFlags(*desc, resourceDesc.Flags, allocationDesc.ExtraHeapFlags);
 #endif // PLATFORM_XBOX
 
 		if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) ||
@@ -3661,7 +3661,7 @@ std::mutex queue_locker;
 #endif // PLATFORM_XBOX
 
 #ifdef PLATFORM_XBOX
-		wi::graphics::xbox::ApplyTextureCreationFlags(texture->desc, resourcedesc.Flags, allocationDesc.ExtraHeapFlags);
+		lb::graphics::xbox::ApplyTextureCreationFlags(texture->desc, resourcedesc.Flags, allocationDesc.ExtraHeapFlags);
 #endif // PLATFORM_XBOX
 
 
@@ -4060,19 +4060,19 @@ std::mutex queue_locker;
 		pso->desc = *desc;
 
 		internal_state->hash = 0;
-		wi::helper::hash_combine(internal_state->hash, desc->ms);
-		wi::helper::hash_combine(internal_state->hash, desc->as);
-		wi::helper::hash_combine(internal_state->hash, desc->vs);
-		wi::helper::hash_combine(internal_state->hash, desc->ps);
-		wi::helper::hash_combine(internal_state->hash, desc->hs);
-		wi::helper::hash_combine(internal_state->hash, desc->ds);
-		wi::helper::hash_combine(internal_state->hash, desc->gs);
-		wi::helper::hash_combine(internal_state->hash, desc->il);
-		wi::helper::hash_combine(internal_state->hash, desc->rs);
-		wi::helper::hash_combine(internal_state->hash, desc->bs);
-		wi::helper::hash_combine(internal_state->hash, desc->dss);
-		wi::helper::hash_combine(internal_state->hash, desc->pt);
-		wi::helper::hash_combine(internal_state->hash, desc->sample_mask);
+		lb::helper::hash_combine(internal_state->hash, desc->ms);
+		lb::helper::hash_combine(internal_state->hash, desc->as);
+		lb::helper::hash_combine(internal_state->hash, desc->vs);
+		lb::helper::hash_combine(internal_state->hash, desc->ps);
+		lb::helper::hash_combine(internal_state->hash, desc->hs);
+		lb::helper::hash_combine(internal_state->hash, desc->ds);
+		lb::helper::hash_combine(internal_state->hash, desc->gs);
+		lb::helper::hash_combine(internal_state->hash, desc->il);
+		lb::helper::hash_combine(internal_state->hash, desc->rs);
+		lb::helper::hash_combine(internal_state->hash, desc->bs);
+		lb::helper::hash_combine(internal_state->hash, desc->dss);
+		lb::helper::hash_combine(internal_state->hash, desc->pt);
+		lb::helper::hash_combine(internal_state->hash, desc->sample_mask);
 
 		auto& stream = internal_state->stream;
 		if (pso->desc.vs != nullptr)
@@ -4270,7 +4270,7 @@ std::mutex queue_locker;
 
 		if (renderpass_info != nullptr)
 		{
-			wi::helper::hash_combine(internal_state->hash, renderpass_info->get_hash());
+			lb::helper::hash_combine(internal_state->hash, renderpass_info->get_hash());
 			DXGI_FORMAT DSFormat = _ConvertFormat(renderpass_info->ds_format);
 			D3D12_RT_FORMAT_ARRAY formats = {};
 			formats.NumRenderTargets = renderpass_info->rt_count;
@@ -4447,7 +4447,7 @@ std::mutex queue_locker;
 		D3D12_STATE_OBJECT_DESC stateobjectdesc = {};
 		stateobjectdesc.Type = D3D12_STATE_OBJECT_TYPE_RAYTRACING_PIPELINE;
 
-		wi::vector<D3D12_STATE_SUBOBJECT> subobjects;
+		lb::vector<D3D12_STATE_SUBOBJECT> subobjects;
 
 		D3D12_RAYTRACING_PIPELINE_CONFIG pipeline_config = {};
 		{
@@ -4493,7 +4493,7 @@ std::mutex queue_locker;
 			library_desc.NumExports = 1;
 
 			D3D12_EXPORT_DESC& export_desc = internal_state->exports.emplace_back();
-			wi::helper::StringConvert(x.function_name, internal_state->export_strings.emplace_back());
+			lb::helper::StringConvert(x.function_name, internal_state->export_strings.emplace_back());
 			export_desc.Name = internal_state->export_strings.back().c_str();
 			library_desc.pExports = &export_desc;
 
@@ -4503,7 +4503,7 @@ std::mutex queue_locker;
 		internal_state->hitgroup_descs.reserve(desc->hit_groups.size());
 		for (auto& x : desc->hit_groups)
 		{
-			wi::helper::StringConvert(x.name, internal_state->group_strings.emplace_back());
+			lb::helper::StringConvert(x.name, internal_state->group_strings.emplace_back());
 
 			if (x.type == ShaderHitGroup::Type::GENERAL)
 				continue;
@@ -4563,7 +4563,7 @@ std::mutex queue_locker;
 		hr = video_device->CheckFeatureSupport(D3D12_FEATURE_VIDEO_DECODE_PROFILE_COUNT, &video_decode_profile_count, sizeof(video_decode_profile_count));
 		assert(SUCCEEDED(hr));
 
-		wi::vector<GUID> profiles(video_decode_profile_count.ProfileCount);
+		lb::vector<GUID> profiles(video_decode_profile_count.ProfileCount);
 		D3D12_FEATURE_DATA_VIDEO_DECODE_PROFILES video_decode_profiles = {};
 		video_decode_profiles.ProfileCount = video_decode_profile_count.ProfileCount;
 		video_decode_profiles.pProfiles = profiles.data();
@@ -4601,7 +4601,7 @@ std::mutex queue_locker;
 		hr = video_device->CheckFeatureSupport(D3D12_FEATURE_VIDEO_DECODE_FORMAT_COUNT, &video_decode_format_count, sizeof(video_decode_format_count));
 		assert(SUCCEEDED(hr));
 
-		wi::vector<DXGI_FORMAT> formats(video_decode_format_count.FormatCount);
+		lb::vector<DXGI_FORMAT> formats(video_decode_format_count.FormatCount);
 		D3D12_FEATURE_DATA_VIDEO_DECODE_FORMATS video_decode_formats = {};
 		video_decode_formats.Configuration = decoder_desc.Configuration;
 		video_decode_formats.FormatCount = video_decode_format_count.FormatCount;
@@ -5241,7 +5241,7 @@ std::mutex queue_locker;
 	void GraphicsDevice_DX12::SetName(GPUResource* pResource, const char* name) const
 	{
 		wchar_t text[256];
-		if (wi::helper::StringConvert(name, text, arraysize(text)) > 0)
+		if (lb::helper::StringConvert(name, text, arraysize(text)) > 0)
 		{
 			auto internal_state = to_internal(pResource);
 			if (internal_state->resource != nullptr)
@@ -5479,7 +5479,7 @@ std::mutex queue_locker;
 
 #ifdef PLATFORM_XBOX
 
-					wi::graphics::xbox::Present(
+					lb::graphics::xbox::Present(
 						device.Get(),
 						queues[QUEUE_GRAPHICS].queue.Get(),
 						swapchain_internal->backBuffers[swapchain_internal->bufferIndex].Get(),
@@ -5693,11 +5693,11 @@ std::mutex queue_locker;
 					// Note: pCommandListDebugNameA and similar doesn't seem to contain anything while pCommandListDebugNameW does, so convert these by hand:
 					if (pNode->pCommandListDebugNameW != nullptr)
 					{
-						wi::helper::StringConvert(pNode->pCommandListDebugNameW, commandlistname);
+						lb::helper::StringConvert(pNode->pCommandListDebugNameW, commandlistname);
 					}
 					if (pNode->pCommandQueueDebugNameW != nullptr)
 					{
-						wi::helper::StringConvert(pNode->pCommandQueueDebugNameW, commandqueuename);
+						lb::helper::StringConvert(pNode->pCommandQueueDebugNameW, commandqueuename);
 					}
 
 					log += std::string("[DRED] Commandlist = [") + commandlistname + std::string("], CommandQueue = [") + commandqueuename + std::string("], lastCompletedOp = [") + std::to_string(lastCompletedOp) + "], BreadCrumbCount = [" + std::to_string(pNode->BreadcrumbCount) + "]\n";
@@ -5720,7 +5720,7 @@ std::mutex queue_locker;
 						auto it = contextStrings.find(op);
 						if (it != contextStrings.end())
 						{
-							wi::helper::StringConvert(it->second, contextString);
+							lb::helper::StringConvert(it->second, contextString);
 						}
 
 						const char* opName = (breadcrumbOp < arraysize(OpNames)) ? OpNames[breadcrumbOp] : "Unknown Op";
@@ -5752,7 +5752,7 @@ std::mutex queue_locker;
 						char objectname[1024] = {};
 						if (pNode->ObjectNameW != nullptr)
 						{
-							wi::helper::StringConvert(pNode->ObjectNameW, objectname);
+							lb::helper::StringConvert(pNode->ObjectNameW, objectname);
 						}
 						log += std::string("\tName: ") + objectname + std::string(" ") + AllocTypeName + std::string("\n");
 						pNode = pNode->pNext;
@@ -5770,7 +5770,7 @@ std::mutex queue_locker;
 						char objectname[1024] = {};
 						if (pNode->ObjectNameW != nullptr)
 						{
-							wi::helper::StringConvert(pNode->ObjectNameW, objectname);
+							lb::helper::StringConvert(pNode->ObjectNameW, objectname);
 						}
 						log += std::string("\tName: ") + objectname + std::string(" (Type: ") + AllocTypeName + std::string(")\n");
 						pNode = pNode->pNext;
@@ -5781,13 +5781,13 @@ std::mutex queue_locker;
 
 		if (!log.empty())
 		{
-			wi::backlog::post(log, wi::backlog::LogLevel::Error);
+			lb::backlog::post(log, lb::backlog::LogLevel::Error);
 		}
 
 		std::string message = "D3D12: device removed, cause: ";
 		message += removedReasonString;
-		wi::helper::messageBox(message, "Error!");
-		wi::platform::Exit();
+		lb::helper::messageBox(message, "Error!");
+		lb::platform::Exit();
 #endif // PLATFORM_WINDOWS_DESKTOP
 	}
 
@@ -5901,10 +5901,10 @@ std::mutex queue_locker;
 	{
 		CommandQueue& q = queues[queue];
 
-		thread_local wi::vector<D3D12_TILED_RESOURCE_COORDINATE> tiled_resource_coordinates;
-		thread_local wi::vector<D3D12_TILE_REGION_SIZE> tiled_region_sizes;
-		thread_local wi::vector<D3D12_TILE_RANGE_FLAGS> tile_range_flags;
-		thread_local wi::vector<uint32_t> range_start_offsets;
+		thread_local lb::vector<D3D12_TILED_RESOURCE_COORDINATE> tiled_resource_coordinates;
+		thread_local lb::vector<D3D12_TILE_REGION_SIZE> tiled_region_sizes;
+		thread_local lb::vector<D3D12_TILE_RANGE_FLAGS> tile_range_flags;
+		thread_local lb::vector<uint32_t> range_start_offsets;
 
 		for (uint32_t c = 0; c < command_count; ++c)
 		{
@@ -6750,8 +6750,8 @@ std::mutex queue_locker;
 		else
 		{
 			size_t pipeline_hash = 0;
-			wi::helper::hash_combine(pipeline_hash, internal_state->hash);
-			wi::helper::hash_combine(pipeline_hash, commandlist.renderpass_info.get_hash());
+			lb::helper::hash_combine(pipeline_hash, internal_state->hash);
+			lb::helper::hash_combine(pipeline_hash, commandlist.renderpass_info.get_hash());
 			if (commandlist.prev_pipeline_hash == pipeline_hash)
 			{
 				return;
@@ -7742,7 +7742,7 @@ std::mutex queue_locker;
 		if (commandlist.queue == QUEUE_VIDEO_DECODE)
 			return;
 		wchar_t text[128];
-		if (wi::helper::StringConvert(name, text) > 0)
+		if (lb::helper::StringConvert(name, text) > 0)
 		{
 			PIXBeginEvent(commandlist.GetGraphicsCommandList(), 0xFF000000, text);
 		}
@@ -7760,7 +7760,7 @@ std::mutex queue_locker;
 		if (commandlist.queue == QUEUE_VIDEO_DECODE)
 			return;
 		wchar_t text[128];
-		if (wi::helper::StringConvert(name, text) > 0)
+		if (lb::helper::StringConvert(name, text) > 0)
 		{
 			PIXSetMarker(commandlist.GetGraphicsCommandList(), 0xFFFF0000, text);
 		}

@@ -1,36 +1,36 @@
 #pragma once
 class EditorComponent;
 
-class AnimationWindow : public wi::gui::Window
+class AnimationWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::ComboBox modeComboBox;
-	wi::gui::Button loopTypeButton;
-	wi::gui::Button	playButton;
-	wi::gui::Button	playFromStartButton;
-	wi::gui::Button	backwardsButton;
-	wi::gui::Button	backwardsFromEndButton;
-	wi::gui::Button	stopButton;
-	wi::gui::Slider	timerSlider;
-	wi::gui::Slider	amountSlider;
-	wi::gui::Slider	speedSlider;
-	wi::gui::TextInputField startInput;
-	wi::gui::TextInputField endInput;
+	lb::gui::Label infoLabel;
+	lb::gui::ComboBox modeComboBox;
+	lb::gui::Button loopTypeButton;
+	lb::gui::Button	playButton;
+	lb::gui::Button	playFromStartButton;
+	lb::gui::Button	backwardsButton;
+	lb::gui::Button	backwardsFromEndButton;
+	lb::gui::Button	stopButton;
+	lb::gui::Slider	timerSlider;
+	lb::gui::Slider	amountSlider;
+	lb::gui::Slider	speedSlider;
+	lb::gui::TextInputField startInput;
+	lb::gui::TextInputField endInput;
 
-	wi::gui::ComboBox recordCombo;
-	wi::gui::TreeList keyframesList;
+	lb::gui::ComboBox recordCombo;
+	lb::gui::TreeList keyframesList;
 
-	wi::gui::ComboBox retargetCombo;
+	lb::gui::ComboBox retargetCombo;
 
-	wi::gui::CheckBox rootMotionCheckBox;
-	wi::gui::ComboBox rootBoneComboBox;
+	lb::gui::CheckBox rootMotionCheckBox;
+	lb::gui::ComboBox rootBoneComboBox;
 
 	void Update();
 

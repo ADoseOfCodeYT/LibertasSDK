@@ -1,27 +1,27 @@
 #pragma once
 class EditorComponent;
 
-class MetadataWindow : public wi::gui::Window
+class MetadataWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::ComboBox presetCombo;
-	wi::gui::ComboBox addCombo;
+	lb::gui::ComboBox presetCombo;
+	lb::gui::ComboBox addCombo;
 
 	struct Entry
 	{
-		wi::gui::Button remove;
-		wi::gui::TextInputField name;
-		wi::gui::TextInputField value;
-		wi::gui::CheckBox check;
+		lb::gui::Button remove;
+		lb::gui::TextInputField name;
+		lb::gui::TextInputField value;
+		lb::gui::CheckBox check;
 		bool is_bool = false;
 	};
-	wi::vector<Entry> entries;
+	lb::vector<Entry> entries;
 
 	void RefreshEntries();
 

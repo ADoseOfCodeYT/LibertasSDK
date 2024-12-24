@@ -4,7 +4,7 @@
 #include "wiLoadingScreen.h"
 #include "wiRenderPath2D_BindLua.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	class LoadingScreen_BindLua : public RenderPath2D_BindLua

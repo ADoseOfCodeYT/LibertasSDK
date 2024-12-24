@@ -34,10 +34,10 @@
 
 #define CONTENT_DIR "../../Content/"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace lb::ecs;
+using namespace lb::scene;
+using namespace lb::graphics;
+using namespace lb::primitive;
 
 
 Shader imguiVS;
@@ -53,7 +53,7 @@ ImFont* iconfont;
 #ifdef _WIN32
 HWND hWnd = NULL;
 #endif
-wi::graphics::SwapChain myswapChain;
+lb::graphics::SwapChain myswapChain;
 void style_dark_ruda(void);
 void add_my_font(const char* fontpath);
 Example_ImGuiRenderer* active_render = nullptr;
@@ -92,14 +92,14 @@ bool ImGui_Impl_CreateDeviceObjects()
 	textureData.row_pitch = width * GetFormatStride(textureDesc.format);
 	textureData.slice_pitch = textureData.row_pitch * height;
 
-	wi::graphics::GetDevice()->CreateTexture(&textureDesc, &textureData, &fontTexture);
+	lb::graphics::GetDevice()->CreateTexture(&textureDesc, &textureData, &fontTexture);
 
 	SamplerDesc samplerDesc;
 	samplerDesc.address_u = TextureAddressMode::WRAP;
 	samplerDesc.address_v = TextureAddressMode::WRAP;
 	samplerDesc.address_w = TextureAddressMode::WRAP;
 	samplerDesc.filter = Filter::MIN_MAG_MIP_LINEAR;
-	wi::graphics::GetDevice()->CreateSampler(&samplerDesc, &sampler);
+	lb::graphics::GetDevice()->CreateSampler(&samplerDesc, &sampler);
 
 	// Store our identifier
 	io.Fonts->SetTexID((ImTextureID)&fontTexture);
@@ -116,11 +116,11 @@ bool ImGui_Impl_CreateDeviceObjects()
 	desc.vs = &imguiVS;
 	desc.ps = &imguiPS;
 	desc.il = &imguiInputLayout;
-	desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHREAD);
-	desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-	desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+	desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEPTHREAD);
+	desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_DOUBLESIDED);
+	desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 	desc.pt = PrimitiveTopology::TRIANGLELIST;
-	wi::graphics::GetDevice()->CreatePipelineState(&desc, &imguiPSO);
+	lb::graphics::GetDevice()->CreatePipelineState(&desc, &imguiPSO);
 
 	return true;
 }
@@ -141,13 +141,13 @@ void Example_ImGui::Initialize()
 {
 	// Compile shaders
 	{
-		auto shaderPath = wi::renderer::GetShaderSourcePath();
-		wi::renderer::SetShaderSourcePath(wi::helper::GetCurrentPath() + "/");
+		auto shaderPath = lb::renderer::GetShaderSourcePath();
+		lb::renderer::SetShaderSourcePath(lb::helper::GetCurrentPath() + "/");
 
-		wi::renderer::LoadShader(ShaderStage::VS, imguiVS, "ImGuiVS.cso");
-		wi::renderer::LoadShader(ShaderStage::PS, imguiPS, "ImGuiPS.cso");
+		lb::renderer::LoadShader(ShaderStage::VS, imguiVS, "ImGuiVS.cso");
+		lb::renderer::LoadShader(ShaderStage::PS, imguiPS, "ImGuiPS.cso");
 
-		wi::renderer::SetShaderSourcePath(shaderPath);
+		lb::renderer::SetShaderSourcePath(shaderPath);
 	}
 
 	// Setup Dear ImGui context
@@ -200,12 +200,12 @@ void Example_ImGui::Initialize()
 
 	myswapChain = this->swapChain;
 
-	wi::backlog::Lock();
+	lb::backlog::Lock();
 
 	ActivatePath(&renderer);
 }
 
-void Example_ImGui::Compose(wi::graphics::CommandList cmd)
+void Example_ImGui::Compose(lb::graphics::CommandList cmd)
 {
 	Application::Compose(cmd);
 
@@ -227,7 +227,7 @@ void Example_ImGui::Compose(wi::graphics::CommandList cmd)
 
 	auto* bd = ImGui_Impl_GetBackendData();
 
-	GraphicsDevice* device = wi::graphics::GetDevice();
+	GraphicsDevice* device = lb::graphics::GetDevice();
 
 	// Get memory for vertex and index buffers
 	const uint64_t vbSize = sizeof(ImDrawVert) * drawData->TotalVtxCount;
@@ -373,26 +373,26 @@ void Example_ImGuiRenderer::Load()
 {
 	// Reset all state that tests might have modified:
 	setFXAAEnabled(true);
-	wi::eventhandler::SetVSync(true);
-	wi::renderer::ClearWorld(wi::scene::GetScene());
-	wi::scene::GetScene().weather = WeatherComponent();
+	lb::eventhandler::SetVSync(true);
+	lb::renderer::ClearWorld(lb::scene::GetScene());
+	lb::scene::GetScene().weather = WeatherComponent();
 	setAO(RenderPath3D::AO_SSAO);
 
 	this->ClearSprites();
 	this->ClearFonts();
-	if (wi::lua::GetLuaState() != nullptr)
+	if (lb::lua::GetLuaState() != nullptr)
 	{
-		wi::lua::KillProcesses();
+		lb::lua::KillProcesses();
 	}
 
 	// Reset camera position:
 	TransformComponent transform;
 	transform.Translate(XMFLOAT3(0, 2.f, -4.5f));
 	transform.UpdateTransform();
-	wi::scene::GetCamera().TransformCamera(transform);
+	lb::scene::GetCamera().TransformCamera(transform);
 
 	// Load model.
-	wi::scene::LoadModel(CONTENT_DIR "models/bloom_test.wiscene");
+	lb::scene::LoadModel(CONTENT_DIR "models/bloom_test.wiscene");
 
 	RenderPath3D::Load();
 
@@ -407,11 +407,11 @@ bool show_performance_data = true;
 bool redock_windows_on_start = true;
 bool imgui_got_focus = false, imgui_got_focus_last = false;
 ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-wi::scene::TransformComponent camera_transform;
+lb::scene::TransformComponent camera_transform;
 float camera_pos[3] = { 4.0, 6.0, -15 }, camera_ang[3] = { 22, -13, 0 };
 float font_scale = 1.0;
-wi::ecs::Entity highlight_entity = -1;
-wi::ecs::Entity subset_entity = -1;
+lb::ecs::Entity highlight_entity = -1;
+lb::ecs::Entity subset_entity = -1;
 ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD); //LOCAL
 bool useSnap = false;
@@ -434,8 +434,8 @@ void Example_ImGuiRenderer::Update(float dt)
 {
 	// Start the Dear ImGui frame
 	auto* backendData = ImGui_Impl_GetBackendData();
-	Scene& scene = wi::scene::GetScene();
-	CameraComponent& camera = wi::scene::GetCamera();
+	Scene& scene = lb::scene::GetScene();
+	CameraComponent& camera = lb::scene::GetCamera();
 	ImGuiIO& imgui_io = ImGui::GetIO();
 	imgui_got_focus = false;
 	bIsUsingWidget = false;
@@ -540,7 +540,7 @@ void Example_ImGuiRenderer::Update(float dt)
 			if (object != nullptr)
 			{
 				//PE: Need to disable physics while editing.
-				wi::physics::SetSimulationEnabled(false);
+				lb::physics::SetSimulationEnabled(false);
 
 				TransformComponent* obj_tranform = scene.transforms.GetComponent(highlight_entity);
 
@@ -574,7 +574,7 @@ void Example_ImGuiRenderer::Update(float dt)
 
 
 					//PE: TODO - if mesh has pivot at center like sponza, use object aabb.getCenter(); as start matrix obj_world._41,obj_world._42,obj_world._43.
-					//const wi::primitive::AABB& aabb = *scene.aabb_objects.GetComponent(highlight_entity);
+					//const lb::primitive::AABB& aabb = *scene.aabb_objects.GetComponent(highlight_entity);
 					//XMFLOAT3 center = aabb.getCenter();
 
 					ImGuizmo::Manipulate(fCamView, fCamProj, mCurrentGizmoOperation, mCurrentGizmoMode, &obj_world._11, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
@@ -650,18 +650,18 @@ void Example_ImGuiRenderer::Update(float dt)
 			ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0.0f, 3.0f));
 			if (ImGui::Combo("##SceneDemo", &current_scene, wiscene_items, IM_ARRAYSIZE(wiscene_items)))
 			{
-				std::string ext = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(wiscene_file_items[current_scene]));
+				std::string ext = lb::helper::toUpper(lb::helper::GetExtensionFromFileName(wiscene_file_items[current_scene]));
 				if (!ext.compare("GLB")) // binary gltf
 				{
 					scene.Clear();
 					Scene scene;
 					ImportModel_GLTF(wiscene_file_items[current_scene], scene);
-					wi::scene::GetScene().Merge(scene);
+					lb::scene::GetScene().Merge(scene);
 				}
 				else
 				{
 					scene.Clear();
-					wi::scene::LoadModel(wiscene_file_items[current_scene]);
+					lb::scene::LoadModel(wiscene_file_items[current_scene]);
 				}
 
 			}
@@ -713,7 +713,7 @@ void Example_ImGuiRenderer::Update(float dt)
 		{
 			ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0.0f, 3.0f));
 
-			wi::scene::Scene* pScene = &wi::scene::GetScene();
+			lb::scene::Scene* pScene = &lb::scene::GetScene();
 			auto size = pScene->materials.GetCount();
 			std::vector<void*> already_registred; //PE: We reuse textures, so ignore when reused.
 			int columns = 2;
@@ -727,7 +727,7 @@ void Example_ImGuiRenderer::Update(float dt)
 				{
 					if (!pScene->materials[i].textures[a].name.empty())
 					{
-						wi::Resource& image = pScene->materials[i].textures[a].resource;
+						lb::Resource& image = pScene->materials[i].textures[a].resource;
 
 						if (image.IsValid())
 						{
@@ -746,7 +746,7 @@ void Example_ImGuiRenderer::Update(float dt)
 								{
 									ImGui::BeginTooltip();
 									ImGui::ImageButton(lpTexture, ImVec2(300, 300 * height_ratio));
-									std::string filename = wi::helper::GetFileNameFromPath(pScene->materials[i].textures[a].name);
+									std::string filename = lb::helper::GetFileNameFromPath(pScene->materials[i].textures[a].name);
 									filename += " (" + std::to_string((int)iwidth) + "x" + std::to_string((int)iheight) + ")";
 
 									ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2((ImGui::GetContentRegionAvail().x * 0.5f) - (ImGui::CalcTextSize(filename.c_str()).x * 0.5f), 0.0f));
@@ -772,10 +772,10 @@ void Example_ImGuiRenderer::Update(float dt)
 				if (!boundSizing)
 				{
 					//PE: This only diplay the bounding box.
-					const wi::primitive::AABB& aabb = scene.aabb_objects[scene.objects.GetIndex(highlight_entity)];
+					const lb::primitive::AABB& aabb = scene.aabb_objects[scene.objects.GetIndex(highlight_entity)];
 					XMFLOAT4X4 hoverBox;
 					XMStoreFloat4x4(&hoverBox, aabb.getAsBoxMatrix());
-					wi::renderer::DrawBox(hoverBox, XMFLOAT4(1.0f, 0.9f, 0.5f, 0.4f));
+					lb::renderer::DrawBox(hoverBox, XMFLOAT4(1.0f, 0.9f, 0.5f, 0.4f));
 				}
 			}
 		}
@@ -785,10 +785,10 @@ void Example_ImGuiRenderer::Update(float dt)
 		{
 			long mouse_x = (long) ImGui::GetMousePos().x;
 			long mouse_y = (long) ImGui::GetMousePos().y;
-			wi::primitive::Ray pickRay = wi::renderer::GetPickRay((long)mouse_x, (long)mouse_y, *this);
+			lb::primitive::Ray pickRay = lb::renderer::GetPickRay((long)mouse_x, (long)mouse_y, *this);
 			if (ImGui::IsMouseClicked(0))
 			{
-				PickResult hovered = wi::scene::Pick(pickRay, wi::enums::FILTER_ALL);
+				PickResult hovered = lb::scene::Pick(pickRay, lb::enums::FILTER_ALL);
 
 				subset_entity = INVALID_ENTITY;
 				if (hovered.subsetIndex > 0)
@@ -856,7 +856,7 @@ void Example_ImGuiRenderer::Update(float dt)
 				const MeshComponent* mesh = scene.meshes.GetComponent(object->meshID);
 				if (mesh)
 				{
-					wi::primitive::AABB aabb = mesh->aabb;
+					lb::primitive::AABB aabb = mesh->aabb;
 					bounds[0] = aabb._min.x;
 					bounds[1] = aabb._min.y;
 					bounds[2] = aabb._min.z;
@@ -1037,13 +1037,13 @@ void Example_ImGuiRenderer::Update(float dt)
 			static bool bVSync = true;
 			if (ImGui::Checkbox("VSync", &bVSync))
 			{
-				wi::eventhandler::SetVSync(bVSync);
+				lb::eventhandler::SetVSync(bVSync);
 			}
 
-			bool bPhysics = wi::physics::IsSimulationEnabled();
+			bool bPhysics = lb::physics::IsSimulationEnabled();
 			if (ImGui::Checkbox("Physics On", &bPhysics))
 			{
-				wi::physics::SetSimulationEnabled(bPhysics);
+				lb::physics::SetSimulationEnabled(bPhysics);
 			}
 
 			static bool bEyeAdaption = active_render->getEyeAdaptionEnabled();
@@ -1055,12 +1055,12 @@ void Example_ImGuiRenderer::Update(float dt)
 			static bool bDrawGrid = false;
 			if (ImGui::Checkbox("Draw Grid", &bDrawGrid))
 			{
-				wi::renderer::SetToDrawGridHelper(bDrawGrid);
+				lb::renderer::SetToDrawGridHelper(bDrawGrid);
 			}
 			static bool bTemporalAAEnabled = false;
 			if (ImGui::Checkbox("Temporal AA", &bTemporalAAEnabled))
 			{
-				wi::renderer::SetTemporalAAEnabled(bTemporalAAEnabled);
+				lb::renderer::SetTemporalAAEnabled(bTemporalAAEnabled);
 			}
 			static bool bFXAAEnabled = true;
 			if (ImGui::Checkbox("FXAA", &bFXAAEnabled))
@@ -1070,7 +1070,7 @@ void Example_ImGuiRenderer::Update(float dt)
 			static bool bVoxelGIEnabled = false;
 			if (ImGui::Checkbox("Voxel GI", &bVoxelGIEnabled))
 			{
-				wi::renderer::SetVXGIEnabled(bVoxelGIEnabled);
+				lb::renderer::SetVXGIEnabled(bVoxelGIEnabled);
 			}
 
 		}
@@ -1169,10 +1169,10 @@ void Example_ImGuiRenderer::Update(float dt)
 			if (ImGui::Button("Take Screenshot", ImVec2(IMGUIBUTTONWIDE, 0)))
 			{
 				std::string name = "scr" + std::to_string(screenshots.size()) + ".jpg";
-				wi::helper::screenshot(myswapChain, name);
+				lb::helper::screenshot(myswapChain, name);
 
 				MaterialComponent::TextureMap tm;
-				tm.resource = wi::resourcemanager::Load(name);
+				tm.resource = lb::resourcemanager::Load(name);
 				tm.name = name;
 				screenshots.push_back(tm);
 			}
@@ -1223,7 +1223,7 @@ void Example_ImGuiRenderer::Update(float dt)
 		int columns = 7;
 		ImGui::BeginColumns("##debugger", columns, ImGuiOldColumnFlags_NoBorder | ImGuiOldColumnFlags_NoResize);
 
-		std::vector< wi::graphics::Texture > debug_textures;
+		std::vector< lb::graphics::Texture > debug_textures;
 		std::vector< std::string > debug_texture_name;
 
 		//PE: TODO , add shaders that are able to display things like rtPrimitiveID (divide option).
@@ -1328,7 +1328,7 @@ void Example_ImGuiRenderer::Update(float dt)
 		ImGui::PushItemWidth(-(IMGUIBUTTONWIDE * 2 + 24 + 20));
 		if (ImGui::InputText("##LuaCommand", &lua[0], 2048, ImGuiInputTextFlags_EnterReturnsTrue))
 		{
-			wi::lua::RunText(lua);
+			lb::lua::RunText(lua);
 			lua_history.push_back(lua);
 			#ifdef _WIN32
 			strcpy_s(lua, "");
@@ -1384,11 +1384,11 @@ void Example_ImGuiRenderer::Update(float dt)
 
 		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0, 3));
 
-		std::string log = wi::backlog::getText();
+		std::string log = lb::backlog::getText();
 		if (log.size() > 0)
 		{
 			lastlog += log;
-			wi::backlog::clear();
+			lb::backlog::clear();
 		}
 
 		ImGui::BeginChild("##log", ImVec2(0.0f, 0.0f), false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
@@ -1435,19 +1435,19 @@ void Example_ImGuiRenderer::Update(float dt)
 		static bool camControlStart = true;
 		if (camControlStart)
 		{
-			originalMouse = wi::input::GetPointer();
+			originalMouse = lb::input::GetPointer();
 		}
 
-		if (wi::input::Down(wi::input::MOUSE_BUTTON_MIDDLE) || wi::input::Down(wi::input::MOUSE_BUTTON_RIGHT))
+		if (lb::input::Down(lb::input::MOUSE_BUTTON_MIDDLE) || lb::input::Down(lb::input::MOUSE_BUTTON_RIGHT))
 		{
 			camControlStart = false;
 			// Mouse delta from hardware read:
-			float xDif = wi::input::GetMouseState().delta_position.x;
-			float yDif = wi::input::GetMouseState().delta_position.y;
+			float xDif = lb::input::GetMouseState().delta_position.x;
+			float yDif = lb::input::GetMouseState().delta_position.y;
 			xDif = 0.1f * xDif;
 			yDif = 0.1f * yDif;
-			wi::input::SetPointer(originalMouse);
-			wi::input::HidePointer(true);
+			lb::input::SetPointer(originalMouse);
+			lb::input::HidePointer(true);
 			camera_ang[0] += yDif;
 			camera_ang[1] += xDif;
 			if (camera_ang[0] < -89.999f)  camera_ang[0] = -89.999f;
@@ -1456,7 +1456,7 @@ void Example_ImGuiRenderer::Update(float dt)
 		else
 		{
 			camControlStart = true;
-			wi::input::HidePointer(false);
+			lb::input::HidePointer(false);
 		}
 
 		float movespeed = CAMERAMOVESPEED;
@@ -1527,7 +1527,7 @@ void Example_ImGuiRenderer::DisplayPerformanceData(bool* p_open)
 	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
 	if (ImGui::Begin("##DisplayPerformanceData", p_open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
 	{
-		ImGui::Text("Libertas Engine (%s) - FPS: %.1f", wi::version::GetVersionString(),ImGui::GetIO().Framerate);
+		ImGui::Text("Libertas Engine (%s) - FPS: %.1f", lb::version::GetVersionString(),ImGui::GetIO().Framerate);
 	}
 	ImGui::End();
 }

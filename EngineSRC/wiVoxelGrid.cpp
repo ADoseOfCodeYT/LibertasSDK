@@ -6,10 +6,10 @@
 
 #include "Utility/meshoptimizer/meshoptimizer.h"
 
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace lb::graphics;
+using namespace lb::primitive;
 
-namespace wi
+namespace lb
 {
 	void VoxelGrid::init(uint32_t dimX, uint32_t dimY, uint32_t dimZ)
 	{
@@ -108,7 +108,7 @@ namespace wi
 			}
 		}
 	}
-	void VoxelGrid::inject_aabb(const wi::primitive::AABB& aabb, bool subtract)
+	void VoxelGrid::inject_aabb(const lb::primitive::AABB& aabb, bool subtract)
 	{
 		const XMVECTOR CENTER = XMLoadFloat3(&center);
 		const XMVECTOR RESOLUTION = XMLoadUInt3(&resolution);
@@ -140,7 +140,7 @@ namespace wi
 		XMStoreUInt3(&mini, MIN);
 		XMStoreUInt3(&maxi, MAX);
 
-		wi::primitive::AABB aabb_src;
+		lb::primitive::AABB aabb_src;
 		XMStoreFloat3(&aabb_src._min, MIN);
 		XMStoreFloat3(&aabb_src._max, MAX);
 
@@ -168,7 +168,7 @@ namespace wi
 			}
 		}
 	}
-	void VoxelGrid::inject_sphere(const wi::primitive::Sphere& sphere, bool subtract)
+	void VoxelGrid::inject_sphere(const lb::primitive::Sphere& sphere, bool subtract)
 	{
 		const XMVECTOR CENTER = XMLoadFloat3(&center);
 		const XMVECTOR RESOLUTION = XMLoadUInt3(&resolution);
@@ -210,7 +210,7 @@ namespace wi
 			{
 				for (uint32_t z = mini.z; z < maxi.z; ++z)
 				{
-					wi::primitive::AABB voxel_aabb;
+					lb::primitive::AABB voxel_aabb;
 					XMUINT3 voxel_center_coord = XMUINT3(x, y, z);
 					XMFLOAT3 voxel_center_world = coord_to_world(voxel_center_coord);
 					voxel_aabb.createFromHalfWidth(voxel_center_world, voxelSize);
@@ -234,7 +234,7 @@ namespace wi
 			}
 		}
 	}
-	void VoxelGrid::inject_capsule(const wi::primitive::Capsule& capsule, bool subtract)
+	void VoxelGrid::inject_capsule(const lb::primitive::Capsule& capsule, bool subtract)
 	{
 		const XMVECTOR CENTER = XMLoadFloat3(&center);
 		const XMVECTOR RESOLUTION = XMLoadUInt3(&resolution);
@@ -275,7 +275,7 @@ namespace wi
 			{
 				for (uint32_t z = mini.z; z < maxi.z; ++z)
 				{
-					wi::primitive::AABB voxel_aabb;
+					lb::primitive::AABB voxel_aabb;
 					XMUINT3 voxel_center_coord = XMUINT3(x, y, z);
 					XMFLOAT3 voxel_center_world = coord_to_world(voxel_center_coord);
 					voxel_aabb.createFromHalfWidth(voxel_center_world, voxelSize);
@@ -414,13 +414,13 @@ namespace wi
 		voxelSize_rcp.z = 1.0f / voxelSize.z;
 	}
 
-	wi::primitive::AABB VoxelGrid::get_aabb() const
+	lb::primitive::AABB VoxelGrid::get_aabb() const
 	{
 		AABB aabb;
 		aabb.createFromHalfWidth(center, XMFLOAT3(resolution.x * voxelSize.x, resolution.y * voxelSize.y, resolution.z * voxelSize.z));
 		return aabb;
 	}
-	void VoxelGrid::from_aabb(const wi::primitive::AABB& aabb)
+	void VoxelGrid::from_aabb(const lb::primitive::AABB& aabb)
 	{
 		center = aabb.getCenter();
 		XMFLOAT3 halfwidth = aabb.getHalfWidth();
@@ -508,7 +508,7 @@ namespace wi
 		XMStoreUInt3(&mini, MIN);
 		XMStoreUInt3(&maxi, MAX);
 
-		wi::primitive::AABB aabb_src;
+		lb::primitive::AABB aabb_src;
 		XMStoreFloat3(&aabb_src._min, MIN);
 		XMStoreFloat3(&aabb_src._max, MAX);
 
@@ -580,7 +580,7 @@ namespace wi
 	{
 		VoxelGrid traversed;
 		traversed.init(resolution.x, resolution.y, resolution.z);
-		wi::vector<int3> stack;
+		lb::vector<int3> stack;
 
 		for(size_t i=0;i<voxels.size();++i)
 		{
@@ -646,7 +646,7 @@ namespace wi
 		}
 	}
 
-	void VoxelGrid::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void VoxelGrid::Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -684,12 +684,12 @@ namespace wi
 		static void LoadShaders()
 		{
 			PipelineStateDesc desc;
-			desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-			desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-			desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHREAD);
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_FRONT);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_ADDITIVE);
+			desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+			desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+			desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+			desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEPTHREAD);
+			desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_FRONT);
+			desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_ADDITIVE);
 			desc.pt = PrimitiveTopology::TRIANGLELIST;
 
 			GraphicsDevice* device = GetDevice();
@@ -703,7 +703,7 @@ namespace wi
 		// add box renderer for whole volume:
 		XMFLOAT4X4 boxmat;
 		XMStoreFloat4x4(&boxmat, get_aabb().getAsBoxMatrix());
-		wi::renderer::DrawBox(boxmat, debug_color_extent);
+		lb::renderer::DrawBox(boxmat, debug_color_extent);
 
 		// Add a cube for every filled voxel below:
 		uint32_t numVoxels = 0;
@@ -722,7 +722,7 @@ namespace wi
 		if (!shaders_loaded)
 		{
 			shaders_loaded = true;
-			static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+			static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 			LoadShaders();
 		}
 
@@ -1340,13 +1340,13 @@ namespace wi
 	}
 
 	void VoxelGrid::create_mesh(
-		wi::vector<uint32_t>& indices,
-		wi::vector<XMFLOAT3>& vertices,
+		lb::vector<uint32_t>& indices,
+		lb::vector<XMFLOAT3>& vertices,
 		bool simplify
 	)
 	{
 		TRIANGLE triangles[10];
-		wi::vector<XMFLOAT3> unindexed_vertices;
+		lb::vector<XMFLOAT3> unindexed_vertices;
 		// Note: step over the voxel grid's perimeter as well, without that the polygonize can leave holes on the sides
 		for (int x = -1; x < (int)resolution.x; ++x)
 		{
@@ -1423,8 +1423,8 @@ namespace wi
 			unindexed_vertex_count = vertices.size();
 			size_t vertex_count = meshopt_generateVertexRemap(&remap[0], lod.data(), index_count, &vertices[0], unindexed_vertex_count, sizeof(XMFLOAT3));
 
-			wi::vector<uint32_t> simplified_indices(index_count);
-			wi::vector<XMFLOAT3> simplified_vertices(vertex_count);
+			lb::vector<uint32_t> simplified_indices(index_count);
+			lb::vector<XMFLOAT3> simplified_vertices(vertex_count);
 
 			meshopt_remapIndexBuffer(simplified_indices.data(), lod.data(), index_count, &remap[0]);
 			meshopt_remapVertexBuffer(simplified_vertices.data(), &vertices[0], unindexed_vertex_count, sizeof(XMFLOAT3), &remap[0]);

@@ -4,7 +4,7 @@
 #include "wiArchive.h"
 #include "wiRandom.h"
 
-namespace wi::noise
+namespace lb::noise
 {
 	// Based on: https://github.com/Reputeless/PerlinNoise
 	struct Perlin
@@ -13,7 +13,7 @@ namespace wi::noise
 
 		void init(uint32_t seed)
 		{
-			wi::random::RNG rng(seed);
+			lb::random::RNG rng(seed);
 			for (int i = 0; i < arraysize(state); ++i)
 			{
 				state[i] = uint8_t(rng.next_uint());
@@ -97,7 +97,7 @@ namespace wi::noise
 			return result;
 		}
 
-		void Serialize(wi::Archive& archive)
+		void Serialize(lb::Archive& archive)
 		{
 			if (archive.IsReadMode())
 			{

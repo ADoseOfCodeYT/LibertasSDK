@@ -4,7 +4,7 @@
 
 #include "Utility/stb_rect_pack.h"
 
-namespace wi::rectpacker
+namespace lb::rectpacker
 {
 	using Rect = stbrp_rect;
 
@@ -14,8 +14,8 @@ namespace wi::rectpacker
 	struct State
 	{
 		stbrp_context context = {};
-		wi::vector<stbrp_node> nodes;
-		wi::vector<Rect> rects;
+		lb::vector<stbrp_node> nodes;
+		lb::vector<Rect> rects;
 		int width = 0;
 		int height = 0;
 

@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "SoftBodyWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void SoftBodyWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_SOFTBODY " Soft Body Physics", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_SOFTBODY " Soft Body Physics", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(580, 320));
 
 	closeButton.SetTooltip("Delete SoftBodyPhysicsComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -51,8 +51,8 @@ void SoftBodyWindow::Create(EditorComponent* _editor)
 	resetButton.SetTooltip("Set the detail to keep between simulation and graphics mesh.\nLower = less detailed, higher = more detailed.");
 	resetButton.SetSize(XMFLOAT2(wid, hei));
 	resetButton.SetPos(XMFLOAT2(x, y));
-	resetButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	resetButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoftBodyPhysicsComponent* physicscomponent = scene.softbodies.GetComponent(x.entity);
@@ -77,8 +77,8 @@ void SoftBodyWindow::Create(EditorComponent* _editor)
 	detailSlider.SetTooltip("Set the detail to keep between simulation and graphics mesh.\nLower = less detailed, higher = more detailed.");
 	detailSlider.SetSize(XMFLOAT2(wid, hei));
 	detailSlider.SetPos(XMFLOAT2(x, y));
-	detailSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	detailSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoftBodyPhysicsComponent* physicscomponent = scene.softbodies.GetComponent(x.entity);
@@ -103,8 +103,8 @@ void SoftBodyWindow::Create(EditorComponent* _editor)
 	massSlider.SetTooltip("Set the mass amount for the physics engine.");
 	massSlider.SetSize(XMFLOAT2(wid, hei));
 	massSlider.SetPos(XMFLOAT2(x, y));
-	massSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	massSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoftBodyPhysicsComponent* physicscomponent = scene.softbodies.GetComponent(x.entity);
@@ -130,8 +130,8 @@ void SoftBodyWindow::Create(EditorComponent* _editor)
 	frictionSlider.SetTooltip("Set the friction amount for the physics engine.");
 	frictionSlider.SetSize(XMFLOAT2(wid, hei));
 	frictionSlider.SetPos(XMFLOAT2(x, y += step));
-	frictionSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	frictionSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoftBodyPhysicsComponent* physicscomponent = scene.softbodies.GetComponent(x.entity);
@@ -156,8 +156,8 @@ void SoftBodyWindow::Create(EditorComponent* _editor)
 	restitutionSlider.SetTooltip("Set the restitution amount for the physics engine.");
 	restitutionSlider.SetSize(XMFLOAT2(wid, hei));
 	restitutionSlider.SetPos(XMFLOAT2(x, y += step));
-	restitutionSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	restitutionSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoftBodyPhysicsComponent* physicscomponent = scene.softbodies.GetComponent(x.entity);
@@ -182,8 +182,8 @@ void SoftBodyWindow::Create(EditorComponent* _editor)
 	pressureSlider.SetTooltip("Set the pressure amount for the physics engine.");
 	pressureSlider.SetSize(XMFLOAT2(wid, hei));
 	pressureSlider.SetPos(XMFLOAT2(x, y += step));
-	pressureSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	pressureSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoftBodyPhysicsComponent* physicscomponent = scene.softbodies.GetComponent(x.entity);
@@ -209,8 +209,8 @@ void SoftBodyWindow::Create(EditorComponent* _editor)
 	vertexRadiusSlider.SetTooltip("Set how much distance vertices should keep from other physics bodies.");
 	vertexRadiusSlider.SetSize(XMFLOAT2(wid, hei));
 	vertexRadiusSlider.SetPos(XMFLOAT2(x, y += step));
-	vertexRadiusSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	vertexRadiusSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoftBodyPhysicsComponent* physicscomponent = scene.softbodies.GetComponent(x.entity);
@@ -236,8 +236,8 @@ void SoftBodyWindow::Create(EditorComponent* _editor)
 	windCheckbox.SetTooltip("Enable/disable wind force on this soft body.");
 	windCheckbox.SetSize(XMFLOAT2(hei, hei));
 	windCheckbox.SetPos(XMFLOAT2(x, y += step));
-	windCheckbox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	windCheckbox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SoftBodyPhysicsComponent* physicscomponent = scene.softbodies.GetComponent(x.entity);
@@ -287,7 +287,7 @@ void SoftBodyWindow::SetEntity(Entity entity)
 
 void SoftBodyWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -296,7 +296,7 @@ void SoftBodyWindow::ResizeLayout()
 	const float margin_left = 120;
 	const float margin_right = 40;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -304,14 +304,14 @@ void SoftBodyWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

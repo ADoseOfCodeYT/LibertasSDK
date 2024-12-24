@@ -6,10 +6,10 @@
 #include "shaders/ShaderInterop_Renderer.h"
 #include "wiEventHandler.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace lb::ecs;
+using namespace lb::scene;
+using namespace lb::graphics;
+using namespace lb::primitive;
 
 namespace Translator_Internal
 {
@@ -26,17 +26,17 @@ namespace Translator_Internal
 
 	void LoadShaders()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		{
 			PipelineStateDesc desc;
 
-			desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-			desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-			desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEFAULT);
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+			desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+			desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+			desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+			desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEFAULT);
+			desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_DOUBLESIDED);
+			desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 			desc.pt = PrimitiveTopology::TRIANGLELIST;
 
 			device->CreatePipelineState(&desc, &pso_solidpart);
@@ -45,12 +45,12 @@ namespace Translator_Internal
 		{
 			PipelineStateDesc desc;
 
-			desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-			desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-			desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEFAULT);
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_WIRE_DOUBLESIDED);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+			desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+			desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+			desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+			desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEFAULT);
+			desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_WIRE_DOUBLESIDED);
+			desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 			desc.pt = PrimitiveTopology::LINELIST;
 
 			device->CreatePipelineState(&desc, &pso_wirepart);
@@ -104,7 +104,7 @@ namespace Translator_Internal
 }
 using namespace Translator_Internal;
 
-void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMouse, const wi::Canvas& canvas)
+void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMouse, const lb::Canvas& canvas)
 {
 	if (selected.empty())
 	{
@@ -147,7 +147,7 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 			return;
 		}
 
-		const Ray ray = wi::renderer::GetPickRay((long)currentMouse.x, (long)currentMouse.y, canvas, camera);
+		const Ray ray = lb::renderer::GetPickRay((long)currentMouse.x, (long)currentMouse.y, canvas, camera);
 		const XMVECTOR rayOrigin = XMLoadFloat3(&ray.origin);
 		const XMVECTOR rayDir = XMLoadFloat3(&ray.direction);
 
@@ -161,7 +161,7 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 			XMMATRIX W = XMMatrixIdentity();
 			XMFLOAT3 p = transform.GetPosition();
 
-			dist = std::max(wi::math::Distance(p, camera.Eye) * 0.05f, 0.0001f);
+			dist = std::max(lb::math::Distance(p, camera.Eye) * 0.05f, 0.0001f);
 
 			if (isRotator)
 			{
@@ -221,26 +221,26 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 
 				XMFLOAT3 maxp;
 				XMStoreFloat3(&maxp, pos + XMVector3Transform(XMVectorSet(axis_length, 0, 0, 0) * dist, GetMirrorMatrix(TRANSLATOR_X, camera)));
-				AABB aabb_x = AABB::Merge(AABB(wi::math::Min(p, maxp), wi::math::Max(p, maxp)), aabb_origin);
+				AABB aabb_x = AABB::Merge(AABB(lb::math::Min(p, maxp), lb::math::Max(p, maxp)), aabb_origin);
 
 				XMStoreFloat3(&maxp, pos + XMVector3Transform(XMVectorSet(0, axis_length, 0, 0) * dist, GetMirrorMatrix(TRANSLATOR_Y, camera)));
-				AABB aabb_y = AABB::Merge(AABB(wi::math::Min(p, maxp), wi::math::Max(p, maxp)), aabb_origin);
+				AABB aabb_y = AABB::Merge(AABB(lb::math::Min(p, maxp), lb::math::Max(p, maxp)), aabb_origin);
 
 				XMStoreFloat3(&maxp, pos + XMVector3Transform(XMVectorSet(0, 0, axis_length, 0) * dist, GetMirrorMatrix(TRANSLATOR_Z, camera)));
-				AABB aabb_z = AABB::Merge(AABB(wi::math::Min(p, maxp), wi::math::Max(p, maxp)), aabb_origin);
+				AABB aabb_z = AABB::Merge(AABB(lb::math::Min(p, maxp), lb::math::Max(p, maxp)), aabb_origin);
 
 				XMFLOAT3 minp;
 				XMStoreFloat3(&minp, pos + XMVector3Transform(XMVectorSet(plane_min, plane_min, 0, 0) * dist, GetMirrorMatrix(TRANSLATOR_XY, camera)));
 				XMStoreFloat3(&maxp, pos + XMVector3Transform(XMVectorSet(plane_max, plane_max, 0, 0) * dist, GetMirrorMatrix(TRANSLATOR_XY, camera)));
-				AABB aabb_xy = AABB(wi::math::Min(minp, maxp), wi::math::Max(minp, maxp));
+				AABB aabb_xy = AABB(lb::math::Min(minp, maxp), lb::math::Max(minp, maxp));
 
 				XMStoreFloat3(&minp, pos + XMVector3Transform(XMVectorSet(plane_min, 0, plane_min, 0) * dist, GetMirrorMatrix(TRANSLATOR_XZ, camera)));
 				XMStoreFloat3(&maxp, pos + XMVector3Transform(XMVectorSet(plane_max, 0, plane_max, 0) * dist, GetMirrorMatrix(TRANSLATOR_XZ, camera)));
-				AABB aabb_xz = AABB(wi::math::Min(minp, maxp), wi::math::Max(minp, maxp));
+				AABB aabb_xz = AABB(lb::math::Min(minp, maxp), lb::math::Max(minp, maxp));
 
 				XMStoreFloat3(&minp, pos + XMVector3Transform(XMVectorSet(0, plane_min, plane_min, 0) * dist, GetMirrorMatrix(TRANSLATOR_YZ, camera)));
 				XMStoreFloat3(&maxp, pos + XMVector3Transform(XMVectorSet(0, plane_max, plane_max, 0) * dist, GetMirrorMatrix(TRANSLATOR_YZ, camera)));
-				AABB aabb_yz = AABB(wi::math::Min(minp, maxp), wi::math::Max(minp, maxp));
+				AABB aabb_yz = AABB(lb::math::Min(minp, maxp), lb::math::Max(minp, maxp));
 
 				if (aabb_origin.intersects(ray))
 				{
@@ -289,7 +289,7 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 			}
 		}
 
-		if (dragging || (state != TRANSLATOR_IDLE && wi::input::Press(wi::input::MOUSE_BUTTON_LEFT)))
+		if (dragging || (state != TRANSLATOR_IDLE && lb::input::Press(lb::input::MOUSE_BUTTON_LEFT)))
 		{
 			// Dragging operation:
 			if (isRotator)
@@ -310,32 +310,32 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 				XMFLOAT3 original, current;
 				XMStoreFloat3(&original, o);
 				XMStoreFloat3(&current, c);
-				angle = wi::math::GetAngle(original, current, axis);
+				angle = lb::math::GetAngle(original, current, axis);
 
 				switch (state)
 				{
 				case Translator::TRANSLATOR_X:
-					angle_start = wi::math::GetAngle(XMFLOAT3(0, 1, 0), original, axis);
+					angle_start = lb::math::GetAngle(XMFLOAT3(0, 1, 0), original, axis);
 					break;
 				case Translator::TRANSLATOR_Y:
-					angle_start = wi::math::GetAngle(XMFLOAT3(0, 0, 1), original, axis);
+					angle_start = lb::math::GetAngle(XMFLOAT3(0, 0, 1), original, axis);
 					break;
 				case Translator::TRANSLATOR_Z:
-					angle_start = wi::math::GetAngle(XMFLOAT3(1, 0, 0), original, axis);
+					angle_start = lb::math::GetAngle(XMFLOAT3(1, 0, 0), original, axis);
 					break;
 				case Translator::TRANSLATOR_XYZ:
 					{
 						XMMATRIX M = XMMatrixInverse(nullptr, XMMatrixLookToLH(XMVectorZero(), XMVector3Normalize(transform.GetPositionV() - camera.GetEye()), camera.GetUp()));
 						XMFLOAT3 ref;
 						XMStoreFloat3(&ref, XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0), M));
-						angle_start = wi::math::GetAngle(ref, original, axis);
+						angle_start = lb::math::GetAngle(ref, original, axis);
 					}
 					break;
 				default:
 					break;
 				}
 
-				if (wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_LCONTROL))
+				if (lb::input::Down(lb::input::BUTTON::KEYBOARD_BUTTON_LCONTROL))
 				{
 					// Snap mode:
 					angle = std::round(angle / rotate_snap) * rotate_snap;
@@ -408,22 +408,22 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 				if (state == TRANSLATOR_X)
 				{
 					XMVECTOR A = pos, B = pos + XMVectorSet(1, 0, 0, 0);
-					XMVECTOR P = wi::math::GetClosestPointToLine(A, B, intersection);
-					XMVECTOR PPrev = wi::math::GetClosestPointToLine(A, B, intersectionPrev);
+					XMVECTOR P = lb::math::GetClosestPointToLine(A, B, intersection);
+					XMVECTOR PPrev = lb::math::GetClosestPointToLine(A, B, intersectionPrev);
 					deltaV = P - PPrev;
 				}
 				else if (state == TRANSLATOR_Y)
 				{
 					XMVECTOR A = pos, B = pos + XMVectorSet(0, 1, 0, 0);
-					XMVECTOR P = wi::math::GetClosestPointToLine(A, B, intersection);
-					XMVECTOR PPrev = wi::math::GetClosestPointToLine(A, B, intersectionPrev);
+					XMVECTOR P = lb::math::GetClosestPointToLine(A, B, intersection);
+					XMVECTOR PPrev = lb::math::GetClosestPointToLine(A, B, intersectionPrev);
 					deltaV = P - PPrev;
 				}
 				else if (state == TRANSLATOR_Z)
 				{
 					XMVECTOR A = pos, B = pos + XMVectorSet(0, 0, 1, 0);
-					XMVECTOR P = wi::math::GetClosestPointToLine(A, B, intersection);
-					XMVECTOR PPrev = wi::math::GetClosestPointToLine(A, B, intersectionPrev);
+					XMVECTOR P = lb::math::GetClosestPointToLine(A, B, intersection);
+					XMVECTOR PPrev = lb::math::GetClosestPointToLine(A, B, intersectionPrev);
 					deltaV = P - PPrev;
 				}
 				else
@@ -448,12 +448,12 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 					XMFLOAT3 delta;
 					XMStoreFloat3(&delta, deltaV);
 					XMFLOAT3 scale = transform.GetScale();
-					scale = wi::math::Max(scale, XMFLOAT3(0.001f, 0.001f, 0.001f)); // no zero division
+					scale = lb::math::Max(scale, XMFLOAT3(0.001f, 0.001f, 0.001f)); // no zero division
 					scale = XMFLOAT3((1.0f / scale.x) * (scale.x + delta.x), (1.0f / scale.y) * (scale.y + delta.y), (1.0f / scale.z) * (scale.z + delta.z));
 					transform.Scale(scale);
 				}
 
-				if (wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_RCONTROL))
+				if (lb::input::Down(lb::input::BUTTON::KEYBOARD_BUTTON_LCONTROL) || lb::input::Down(lb::input::BUTTON::KEYBOARD_BUTTON_RCONTROL))
 				{
 					// Snap to grid mode:
 					if (isTranslator)
@@ -469,7 +469,7 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 						transform.scale_local.z = std::max(scale_snap, std::round(transform.scale_local.z / scale_snap) * scale_snap);
 					}
 				}
-				if (wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_LSHIFT) || wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_RSHIFT))
+				if (lb::input::Down(lb::input::BUTTON::KEYBOARD_BUTTON_LSHIFT) || lb::input::Down(lb::input::BUTTON::KEYBOARD_BUTTON_RSHIFT))
 				{
 					// Snap to surface mode:
 					temp_filters.reserve(selected.size());
@@ -482,8 +482,8 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 						object->filterMask = 0;
 						object->filterMaskDynamic = 0;
 					}
-					Ray ray = wi::renderer::GetPickRay((long)currentMouse.x, (long)currentMouse.y, canvas, camera);
-					wi::scene::Scene::RayIntersectionResult result = scene.Intersects(ray, wi::enums::FILTER_OBJECT_ALL);
+					Ray ray = lb::renderer::GetPickRay((long)currentMouse.x, (long)currentMouse.y, canvas, camera);
+					lb::scene::Scene::RayIntersectionResult result = scene.Intersects(ray, lb::enums::FILTER_OBJECT_ALL);
 					transform.translation_local = result.position;
 					size_t ind = 0;
 					for (auto& x : selected)
@@ -511,7 +511,7 @@ void Translator::Update(const CameraComponent& camera, const XMFLOAT4& currentMo
 			}
 		}
 		
-		if (!wi::input::Down(wi::input::MOUSE_BUTTON_LEFT))
+		if (!lb::input::Down(lb::input::MOUSE_BUTTON_LEFT))
 		{
 			if (dragging)
 			{
@@ -541,13 +541,13 @@ void Translator::Draw(const CameraComponent& camera, const XMFLOAT4& currentMous
 	if (!shaders_loaded)
 	{
 		shaders_loaded = true;
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { Translator_Internal::LoadShaders(); });
+		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { Translator_Internal::LoadShaders(); });
 		Translator_Internal::LoadShaders();
 	}
 
 	Scene& scene = *this->scene;
 
-	GraphicsDevice* device = wi::graphics::GetDevice();
+	GraphicsDevice* device = lb::graphics::GetDevice();
 
 	device->EventBegin("Translator", cmd);
 
@@ -892,33 +892,33 @@ void Translator::Draw(const CameraComponent& camera, const XMFLOAT4& currentMous
 		char TEXT[3];
 		XMMATRIX R = XMLoadFloat3x3(&camera.rotationMatrix);
 
-		wi::font::Params params;
-		params.v_align = wi::font::WIFALIGN_CENTER;
-		params.h_align = wi::font::WIFALIGN_CENTER;
+		lb::font::Params params;
+		params.v_align = lb::font::WIFALIGN_CENTER;
+		params.h_align = lb::font::WIFALIGN_CENTER;
 		params.scaling = 0.04f * dist;
 		params.customProjection = &VP;
 		params.customRotation = &R;
-		params.shadowColor = wi::Color(0, 0, 0, uint8_t(127 * opacity));
+		params.shadowColor = lb::Color(0, 0, 0, uint8_t(127 * opacity));
 		params.shadow_softness = 0.8f;
 		XMVECTOR pos = transform.GetPositionV();
 
-		params.color = wi::Color::fromFloat4(XMFLOAT4(1, channel_min, channel_min, opacity));
+		params.color = lb::Color::fromFloat4(XMFLOAT4(1, channel_min, channel_min, opacity));
 		XMStoreFloat3(&params.position, pos + XMVector3Transform(XMVectorSet(axis_length + 0.5f, 0, 0, 0) * dist, GetMirrorMatrix(TRANSLATOR_X, camera)));
 		std::memset(TEXT, 0, sizeof(TEXT));
 		WriteAxisText(TRANSLATOR_X, camera, TEXT);
-		wi::font::Draw(TEXT, strlen(TEXT), params, cmd);
+		lb::font::Draw(TEXT, strlen(TEXT), params, cmd);
 
-		params.color = wi::Color::fromFloat4(XMFLOAT4(channel_min, 1, channel_min, opacity));
+		params.color = lb::Color::fromFloat4(XMFLOAT4(channel_min, 1, channel_min, opacity));
 		XMStoreFloat3(&params.position, pos + XMVector3Transform(XMVectorSet(0, axis_length + 0.5f, 0, 0) * dist, GetMirrorMatrix(TRANSLATOR_Y, camera)));
 		std::memset(TEXT, 0, sizeof(TEXT));
 		WriteAxisText(TRANSLATOR_Y, camera, TEXT);
-		wi::font::Draw(TEXT, strlen(TEXT), params, cmd);
+		lb::font::Draw(TEXT, strlen(TEXT), params, cmd);
 
-		params.color = wi::Color::fromFloat4(XMFLOAT4(channel_min, channel_min, 1, opacity));
+		params.color = lb::Color::fromFloat4(XMFLOAT4(channel_min, channel_min, 1, opacity));
 		XMStoreFloat3(&params.position, pos + XMVector3Transform(XMVectorSet(0, 0, axis_length + 0.5f, 0) * dist, GetMirrorMatrix(TRANSLATOR_Z, camera)));
 		std::memset(TEXT, 0, sizeof(TEXT));
 		WriteAxisText(TRANSLATOR_Z, camera, TEXT);
-		wi::font::Draw(TEXT, strlen(TEXT), params, cmd);
+		lb::font::Draw(TEXT, strlen(TEXT), params, cmd);
 	}
 
 
@@ -1064,13 +1064,13 @@ void Translator::Draw(const CameraComponent& camera, const XMFLOAT4& currentMous
 			device->Draw(vertexCount, 0, cmd);
 		}
 
-		wi::font::Params params;
+		lb::font::Params params;
 		params.posX = currentMouse.x - 20;
 		params.posY = currentMouse.y + 20;
-		params.v_align = wi::font::WIFALIGN_TOP;
-		params.h_align = wi::font::WIFALIGN_RIGHT;
+		params.v_align = lb::font::WIFALIGN_TOP;
+		params.h_align = lb::font::WIFALIGN_RIGHT;
 		params.scaling = 0.8f;
-		params.shadowColor = wi::Color::Black();
+		params.shadowColor = lb::Color::Black();
 
 		char text[256] = {};
 
@@ -1083,16 +1083,16 @@ void Translator::Draw(const CameraComponent& camera, const XMFLOAT4& currentMous
 			switch (state)
 			{
 			case Translator::TRANSLATOR_X:
-				snprintf(text, arraysize(text), "Axis = X\nAngle = %.2f degrees", wi::math::RadiansToDegrees(angle));
+				snprintf(text, arraysize(text), "Axis = X\nAngle = %.2f degrees", lb::math::RadiansToDegrees(angle));
 				break;
 			case Translator::TRANSLATOR_Y:
-				snprintf(text, arraysize(text), "Axis = Y\nAngle = %.2f degrees", wi::math::RadiansToDegrees(angle));
+				snprintf(text, arraysize(text), "Axis = Y\nAngle = %.2f degrees", lb::math::RadiansToDegrees(angle));
 				break;
 			case Translator::TRANSLATOR_Z:
-				snprintf(text, arraysize(text), "Axis = Z\nAngle = %.2f degrees", wi::math::RadiansToDegrees(angle));
+				snprintf(text, arraysize(text), "Axis = Z\nAngle = %.2f degrees", lb::math::RadiansToDegrees(angle));
 				break;
 			case Translator::TRANSLATOR_XYZ:
-				snprintf(text, arraysize(text), "Axis = Screen\nAngle = %.2f degrees", wi::math::RadiansToDegrees(angle));
+				snprintf(text, arraysize(text), "Axis = Screen\nAngle = %.2f degrees", lb::math::RadiansToDegrees(angle));
 				break;
 			default:
 				break;
@@ -1104,7 +1104,7 @@ void Translator::Draw(const CameraComponent& camera, const XMFLOAT4& currentMous
 		}
 		params.shadowColor.setA(uint8_t(opacity * 255.0f));
 		params.color.setA(uint8_t(opacity * 255.0f));
-		wi::font::Draw(text, params, cmd);
+		lb::font::Draw(text, params, cmd);
 	}
 
 	device->EventEnd(cmd);
@@ -1259,7 +1259,7 @@ XMMATRIX Translator::GetMirrorMatrix(TRANSLATOR_STATE state, const CameraCompone
 
 	return mirror;
 }
-void Translator::WriteAxisText(TRANSLATOR_STATE axis, const wi::scene::CameraComponent& camera, char* text) const
+void Translator::WriteAxisText(TRANSLATOR_STATE axis, const lb::scene::CameraComponent& camera, char* text) const
 {
 	switch (axis)
 	{

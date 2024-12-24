@@ -14,27 +14,27 @@
 #include <memory>
 #include <limits>
 
-namespace wi
+namespace lb
 {
 	struct VoxelGrid;
 	struct PathQuery;
 	struct TrailRenderer;
 }
 
-namespace wi::renderer
+namespace lb::renderer
 {
-	constexpr wi::graphics::Format format_depthbuffer_main = wi::graphics::Format::D32_FLOAT_S8X24_UINT;
-	constexpr wi::graphics::Format format_rendertarget_main = wi::graphics::Format::R11G11B10_FLOAT;
-	constexpr wi::graphics::Format format_idbuffer = wi::graphics::Format::R32_UINT;
-	constexpr wi::graphics::Format format_rendertarget_shadowmap = wi::graphics::Format::R16G16B16A16_FLOAT;
-	constexpr wi::graphics::Format format_depthbuffer_shadowmap = wi::graphics::Format::D16_UNORM;
-	constexpr wi::graphics::Format format_rendertarget_envprobe = wi::graphics::Format::R11G11B10_FLOAT;
-	constexpr wi::graphics::Format format_depthbuffer_envprobe = wi::graphics::Format::D16_UNORM;
+	constexpr lb::graphics::Format format_depthbuffer_main = lb::graphics::Format::D32_FLOAT_S8X24_UINT;
+	constexpr lb::graphics::Format format_rendertarget_main = lb::graphics::Format::R11G11B10_FLOAT;
+	constexpr lb::graphics::Format format_idbuffer = lb::graphics::Format::R32_UINT;
+	constexpr lb::graphics::Format format_rendertarget_shadowmap = lb::graphics::Format::R16G16B16A16_FLOAT;
+	constexpr lb::graphics::Format format_depthbuffer_shadowmap = lb::graphics::Format::D16_UNORM;
+	constexpr lb::graphics::Format format_rendertarget_envprobe = lb::graphics::Format::R11G11B10_FLOAT;
+	constexpr lb::graphics::Format format_depthbuffer_envprobe = lb::graphics::Format::D16_UNORM;
 
 	constexpr uint8_t raytracing_inclusion_mask_shadow = 1 << 0;
 	constexpr uint8_t raytracing_inclusion_mask_reflection = 1 << 1;
 
-	constexpr uint32_t CombineStencilrefs(wi::enums::STENCILREF engineStencilRef, uint8_t userStencilRef)
+	constexpr uint32_t CombineStencilrefs(lb::enums::STENCILREF engineStencilRef, uint8_t userStencilRef)
 	{
 		return (userStencilRef << 4) | static_cast<uint8_t>(engineStencilRef);
 	}
@@ -53,26 +53,26 @@ namespace wi::renderer
 		);
 	}
 
-	const wi::graphics::Sampler* GetSampler(wi::enums::SAMPLERTYPES id);
-	const wi::graphics::Shader* GetShader(wi::enums::SHADERTYPE id);
-	const wi::graphics::InputLayout* GetInputLayout(wi::enums::ILTYPES id);
-	const wi::graphics::RasterizerState* GetRasterizerState(wi::enums::RSTYPES id);
-	const wi::graphics::DepthStencilState* GetDepthStencilState(wi::enums::DSSTYPES id);
-	const wi::graphics::BlendState* GetBlendState(wi::enums::BSTYPES id);
-	const wi::graphics::GPUBuffer* GetBuffer(wi::enums::BUFFERTYPES id);
-	const wi::graphics::Texture* GetTexture(wi::enums::TEXTYPES id);
+	const lb::graphics::Sampler* GetSampler(lb::enums::SAMPLERTYPES id);
+	const lb::graphics::Shader* GetShader(lb::enums::SHADERTYPE id);
+	const lb::graphics::InputLayout* GetInputLayout(lb::enums::ILTYPES id);
+	const lb::graphics::RasterizerState* GetRasterizerState(lb::enums::RSTYPES id);
+	const lb::graphics::DepthStencilState* GetDepthStencilState(lb::enums::DSSTYPES id);
+	const lb::graphics::BlendState* GetBlendState(lb::enums::BSTYPES id);
+	const lb::graphics::GPUBuffer* GetBuffer(lb::enums::BUFFERTYPES id);
+	const lb::graphics::Texture* GetTexture(lb::enums::TEXTYPES id);
 
 	// Returns a buffer preinitialized for quad index buffer laid out as:
 	//	vertexID * 4 + [0, 1, 2, 2, 1, 3]
-	const wi::graphics::GPUBuffer& GetIndexBufferForQuads(uint32_t max_quad_count);
+	const lb::graphics::GPUBuffer& GetIndexBufferForQuads(uint32_t max_quad_count);
 
-	void ModifyObjectSampler(const wi::graphics::SamplerDesc& desc);
+	void ModifyObjectSampler(const lb::graphics::SamplerDesc& desc);
 
 	// Initializes the renderer
 	void Initialize();
 
 	// Clears the scene and the associated renderer resources
-	void ClearWorld(wi::scene::Scene& scene);
+	void ClearWorld(lb::scene::Scene& scene);
 
 	// Returns the shader binary directory
 	const std::string& GetShaderPath();
@@ -91,11 +91,11 @@ namespace wi::renderer
 	size_t GetShaderMissingCount();
 
 	bool LoadShader(
-		wi::graphics::ShaderStage stage,
-		wi::graphics::Shader& shader,
+		lb::graphics::ShaderStage stage,
+		lb::graphics::Shader& shader,
 		const std::string& filename,
-		wi::graphics::ShaderModel minshadermodel = wi::graphics::ShaderModel::SM_6_0,
-		const wi::vector<std::string>& permutation_defines = {}
+		lb::graphics::ShaderModel minshadermodel = lb::graphics::ShaderModel::SM_6_0,
+		const lb::vector<std::string>& permutation_defines = {}
 	);
 
 	// Whether background pipeline compilations are active
@@ -105,8 +105,8 @@ namespace wi::renderer
 	{
 		// User fills these:
 		uint32_t layerMask = ~0u;
-		const wi::scene::Scene* scene = nullptr;
-		const wi::scene::CameraComponent* camera = nullptr;
+		const lb::scene::Scene* scene = nullptr;
+		const lb::scene::CameraComponent* camera = nullptr;
 		enum FLAGS
 		{
 			EMPTY = 0,
@@ -124,22 +124,22 @@ namespace wi::renderer
 		};
 		uint32_t flags = EMPTY;
 
-		// wi::renderer::UpdateVisibility() fills these:
-		wi::primitive::Frustum frustum;
-		wi::vector<uint32_t> visibleObjects;
-		wi::vector<uint32_t> visibleDecals;
-		wi::vector<uint32_t> visibleEnvProbes;
-		wi::vector<uint32_t> visibleEmitters;
-		wi::vector<uint32_t> visibleHairs;
-		wi::vector<uint32_t> visibleLights;
-		wi::rectpacker::State shadow_packer;
-		wi::rectpacker::Rect rain_blocker_shadow_rect;
-		wi::vector<wi::rectpacker::Rect> visibleLightShadowRects;
+		// lb::renderer::UpdateVisibility() fills these:
+		lb::primitive::Frustum frustum;
+		lb::vector<uint32_t> visibleObjects;
+		lb::vector<uint32_t> visibleDecals;
+		lb::vector<uint32_t> visibleEnvProbes;
+		lb::vector<uint32_t> visibleEmitters;
+		lb::vector<uint32_t> visibleHairs;
+		lb::vector<uint32_t> visibleLights;
+		lb::rectpacker::State shadow_packer;
+		lb::rectpacker::Rect rain_blocker_shadow_rect;
+		lb::vector<lb::rectpacker::Rect> visibleLightShadowRects;
 
 		std::atomic<uint32_t> object_counter;
 		std::atomic<uint32_t> light_counter;
 
-		wi::SpinLock locker;
+		lb::SpinLock locker;
 		bool planar_reflection_visible = false;
 		float closestRefPlane = std::numeric_limits<float>::max();
 		XMFLOAT4 reflectionPlane = XMFLOAT4(0, 1, 0, 0);
@@ -182,7 +182,7 @@ namespace wi::renderer
 	void UpdateVisibility(Visibility& vis);
 	// Prepares the scene for rendering
 	void UpdatePerFrameData(
-		wi::scene::Scene& scene,
+		lb::scene::Scene& scene,
 		const Visibility& vis,
 		FrameCB& frameCB,
 		float dt
@@ -191,45 +191,45 @@ namespace wi::renderer
 	void UpdateRenderData(
 		const Visibility& vis,
 		const FrameCB& frameCB,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 
 	// Updates those GPU states that can be async
 	void UpdateRenderDataAsync(
 		const Visibility& vis,
 		const FrameCB& frameCB,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 
 	// Copies the texture streaming requests from GPU to CPU
 	void TextureStreamingReadbackCopy(
-		const wi::scene::Scene& scene,
-		wi::graphics::CommandList cmd
+		const lb::scene::Scene& scene,
+		lb::graphics::CommandList cmd
 	);
 
 	// Updates the ocean, can be on async compute
 	void UpdateOcean(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	// Readback the ocean, can be on async compute or async copy
 	void ReadbackOcean(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 
-	void UpdateRaytracingAccelerationStructures(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void UpdateRaytracingAccelerationStructures(const lb::scene::Scene& scene, lb::graphics::CommandList cmd);
 
 	// Binds all common constant buffers and samplers that may be used in all shaders
-	void BindCommonResources(wi::graphics::CommandList cmd);
+	void BindCommonResources(lb::graphics::CommandList cmd);
 	// Updates the per camera constant buffer need to call for each different camera that is used when calling DrawScene() and the like
 	//	camera_previous : camera from previous frame, used for reprojection effects.
 	//	camera_reflection : camera that renders planar reflection
 	void BindCameraCB(
-		const wi::scene::CameraComponent& camera,
-		const wi::scene::CameraComponent& camera_previous,
-		const wi::scene::CameraComponent& camera_reflection,
-		wi::graphics::CommandList cmd
+		const lb::scene::CameraComponent& camera,
+		const lb::scene::CameraComponent& camera_previous,
+		const lb::scene::CameraComponent& camera_reflection,
+		lb::graphics::CommandList cmd
 	);
 
 
@@ -250,151 +250,151 @@ namespace wi::renderer
 	// Draw the world from a camera. You must call BindCameraCB() at least once in this command list prior to this
 	void DrawScene(
 		const Visibility& vis,
-		wi::enums::RENDERPASS renderPass,
-		wi::graphics::CommandList cmd,
+		lb::enums::RENDERPASS renderPass,
+		lb::graphics::CommandList cmd,
 		uint32_t flags = DRAWSCENE_OPAQUE
 	);
 
 	// Process deferred requests such as AddDeferredMIPGen and AddDeferredBlockCompression:
-	void ProcessDeferredTextureRequests(wi::graphics::CommandList cmd);
+	void ProcessDeferredTextureRequests(lb::graphics::CommandList cmd);
 
 	// Compute volumetric cloud shadow data
 	void ComputeVolumetricCloudShadows(
-		wi::graphics::CommandList cmd,
-		const wi::graphics::Texture* weatherMapFirst = nullptr,
-		const wi::graphics::Texture* weatherMapSecond = nullptr
+		lb::graphics::CommandList cmd,
+		const lb::graphics::Texture* weatherMapFirst = nullptr,
+		const lb::graphics::Texture* weatherMapSecond = nullptr
 	);
 
 	// Compute essential SkyAtmosphere textures for lighting, skyviewlut and cameravolume.
-	void ComputeSkyAtmosphereTextures(wi::graphics::CommandList cmd);
+	void ComputeSkyAtmosphereTextures(lb::graphics::CommandList cmd);
 	// Update SkyViewLut independently, used primarily for environtment probes.
-	void ComputeSkyAtmosphereSkyViewLut(wi::graphics::CommandList cmd);
+	void ComputeSkyAtmosphereSkyViewLut(lb::graphics::CommandList cmd);
 	// Update CameraVolumeLut independently, used primarily for environtment probes.
-	void ComputeSkyAtmosphereCameraVolumeLut(wi::graphics::CommandList cmd);
+	void ComputeSkyAtmosphereCameraVolumeLut(lb::graphics::CommandList cmd);
 
 	// Draw skydome centered to camera.
-	void DrawSky(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void DrawSky(const lb::scene::Scene& scene, lb::graphics::CommandList cmd);
 	// Draw shadow maps for each visible light that has associated shadow maps
-	void DrawSun(wi::graphics::CommandList cmd);
+	void DrawSun(lb::graphics::CommandList cmd);
 	// Draw shadow maps for each visible light that has associated shadow maps
 	void DrawShadowmaps(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	// Draw debug world. You must also enable what parts to draw, eg. SetToDrawGridHelper, etc, see implementation for details what can be enabled.
 	void DrawDebugWorld(
-		const wi::scene::Scene& scene,
-		const wi::scene::CameraComponent& camera,
-		const wi::Canvas& canvas,
-		wi::graphics::CommandList cmd
+		const lb::scene::Scene& scene,
+		const lb::scene::CameraComponent& camera,
+		const lb::Canvas& canvas,
+		lb::graphics::CommandList cmd
 	);
 	// Draw Soft offscreen particles.
 	void DrawSoftParticles(
 		const Visibility& vis,
 		bool distortion, 
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	// Draw the sprites and fonts from the scene
 	void DrawSpritesAndFonts(
-		const wi::scene::Scene& scene,
-		const wi::scene::CameraComponent& camera,
+		const lb::scene::Scene& scene,
+		const lb::scene::CameraComponent& camera,
 		bool distortion,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	// Draw simple light visualizer geometries
 	void DrawLightVisualizers(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	// Draw volumetric light scattering effects
 	void DrawVolumeLights(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	// Draw Lens Flares for lights that have them enabled
 	void DrawLensFlares(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd,
-		const wi::graphics::Texture* texture_directional_occlusion = nullptr
+		lb::graphics::CommandList cmd,
+		const lb::graphics::Texture* texture_directional_occlusion = nullptr
 	);
 	// Call once per frame to re-render out of date environment probes
-	void RefreshEnvProbes(const Visibility& vis, wi::graphics::CommandList cmd);
+	void RefreshEnvProbes(const Visibility& vis, lb::graphics::CommandList cmd);
 	// Call once per frame to re-render out of date impostors
-	void RefreshImpostors(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void RefreshImpostors(const lb::scene::Scene& scene, lb::graphics::CommandList cmd);
 	// Call once per frame to render lightmaps
-	void RefreshLightmaps(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void RefreshLightmaps(const lb::scene::Scene& scene, lb::graphics::CommandList cmd);
 	// Call once per frame to render wetmaps
-	void RefreshWetmaps(const Visibility& vis, wi::graphics::CommandList cmd);
+	void RefreshWetmaps(const Visibility& vis, lb::graphics::CommandList cmd);
 	// Call once per frame to render PaintDecalIntoMeshSpaceTexture requests
-	void PaintDecals(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void PaintDecals(const lb::scene::Scene& scene, lb::graphics::CommandList cmd);
 
 	// Run a compute shader that will resolve a MSAA depth buffer to a single-sample texture
-	void ResolveMSAADepthBuffer(const wi::graphics::Texture& dst, const wi::graphics::Texture& src, wi::graphics::CommandList cmd);
-	void DownsampleDepthBuffer(const wi::graphics::Texture& src, wi::graphics::CommandList cmd);
+	void ResolveMSAADepthBuffer(const lb::graphics::Texture& dst, const lb::graphics::Texture& src, lb::graphics::CommandList cmd);
+	void DownsampleDepthBuffer(const lb::graphics::Texture& src, lb::graphics::CommandList cmd);
 
 	struct TiledLightResources
 	{
 		XMUINT2 tileCount = {};
-		wi::graphics::GPUBuffer entityTiles; // culled entity indices
+		lb::graphics::GPUBuffer entityTiles; // culled entity indices
 	};
 	void CreateTiledLightResources(TiledLightResources& res, XMUINT2 resolution);
 	// Compute light grid tiles
 	void ComputeTiledLightCulling(
 		const TiledLightResources& res,
 		const Visibility& vis,
-		const wi::graphics::Texture& debugUAV,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& debugUAV,
+		lb::graphics::CommandList cmd
 	);
 
 	struct LuminanceResources
 	{
-		wi::graphics::GPUBuffer luminance;
+		lb::graphics::GPUBuffer luminance;
 	};
 	void CreateLuminanceResources(LuminanceResources& res, XMUINT2 resolution);
 	// Compute the luminance for the source image and return the texture containing the luminance value in pixel [0,0]
 	void ComputeLuminance(
 		const LuminanceResources& res,
-		const wi::graphics::Texture& sourceImage,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& sourceImage,
+		lb::graphics::CommandList cmd,
 		float adaption_rate = 1,
 		float eyeadaptionkey = 0.115f
 	);
 
 	struct BloomResources
 	{
-		wi::graphics::Texture texture_bloom;
-		wi::graphics::Texture texture_temp;
+		lb::graphics::Texture texture_bloom;
+		lb::graphics::Texture texture_temp;
 	};
 	void CreateBloomResources(BloomResources& res, XMUINT2 resolution);
 	void ComputeBloom(
 		const BloomResources& res,
-		const wi::graphics::Texture& input,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		lb::graphics::CommandList cmd,
 		float threshold = 1.0f, // cutoff value, pixels below this will not contribute to bloom
 		float exposure = 1.0f,
-		const wi::graphics::GPUBuffer* buffer_luminance = nullptr
+		const lb::graphics::GPUBuffer* buffer_luminance = nullptr
 	);
 
 	void ComputeShadingRateClassification(
-		const wi::graphics::Texture& output,
-		const wi::graphics::Texture& debugUAV,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& output,
+		const lb::graphics::Texture& debugUAV,
+		lb::graphics::CommandList cmd
 	);
 
 	struct VisibilityResources
 	{
 		XMUINT2 tile_count = {};
-		wi::graphics::GPUBuffer bins;
-		wi::graphics::GPUBuffer binned_tiles;
-		wi::graphics::Texture texture_payload_0;
-		wi::graphics::Texture texture_payload_1;
-		wi::graphics::Texture texture_normals;
-		wi::graphics::Texture texture_roughness;
+		lb::graphics::GPUBuffer bins;
+		lb::graphics::GPUBuffer binned_tiles;
+		lb::graphics::Texture texture_payload_0;
+		lb::graphics::Texture texture_payload_1;
+		lb::graphics::Texture texture_normals;
+		lb::graphics::Texture texture_roughness;
 
 		// You can request any of these extra outputs to be written by VisibilityResolve:
-		const wi::graphics::Texture* depthbuffer = nullptr; // depth buffer that matches with post projection
-		const wi::graphics::Texture* lineardepth = nullptr; // depth buffer in linear space in [0,1] range
-		const wi::graphics::Texture* primitiveID_resolved = nullptr; // resolved from MSAA texture_visibility input
+		const lb::graphics::Texture* depthbuffer = nullptr; // depth buffer that matches with post projection
+		const lb::graphics::Texture* lineardepth = nullptr; // depth buffer in linear space in [0,1] range
+		const lb::graphics::Texture* primitiveID_resolved = nullptr; // resolved from MSAA texture_visibility input
 
 		inline bool IsValid() const { return bins.IsValid(); }
 	};
@@ -402,39 +402,39 @@ namespace wi::renderer
 	void CreateVisibilityResources(VisibilityResources& res, XMUINT2 resolution);
 	void Visibility_Prepare(
 		const VisibilityResources& res,
-		const wi::graphics::Texture& input_primitiveID, // can be MSAA
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& input_primitiveID, // can be MSAA
+		lb::graphics::CommandList cmd
 	);
 	void Visibility_Surface(
 		const VisibilityResources& res,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 	void Visibility_Surface_Reduced(
 		const VisibilityResources& res,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	void Visibility_Shade(
 		const VisibilityResources& res,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 	void Visibility_Velocity(
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 
 	// DDGI: Dynamic Diffuse Global Illumination (probe-based ray tracing)
 	void DDGI(
-		const wi::scene::Scene& scene,
-		wi::graphics::CommandList cmd
+		const lb::scene::Scene& scene,
+		lb::graphics::CommandList cmd
 	);
 
 	// VXGI: Voxel-based Global Illumination (voxel cone tracing-based)
 	struct VXGIResources
 	{
-		wi::graphics::Texture diffuse;
-		wi::graphics::Texture specular;
+		lb::graphics::Texture diffuse;
+		lb::graphics::Texture specular;
 		mutable bool pre_clear = true;
 
 		bool IsValid() const { return diffuse.IsValid(); }
@@ -442,31 +442,31 @@ namespace wi::renderer
 	void CreateVXGIResources(VXGIResources& res, XMUINT2 resolution);
 	void VXGI_Voxelize(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	// Resolve VXGI to screen
 	void VXGI_Resolve(
 		const VXGIResources& res,
-		const wi::scene::Scene& scene,
-		wi::graphics::Texture texture_lineardepth,
-		wi::graphics::CommandList cmd
+		const lb::scene::Scene& scene,
+		lb::graphics::Texture texture_lineardepth,
+		lb::graphics::CommandList cmd
 	);
 
 	void Postprocess_Blur_Gaussian(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& temp,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& temp,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		int mip_src = -1,
 		int mip_dst = -1,
 		bool wide = false
 	);
 	void Postprocess_Blur_Bilateral(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& lineardepth,
-		const wi::graphics::Texture& temp,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& lineardepth,
+		const lb::graphics::Texture& temp,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float depth_threshold = 1.0f,
 		int mip_src = -1,
 		int mip_dst = -1,
@@ -474,185 +474,185 @@ namespace wi::renderer
 	);
 	struct SSAOResources
 	{
-		wi::graphics::Texture temp;
+		lb::graphics::Texture temp;
 	};
 	void CreateSSAOResources(SSAOResources& res, XMUINT2 resolution);
 	void Postprocess_SSAO(
 		const SSAOResources& res,
-		const wi::graphics::Texture& output,
-		const wi::graphics::Texture& lineardepth,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& output,
+		const lb::graphics::Texture& lineardepth,
+		lb::graphics::CommandList cmd,
 		float range = 1.0f,
 		uint32_t samplecount = 16,
 		float power = 1.0f
 	);
 	void Postprocess_HBAO(
 		const SSAOResources& res,
-		const wi::scene::CameraComponent& camera,
-		const wi::graphics::Texture& lineardepth,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::scene::CameraComponent& camera,
+		const lb::graphics::Texture& lineardepth,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float power = 1.0f
 		);
 	struct RTAOResources
 	{
-		wi::graphics::Texture normals;
-		wi::graphics::Texture denoised;
+		lb::graphics::Texture normals;
+		lb::graphics::Texture denoised;
 
 		mutable int frame = 0;
-		wi::graphics::GPUBuffer tiles;
-		wi::graphics::GPUBuffer metadata;
-		wi::graphics::Texture scratch[2];
-		wi::graphics::Texture moments[2];
+		lb::graphics::GPUBuffer tiles;
+		lb::graphics::GPUBuffer metadata;
+		lb::graphics::Texture scratch[2];
+		lb::graphics::Texture moments[2];
 	};
 	void CreateRTAOResources(RTAOResources& res, XMUINT2 resolution);
 	void Postprocess_RTAO(
 		const RTAOResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& lineardepth,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::scene::Scene& scene,
+		const lb::graphics::Texture& lineardepth,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float range = 1.0f,
 		float power = 1.0f
 	);
 	struct RTReflectionResources
 	{
 		mutable int frame = 0;
-		wi::graphics::Texture texture_rayIndirectSpecular;
-		wi::graphics::Texture texture_rayDirectionPDF;
-		wi::graphics::Texture texture_rayLengths;
-		wi::graphics::Texture texture_resolve;
-		wi::graphics::Texture texture_resolve_variance;
-		wi::graphics::Texture texture_resolve_reprojectionDepth;
-		wi::graphics::Texture texture_temporal[2];
-		wi::graphics::Texture texture_temporal_variance[2];
+		lb::graphics::Texture texture_rayIndirectSpecular;
+		lb::graphics::Texture texture_rayDirectionPDF;
+		lb::graphics::Texture texture_rayLengths;
+		lb::graphics::Texture texture_resolve;
+		lb::graphics::Texture texture_resolve_variance;
+		lb::graphics::Texture texture_resolve_reprojectionDepth;
+		lb::graphics::Texture texture_temporal[2];
+		lb::graphics::Texture texture_temporal_variance[2];
 	};
 	void CreateRTReflectionResources(RTReflectionResources& res, XMUINT2 resolution);
 	void Postprocess_RTReflection(
 		const RTReflectionResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::scene::Scene& scene,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float range = 1000.0f,
 		float roughnessCutoff = 0.5f
 	);
 	struct SSRResources
 	{
 		mutable int frame = 0;
-		wi::graphics::Texture texture_tile_minmax_roughness_horizontal;
-		wi::graphics::Texture texture_tile_minmax_roughness;
-		wi::graphics::Texture texture_depth_hierarchy;
-		wi::graphics::Texture texture_rayIndirectSpecular;
-		wi::graphics::Texture texture_rayDirectionPDF;
-		wi::graphics::Texture texture_rayLengths;
-		wi::graphics::Texture texture_resolve;
-		wi::graphics::Texture texture_resolve_variance;
-		wi::graphics::Texture texture_resolve_reprojectionDepth;
-		wi::graphics::Texture texture_temporal[2];
-		wi::graphics::Texture texture_temporal_variance[2];
-		wi::graphics::GPUBuffer buffer_tile_tracing_statistics;
-		wi::graphics::GPUBuffer buffer_tiles_tracing_earlyexit;
-		wi::graphics::GPUBuffer buffer_tiles_tracing_cheap;
-		wi::graphics::GPUBuffer buffer_tiles_tracing_expensive;
+		lb::graphics::Texture texture_tile_minmax_roughness_horizontal;
+		lb::graphics::Texture texture_tile_minmax_roughness;
+		lb::graphics::Texture texture_depth_hierarchy;
+		lb::graphics::Texture texture_rayIndirectSpecular;
+		lb::graphics::Texture texture_rayDirectionPDF;
+		lb::graphics::Texture texture_rayLengths;
+		lb::graphics::Texture texture_resolve;
+		lb::graphics::Texture texture_resolve_variance;
+		lb::graphics::Texture texture_resolve_reprojectionDepth;
+		lb::graphics::Texture texture_temporal[2];
+		lb::graphics::Texture texture_temporal_variance[2];
+		lb::graphics::GPUBuffer buffer_tile_tracing_statistics;
+		lb::graphics::GPUBuffer buffer_tiles_tracing_earlyexit;
+		lb::graphics::GPUBuffer buffer_tiles_tracing_cheap;
+		lb::graphics::GPUBuffer buffer_tiles_tracing_expensive;
 	};
 	void CreateSSRResources(SSRResources& res, XMUINT2 resolution);
 	void Postprocess_SSR(
 		const SSRResources& res,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float roughnessCutoff = 0.6f
 	);
 	struct RTShadowResources
 	{
-		wi::graphics::Texture raytraced;
-		wi::graphics::Texture temporal[2];
-		wi::graphics::Texture normals;
+		lb::graphics::Texture raytraced;
+		lb::graphics::Texture temporal[2];
+		lb::graphics::Texture normals;
 
 		mutable int frame = 0;
-		wi::graphics::GPUBuffer tiles;
-		wi::graphics::GPUBuffer metadata;
-		wi::graphics::Texture scratch[4][2];
-		wi::graphics::Texture moments[4][2];
-		wi::graphics::Texture denoised;
+		lb::graphics::GPUBuffer tiles;
+		lb::graphics::GPUBuffer metadata;
+		lb::graphics::Texture scratch[4][2];
+		lb::graphics::Texture moments[4][2];
+		lb::graphics::Texture denoised;
 	};
 	void CreateRTShadowResources(RTShadowResources& res, XMUINT2 resolution);
 	void Postprocess_RTShadow(
 		const RTShadowResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::GPUBuffer& entityTiles_Opaque,
-		const wi::graphics::Texture& lineardepth,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::scene::Scene& scene,
+		const lb::graphics::GPUBuffer& entityTiles_Opaque,
+		const lb::graphics::Texture& lineardepth,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 	struct ScreenSpaceShadowResources
 	{
-		wi::graphics::Texture lowres;
+		lb::graphics::Texture lowres;
 	};
 	void CreateScreenSpaceShadowResources(ScreenSpaceShadowResources& res, XMUINT2 resolution);
 	void Postprocess_ScreenSpaceShadow(
 		const ScreenSpaceShadowResources& res,
-		const wi::graphics::GPUBuffer& entityTiles_Opaque,
-		const wi::graphics::Texture& lineardepth,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::GPUBuffer& entityTiles_Opaque,
+		const lb::graphics::Texture& lineardepth,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float range = 1,
 		uint32_t samplecount = 16
 	);
 	void Postprocess_LightShafts(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		const XMFLOAT2& center,
 		float strength = 0.1f
 	);
 	struct DepthOfFieldResources
 	{
-		wi::graphics::Texture texture_tilemax_horizontal;
-		wi::graphics::Texture texture_tilemin_horizontal;
-		wi::graphics::Texture texture_tilemax;
-		wi::graphics::Texture texture_tilemin;
-		wi::graphics::Texture texture_neighborhoodmax;
-		wi::graphics::Texture texture_presort;
-		wi::graphics::Texture texture_prefilter;
-		wi::graphics::Texture texture_main;
-		wi::graphics::Texture texture_postfilter;
-		wi::graphics::Texture texture_alpha1;
-		wi::graphics::Texture texture_alpha2;
-		wi::graphics::GPUBuffer buffer_tile_statistics;
-		wi::graphics::GPUBuffer buffer_tiles_earlyexit;
-		wi::graphics::GPUBuffer buffer_tiles_cheap;
-		wi::graphics::GPUBuffer buffer_tiles_expensive;
+		lb::graphics::Texture texture_tilemax_horizontal;
+		lb::graphics::Texture texture_tilemin_horizontal;
+		lb::graphics::Texture texture_tilemax;
+		lb::graphics::Texture texture_tilemin;
+		lb::graphics::Texture texture_neighborhoodmax;
+		lb::graphics::Texture texture_presort;
+		lb::graphics::Texture texture_prefilter;
+		lb::graphics::Texture texture_main;
+		lb::graphics::Texture texture_postfilter;
+		lb::graphics::Texture texture_alpha1;
+		lb::graphics::Texture texture_alpha2;
+		lb::graphics::GPUBuffer buffer_tile_statistics;
+		lb::graphics::GPUBuffer buffer_tiles_earlyexit;
+		lb::graphics::GPUBuffer buffer_tiles_cheap;
+		lb::graphics::GPUBuffer buffer_tiles_expensive;
 
 		bool IsValid() const { return texture_tilemax_horizontal.IsValid(); }
 	};
 	void CreateDepthOfFieldResources(DepthOfFieldResources& res, XMUINT2 resolution);
 	void Postprocess_DepthOfField(
 		const DepthOfFieldResources& res,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float coc_scale = 10,
 		float max_coc = 18
 	);
 	void Postprocess_Outline(
-		const wi::graphics::Texture& input,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		lb::graphics::CommandList cmd,
 		float threshold = 0.1f,
 		float thickness = 1.0f,
 		const XMFLOAT4& color = XMFLOAT4(0, 0, 0, 1)
 	);
 	struct MotionBlurResources
 	{
-		wi::graphics::Texture texture_tilemin_horizontal;
-		wi::graphics::Texture texture_tilemax_horizontal;
-		wi::graphics::Texture texture_tilemax;
-		wi::graphics::Texture texture_tilemin;
-		wi::graphics::Texture texture_neighborhoodmax;
-		wi::graphics::GPUBuffer buffer_tile_statistics;
-		wi::graphics::GPUBuffer buffer_tiles_earlyexit;
-		wi::graphics::GPUBuffer buffer_tiles_cheap;
-		wi::graphics::GPUBuffer buffer_tiles_expensive;
+		lb::graphics::Texture texture_tilemin_horizontal;
+		lb::graphics::Texture texture_tilemax_horizontal;
+		lb::graphics::Texture texture_tilemax;
+		lb::graphics::Texture texture_tilemin;
+		lb::graphics::Texture texture_neighborhoodmax;
+		lb::graphics::GPUBuffer buffer_tile_statistics;
+		lb::graphics::GPUBuffer buffer_tiles_earlyexit;
+		lb::graphics::GPUBuffer buffer_tiles_cheap;
+		lb::graphics::GPUBuffer buffer_tiles_expensive;
 
 		bool IsValid() const { return texture_tilemax_horizontal.IsValid(); }
 	};
@@ -660,70 +660,70 @@ namespace wi::renderer
 	void Postprocess_MotionBlur(
 		float dt, // delta time in seconds
 		const MotionBlurResources& res,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float strength = 100.0f
 	);
 	struct AerialPerspectiveResources
 	{
-		wi::graphics::Texture texture_output;
+		lb::graphics::Texture texture_output;
 	};
 	void CreateAerialPerspectiveResources(AerialPerspectiveResources& res, XMUINT2 resolution);
 	void Postprocess_AerialPerspective(
 		const AerialPerspectiveResources& res,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	struct VolumetricCloudResources
 	{
 		mutable int frame = 0;
 		XMUINT2 final_resolution = {};
-		wi::graphics::Texture texture_cloudRender;
-		wi::graphics::Texture texture_cloudDepth;
-		wi::graphics::Texture texture_reproject[2];
-		wi::graphics::Texture texture_reproject_depth[2];
-		wi::graphics::Texture texture_reproject_additional[2];
-		wi::graphics::Texture texture_cloudMask;
+		lb::graphics::Texture texture_cloudRender;
+		lb::graphics::Texture texture_cloudDepth;
+		lb::graphics::Texture texture_reproject[2];
+		lb::graphics::Texture texture_reproject_depth[2];
+		lb::graphics::Texture texture_reproject_additional[2];
+		lb::graphics::Texture texture_cloudMask;
 	};
 	void CreateVolumetricCloudResources(VolumetricCloudResources& res, XMUINT2 resolution);
 	void Postprocess_VolumetricClouds(
 		const VolumetricCloudResources& res,
-		wi::graphics::CommandList cmd,
-		const wi::scene::CameraComponent& camera,
-		const wi::scene::CameraComponent& camera_previous,
-		const wi::scene::CameraComponent& camera_reflection,
+		lb::graphics::CommandList cmd,
+		const lb::scene::CameraComponent& camera,
+		const lb::scene::CameraComponent& camera_previous,
+		const lb::scene::CameraComponent& camera_reflection,
 		const bool jitterEnabled,
-		const wi::graphics::Texture* weatherMapFirst = nullptr,
-		const wi::graphics::Texture* weatherMapSecond = nullptr
+		const lb::graphics::Texture* weatherMapFirst = nullptr,
+		const lb::graphics::Texture* weatherMapSecond = nullptr
 	);
 	void Postprocess_VolumetricClouds_Upsample(
 		const VolumetricCloudResources& res,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 	void Postprocess_FXAA(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 	struct TemporalAAResources
 	{
 		mutable int frame = 0;
-		wi::graphics::Texture texture_temporal[2];
+		lb::graphics::Texture texture_temporal[2];
 
 		bool IsValid() const { return texture_temporal[0].IsValid(); }
-		const wi::graphics::Texture* GetCurrent() const { return &texture_temporal[frame % arraysize(texture_temporal)]; }
-		const wi::graphics::Texture* GetHistory() const { return &texture_temporal[(frame + 1) % arraysize(texture_temporal)]; }
+		const lb::graphics::Texture* GetCurrent() const { return &texture_temporal[frame % arraysize(texture_temporal)]; }
+		const lb::graphics::Texture* GetHistory() const { return &texture_temporal[(frame + 1) % arraysize(texture_temporal)]; }
 	};
 	void CreateTemporalAAResources(TemporalAAResources& res, XMUINT2 resolution);
 	void Postprocess_TemporalAA(
 		const TemporalAAResources& res,
-		const wi::graphics::Texture& input,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& input,
+		lb::graphics::CommandList cmd
 	);
 	void Postprocess_Sharpen(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float amount = 1.0f
 	);
 	enum class Tonemap
@@ -732,73 +732,73 @@ namespace wi::renderer
 		ACES
 	};
 	void Postprocess_Tonemap(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float exposure,
 		float brightness,
 		float contrast,
 		float saturation,
 		bool dither,
-		const wi::graphics::Texture* texture_colorgradinglut = nullptr,
-		const wi::graphics::Texture* texture_distortion = nullptr,
-		const wi::graphics::GPUBuffer* buffer_luminance = nullptr,
-		const wi::graphics::Texture* texture_bloom = nullptr,
-		wi::graphics::ColorSpace display_colorspace = wi::graphics::ColorSpace::SRGB,
+		const lb::graphics::Texture* texture_colorgradinglut = nullptr,
+		const lb::graphics::Texture* texture_distortion = nullptr,
+		const lb::graphics::GPUBuffer* buffer_luminance = nullptr,
+		const lb::graphics::Texture* texture_bloom = nullptr,
+		lb::graphics::ColorSpace display_colorspace = lb::graphics::ColorSpace::SRGB,
 		Tonemap tonemap = Tonemap::Reinhard,
-		const wi::graphics::Texture* texture_distortion_overlay = nullptr,
+		const lb::graphics::Texture* texture_distortion_overlay = nullptr,
 		float hdr_calibration = 1
 	);
 	void Postprocess_Chromatic_Aberration(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		float amount = 1.0f
 	);
 	void Postprocess_Upsample_Bilateral(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& lineardepth,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& lineardepth,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		bool is_pixelshader = false,
 		float threshold = 1.0f
 	);
 	void Postprocess_Downsample4x(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 	void Postprocess_Lineardepth(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 	void Postprocess_NormalsFromDepth(
-		const wi::graphics::Texture& depthbuffer,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& depthbuffer,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 	void Postprocess_Underwater(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 	void Postprocess_Custom(
-		const wi::graphics::Shader& computeshader,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Shader& computeshader,
+		const lb::graphics::Texture& input,
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd,
 		const XMFLOAT4& params0 = XMFLOAT4(0, 0, 0, 0),
 		const XMFLOAT4& params1 = XMFLOAT4(0, 0, 0, 0),
 		const char* debug_name = "Postprocess_Custom"
 	);
 
 	void YUV_to_RGB(
-		const wi::graphics::Texture& input,
+		const lb::graphics::Texture& input,
 		int input_subresource_luminance,
 		int input_subresource_chrominance,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& output,
+		lb::graphics::CommandList cmd
 	);
 
 	// This performs copies from separate depth and stencil shader resource textures
@@ -807,39 +807,39 @@ namespace wi::renderer
 	//	stencil_bits_to_copy : bitmask can be specified to mask out stencil bits that will be copied
 	//	depthstencil_already_cleared : if false, it will be fully cleared if required; if true, it will be left intact
 	void CopyDepthStencil(
-		const wi::graphics::Texture* input_depth,
-		const wi::graphics::Texture* input_stencil,
-		const wi::graphics::Texture& output_depth_stencil,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture* input_depth,
+		const lb::graphics::Texture* input_stencil,
+		const lb::graphics::Texture& output_depth_stencil,
+		lb::graphics::CommandList cmd,
 		uint8_t stencil_bits_to_copy = 0xFF,
 		bool depthstencil_already_cleared = false
 	);
 
 	// Render the scene with ray tracing
 	void RayTraceScene(
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& output,
+		const lb::scene::Scene& scene,
+		const lb::graphics::Texture& output,
 		int accumulation_sample,
-		wi::graphics::CommandList cmd,
-		const wi::graphics::Texture* output_albedo = nullptr,
-		const wi::graphics::Texture* output_normal = nullptr,
-		const wi::graphics::Texture* output_depth = nullptr,
-		const wi::graphics::Texture* output_stencil = nullptr,
-		const wi::graphics::Texture* output_depth_stencil = nullptr
+		lb::graphics::CommandList cmd,
+		const lb::graphics::Texture* output_albedo = nullptr,
+		const lb::graphics::Texture* output_normal = nullptr,
+		const lb::graphics::Texture* output_depth = nullptr,
+		const lb::graphics::Texture* output_stencil = nullptr,
+		const lb::graphics::Texture* output_depth_stencil = nullptr
 	);
 	// Render the scene BVH with ray tracing to the screen
-	void RayTraceSceneBVH(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void RayTraceSceneBVH(const lb::scene::Scene& scene, lb::graphics::CommandList cmd);
 
 	// Render occluders against a depth buffer
-	void OcclusionCulling_Reset(const Visibility& vis, wi::graphics::CommandList cmd);
-	void OcclusionCulling_Render(const wi::scene::CameraComponent& camera, const Visibility& vis, wi::graphics::CommandList cmd);
-	void OcclusionCulling_Resolve(const Visibility& vis, wi::graphics::CommandList cmd);
+	void OcclusionCulling_Reset(const Visibility& vis, lb::graphics::CommandList cmd);
+	void OcclusionCulling_Render(const lb::scene::CameraComponent& camera, const Visibility& vis, lb::graphics::CommandList cmd);
+	void OcclusionCulling_Resolve(const Visibility& vis, lb::graphics::CommandList cmd);
 
 	void ComputeReprojectedDepthPyramid(
-		const wi::graphics::Texture& input_depth,
-		const wi::graphics::Texture& input_velocity,
-		const wi::graphics::Texture& output_depth_pyramid,
-		wi::graphics::CommandList cmd
+		const lb::graphics::Texture& input_depth,
+		const lb::graphics::Texture& input_velocity,
+		const lb::graphics::Texture& output_depth_pyramid,
+		lb::graphics::CommandList cmd
 	);
 
 	enum MIPGENFILTER
@@ -851,17 +851,17 @@ namespace wi::renderer
 	struct MIPGEN_OPTIONS
 	{
 		int arrayIndex = -1;
-		const wi::graphics::Texture* gaussian_temp = nullptr;
+		const lb::graphics::Texture* gaussian_temp = nullptr;
 		bool preserve_coverage = false;
 		bool wide_gauss = false;
 	};
-	void GenerateMipChain(const wi::graphics::Texture& texture, MIPGENFILTER filter, wi::graphics::CommandList cmd, const MIPGEN_OPTIONS& options = {});
+	void GenerateMipChain(const lb::graphics::Texture& texture, MIPGENFILTER filter, lb::graphics::CommandList cmd, const MIPGEN_OPTIONS& options = {});
 
 	// Compress a texture into Block Compressed format
 	//	texture_src	: source uncompressed texture
 	//	texture_bc	: destination comporessed texture, must be a supported BC format (BC1/BC3/BC4/BC5/BC6H_UFLOAT)
 	//	Currently this will handle simple Texture2D with mip levels, and additionally BC6H cubemap
-	void BlockCompress(const wi::graphics::Texture& texture_src, const wi::graphics::Texture& texture_bc, wi::graphics::CommandList cmd, uint32_t dst_slice_offset = 0);
+	void BlockCompress(const lb::graphics::Texture& texture_src, const lb::graphics::Texture& texture_bc, lb::graphics::CommandList cmd, uint32_t dst_slice_offset = 0);
 
 	enum BORDEREXPANDSTYLE
 	{
@@ -873,14 +873,14 @@ namespace wi::renderer
 	//	NOTE: DstMIP can be specified as -1 to use main subresource, otherwise the subresource (>=0) must have been generated explicitly!
 	//	Can also expand border region according to desired sampler func
 	void CopyTexture2D(
-		const wi::graphics::Texture& dst, int DstMIP, int DstX, int DstY,
-		const wi::graphics::Texture& src, int SrcMIP, int SrcX, int SrcY,
-		wi::graphics::CommandList cmd,
+		const lb::graphics::Texture& dst, int DstMIP, int DstX, int DstY,
+		const lb::graphics::Texture& src, int SrcMIP, int SrcX, int SrcY,
+		lb::graphics::CommandList cmd,
 		BORDEREXPANDSTYLE borderExpand = BORDEREXPAND_DISABLE,
 		bool srgb_convert = false
 	);
 
-	void DrawWaterRipples(const Visibility& vis, wi::graphics::CommandList cmd);
+	void DrawWaterRipples(const Visibility& vis, lb::graphics::CommandList cmd);
 
 
 
@@ -962,18 +962,18 @@ namespace wi::renderer
 	bool IsMeshShaderAllowed();
 	void SetMeshletOcclusionCullingEnabled(bool value);
 	bool IsMeshletOcclusionCullingEnabled();
-	void Workaround( const int bug, wi::graphics::CommandList cmd);
+	void Workaround( const int bug, lb::graphics::CommandList cmd);
 
 	// Gets pick ray according to the current screen resolution and pointer coordinates. Can be used as input into RayIntersectWorld()
-	wi::primitive::Ray GetPickRay(long cursorX, long cursorY, const wi::Canvas& canvas, const wi::scene::CameraComponent& camera = wi::scene::GetCamera());
+	lb::primitive::Ray GetPickRay(long cursorX, long cursorY, const lb::Canvas& canvas, const lb::scene::CameraComponent& camera = lb::scene::GetCamera());
 
 
 	// Add box to render in next frame. It will be rendered in DrawDebugWorld()
 	void DrawBox(const XMFLOAT4X4& boxMatrix, const XMFLOAT4& color = XMFLOAT4(1,1,1,1), bool depth = true);
 	// Add sphere to render in next frame. It will be rendered in DrawDebugWorld()
-	void DrawSphere(const wi::primitive::Sphere& sphere, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
+	void DrawSphere(const lb::primitive::Sphere& sphere, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
 	// Add capsule to render in next frame. It will be rendered in DrawDebugWorld()
-	void DrawCapsule(const wi::primitive::Capsule& capsule, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
+	void DrawCapsule(const lb::primitive::Capsule& capsule, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
 
 	struct RenderableLine
 	{
@@ -1039,7 +1039,7 @@ namespace wi::renderer
 
 	struct PaintRadius
 	{
-		wi::ecs::Entity objectEntity = wi::ecs::INVALID_ENTITY;
+		lb::ecs::Entity objectEntity = lb::ecs::INVALID_ENTITY;
 		int subset = -1;
 		uint32_t uvset = 0;
 		float radius = 0;
@@ -1052,20 +1052,20 @@ namespace wi::renderer
 
 	struct PaintTextureParams
 	{
-		wi::graphics::Texture editTex; // UAV writable texture
-		wi::graphics::Texture brushTex; // splat texture (optional)
-		wi::graphics::Texture revealTex; // mask texture that can be revealed (optional)
+		lb::graphics::Texture editTex; // UAV writable texture
+		lb::graphics::Texture brushTex; // splat texture (optional)
+		lb::graphics::Texture revealTex; // mask texture that can be revealed (optional)
 		PaintTexturePushConstants push = {}; // shader parameters
 	};
 	void PaintIntoTexture(const PaintTextureParams& params);
-	wi::Resource CreatePaintableTexture(uint32_t width, uint32_t height, uint32_t mips = 0, wi::Color initialColor = wi::Color::Transparent());
+	lb::Resource CreatePaintableTexture(uint32_t width, uint32_t height, uint32_t mips = 0, lb::Color initialColor = lb::Color::Transparent());
 
 	struct PaintDecalParams
 	{
-		wi::ecs::Entity objectEntity = wi::ecs::INVALID_ENTITY;
-		XMFLOAT4X4 decalMatrix = wi::math::IDENTITY_MATRIX;
-		wi::graphics::Texture in_texture;
-		wi::graphics::Texture out_texture;
+		lb::ecs::Entity objectEntity = lb::ecs::INVALID_ENTITY;
+		XMFLOAT4X4 decalMatrix = lb::math::IDENTITY_MATRIX;
+		lb::graphics::Texture in_texture;
+		lb::graphics::Texture out_texture;
 		float slopeBlendPower = 0;
 	};
 	// Render a decal into a texture mapped onto a mesh (supports skinned mesh)
@@ -1077,34 +1077,34 @@ namespace wi::renderer
 
 	// Add voxel grid to be drawn in debug rendering phase.
 	//	WARNING: This retains pointer until next call to DrawDebugScene(), so voxel grid must not be destroyed until then!
-	void DrawVoxelGrid(const wi::VoxelGrid* voxelgrid);
+	void DrawVoxelGrid(const lb::VoxelGrid* voxelgrid);
 
 	// Add path query to be drawn in debug rendering phase.
 	//	WARNING: This retains pointer until next call to DrawDebugScene(), so path query must not be destroyed until then!
-	void DrawPathQuery(const wi::PathQuery* pathquery);
+	void DrawPathQuery(const lb::PathQuery* pathquery);
 
 	// Add trail to be drawn in debug rendering phase.
 	//	WARNING: This retains pointer until next call to DrawDebugScene(), so trail must not be destroyed until then!
-	void DrawTrail(const wi::TrailRenderer* trail);
+	void DrawTrail(const lb::TrailRenderer* trail);
 
 	// Add a texture that should be mipmapped whenever it is feasible to do so
-	void AddDeferredMIPGen(const wi::graphics::Texture& texture, bool preserve_coverage = false);
-	void AddDeferredBlockCompression(const wi::graphics::Texture& texture_src, const wi::graphics::Texture& texture_bc);
+	void AddDeferredMIPGen(const lb::graphics::Texture& texture, bool preserve_coverage = false);
+	void AddDeferredBlockCompression(const lb::graphics::Texture& texture_src, const lb::graphics::Texture& texture_bc);
 
 	struct CustomShader
 	{
 		std::string name;
-		uint32_t filterMask = wi::enums::FILTER_OPAQUE;
-		wi::graphics::PipelineState pso[wi::enums::RENDERPASS_COUNT] = {};
+		uint32_t filterMask = lb::enums::FILTER_OPAQUE;
+		lb::graphics::PipelineState pso[lb::enums::RENDERPASS_COUNT] = {};
 	};
 	// Registers a custom shader that can be set to materials. 
 	//	Returns the ID of the custom shader that can be used with MaterialComponent::SetCustomShaderID()
 	int RegisterCustomShader(const CustomShader& customShader);
-	const wi::vector<CustomShader>& GetCustomShaders();
+	const lb::vector<CustomShader>& GetCustomShaders();
 
 	// Thread-local barrier batching helpers:
-	void PushBarrier(const wi::graphics::GPUBarrier& barrier);
-	void FlushBarriers(wi::graphics::CommandList cmd);
+	void PushBarrier(const lb::graphics::GPUBarrier& barrier);
+	void FlushBarriers(lb::graphics::CommandList cmd);
 
 };
 

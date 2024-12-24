@@ -12,12 +12,12 @@
 #include "wiEventHandler.h"
 #include "wiTimer.h"
 
-using namespace wi::primitive;
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::enums;
+using namespace lb::primitive;
+using namespace lb::graphics;
+using namespace lb::scene;
+using namespace lb::enums;
 
-namespace wi
+namespace lb
 {
 	static Shader vs;
 	static Shader ps_prepass;
@@ -48,7 +48,7 @@ namespace wi
 		return retVal;
 	}
 
-	void HairParticleSystem::CreateFromMesh(const wi::scene::MeshComponent& mesh)
+	void HairParticleSystem::CreateFromMesh(const lb::scene::MeshComponent& mesh)
 	{
 		if (mesh.so_pos.IsValid())
 		{
@@ -91,7 +91,7 @@ namespace wi
 
 	void HairParticleSystem::CreateRenderData()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		BLAS = {};
 		_flags &= ~REBUILD_BUFFERS;
@@ -215,7 +215,7 @@ namespace wi
 			vb_pos_raytracing.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_pos_raytracing.subresource_uav);
 			buffer_offset += vb_pos_raytracing.size;
 
-			primitiveBuffer = wi::renderer::GetIndexBufferForQuads(particleCount);
+			primitiveBuffer = lb::renderer::GetIndexBufferForQuads(particleCount);
 		}
 
 
@@ -234,7 +234,7 @@ namespace wi
 				uint8_t* vertex_lengths_packed = (uint8_t*)dest;
 				for (size_t i = 0; i < vertex_lengths.size(); ++i)
 				{
-					uint8_t packed = uint8_t(wi::math::Clamp(vertex_lengths[i], 0, 1) * 255.0f);
+					uint8_t packed = uint8_t(lb::math::Clamp(vertex_lengths[i], 0, 1) * 255.0f);
 					std::memcpy(vertex_lengths_packed + i, &packed, sizeof(uint8_t));
 				}
 			};
@@ -259,7 +259,7 @@ namespace wi
 	}
 	void HairParticleSystem::CreateRaytracingRenderData()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING) && primitiveBuffer.IsValid())
 		{
@@ -332,7 +332,7 @@ namespace wi
 		CommandList cmd
 	)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		device->EventBegin("HairParticleSystem - UpdateGPU", cmd);
 
 		for (uint32_t i = 0; i < itemCount; ++i)
@@ -404,7 +404,7 @@ namespace wi
 			}
 			hcb.xHairUniformity = hair.uniformity;
 			device->UpdateBuffer(&hair.constantBuffer, &hcb, cmd);
-			wi::renderer::PushBarrier(GPUBarrier::Buffer(&hair.constantBuffer, ResourceState::COPY_DST, ResourceState::CONSTANT_BUFFER));
+			lb::renderer::PushBarrier(GPUBarrier::Buffer(&hair.constantBuffer, ResourceState::COPY_DST, ResourceState::CONSTANT_BUFFER));
 
 			IndirectDrawArgsIndexedInstanced args = {};
 			args.BaseVertexLocation = 0;
@@ -413,7 +413,7 @@ namespace wi
 			args.StartIndexLocation = 0;
 			args.StartInstanceLocation = 0;
 			device->UpdateBuffer(&hair.generalBuffer, &args, cmd, sizeof(args), hair.indirect_view.offset);
-			wi::renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState::COPY_DST, ResourceState::UNORDERED_ACCESS));
+			lb::renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState::COPY_DST, ResourceState::UNORDERED_ACCESS));
 
 			if (hair.regenerate_frame)
 			{
@@ -421,7 +421,7 @@ namespace wi
 			}
 		}
 
-		wi::renderer::FlushBarriers(cmd);
+		lb::renderer::FlushBarriers(cmd);
 
 		// Simulate:
 		device->BindComputeShader(&cs_simulate, cmd);
@@ -467,27 +467,27 @@ namespace wi
 
 			device->Dispatch((hair.strandCount + THREADCOUNT_SIMULATEHAIR - 1) / THREADCOUNT_SIMULATEHAIR, 1, 1, cmd);
 
-			wi::renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::INDIRECT_ARGUMENT | ResourceState::INDEX_BUFFER | ResourceState::SHADER_RESOURCE));
+			lb::renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::INDIRECT_ARGUMENT | ResourceState::INDEX_BUFFER | ResourceState::SHADER_RESOURCE));
 		}
 
-		wi::renderer::FlushBarriers(cmd);
+		lb::renderer::FlushBarriers(cmd);
 
 		device->EventEnd(cmd);
 	}
 
-	void HairParticleSystem::InitializeGPUDataIfNeeded(wi::graphics::CommandList cmd)
+	void HairParticleSystem::InitializeGPUDataIfNeeded(lb::graphics::CommandList cmd)
 	{
 		if (strandCount == 0 || !generalBuffer.IsValid())
 			return;
 		if (gpu_initialized)
 			return;
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		device->ClearUAV(&generalBuffer, 0, cmd);
 		device->Barrier(GPUBarrier::Buffer(&generalBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::COPY_DST), cmd);
 		gpu_initialized = true;
 	}
 
-	void HairParticleSystem::Draw(const MaterialComponent& material, wi::enums::RENDERPASS renderPass, CommandList cmd) const
+	void HairParticleSystem::Draw(const MaterialComponent& material, lb::enums::RENDERPASS renderPass, CommandList cmd) const
 	{
 		if (strandCount == 0 || !constantBuffer.IsValid())
 		{
@@ -497,12 +497,12 @@ namespace wi
 		if (renderPass == RENDERPASS_SHADOW && !material.IsCastingShadow())
 			return;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		device->EventBegin("HairParticle - Draw", cmd);
 
 		device->BindStencilRef(STENCILREF_DEFAULT, cmd);
 
-		if (wi::renderer::IsWireRender())
+		if (lb::renderer::IsWireRender())
 		{
 			if (renderPass == RENDERPASS_PREPASS || renderPass == RENDERPASS_PREPASS_DEPTHONLY)
 			{
@@ -531,12 +531,12 @@ namespace wi
 	}
 
 
-	void HairParticleSystem::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void HairParticleSystem::Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
 			archive >> _flags;
-			wi::ecs::SerializeEntity(archive, meshID, seri);
+			lb::ecs::SerializeEntity(archive, meshID, seri);
 			archive >> strandCount;
 			archive >> segmentCount;
 			archive >> randomSeed;
@@ -592,7 +592,7 @@ namespace wi
 		else
 		{
 			archive << _flags;
-			wi::ecs::SerializeEntity(archive, meshID, seri);
+			lb::ecs::SerializeEntity(archive, meshID, seri);
 			archive << strandCount;
 			archive << segmentCount;
 			archive << randomSeed;
@@ -623,17 +623,17 @@ namespace wi
 	{
 		void LoadShaders()
 		{
-			wi::renderer::LoadShader(ShaderStage::VS, vs, "hairparticleVS.cso");
+			lb::renderer::LoadShader(ShaderStage::VS, vs, "hairparticleVS.cso");
 
-			wi::renderer::LoadShader(ShaderStage::PS, ps_simple, "hairparticlePS_simple.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, ps_prepass, "hairparticlePS_prepass.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, ps_prepass_depthonly, "hairparticlePS_prepass_depthonly.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, ps_shadow, "hairparticlePS_shadow.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, ps, "hairparticlePS.cso");
+			lb::renderer::LoadShader(ShaderStage::PS, ps_simple, "hairparticlePS_simple.cso");
+			lb::renderer::LoadShader(ShaderStage::PS, ps_prepass, "hairparticlePS_prepass.cso");
+			lb::renderer::LoadShader(ShaderStage::PS, ps_prepass_depthonly, "hairparticlePS_prepass_depthonly.cso");
+			lb::renderer::LoadShader(ShaderStage::PS, ps_shadow, "hairparticlePS_shadow.cso");
+			lb::renderer::LoadShader(ShaderStage::PS, ps, "hairparticlePS.cso");
 
-			wi::renderer::LoadShader(ShaderStage::CS, cs_simulate, "hairparticle_simulateCS.cso");
+			lb::renderer::LoadShader(ShaderStage::CS, cs_simulate, "hairparticle_simulateCS.cso");
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = lb::graphics::GetDevice();
 
 			for (int i = 0; i < RENDERPASS_COUNT; ++i)
 			{
@@ -687,7 +687,7 @@ namespace wi
 
 	void HairParticleSystem::Initialize()
 	{
-		wi::Timer timer;
+		lb::Timer timer;
 
 		RasterizerState rsd;
 		rsd.fill_mode = FillMode::SOLID;
@@ -762,10 +762,10 @@ namespace wi
 		bld.render_target[0].render_target_write_mask = ColorWrite::DISABLE;
 		bs_shadow = bld;
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { HairParticleSystem_Internal::LoadShaders(); });
+		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { HairParticleSystem_Internal::LoadShaders(); });
 		HairParticleSystem_Internal::LoadShaders();
 
-		wi::backlog::post("wi::HairParticleSystem Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("lb::HairParticleSystem Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 	void HairParticleSystem::ConvertFromOLDSpriteSheet(uint32_t framesX, uint32_t framesY, uint32_t frameCount, uint32_t frameStart)

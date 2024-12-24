@@ -1,16 +1,16 @@
 #pragma once
 class EditorComponent;
 
-class MaterialPickerWindow : public wi::gui::Window
+class MaterialPickerWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
 
-	wi::vector<wi::gui::Button> buttons;
+	lb::vector<lb::gui::Button> buttons;
 
-	wi::gui::Slider zoomSlider;
+	lb::gui::Slider zoomSlider;
 
 	void ResizeLayout() override;
 

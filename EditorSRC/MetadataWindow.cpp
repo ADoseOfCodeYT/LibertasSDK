@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "MetadataWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void MetadataWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_METADATA " Metadata", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_METADATA " Metadata", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(300, 240));
 
 	closeButton.SetTooltip("Delete MetadataComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -31,8 +31,8 @@ void MetadataWindow::Create(EditorComponent* _editor)
 	presetCombo.AddItem("Enemy", (uint64_t)MetadataComponent::Preset::Enemy);
 	presetCombo.AddItem("Npc", (uint64_t)MetadataComponent::Preset::NPC);
 	presetCombo.AddItem("Pickup", (uint64_t)MetadataComponent::Preset::Pickup);
-	presetCombo.OnSelect([this](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	presetCombo.OnSelect([this](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -50,8 +50,8 @@ void MetadataWindow::Create(EditorComponent* _editor)
 	addCombo.AddItem("int");
 	addCombo.AddItem("float");
 	addCombo.AddItem("string");
-	addCombo.OnSelect([this](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	addCombo.OnSelect([this](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -151,8 +151,8 @@ void MetadataWindow::RefreshEntries()
 		Entry& entry = entries.emplace_back();
 		entry.name.Create("");
 		entry.name.SetText(name);
-		entry.name.OnInputAccepted([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.name.OnInputAccepted([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -164,7 +164,7 @@ void MetadataWindow::RefreshEntries()
 				metadata->bool_values.erase(name);
 				metadata->bool_values.set(args.sValue, value);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 			});
 		});
@@ -174,8 +174,8 @@ void MetadataWindow::RefreshEntries()
 		entry.check.Create("");
 		entry.check.SetText(" = (bool) ");
 		entry.check.SetCheck(metadata->bool_values.get(name));
-		entry.check.OnClick([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.check.OnClick([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -185,7 +185,7 @@ void MetadataWindow::RefreshEntries()
 					continue;
 				metadata->bool_values.set(name, args.bValue);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 		});
@@ -194,8 +194,8 @@ void MetadataWindow::RefreshEntries()
 		entry.remove.Create("");
 		entry.remove.SetText("X");
 		entry.remove.SetSize(XMFLOAT2(entry.remove.GetSize().y, entry.remove.GetSize().y));
-		entry.remove.OnClick([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.remove.OnClick([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -205,7 +205,7 @@ void MetadataWindow::RefreshEntries()
 					continue;
 				metadata->bool_values.erase(name);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 			});
 		});
@@ -217,8 +217,8 @@ void MetadataWindow::RefreshEntries()
 		Entry& entry = entries.emplace_back();
 		entry.name.Create("");
 		entry.name.SetText(name);
-		entry.name.OnInputAccepted([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.name.OnInputAccepted([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -230,7 +230,7 @@ void MetadataWindow::RefreshEntries()
 				metadata->int_values.erase(name);
 				metadata->int_values.set(args.sValue, value);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -241,8 +241,8 @@ void MetadataWindow::RefreshEntries()
 		entry.value.SetDescription(" = (int) ");
 		entry.value.SetSize(XMFLOAT2(60, entry.value.GetSize().y));
 		entry.value.SetValue(metadata->int_values.get(name));
-		entry.value.OnInputAccepted([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.value.OnInputAccepted([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -252,7 +252,7 @@ void MetadataWindow::RefreshEntries()
 					continue;
 				metadata->int_values.set(name, args.iValue);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -261,8 +261,8 @@ void MetadataWindow::RefreshEntries()
 		entry.remove.Create("");
 		entry.remove.SetText("X");
 		entry.remove.SetSize(XMFLOAT2(entry.remove.GetSize().y, entry.remove.GetSize().y));
-		entry.remove.OnClick([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.remove.OnClick([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -272,7 +272,7 @@ void MetadataWindow::RefreshEntries()
 					continue;
 				metadata->int_values.erase(name);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -284,8 +284,8 @@ void MetadataWindow::RefreshEntries()
 		Entry& entry = entries.emplace_back();
 		entry.name.Create("");
 		entry.name.SetText(name);
-		entry.name.OnInputAccepted([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.name.OnInputAccepted([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -297,7 +297,7 @@ void MetadataWindow::RefreshEntries()
 				metadata->float_values.erase(name);
 				metadata->float_values.set(args.sValue, value);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -308,8 +308,8 @@ void MetadataWindow::RefreshEntries()
 		entry.value.SetDescription(" = (float) ");
 		entry.value.SetSize(XMFLOAT2(60, entry.value.GetSize().y));
 		entry.value.SetValue(metadata->float_values.get(name));
-		entry.value.OnInputAccepted([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.value.OnInputAccepted([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -319,7 +319,7 @@ void MetadataWindow::RefreshEntries()
 					continue;
 				metadata->float_values.set(name, args.fValue);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -328,8 +328,8 @@ void MetadataWindow::RefreshEntries()
 		entry.remove.Create("");
 		entry.remove.SetText("X");
 		entry.remove.SetSize(XMFLOAT2(entry.remove.GetSize().y, entry.remove.GetSize().y));
-		entry.remove.OnClick([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.remove.OnClick([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -339,7 +339,7 @@ void MetadataWindow::RefreshEntries()
 					continue;
 				metadata->float_values.erase(name);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -351,8 +351,8 @@ void MetadataWindow::RefreshEntries()
 		Entry& entry = entries.emplace_back();
 		entry.name.Create("");
 		entry.name.SetText(name);
-		entry.name.OnInputAccepted([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.name.OnInputAccepted([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -364,7 +364,7 @@ void MetadataWindow::RefreshEntries()
 				metadata->string_values.erase(name);
 				metadata->string_values.set(args.sValue, value);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -375,8 +375,8 @@ void MetadataWindow::RefreshEntries()
 		entry.value.SetDescription(" = (string) ");
 		entry.value.SetSize(XMFLOAT2(120, entry.value.GetSize().y));
 		entry.value.SetValue(metadata->string_values.get(name));
-		entry.value.OnInputAccepted([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.value.OnInputAccepted([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -386,7 +386,7 @@ void MetadataWindow::RefreshEntries()
 					continue;
 				metadata->string_values.set(name, args.sValue);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -395,8 +395,8 @@ void MetadataWindow::RefreshEntries()
 		entry.remove.Create("");
 		entry.remove.SetText("X");
 		entry.remove.SetSize(XMFLOAT2(entry.remove.GetSize().y, entry.remove.GetSize().y));
-		entry.remove.OnClick([name, this](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		entry.remove.OnClick([name, this](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -406,7 +406,7 @@ void MetadataWindow::RefreshEntries()
 					continue;
 				metadata->string_values.erase(name);
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				});
 			});
@@ -418,13 +418,13 @@ void MetadataWindow::RefreshEntries()
 
 void MetadataWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
 	float jump = 20;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = 100;
@@ -434,7 +434,7 @@ void MetadataWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 		};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_right = padding;
@@ -442,7 +442,7 @@ void MetadataWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 		};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;
@@ -466,14 +466,14 @@ void MetadataWindow::ResizeLayout()
 		{
 			entry.check.SetPos(XMFLOAT2(width - padding - entry.check.GetSize().x, y));
 
-			entry.name.SetSize(XMFLOAT2(width - wi::font::TextWidth(entry.check.GetText(), entry.check.font.params) - padding * 3 - entry.check.GetSize().x - entry.remove.GetSize().x, entry.name.GetSize().y));
+			entry.name.SetSize(XMFLOAT2(width - lb::font::TextWidth(entry.check.GetText(), entry.check.font.params) - padding * 3 - entry.check.GetSize().x - entry.remove.GetSize().x, entry.name.GetSize().y));
 		}
 		else
 		{
-			entry.value.SetSize(XMFLOAT2(std::max(wi::font::TextWidth(entry.value.GetCurrentInputValue(), entry.value.font.params) + padding, entry.value.GetSize().y), entry.value.GetSize().y));
+			entry.value.SetSize(XMFLOAT2(std::max(lb::font::TextWidth(entry.value.GetCurrentInputValue(), entry.value.font.params) + padding, entry.value.GetSize().y), entry.value.GetSize().y));
 			entry.value.SetPos(XMFLOAT2(width - padding - entry.value.GetSize().x, y));
 
-			entry.name.SetSize(XMFLOAT2(width - wi::font::TextWidth(entry.value.GetDescription(), entry.value.font.params) - padding * 3 - entry.value.GetSize().x - entry.remove.GetSize().x, entry.name.GetSize().y));
+			entry.name.SetSize(XMFLOAT2(width - lb::font::TextWidth(entry.value.GetDescription(), entry.value.font.params) - padding * 3 - entry.value.GetSize().x - entry.remove.GetSize().x, entry.name.GetSize().y));
 		}
 
 		entry.name.SetPos(XMFLOAT2(entry.remove.GetPos().x + entry.remove.GetSize().x + padding, y));

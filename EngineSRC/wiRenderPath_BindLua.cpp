@@ -1,6 +1,6 @@
 #include "wiRenderPath_BindLua.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	Luna<RenderPath_BindLua>::FunctionType RenderPath_BindLua::methods[] = {
@@ -16,19 +16,19 @@ namespace wi::lua
 	int RenderPath_BindLua::GetLayerMask(lua_State* L)
 	{
 		uint32_t mask = component->getLayerMask();
-		wi::lua::SSetInt(L, *reinterpret_cast<int*>(&mask));
+		lb::lua::SSetInt(L, *reinterpret_cast<int*>(&mask));
 		return 1;
 	}
 	int RenderPath_BindLua::SetLayerMask(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			int mask = wi::lua::SGetInt(L, 1);
+			int mask = lb::lua::SGetInt(L, 1);
 			component->setlayerMask(uint32_t(mask));
 		}
 		else
-			wi::lua::SError(L, "SetLayerMask(uint mask) not enough arguments!");
+			lb::lua::SError(L, "SetLayerMask(uint mask) not enough arguments!");
 		return 0;
 	}
 
@@ -39,7 +39,7 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<RenderPath_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<RenderPath_BindLua>::Register(lb::lua::GetLuaState());
 		}
 	}
 

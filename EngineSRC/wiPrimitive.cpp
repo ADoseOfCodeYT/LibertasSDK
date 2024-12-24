@@ -1,6 +1,6 @@
 #include "wiPrimitive.h"
 
-namespace wi::primitive
+namespace lb::primitive
 {
 
 	void AABB::createFromHalfWidth(const XMFLOAT3& center, const XMFLOAT3& halfwidth)
@@ -203,9 +203,9 @@ namespace wi::primitive
 	}
 	AABB AABB::Merge(const AABB& a, const AABB& b)
 	{
-		return AABB(wi::math::Min(a.getMin(), b.getMin()), wi::math::Max(a.getMax(), b.getMax()));
+		return AABB(lb::math::Min(a.getMin(), b.getMin()), lb::math::Max(a.getMax(), b.getMax()));
 	}
-	void AABB::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void AABB::Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -238,13 +238,13 @@ namespace wi::primitive
 
 	bool Sphere::intersects(const XMVECTOR& P) const
 	{
-		float distsq = wi::math::DistanceSquared(XMLoadFloat3(&center), P);
+		float distsq = lb::math::DistanceSquared(XMLoadFloat3(&center), P);
 		float radiussq = radius * radius;
 		return distsq < radiussq;
 	}
 	bool Sphere::intersects(const XMFLOAT3& P) const
 	{
-		float distsq = wi::math::DistanceSquared(center, P);
+		float distsq = lb::math::DistanceSquared(center, P);
 		float radiussq = radius * radius;
 		return distsq < radiussq;
 	}
@@ -254,8 +254,8 @@ namespace wi::primitive
 			return false;
 		XMFLOAT3 min = b.getMin();
 		XMFLOAT3 max = b.getMax();
-		XMFLOAT3 closestPointInAabb = wi::math::Min(wi::math::Max(center, min), max);
-		float distanceSquared = wi::math::DistanceSquared(closestPointInAabb, center);
+		XMFLOAT3 closestPointInAabb = lb::math::Min(lb::math::Max(center, min), max);
+		float distanceSquared = lb::math::DistanceSquared(closestPointInAabb, center);
 		return distanceSquared < (radius * radius);
 	}
 	bool Sphere::intersects(const Sphere& b)const
@@ -265,7 +265,7 @@ namespace wi::primitive
 	}
 	bool Sphere::intersects(const Sphere& b, float& dist) const
 	{
-		dist = wi::math::Distance(center, b.center);
+		dist = lb::math::Distance(center, b.center);
 		dist = dist - radius - b.radius;
 		return dist < 0;
 	}
@@ -294,7 +294,7 @@ namespace wi::primitive
 		A -= N * b.radius;
 		B += N * b.radius;
 		XMVECTOR C = XMLoadFloat3(&center);
-		dist = wi::math::GetPointSegmentDistance(C, A, B);
+		dist = lb::math::GetPointSegmentDistance(C, A, B);
 		dist = dist - radius - b.radius;
 		return dist < 0;
 	}
@@ -306,7 +306,7 @@ namespace wi::primitive
 		A -= N * b.radius;
 		B += N * b.radius;
 		XMVECTOR C = XMLoadFloat3(&center);
-		XMVECTOR D = C - wi::math::ClosestPointOnLineSegment(A, B, C);
+		XMVECTOR D = C - lb::math::ClosestPointOnLineSegment(A, B, C);
 		dist = XMVectorGetX(XMVector3Length(D));
 		D /= dist;
 		XMStoreFloat3(&direction, D);
@@ -430,10 +430,10 @@ namespace wi::primitive
 		}
 
 		// Select point on capsule B line segment nearest to best potential endpoint on A capsule:
-		XMVECTOR bestB = wi::math::ClosestPointOnLineSegment(b_A, b_B, bestA);
+		XMVECTOR bestB = lb::math::ClosestPointOnLineSegment(b_A, b_B, bestA);
 
 		// Now do the same for capsule A segment:
-		bestA = wi::math::ClosestPointOnLineSegment(a_A, a_B, bestB);
+		bestA = lb::math::ClosestPointOnLineSegment(a_A, a_B, bestB);
 
 		// Finally, sphere collision:
 		XMVECTOR N = bestA - bestB;
@@ -506,7 +506,7 @@ namespace wi::primitive
 		XMVECTOR N = XMVector3Cross(L, C);
 		XMVECTOR Plane = XMPlaneFromPointNormal(A, N);
 		XMVECTOR I = XMPlaneIntersectLine(Plane, O, O + D * ray.TMax);
-		XMVECTOR P = wi::math::ClosestPointOnLineSegment(A, B, I);
+		XMVECTOR P = lb::math::ClosestPointOnLineSegment(A, B, I);
 
 		Sphere sphere;
 		XMStoreFloat3(&sphere.center, P);
@@ -525,7 +525,7 @@ namespace wi::primitive
 
 		XMVECTOR P = XMLoadFloat3(&point);
 
-		XMVECTOR C = wi::math::ClosestPointOnLineSegment(A, B, P);
+		XMVECTOR C = lb::math::ClosestPointOnLineSegment(A, B, P);
 
 		return XMVectorGetX(XMVector3Length(P - C)) <= radius;
 	}
@@ -561,7 +561,7 @@ namespace wi::primitive
 	bool Plane::intersects(const Sphere& b, float& dist, XMFLOAT3& direction) const
 	{
 		XMVECTOR C = XMLoadFloat3(&b.center);
-		dist = wi::math::GetPlanePointDistance(XMLoadFloat3(&origin), XMLoadFloat3(&normal), C);
+		dist = lb::math::GetPlanePointDistance(XMLoadFloat3(&origin), XMLoadFloat3(&normal), C);
 		direction = normal;
 		if (dist < 0)
 		{
@@ -623,10 +623,10 @@ namespace wi::primitive
 			// trace point on plane by capsule line and compute closest point on capsule to intersection point
 			XMVECTOR t = XMVector3Dot(N, (A - O) / XMVectorAbs(XMVector3Dot(N, D)));
 			XMVECTOR LinePlaneIntersection = A + D * t;
-			C = wi::math::ClosestPointOnLineSegment(A, B, LinePlaneIntersection);
+			C = lb::math::ClosestPointOnLineSegment(A, B, LinePlaneIntersection);
 		}
 
-		dist = wi::math::GetPlanePointDistance(O, N, C);
+		dist = lb::math::GetPlanePointDistance(O, N, C);
 
 		if (dist < 0)
 		{
@@ -896,7 +896,7 @@ namespace wi::primitive
 	}
 	bool Hitbox2D::intersects(const Hitbox2D& b) const
 	{
-		return wi::math::Collision2D(pos, siz, b.pos, b.siz);
+		return lb::math::Collision2D(pos, siz, b.pos, b.siz);
 	}
 
 }

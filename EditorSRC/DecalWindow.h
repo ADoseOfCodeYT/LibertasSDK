@@ -1,19 +1,19 @@
 #pragma once
 class EditorComponent;
 
-class DecalWindow : public wi::gui::Window
+class DecalWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::CheckBox placementCheckBox;
-	wi::gui::CheckBox onlyalphaCheckBox;
-	wi::gui::Slider slopeBlendPowerSlider;
+	lb::gui::Label infoLabel;
+	lb::gui::CheckBox placementCheckBox;
+	lb::gui::CheckBox onlyalphaCheckBox;
+	lb::gui::Slider slopeBlendPowerSlider;
 
 	void ResizeLayout() override;
 };

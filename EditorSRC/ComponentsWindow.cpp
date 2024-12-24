@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "ComponentsWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::graphics;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void ComponentsWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create("Components ", wi::gui::Window::WindowControls::RESIZE_LEFT);
+	lb::gui::Window::Create("Components ", lb::gui::Window::WindowControls::RESIZE_LEFT);
 	SetText("Entity - Component System");
-	font.params.h_align = wi::font::WIFALIGN_RIGHT;
+	font.params.h_align = lb::font::WIFALIGN_RIGHT;
 	SetShadowRadius(2);
 
 	filterCombo.Create("");
@@ -48,8 +48,8 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 	filterCombo.AddItem(ICON_SOFTBODY, (uint64_t)Filter::SoftBody);
 	filterCombo.AddItem(ICON_METADATA, (uint64_t)Filter::Metadata);
 	filterCombo.SetTooltip("Apply filtering to the Entities by components");
-	filterCombo.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-	filterCombo.OnSelect([&](wi::gui::EventArgs args) {
+	filterCombo.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+	filterCombo.OnSelect([&](lb::gui::EventArgs args) {
 		filter = (Filter)args.userdata;
 		RefreshEntityTree();
 		});
@@ -61,10 +61,10 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 	filterInput.SetTooltip("Search entities by name");
 	filterInput.SetDescription(ICON_SEARCH "  ");
 	filterInput.SetCancelInputEnabled(false);
-	filterInput.OnInput([=](wi::gui::EventArgs args) {
+	filterInput.OnInput([=](lb::gui::EventArgs args) {
 		RefreshEntityTree();
 		});
-	filterInput.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	filterInput.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	AddWidget(&filterInput);
 
 	filterCaseCheckBox.Create("");
@@ -72,8 +72,8 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 	filterCaseCheckBox.SetCheckText("Aa");
 	filterCaseCheckBox.SetUnCheckText("a");
 	filterCaseCheckBox.SetTooltip("Toggle case-sensitive name filtering");
-	filterCaseCheckBox.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-	filterCaseCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	filterCaseCheckBox.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
+	filterCaseCheckBox.OnClick([=](lb::gui::EventArgs args) {
 		RefreshEntityTree();
 		});
 	AddWidget(&filterCaseCheckBox);
@@ -81,12 +81,12 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 
 	entityTree.Create("Entities");
 	entityTree.SetSize(XMFLOAT2(300, 300));
-	entityTree.OnSelect([this](wi::gui::EventArgs args) {
+	entityTree.OnSelect([this](lb::gui::EventArgs args) {
 
 		if (args.iValue < 0)
 			return;
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_SELECTION;
 		// record PREVIOUS selection state...
 		editor->RecordSelection(archive);
@@ -95,10 +95,10 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 
 		for (int i = 0; i < entityTree.GetItemCount(); ++i)
 		{
-			const wi::gui::TreeList::Item& item = entityTree.GetItem(i);
+			const lb::gui::TreeList::Item& item = entityTree.GetItem(i);
 			if (item.selected)
 			{
-				wi::scene::PickResult pick;
+				lb::scene::PickResult pick;
 				pick.entity = (Entity)item.userdata;
 				editor->AddSelected(pick, false);
 			}
@@ -108,12 +108,12 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 		editor->RecordSelection(archive);
 
 		});
-	entityTree.OnDelete([=](wi::gui::EventArgs args) {
+	entityTree.OnDelete([=](lb::gui::EventArgs args) {
 		// Deletions will be performed in a batch next frame:
 		//	We don't delete here, because this callback will execute once for each item
 		editor->deleting = true;
 		});
-	entityTree.OnDoubleClick([this](wi::gui::EventArgs args) {
+	entityTree.OnDoubleClick([this](lb::gui::EventArgs args) {
 		editor->FocusCameraOnSelected();
 		});
 	AddWidget(&entityTree);
@@ -222,10 +222,10 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 	newComponentCombo.AddItem("Font " ICON_FONT, ADD_FONT);
 	newComponentCombo.AddItem("Voxel Grid " ICON_VOXELGRID, ADD_VOXELGRID);
 	newComponentCombo.AddItem("Metadata " ICON_METADATA, ADD_METADATA);
-	newComponentCombo.OnSelect([=](wi::gui::EventArgs args) {
+	newComponentCombo.OnSelect([=](lb::gui::EventArgs args) {
 		newComponentCombo.SetSelectedWithoutCallback(-1);
-		wi::scene::Scene& scene = editor->GetCurrentScene();
-		wi::vector<Entity> entities;
+		lb::scene::Scene& scene = editor->GetCurrentScene();
+		lb::vector<Entity> entities;
 		for (auto& x : editor->translator.selected)
 		{
 			Entity entity = x.entity;
@@ -364,7 +364,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 			}
 		}
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entities);
 
@@ -556,8 +556,8 @@ void ComponentsWindow::Update(float dt)
 
 void ComponentsWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
-	const wi::scene::Scene& scene = editor->GetCurrentScene();
+	lb::gui::Window::ResizeLayout();
+	const lb::scene::Scene& scene = editor->GetCurrentScene();
 	float padding = 2;
 	XMFLOAT2 pos = XMFLOAT2(padding, 0);
 	const float width = GetWidgetAreaSize().x - padding;
@@ -584,7 +584,7 @@ void ComponentsWindow::ResizeLayout()
 
 		pos.x = 0;
 		entityTree.SetPos(pos);
-		entityTree.SetSize(XMFLOAT2(width, wi::math::Clamp(entityTree.GetSize().y, 0, height - pos.y - 50)));
+		entityTree.SetSize(XMFLOAT2(width, lb::math::Clamp(entityTree.GetSize().y, 0, height - pos.y - 50)));
 		pos.y += entityTree.GetSize().y;
 		pos.y += padding * 4;
 	}
@@ -1035,7 +1035,7 @@ void ComponentsWindow::ResizeLayout()
 }
 
 
-void ComponentsWindow::PushToEntityTree(wi::ecs::Entity entity, int level)
+void ComponentsWindow::PushToEntityTree(lb::ecs::Entity entity, int level)
 {
 	if (entitytree_added_items.count(entity) != 0)
 	{
@@ -1045,7 +1045,7 @@ void ComponentsWindow::PushToEntityTree(wi::ecs::Entity entity, int level)
 
 	if (CheckEntityFilter(entity))
 	{
-		wi::gui::TreeList::Item item;
+		lb::gui::TreeList::Item item;
 		if (filter == Filter::All)
 		{
 			item.level = level;
@@ -1082,7 +1082,7 @@ void ComponentsWindow::PushToEntityTree(wi::ecs::Entity entity, int level)
 			{
 				filter_valid = false;
 			}
-			else if (wi::helper::toUpper(name_string).find(wi::helper::toUpper(name_filter)) == std::string::npos)
+			else if (lb::helper::toUpper(name_string).find(lb::helper::toUpper(name_filter)) == std::string::npos)
 			{
 				filter_valid = false;
 			}
@@ -1268,7 +1268,7 @@ void ComponentsWindow::RefreshEntityTree()
 
 	for (int i = 0; i < entityTree.GetItemCount(); ++i)
 	{
-		const wi::gui::TreeList::Item& item = entityTree.GetItem(i);
+		const lb::gui::TreeList::Item& item = entityTree.GetItem(i);
 		if (item.open)
 		{
 			entitytree_opened_items.insert((Entity)item.userdata);
@@ -1294,7 +1294,7 @@ void ComponentsWindow::RefreshEntityTree()
 	entitytree_added_items.clear();
 	entitytree_opened_items.clear();
 }
-bool ComponentsWindow::CheckEntityFilter(wi::ecs::Entity entity)
+bool ComponentsWindow::CheckEntityFilter(lb::ecs::Entity entity)
 {
 	if (filter == Filter::All)
 		return true;

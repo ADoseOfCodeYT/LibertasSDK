@@ -1,44 +1,44 @@
 #pragma once
 class EditorComponent;
 
-class GeneralWindow : public wi::gui::Window
+class GeneralWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::gui::CheckBox versionCheckBox;
-	wi::gui::CheckBox fpsCheckBox;
-	wi::gui::CheckBox otherinfoCheckBox;
-	wi::gui::ComboBox themeCombo;
-	wi::gui::ComboBox saveModeComboBox;
-	wi::gui::ComboBox languageCombo;
+	lb::gui::CheckBox versionCheckBox;
+	lb::gui::CheckBox fpsCheckBox;
+	lb::gui::CheckBox otherinfoCheckBox;
+	lb::gui::ComboBox themeCombo;
+	lb::gui::ComboBox saveModeComboBox;
+	lb::gui::ComboBox languageCombo;
 
-	wi::gui::CheckBox physicsDebugCheckBox;
-	wi::gui::CheckBox nameDebugCheckBox;
-	wi::gui::CheckBox gridHelperCheckBox;
-	wi::gui::CheckBox aabbDebugCheckBox;
-	wi::gui::CheckBox boneLinesCheckBox;
-	wi::gui::CheckBox debugEmittersCheckBox;
-	wi::gui::CheckBox debugForceFieldsCheckBox;
-	wi::gui::CheckBox debugRaytraceBVHCheckBox;
-	wi::gui::CheckBox wireFrameCheckBox;
-	wi::gui::CheckBox envProbesCheckBox;
-	wi::gui::CheckBox cameraVisCheckBox;
-	wi::gui::CheckBox colliderVisCheckBox;
-	wi::gui::CheckBox springVisCheckBox;
-	wi::gui::CheckBox freezeCullingCameraCheckBox;
-	wi::gui::CheckBox disableAlbedoMapsCheckBox;
-	wi::gui::CheckBox forceDiffuseLightingCheckBox;
+	lb::gui::CheckBox physicsDebugCheckBox;
+	lb::gui::CheckBox nameDebugCheckBox;
+	lb::gui::CheckBox gridHelperCheckBox;
+	lb::gui::CheckBox aabbDebugCheckBox;
+	lb::gui::CheckBox boneLinesCheckBox;
+	lb::gui::CheckBox debugEmittersCheckBox;
+	lb::gui::CheckBox debugForceFieldsCheckBox;
+	lb::gui::CheckBox debugRaytraceBVHCheckBox;
+	lb::gui::CheckBox wireFrameCheckBox;
+	lb::gui::CheckBox envProbesCheckBox;
+	lb::gui::CheckBox cameraVisCheckBox;
+	lb::gui::CheckBox colliderVisCheckBox;
+	lb::gui::CheckBox springVisCheckBox;
+	lb::gui::CheckBox freezeCullingCameraCheckBox;
+	lb::gui::CheckBox disableAlbedoMapsCheckBox;
+	lb::gui::CheckBox forceDiffuseLightingCheckBox;
 
-	wi::gui::Slider transformToolOpacitySlider;
-	wi::gui::Slider bonePickerOpacitySlider;
-	wi::gui::CheckBox skeletonsVisibleCheckBox;
+	lb::gui::Slider transformToolOpacitySlider;
+	lb::gui::Slider bonePickerOpacitySlider;
+	lb::gui::CheckBox skeletonsVisibleCheckBox;
 
-	wi::gui::Button localizationButton;
-	wi::gui::Button eliminateCoarseCascadesButton;
-	wi::gui::Button ddsConvButton;
-	wi::gui::Button ktxConvButton;
+	lb::gui::Button localizationButton;
+	lb::gui::Button eliminateCoarseCascadesButton;
+	lb::gui::Button ddsConvButton;
+	lb::gui::Button ktxConvButton;
 
 	void ResizeLayout() override;
 

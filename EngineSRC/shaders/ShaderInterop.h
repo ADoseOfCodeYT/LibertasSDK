@@ -5,7 +5,7 @@
 
 // Determine shader source path:
 #include "../wiHelper.h"
-static const std::string SHADER_INTEROP_PATH = wi::helper::GetCurrentPath() + "/" + wi::helper::GetDirectoryFromPath(wi::helper::GetPathRelative(wi::helper::GetCurrentPath(), std::string(__FILE__)));
+static const std::string SHADER_INTEROP_PATH = lb::helper::GetCurrentPath() + "/" + lb::helper::GetDirectoryFromPath(lb::helper::GetPathRelative(lb::helper::GetCurrentPath(), std::string(__FILE__)));
 
 // Application-side types:
 #include "../wiMath.h"
@@ -50,7 +50,7 @@ using int4 = XMINT4;
 #define PUSHCONSTANT(name, type) ConstantBuffer<type> name : register(b999)
 #endif // __PSSL__
 
-namespace wi
+namespace lb
 {
 	namespace graphics
 	{

@@ -1,43 +1,43 @@
 #pragma once
 class EditorComponent;
 
-class LightWindow : public wi::gui::Window
+class LightWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
-	void SetLightType(wi::scene::LightComponent::LightType type);
+	void SetLightType(lb::scene::LightComponent::LightType type);
 
-	wi::gui::Slider intensitySlider;
-	wi::gui::Slider rangeSlider;
-	wi::gui::Slider radiusSlider;
-	wi::gui::Slider lengthSlider;
-	wi::gui::Slider outerConeAngleSlider;
-	wi::gui::Slider innerConeAngleSlider;
-	wi::gui::Slider volumetricBoostSlider;
-	wi::gui::CheckBox shadowCheckBox;
-	wi::gui::CheckBox haloCheckBox;
-	wi::gui::CheckBox volumetricsCheckBox;
-	wi::gui::CheckBox staticCheckBox;
-	wi::gui::CheckBox volumetricCloudsCheckBox;
-	wi::gui::ColorPicker colorPicker;
-	wi::gui::ComboBox typeSelectorComboBox;
-	wi::gui::ComboBox shadowResolutionComboBox;
+	lb::gui::Slider intensitySlider;
+	lb::gui::Slider rangeSlider;
+	lb::gui::Slider radiusSlider;
+	lb::gui::Slider lengthSlider;
+	lb::gui::Slider outerConeAngleSlider;
+	lb::gui::Slider innerConeAngleSlider;
+	lb::gui::Slider volumetricBoostSlider;
+	lb::gui::CheckBox shadowCheckBox;
+	lb::gui::CheckBox haloCheckBox;
+	lb::gui::CheckBox volumetricsCheckBox;
+	lb::gui::CheckBox staticCheckBox;
+	lb::gui::CheckBox volumetricCloudsCheckBox;
+	lb::gui::ColorPicker colorPicker;
+	lb::gui::ComboBox typeSelectorComboBox;
+	lb::gui::ComboBox shadowResolutionComboBox;
 
-	wi::gui::Label lensflare_Label;
-	wi::gui::Button lensflare_Button[7];
+	lb::gui::Label lensflare_Label;
+	lb::gui::Button lensflare_Button[7];
 
 	struct CascadeConfig
 	{
-		wi::gui::Slider distanceSlider;
-		wi::gui::Button removeButton;
+		lb::gui::Slider distanceSlider;
+		lb::gui::Button removeButton;
 	};
-	wi::vector<CascadeConfig> cascades;
-	wi::gui::Button addCascadeButton;
+	lb::vector<CascadeConfig> cascades;
+	lb::gui::Button addCascadeButton;
 	void RefreshCascades();
 
 	void ResizeLayout() override;

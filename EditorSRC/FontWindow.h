@@ -1,43 +1,43 @@
 #pragma once
 class EditorComponent;
 
-class FontWindow : public wi::gui::Window
+class FontWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::TextInputField textInput;
-	wi::gui::Button fileButton;
-	wi::gui::Button fontStyleButton;
-	wi::gui::ComboBox fontSizeCombo;
-	wi::gui::ComboBox hAlignCombo;
-	wi::gui::ComboBox vAlignCombo;
-	wi::gui::Slider rotationSlider;
-	wi::gui::Slider spacingSlider;
-	wi::gui::Slider softnessSlider;
-	wi::gui::Slider boldenSlider;
-	wi::gui::Slider shadowSoftnessSlider;
-	wi::gui::Slider shadowBoldenSlider;
-	wi::gui::Slider shadowOffsetXSlider;
-	wi::gui::Slider shadowOffsetYSlider;
-	wi::gui::Slider intensitySlider;
-	wi::gui::Slider shadowIntensitySlider;
-	wi::gui::CheckBox hiddenCheckBox;
-	wi::gui::CheckBox cameraFacingCheckBox;
-	wi::gui::CheckBox cameraScalingCheckBox;
-	wi::gui::CheckBox depthTestCheckBox;
-	wi::gui::CheckBox sdfCheckBox;
-	wi::gui::ComboBox colorModeCombo;
-	wi::gui::ColorPicker colorPicker;
+	lb::gui::TextInputField textInput;
+	lb::gui::Button fileButton;
+	lb::gui::Button fontStyleButton;
+	lb::gui::ComboBox fontSizeCombo;
+	lb::gui::ComboBox hAlignCombo;
+	lb::gui::ComboBox vAlignCombo;
+	lb::gui::Slider rotationSlider;
+	lb::gui::Slider spacingSlider;
+	lb::gui::Slider softnessSlider;
+	lb::gui::Slider boldenSlider;
+	lb::gui::Slider shadowSoftnessSlider;
+	lb::gui::Slider shadowBoldenSlider;
+	lb::gui::Slider shadowOffsetXSlider;
+	lb::gui::Slider shadowOffsetYSlider;
+	lb::gui::Slider intensitySlider;
+	lb::gui::Slider shadowIntensitySlider;
+	lb::gui::CheckBox hiddenCheckBox;
+	lb::gui::CheckBox cameraFacingCheckBox;
+	lb::gui::CheckBox cameraScalingCheckBox;
+	lb::gui::CheckBox depthTestCheckBox;
+	lb::gui::CheckBox sdfCheckBox;
+	lb::gui::ComboBox colorModeCombo;
+	lb::gui::ColorPicker colorPicker;
 
-	wi::gui::Label typewriterInfoLabel;
-	wi::gui::Slider typewriterTimeSlider;
-	wi::gui::CheckBox typewriterLoopedCheckBox;
-	wi::gui::TextInputField typewriterStartInput;
+	lb::gui::Label typewriterInfoLabel;
+	lb::gui::Slider typewriterTimeSlider;
+	lb::gui::CheckBox typewriterLoopedCheckBox;
+	lb::gui::TextInputField typewriterStartInput;
 
 	void ResizeLayout() override;
 };

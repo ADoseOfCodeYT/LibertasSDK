@@ -4,21 +4,21 @@
 #include "wiGraphics.h"
 #include "wiResourceManager.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	class Texture_BindLua
 	{
 	public:
-		wi::Resource resource;
+		lb::Resource resource;
 
 		inline static constexpr char className[] = "Texture";
 		static Luna<Texture_BindLua>::FunctionType methods[];
 		static Luna<Texture_BindLua>::PropertyType properties[];
 
 		Texture_BindLua() = default;
-		Texture_BindLua(wi::Resource resource) :resource(resource) {}
-		Texture_BindLua(wi::graphics::Texture texture) { resource.SetTexture(texture); }
+		Texture_BindLua(lb::Resource resource) :resource(resource) {}
+		Texture_BindLua(lb::graphics::Texture texture) { resource.SetTexture(texture); }
 		Texture_BindLua(lua_State* L);
 
 		int GetLogo(lua_State* L);

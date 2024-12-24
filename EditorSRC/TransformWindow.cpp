@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "TransformWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void TransformWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_TRANSFORM " Transform" , wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_TRANSFORM " Transform" , lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(480, 280));
 
 	closeButton.SetTooltip("Delete TransformComponent\nNote that a lot of components won't work correctly without a TransformComponent!");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -36,11 +36,11 @@ void TransformWindow::Create(EditorComponent* _editor)
 	clearButton.SetTooltip("Reset transform to identity");
 	clearButton.SetPos(XMFLOAT2(x, y));
 	clearButton.SetSize(XMFLOAT2(wid + hei + 1, hei));
-	clearButton.OnClick([=](wi::gui::EventArgs args) {
+	clearButton.OnClick([=](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
-			wi::Archive& archive = editor->AdvanceHistory();
+			lb::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
@@ -57,7 +57,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	txInput.SetDescription("Position: ");
 	txInput.SetPos(XMFLOAT2(x, y += step));
 	txInput.SetSize(XMFLOAT2(siz, hei));
-	txInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	txInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -71,7 +71,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	tyInput.SetValue(0);
 	tyInput.SetPos(XMFLOAT2(x, y += step));
 	tyInput.SetSize(XMFLOAT2(siz, hei));
-	tyInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	tyInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -85,7 +85,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	tzInput.SetValue(0);
 	tzInput.SetPos(XMFLOAT2(x, y += step));
 	tzInput.SetSize(XMFLOAT2(siz, hei));
-	tzInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	tzInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -103,7 +103,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	sxInput.SetDescription("Scale: ");
 	sxInput.SetPos(XMFLOAT2(x, y));
 	sxInput.SetSize(XMFLOAT2(siz, hei));
-	sxInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	sxInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -117,7 +117,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	syInput.SetValue(1);
 	syInput.SetPos(XMFLOAT2(x, y += step));
 	syInput.SetSize(XMFLOAT2(siz, hei));
-	syInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	syInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -131,7 +131,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	szInput.SetValue(1);
 	szInput.SetPos(XMFLOAT2(x, y += step));
 	szInput.SetSize(XMFLOAT2(siz, hei));
-	szInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	szInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -146,7 +146,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	suInput.SetValue(1);
 	suInput.SetPos(XMFLOAT2(x, y += step));
 	suInput.SetSize(XMFLOAT2(siz, hei));
-	suInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	suInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -168,7 +168,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	rollInput.SetTooltip("Roll (in degrees)\n Note: Euler angle rotations can result in precision loss from quaternion conversion!");
 	rollInput.SetPos(XMFLOAT2(x, y += step));
 	rollInput.SetSize(XMFLOAT2(siz, hei));
-	rollInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	rollInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -188,7 +188,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	pitchInput.SetTooltip("Pitch (in degrees)\n Note: Euler angle rotations can result in precision loss from quaternion conversion!");
 	pitchInput.SetPos(XMFLOAT2(x, y += step));
 	pitchInput.SetSize(XMFLOAT2(siz, hei));
-	pitchInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	pitchInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -208,7 +208,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	yawInput.SetTooltip("Yaw (in degrees)\n Note: Euler angle rotations can result in precision loss from quaternion conversion!");
 	yawInput.SetPos(XMFLOAT2(x, y += step));
 	yawInput.SetSize(XMFLOAT2(siz, hei));
-	yawInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	yawInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -232,7 +232,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	rxInput.SetTooltip("Rotation Quaternion.X");
 	rxInput.SetPos(XMFLOAT2(x, y += step));
 	rxInput.SetSize(XMFLOAT2(siz, hei));
-	rxInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	rxInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -248,7 +248,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	ryInput.SetTooltip("Rotation Quaternion.Y");
 	ryInput.SetPos(XMFLOAT2(x, y += step));
 	ryInput.SetSize(XMFLOAT2(siz, hei));
-	ryInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	ryInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -264,7 +264,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	rzInput.SetTooltip("Rotation Quaternion.Z");
 	rzInput.SetPos(XMFLOAT2(x, y += step));
 	rzInput.SetSize(XMFLOAT2(siz, hei));
-	rzInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	rzInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -280,7 +280,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	rwInput.SetTooltip("Rotation Quaternion.W");
 	rwInput.SetPos(XMFLOAT2(x, y += step));
 	rwInput.SetSize(XMFLOAT2(siz, hei));
-	rwInput.OnInputAccepted([&](wi::gui::EventArgs args) {
+	rwInput.OnInputAccepted([&](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -303,7 +303,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	snapScaleInput.SetPos(XMFLOAT2(x, y += step));
 	snapScaleInput.SetSize(XMFLOAT2(siz, hei));
 	snapScaleInput.SetValue(editor->translator.scale_snap);
-	snapScaleInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	snapScaleInput.OnInputAccepted([=](lb::gui::EventArgs args) {
 		editor->translator.scale_snap = args.fValue;
 		});
 	AddWidget(&snapScaleInput);
@@ -314,7 +314,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	snapRotateInput.SetPos(XMFLOAT2(x, y += step));
 	snapRotateInput.SetSize(XMFLOAT2(siz, hei));
 	snapRotateInput.SetValue(editor->translator.rotate_snap / XM_PI * 180);
-	snapRotateInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	snapRotateInput.OnInputAccepted([=](lb::gui::EventArgs args) {
 		editor->translator.rotate_snap = args.fValue / 180.0f * XM_PI;
 		});
 	AddWidget(&snapRotateInput);
@@ -325,7 +325,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	snapTranslateInput.SetPos(XMFLOAT2(x, y += step));
 	snapTranslateInput.SetSize(XMFLOAT2(siz, hei));
 	snapTranslateInput.SetValue(editor->translator.translate_snap);
-	snapTranslateInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	snapTranslateInput.OnInputAccepted([=](lb::gui::EventArgs args) {
 		editor->translator.translate_snap = args.fValue;
 		});
 	AddWidget(&snapTranslateInput);
@@ -334,7 +334,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	resetTranslationButton.SetText("X");
 	resetTranslationButton.SetTooltip("Reset translation");
 	resetTranslationButton.SetSize(XMFLOAT2(hei, hei));
-	resetTranslationButton.OnClick([=](wi::gui::EventArgs args) {
+	resetTranslationButton.OnClick([=](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -348,7 +348,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	resetScaleButton.SetText("X");
 	resetScaleButton.SetTooltip("Reset scale");
 	resetScaleButton.SetSize(XMFLOAT2(hei, hei));
-	resetScaleButton.OnClick([=](wi::gui::EventArgs args) {
+	resetScaleButton.OnClick([=](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -362,7 +362,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	resetScaleUniformButton.SetText("X");
 	resetScaleUniformButton.SetTooltip("Reset scale");
 	resetScaleUniformButton.SetSize(XMFLOAT2(hei, hei));
-	resetScaleUniformButton.OnClick([=](wi::gui::EventArgs args) {
+	resetScaleUniformButton.OnClick([=](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -376,7 +376,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	resetRotationButton.SetText("X");
 	resetRotationButton.SetTooltip("Reset rotation");
 	resetRotationButton.SetSize(XMFLOAT2(hei, hei));
-	resetRotationButton.OnClick([=](wi::gui::EventArgs args) {
+	resetRotationButton.OnClick([=](lb::gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -407,7 +407,7 @@ void TransformWindow::SetEntity(Entity entity)
 		tyInput.SetValue(transform->translation_local.y);
 		tzInput.SetValue(transform->translation_local.z);
 
-		XMFLOAT3 roll_pitch_yaw = wi::math::QuaternionToRollPitchYaw(transform->rotation_local);
+		XMFLOAT3 roll_pitch_yaw = lb::math::QuaternionToRollPitchYaw(transform->rotation_local);
 		rollInput.SetValue(roll_pitch_yaw.x / XM_PI * 180.0f);
 		pitchInput.SetValue(roll_pitch_yaw.y / XM_PI * 180.0f);
 		yawInput.SetValue(roll_pitch_yaw.z / XM_PI * 180.0f);
@@ -432,13 +432,13 @@ void TransformWindow::SetEntity(Entity entity)
 
 void TransformWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
 	float jump = 20;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = 80;
@@ -448,7 +448,7 @@ void TransformWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_right = 4;
@@ -456,7 +456,7 @@ void TransformWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

@@ -1,129 +1,129 @@
 #pragma once
 class EditorComponent;
 
-struct ModifierWindow : public wi::gui::Window
+struct ModifierWindow : public lb::gui::Window
 {
-	wi::terrain::Modifier* modifier = nullptr;
+	lb::terrain::Modifier* modifier = nullptr;
 	std::function<void()> generation_callback;
-	wi::gui::ComboBox blendCombo;
-	wi::gui::Slider weightSlider;
-	wi::gui::Slider frequencySlider;
+	lb::gui::ComboBox blendCombo;
+	lb::gui::Slider weightSlider;
+	lb::gui::Slider frequencySlider;
 
 	virtual ~ModifierWindow() = default;
 
 	ModifierWindow(const std::string& name);
-	void Bind(wi::terrain::Modifier* ptr);
-	void From(wi::terrain::Modifier* ptr);
+	void Bind(lb::terrain::Modifier* ptr);
+	void From(lb::terrain::Modifier* ptr);
 };
 struct PerlinModifierWindow : public ModifierWindow
 {
-	wi::gui::Slider octavesSlider;
+	lb::gui::Slider octavesSlider;
 
 	PerlinModifierWindow();
 	void ResizeLayout() override;
-	void Bind(wi::terrain::PerlinModifier* ptr);
-	void From(wi::terrain::PerlinModifier* ptr);
+	void Bind(lb::terrain::PerlinModifier* ptr);
+	void From(lb::terrain::PerlinModifier* ptr);
 };
 struct VoronoiModifierWindow : public ModifierWindow
 {
-	wi::gui::Slider fadeSlider;
-	wi::gui::Slider shapeSlider;
-	wi::gui::Slider falloffSlider;
-	wi::gui::Slider perturbationSlider;
+	lb::gui::Slider fadeSlider;
+	lb::gui::Slider shapeSlider;
+	lb::gui::Slider falloffSlider;
+	lb::gui::Slider perturbationSlider;
 
 	VoronoiModifierWindow();
 	void ResizeLayout() override;
-	void Bind(wi::terrain::VoronoiModifier* ptr);
-	void From(wi::terrain::VoronoiModifier* ptr);
+	void Bind(lb::terrain::VoronoiModifier* ptr);
+	void From(lb::terrain::VoronoiModifier* ptr);
 };
 struct HeightmapModifierWindow : public ModifierWindow
 {
-	wi::gui::Slider scaleSlider;
-	wi::gui::Button loadButton;
+	lb::gui::Slider scaleSlider;
+	lb::gui::Button loadButton;
 
 	HeightmapModifierWindow();
 	void ResizeLayout() override;
-	void Bind(wi::terrain::HeightmapModifier* ptr);
-	void From(wi::terrain::HeightmapModifier* ptr);
+	void Bind(lb::terrain::HeightmapModifier* ptr);
+	void From(lb::terrain::HeightmapModifier* ptr);
 };
 
-struct PropWindow : public wi::gui::Window
+struct PropWindow : public lb::gui::Window
 {
-	wi::gui::ComboBox meshCombo;
-	wi::gui::TextInputField minCountPerChunkInput;
-	wi::gui::TextInputField maxCountPerChunkInput;
-	wi::gui::ComboBox regionCombo;
-	wi::gui::Slider regionPowerSlider;
-	wi::gui::Slider noiseFrequencySlider;
-	wi::gui::Slider noisePowerSlider;
-	wi::gui::Slider thresholdSlider;
-	wi::gui::Slider minSizeSlider;
-	wi::gui::Slider maxSizeSlider;
-	wi::gui::TextInputField minYOffsetInput;
-	wi::gui::TextInputField maxYOffsetInput;
+	lb::gui::ComboBox meshCombo;
+	lb::gui::TextInputField minCountPerChunkInput;
+	lb::gui::TextInputField maxCountPerChunkInput;
+	lb::gui::ComboBox regionCombo;
+	lb::gui::Slider regionPowerSlider;
+	lb::gui::Slider noiseFrequencySlider;
+	lb::gui::Slider noisePowerSlider;
+	lb::gui::Slider thresholdSlider;
+	lb::gui::Slider minSizeSlider;
+	lb::gui::Slider maxSizeSlider;
+	lb::gui::TextInputField minYOffsetInput;
+	lb::gui::TextInputField maxYOffsetInput;
 
-	PropWindow(wi::terrain::Prop* prop, wi::scene::Scene* scene);
+	PropWindow(lb::terrain::Prop* prop, lb::scene::Scene* scene);
 	void ResizeLayout() override;
 
-	wi::terrain::Prop* prop = nullptr;
-	wi::scene::Scene* scene = nullptr;
+	lb::terrain::Prop* prop = nullptr;
+	lb::scene::Scene* scene = nullptr;
 
 	std::function<void()> generation_callback;
 };
 
-struct PropsWindow : public wi::gui::Window
+struct PropsWindow : public lb::gui::Window
 {
-	wi::gui::Button addButton;
+	lb::gui::Button addButton;
 
 	PropsWindow(EditorComponent* editor);
 
 	void Rebuild();
-	void AddWindow(wi::terrain::Prop& prop);
+	void AddWindow(lb::terrain::Prop& prop);
 
-	void Update(const wi::Canvas& canvas, float dt) override;
+	void Update(const lb::Canvas& canvas, float dt) override;
 
 	void ResizeLayout() override;
 
 	EditorComponent* editor = nullptr;
-	wi::terrain::Terrain* terrain = nullptr;
+	lb::terrain::Terrain* terrain = nullptr;
 
-	wi::vector<std::unique_ptr<PropWindow>> windows;
-	wi::vector<PropWindow*> windows_to_remove;
+	lb::vector<std::unique_ptr<PropWindow>> windows;
+	lb::vector<PropWindow*> windows_to_remove;
 
 	std::function<void()> generation_callback;
 };
 
-class TerrainWindow : public wi::gui::Window
+class TerrainWindow : public lb::gui::Window
 {
 public:
-	wi::gui::CheckBox centerToCamCheckBox;
-	wi::gui::CheckBox removalCheckBox;
-	wi::gui::CheckBox grassCheckBox;
-	wi::gui::CheckBox physicsCheckBox;
-	wi::gui::CheckBox tessellationCheckBox;
-	wi::gui::Slider lodSlider;
-	wi::gui::Slider generationSlider;
-	wi::gui::Slider propGenerationSlider;
-	wi::gui::Slider physicsGenerationSlider;
-	wi::gui::Slider propDensitySlider;
-	wi::gui::Slider grassDensitySlider;
-	wi::gui::Slider grassLengthSlider;
-	wi::gui::Slider grassDistanceSlider;
-	wi::gui::ComboBox presetCombo;
-	wi::gui::Slider scaleSlider;
-	wi::gui::Slider seedSlider;
-	wi::gui::Slider bottomLevelSlider;
-	wi::gui::Slider topLevelSlider;
-	wi::gui::Button saveHeightmapButton;
-	wi::gui::Button saveRegionButton;
-	wi::gui::ComboBox addModifierCombo;
+	lb::gui::CheckBox centerToCamCheckBox;
+	lb::gui::CheckBox removalCheckBox;
+	lb::gui::CheckBox grassCheckBox;
+	lb::gui::CheckBox physicsCheckBox;
+	lb::gui::CheckBox tessellationCheckBox;
+	lb::gui::Slider lodSlider;
+	lb::gui::Slider generationSlider;
+	lb::gui::Slider propGenerationSlider;
+	lb::gui::Slider physicsGenerationSlider;
+	lb::gui::Slider propDensitySlider;
+	lb::gui::Slider grassDensitySlider;
+	lb::gui::Slider grassLengthSlider;
+	lb::gui::Slider grassDistanceSlider;
+	lb::gui::ComboBox presetCombo;
+	lb::gui::Slider scaleSlider;
+	lb::gui::Slider seedSlider;
+	lb::gui::Slider bottomLevelSlider;
+	lb::gui::Slider topLevelSlider;
+	lb::gui::Button saveHeightmapButton;
+	lb::gui::Button saveRegionButton;
+	lb::gui::ComboBox addModifierCombo;
 
-	wi::gui::Slider region1Slider;
-	wi::gui::Slider region2Slider;
-	wi::gui::Slider region3Slider;
+	lb::gui::Slider region1Slider;
+	lb::gui::Slider region2Slider;
+	lb::gui::Slider region3Slider;
 
-	wi::gui::ComboBox materialCombos[wi::terrain::MATERIAL_COUNT];
-	wi::gui::ComboBox materialCombo_GrassParticle;
+	lb::gui::ComboBox materialCombos[lb::terrain::MATERIAL_COUNT];
+	lb::gui::ComboBox materialCombo_GrassParticle;
 
 	std::unique_ptr<PropsWindow> propsWindow;
 
@@ -136,19 +136,19 @@ public:
 		PRESET_DESERT,
 	};
 
-	wi::vector<std::unique_ptr<ModifierWindow>> modifiers;
-	wi::vector<ModifierWindow*> modifiers_to_remove;
+	lb::vector<std::unique_ptr<ModifierWindow>> modifiers;
+	lb::vector<ModifierWindow*> modifiers_to_remove;
 
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	wi::terrain::Terrain* terrain = nullptr;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	lb::terrain::Terrain* terrain = nullptr;
+	void SetEntity(lb::ecs::Entity entity);
 	void AddModifier(ModifierWindow* modifier_window);
 	void SetupAssets();
 
-	void Update(const wi::Canvas& canvas, float dt) override;
+	void Update(const lb::Canvas& canvas, float dt) override;
 	void ResizeLayout() override;
 };
 

@@ -3,18 +3,18 @@
 #include "wiLuna.h"
 #include "wiSpriteFont.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 	class SpriteFont_BindLua
 	{
 	public:
-		wi::SpriteFont font;
+		lb::SpriteFont font;
 
 		inline static constexpr char className[] = "SpriteFont";
 		static Luna<SpriteFont_BindLua>::FunctionType methods[];
 		static Luna<SpriteFont_BindLua>::PropertyType properties[];
 
-		SpriteFont_BindLua(const wi::SpriteFont& font);
+		SpriteFont_BindLua(const lb::SpriteFont& font);
 		SpriteFont_BindLua(lua_State* L);
 
 		int SetStyle(lua_State* L);

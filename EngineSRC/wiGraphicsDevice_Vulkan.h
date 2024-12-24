@@ -26,7 +26,7 @@
 #include <mutex>
 #include <algorithm>
 
-namespace wi::graphics
+namespace lb::graphics
 {
 	class GraphicsDevice_Vulkan final : public GraphicsDevice
 	{
@@ -37,13 +37,13 @@ namespace wi::graphics
 	    VkDebugUtilsMessengerEXT debugUtilsMessenger = VK_NULL_HANDLE;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 		VkDevice device = VK_NULL_HANDLE;
-		wi::vector<VkQueueFamilyProperties2> queueFamilies;
-		wi::vector<VkQueueFamilyVideoPropertiesKHR> queueFamiliesVideo;
+		lb::vector<VkQueueFamilyProperties2> queueFamilies;
+		lb::vector<VkQueueFamilyVideoPropertiesKHR> queueFamiliesVideo;
 		uint32_t graphicsFamily = VK_QUEUE_FAMILY_IGNORED;
 		uint32_t computeFamily = VK_QUEUE_FAMILY_IGNORED;
 		uint32_t copyFamily = VK_QUEUE_FAMILY_IGNORED;
 		uint32_t videoFamily = VK_QUEUE_FAMILY_IGNORED;
-		wi::vector<uint32_t> families;
+		lb::vector<uint32_t> families;
 		VkQueue graphicsQueue = VK_NULL_HANDLE;
 		VkQueue computeQueue = VK_NULL_HANDLE;
 		VkQueue copyQueue = VK_NULL_HANDLE;
@@ -85,7 +85,7 @@ namespace wi::graphics
 		};
 		VideoCapability video_capability_h264 = {};
 
-		wi::vector<VkDynamicState> pso_dynamicStates;
+		lb::vector<VkDynamicState> pso_dynamicStates;
 		VkPipelineDynamicStateCreateInfo dynamicStateInfo = {};
 		VkPipelineDynamicStateCreateInfo dynamicStateInfo_MeshShader = {};
 
@@ -110,13 +110,13 @@ namespace wi::graphics
 		struct CommandQueue
 		{
 			VkQueue queue = VK_NULL_HANDLE;
-			wi::vector<SwapChain> swapchain_updates;
-			wi::vector<VkSwapchainKHR> submit_swapchains;
-			wi::vector<uint32_t> submit_swapChainImageIndices;
-			wi::vector<VkSemaphoreSubmitInfo> submit_waitSemaphoreInfos;
-			wi::vector<VkSemaphore> submit_signalSemaphores;
-			wi::vector<VkSemaphoreSubmitInfo> submit_signalSemaphoreInfos;
-			wi::vector<VkCommandBufferSubmitInfo> submit_cmds;
+			lb::vector<SwapChain> swapchain_updates;
+			lb::vector<VkSwapchainKHR> submit_swapchains;
+			lb::vector<uint32_t> submit_swapChainImageIndices;
+			lb::vector<VkSemaphoreSubmitInfo> submit_waitSemaphoreInfos;
+			lb::vector<VkSemaphore> submit_signalSemaphores;
+			lb::vector<VkSemaphoreSubmitInfo> submit_signalSemaphoreInfos;
+			lb::vector<VkCommandBufferSubmitInfo> submit_cmds;
 
 			bool sparse_binding_supported = false;
 			std::shared_ptr<std::mutex> locker;
@@ -143,7 +143,7 @@ namespace wi::graphics
 				GPUBuffer uploadbuffer;
 				inline bool IsValid() const { return transferCommandBuffer != VK_NULL_HANDLE; }
 			};
-			wi::vector<CopyCMD> freelist;
+			lb::vector<CopyCMD> freelist;
 
 			void init(GraphicsDevice_Vulkan* device);
 			void destroy();
@@ -159,11 +159,11 @@ namespace wi::graphics
 			DescriptorBindingTable table;
 			GraphicsDevice_Vulkan* device;
 
-			wi::vector<VkWriteDescriptorSet> descriptorWrites;
-			wi::vector<VkDescriptorBufferInfo> bufferInfos;
-			wi::vector<VkDescriptorImageInfo> imageInfos;
-			wi::vector<VkBufferView> texelBufferViews;
-			wi::vector<VkWriteDescriptorSetAccelerationStructureKHR> accelerationStructureViews;
+			lb::vector<VkWriteDescriptorSet> descriptorWrites;
+			lb::vector<VkDescriptorBufferInfo> bufferInfos;
+			lb::vector<VkDescriptorImageInfo> imageInfos;
+			lb::vector<VkBufferView> texelBufferViews;
+			lb::vector<VkWriteDescriptorSetAccelerationStructureKHR> accelerationStructureViews;
 
 			uint32_t uniform_buffer_dynamic_offsets[DESCRIPTORBINDER_CBV_COUNT] = {};
 
@@ -196,7 +196,7 @@ namespace wi::graphics
 			void reset();
 		};
 
-		wi::vector<VkSemaphore> semaphore_pool;
+		lb::vector<VkSemaphore> semaphore_pool;
 		std::mutex semaphore_pool_locker;
 		VkSemaphore new_semaphore()
 		{
@@ -227,30 +227,30 @@ namespace wi::graphics
 
 			QUEUE_TYPE queue = {};
 			uint32_t id = 0;
-			wi::vector<std::pair<QUEUE_TYPE, VkSemaphore>> wait_queues;
-			wi::vector<VkSemaphore> waits;
-			wi::vector<VkSemaphore> signals;
+			lb::vector<std::pair<QUEUE_TYPE, VkSemaphore>> wait_queues;
+			lb::vector<VkSemaphore> waits;
+			lb::vector<VkSemaphore> signals;
 
 			DescriptorBinder binder;
 			DescriptorBinderPool binder_pools[BUFFERCOUNT];
 			GPULinearAllocator frame_allocators[BUFFERCOUNT];
 
-			wi::vector<std::pair<size_t, VkPipeline>> pipelines_worker;
+			lb::vector<std::pair<size_t, VkPipeline>> pipelines_worker;
 			size_t prev_pipeline_hash = {};
 			const PipelineState* active_pso = {};
 			const Shader* active_cs = {};
 			const RaytracingPipelineState* active_rt = {};
 			ShadingRate prev_shadingrate = {};
-			wi::vector<SwapChain> prev_swapchains;
+			lb::vector<SwapChain> prev_swapchains;
 			bool dirty_pso = {};
-			wi::vector<VkMemoryBarrier2> frame_memoryBarriers;
-			wi::vector<VkImageMemoryBarrier2> frame_imageBarriers;
-			wi::vector<VkBufferMemoryBarrier2> frame_bufferBarriers;
-			wi::vector<VkAccelerationStructureGeometryKHR> accelerationstructure_build_geometries;
-			wi::vector<VkAccelerationStructureBuildRangeInfoKHR> accelerationstructure_build_ranges;
+			lb::vector<VkMemoryBarrier2> frame_memoryBarriers;
+			lb::vector<VkImageMemoryBarrier2> frame_imageBarriers;
+			lb::vector<VkBufferMemoryBarrier2> frame_bufferBarriers;
+			lb::vector<VkAccelerationStructureGeometryKHR> accelerationstructure_build_geometries;
+			lb::vector<VkAccelerationStructureBuildRangeInfoKHR> accelerationstructure_build_ranges;
 			RenderPassInfo renderpass_info;
-			wi::vector<VkImageMemoryBarrier2> renderpass_barriers_begin;
-			wi::vector<VkImageMemoryBarrier2> renderpass_barriers_end;
+			lb::vector<VkImageMemoryBarrier2> renderpass_barriers_begin;
+			lb::vector<VkImageMemoryBarrier2> renderpass_barriers_end;
 
 			void reset(uint32_t bufferindex)
 			{
@@ -282,9 +282,9 @@ namespace wi::graphics
 				return commandBuffers[buffer_index][queue];
 			}
 		};
-		wi::vector<std::unique_ptr<CommandList_Vulkan>> commandlists;
+		lb::vector<std::unique_ptr<CommandList_Vulkan>> commandlists;
 		uint32_t cmd_count = 0;
-		wi::SpinLock cmd_locker;
+		lb::SpinLock cmd_locker;
 
 		constexpr CommandList_Vulkan& GetCommandList(CommandList cmd) const
 		{
@@ -296,14 +296,14 @@ namespace wi::graphics
 		{
 			VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
 			VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
-			wi::vector<VkDescriptorSet> bindlessSets;
+			lb::vector<VkDescriptorSet> bindlessSets;
 			uint32_t bindlessFirstSet = 0;
 		};
-		mutable wi::unordered_map<size_t, PSOLayout> pso_layout_cache;
+		mutable lb::unordered_map<size_t, PSOLayout> pso_layout_cache;
 		mutable std::mutex pso_layout_cache_mutex;
 
 		VkPipelineCache pipelineCache = VK_NULL_HANDLE;
-		wi::unordered_map<size_t, VkPipeline> pipelines_global;
+		lb::unordered_map<size_t, VkPipeline> pipelines_global;
 
 		void pso_validate(CommandList cmd);
 
@@ -311,13 +311,13 @@ namespace wi::graphics
 		void predispatch(CommandList cmd);
 
 		static constexpr uint32_t immutable_sampler_slot_begin = 100;
-		wi::vector<VkSampler> immutable_samplers;
+		lb::vector<VkSampler> immutable_samplers;
 
 	public:
-		GraphicsDevice_Vulkan(wi::platform::window_type window, ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
+		GraphicsDevice_Vulkan(lb::platform::window_type window, ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
 		~GraphicsDevice_Vulkan() override;
 
-		bool CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const override;
+		bool CreateSwapChain(const SwapChainDesc* desc, lb::platform::window_type window, SwapChain* swapchain) const override;
 		bool CreateBuffer2(const GPUBufferDesc* desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
 		bool CreateTexture(const TextureDesc* desc, const SubresourceData* initial_data, Texture* texture, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
 		bool CreateShader(ShaderStage stage, const void* shadercode, size_t shadercode_size, Shader* shader) const override;
@@ -483,7 +483,7 @@ namespace wi::graphics
 				VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
 				VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
 				VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-				wi::vector<int> freelist;
+				lb::vector<int> freelist;
 				std::mutex locker;
 
 				void init(VkDevice device, VkDescriptorType type, uint32_t descriptorCount)

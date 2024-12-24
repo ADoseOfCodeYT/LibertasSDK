@@ -3,18 +3,18 @@
 #include "wiLuna.h"
 #include "wiApplication.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	class Canvas_BindLua
 	{
 	public:
-		wi::Canvas canvas;
+		lb::Canvas canvas;
 		inline static constexpr char className[] = "Canvas";
 		static Luna<Canvas_BindLua>::FunctionType methods[];
 		static Luna<Canvas_BindLua>::PropertyType properties[];
 
-		Canvas_BindLua(const wi::Canvas& canvas) : canvas(canvas) {}
+		Canvas_BindLua(const lb::Canvas& canvas) : canvas(canvas) {}
 		Canvas_BindLua(lua_State* L) {}
 
 		int GetDPI(lua_State* L);

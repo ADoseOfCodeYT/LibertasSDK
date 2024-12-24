@@ -4,7 +4,7 @@
 #include <memory>
 #include <functional>
 
-namespace wi::eventhandler
+namespace lb::eventhandler
 {
 	inline constexpr int EVENT_THREAD_SAFE_POINT = -1;
 	inline constexpr int EVENT_RELOAD_SHADERS = -2;

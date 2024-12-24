@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "LayerWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void LayerWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_LAYER " Layer", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_LAYER " Layer", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(300, 350));
 
 	closeButton.SetTooltip("Delete LayerComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -34,7 +34,7 @@ void LayerWindow::Create(EditorComponent* _editor)
 	label.SetText("The layer is a 32-bit mask (uint32_t), which can be used for filtering by multiple systems (visibility, collision, picking, scripts, etc.).\n- If all bits are disabled, it means the layer will be inactive in most systems.");
 	label.SetPos(XMFLOAT2(x, y));
 	label.SetSize(XMFLOAT2(wid, 100));
-	label.SetColor(wi::Color::Transparent());
+	label.SetColor(lb::Color::Transparent());
 	AddWidget(&label);
 	y += label.GetScale().y + 5;
 
@@ -43,8 +43,8 @@ void LayerWindow::Create(EditorComponent* _editor)
 		layers[i].Create("");
 		layers[i].SetText(std::to_string(i) + ": ");
 		layers[i].SetPos(XMFLOAT2(x + 20 + (i % 5) * 50, y + (i / 5) * step));
-		layers[i].OnClick([=](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		layers[i].OnClick([=](lb::gui::EventArgs args) {
+			lb::scene::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				LayerComponent* layer = scene.layers.GetComponent(x.entity);
@@ -70,8 +70,8 @@ void LayerWindow::Create(EditorComponent* _editor)
 
 	enableAllButton.Create("ALL " ICON_CHECK);
 	enableAllButton.SetPos(XMFLOAT2(x, y));
-	enableAllButton.OnClick([this](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	enableAllButton.OnClick([this](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LayerComponent* layer = scene.layers.GetComponent(x.entity);
@@ -88,8 +88,8 @@ void LayerWindow::Create(EditorComponent* _editor)
 
 	enableNoneButton.Create("NONE " ICON_DISABLED);
 	enableNoneButton.SetPos(XMFLOAT2(x + 120, y));
-	enableNoneButton.OnClick([this](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	enableNoneButton.OnClick([this](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LayerComponent* layer = scene.layers.GetComponent(x.entity);
@@ -154,13 +154,13 @@ void LayerWindow::SetEntity(Entity entity)
 
 void LayerWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
 	float jump = 20;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = 80;
@@ -170,7 +170,7 @@ void LayerWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_right = 40;
@@ -178,7 +178,7 @@ void LayerWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

@@ -30,7 +30,7 @@
 
 #include <memory>
 
-namespace wi::lua
+namespace lb::lua
 {
 	static constexpr const char* WILUA_ERROR_PREFIX = "[Lua Error] ";
 	struct LuaInternal
@@ -61,7 +61,7 @@ namespace wi::lua
 		std::string ss;
 		ss += WILUA_ERROR_PREFIX;
 		ss += str;
-		wi::backlog::post(ss, wi::backlog::LogLevel::Error);
+		lb::backlog::post(ss, lb::backlog::LogLevel::Error);
 		lua_pop(L, 1); // remove error message
 	}
 
@@ -99,7 +99,7 @@ namespace wi::lua
 		std::string dynamic_inject = "--[[" + filepath + "--]]";
 		dynamic_inject += "local function script_file() return \"" + filepath + "\" end;";
 		dynamic_inject += "local function script_pid() return \"" + std::to_string(PID) + "\" end;";
-		dynamic_inject += "local function script_dir() return \"" + wi::helper::GetDirectoryFromPath(filepath) + "\" end;";
+		dynamic_inject += "local function script_dir() return \"" + lb::helper::GetDirectoryFromPath(filepath) + "\" end;";
 		dynamic_inject += persistent_inject;
 		script = dynamic_inject + customparameters_prepend + script + customparameters_append;
 
@@ -129,9 +129,9 @@ namespace wi::lua
 			std::string customparameters_append;
 			if(argc >= 4) customparameters_prepend = SGetString(L, 4);
 
-			wi::vector<uint8_t> filedata;
+			lb::vector<uint8_t> filedata;
 
-			if (wi::helper::FileRead(filename, filedata))
+			if (lb::helper::FileRead(filename, filedata))
 			{
 				std::string command = std::string(filedata.begin(), filedata.end());
 				PID = AttachScriptParameters(command, filename, PID, customparameters_prepend, customparameters_append);
@@ -171,13 +171,13 @@ namespace wi::lua
 		if (argc > 0)
 		{
 			std::string filename = SGetString(L, 1);
-			if (wi::lua::RunBinaryFile(filename))
+			if (lb::lua::RunBinaryFile(filename))
 			{
 				return 0;
 			}
-			wi::lua::SError(L, "dobinaryfile(string filename): File could not be read!");
+			lb::lua::SError(L, "dobinaryfile(string filename): File could not be read!");
 		}
-		wi::lua::SError(L, "dobinaryfile(string filename): Not enough arguments!");
+		lb::lua::SError(L, "dobinaryfile(string filename): Not enough arguments!");
 		return 0;
 	}
 	int Internal_CompileBinaryFile(lua_State* L)
@@ -188,24 +188,24 @@ namespace wi::lua
 		{
 			std::string filename_src = SGetString(L, 1);
 			std::string filename_dst = SGetString(L, 2);
-			wi::vector<uint8_t> data;
-			if (wi::lua::CompileFile(filename_src, data))
+			lb::vector<uint8_t> data;
+			if (lb::lua::CompileFile(filename_src, data))
 			{
-				wi::helper::FileWrite(filename_dst, data.data(), data.size());
+				lb::helper::FileWrite(filename_dst, data.data(), data.size());
 				return 0;
 			}
-			wi::lua::SError(L, "compilebinaryfile(string filename_src, filename_dst): Source file could not be read, or compilation failed!");
+			lb::lua::SError(L, "compilebinaryfile(string filename_src, filename_dst): Source file could not be read, or compilation failed!");
 		}
-		wi::lua::SError(L, "compilebinaryfile(string filename_src, filename_dst): Not enough arguments!");
+		lb::lua::SError(L, "compilebinaryfile(string filename_src, filename_dst): Not enough arguments!");
 		return 0;
 	}
 
-	wi::Application* editorApplication = nullptr;
-	wi::RenderPath* editorRenderPath = nullptr;
+	lb::Application* editorApplication = nullptr;
+	lb::RenderPath* editorRenderPath = nullptr;
 	int IsThisEditor(lua_State* L)
 	{
 		bool ret = editorApplication != nullptr && editorRenderPath != nullptr;
-		wi::lua::SSetBool(L, ret);
+		lb::lua::SSetBool(L, ret);
 		return 1;
 	}
 	int ReturnToEditor(lua_State* L)
@@ -221,9 +221,9 @@ namespace wi::lua
 	int IsThisDebugBuild(lua_State* L)
 	{
 #ifdef _DEBUG
-		wi::lua::SSetBool(L, true);
+		lb::lua::SSetBool(L, true);
 #else
-		wi::lua::SSetBool(L, false);
+		lb::lua::SSetBool(L, false);
 #endif
 		return 1;
 	}
@@ -233,7 +233,7 @@ namespace wi::lua
 		if (lua_internal().m_luaState != nullptr)
 			return; // already initialized
 
-		wi::Timer timer;
+		lb::Timer timer;
 
 		lua_internal().m_luaState = luaL_newstate();
 		luaL_openlibs(lua_internal().m_luaState);
@@ -273,8 +273,8 @@ namespace wi::lua
 		Async_BindLua::Bind();
 
 		char text[256] = {};
-		snprintf(text, arraysize(text), "wi::lua Initialized [Lua %s.%s] (%d ms)", LUA_VERSION_MAJOR, LUA_VERSION_MINOR, (int)std::round(timer.elapsed()));
-		wi::backlog::post(text);
+		snprintf(text, arraysize(text), "lb::lua Initialized [Lua %s.%s] (%d ms)", LUA_VERSION_MAJOR, LUA_VERSION_MINOR, (int)std::round(timer.elapsed()));
+		lb::backlog::post(text);
 	}
 
 	lua_State* GetLuaState()
@@ -293,8 +293,8 @@ namespace wi::lua
 	}
 	bool RunFile(const char* filename)
 	{
-		wi::vector<uint8_t> filedata;
-		if (wi::helper::FileRead(filename, filedata))
+		lb::vector<uint8_t> filedata;
+		if (lb::helper::FileRead(filename, filedata))
 		{
 			std::string script = std::string(filedata.begin(), filedata.end());
 			AttachScriptParameters(script, filename);
@@ -304,8 +304,8 @@ namespace wi::lua
 	}
 	bool RunBinaryFile(const char* filename)
 	{
-		wi::vector<uint8_t> filedata;
-		if (wi::helper::FileRead(filename, filedata))
+		lb::vector<uint8_t> filedata;
+		if (lb::helper::FileRead(filename, filedata))
 		{
 			return RunBinaryData(filedata.data(), filedata.size(), filename);
 		}
@@ -598,13 +598,13 @@ namespace wi::lua
 		{
 			ss += error;
 		}
-		wi::backlog::post(ss, wi::backlog::LogLevel::Error);
+		lb::backlog::post(ss, lb::backlog::LogLevel::Error);
 	}
 
-	bool CompileFile(const char* filename, wi::vector<uint8_t>& dst)
+	bool CompileFile(const char* filename, lb::vector<uint8_t>& dst)
 	{
-		wi::vector<uint8_t> filedata;
-		if (wi::helper::FileRead(filename, filedata))
+		lb::vector<uint8_t> filedata;
+		if (lb::helper::FileRead(filename, filedata))
 		{
 			std::string script = std::string(filedata.begin(), filedata.end());
 			return CompileText(script.c_str(), dst);
@@ -614,14 +614,14 @@ namespace wi::lua
 
 	int writer(lua_State* L, const void* p, size_t sz, void* ud)
 	{
-		wi::vector<uint8_t>& dst = *(wi::vector<uint8_t>*)ud;
+		lb::vector<uint8_t>& dst = *(lb::vector<uint8_t>*)ud;
 		for (size_t i = 0; i < sz; ++i)
 		{
 			dst.push_back(((uint8_t*)p)[i]);
 		}
 		return LUA_OK;
 	}
-	bool CompileText(const char* script, wi::vector<uint8_t>& dst)
+	bool CompileText(const char* script, lb::vector<uint8_t>& dst)
 	{
 		if(luaL_loadstring(lua_internal().m_luaState, script) != LUA_OK)
 		{
@@ -639,7 +639,7 @@ namespace wi::lua
 		return true;
 	}
 
-	void EnableEditorFunctionality(wi::Application* application, wi::RenderPath* renderpath)
+	void EnableEditorFunctionality(lb::Application* application, lb::RenderPath* renderpath)
 	{
 		editorApplication = application;
 		editorRenderPath = renderpath;

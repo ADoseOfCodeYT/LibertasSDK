@@ -5,15 +5,15 @@
 #include <sstream>
 #include <iterator>
 
-namespace wi::arguments
+namespace lb::arguments
 {
-	wi::unordered_set<std::string> params;
+	lb::unordered_set<std::string> params;
 
 	void Parse(const wchar_t* args)
 	{
 		std::wstring from = args;
 		std::string to;
-		wi::helper::StringConvert(from, to);
+		lb::helper::StringConvert(from, to);
 
 		std::istringstream iss(to);
 

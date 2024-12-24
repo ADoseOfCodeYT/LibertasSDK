@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "GeneralWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::graphics;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 static const std::string languages_directory = "languages/";
 
@@ -11,17 +11,17 @@ void GeneralWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create("General", wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::RESIZE_RIGHT);
+	lb::gui::Window::Create("General", lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::RESIZE_RIGHT);
 	SetText("General Options " ICON_GENERALOPTIONS);
 
 	SetSize(XMFLOAT2(300, 740));
 
 	physicsDebugCheckBox.Create("Physics visualizer: ");
 	physicsDebugCheckBox.SetTooltip("Visualize the physics world");
-	physicsDebugCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::physics::SetDebugDrawEnabled(args.bValue);
+	physicsDebugCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::physics::SetDebugDrawEnabled(args.bValue);
 		});
-	physicsDebugCheckBox.SetCheck(wi::physics::IsDebugDrawEnabled());
+	physicsDebugCheckBox.SetCheck(lb::physics::IsDebugDrawEnabled());
 	AddWidget(&physicsDebugCheckBox);
 
 	nameDebugCheckBox.Create("Name visualizer: ");
@@ -30,128 +30,128 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 	wireFrameCheckBox.Create("Render Wireframe: ");
 	wireFrameCheckBox.SetTooltip("Visualize the scene as a wireframe");
-	wireFrameCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetWireRender(args.bValue);
+	wireFrameCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetWireRender(args.bValue);
 		});
-	wireFrameCheckBox.SetCheck(wi::renderer::IsWireRender());
+	wireFrameCheckBox.SetCheck(lb::renderer::IsWireRender());
 	AddWidget(&wireFrameCheckBox);
 
 	aabbDebugCheckBox.Create("AABB visualizer: ");
 	aabbDebugCheckBox.SetTooltip("Visualize the scene bounding boxes");
 	aabbDebugCheckBox.SetScriptTip("SetDebugPartitionTreeEnabled(bool enabled)");
-	aabbDebugCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugPartitionTree(args.bValue);
+	aabbDebugCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawDebugPartitionTree(args.bValue);
 		});
-	aabbDebugCheckBox.SetCheck(wi::renderer::GetToDrawDebugPartitionTree());
+	aabbDebugCheckBox.SetCheck(lb::renderer::GetToDrawDebugPartitionTree());
 	AddWidget(&aabbDebugCheckBox);
 
 	boneLinesCheckBox.Create(ICON_ARMATURE " Bone line visualizer: ");
 	boneLinesCheckBox.SetTooltip("Visualize bones of armatures");
 	boneLinesCheckBox.SetScriptTip("SetDebugBonesEnabled(bool enabled)");
-	boneLinesCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugBoneLines(args.bValue);
+	boneLinesCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawDebugBoneLines(args.bValue);
 		});
-	boneLinesCheckBox.SetCheck(wi::renderer::GetToDrawDebugBoneLines());
+	boneLinesCheckBox.SetCheck(lb::renderer::GetToDrawDebugBoneLines());
 	AddWidget(&boneLinesCheckBox);
 
 	debugEmittersCheckBox.Create(ICON_EMITTER " Emitter visualizer: ");
 	debugEmittersCheckBox.SetTooltip("Visualize emitters");
 	debugEmittersCheckBox.SetScriptTip("SetDebugEmittersEnabled(bool enabled)");
-	debugEmittersCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugEmitters(args.bValue);
+	debugEmittersCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawDebugEmitters(args.bValue);
 		});
-	debugEmittersCheckBox.SetCheck(wi::renderer::GetToDrawDebugEmitters());
+	debugEmittersCheckBox.SetCheck(lb::renderer::GetToDrawDebugEmitters());
 	AddWidget(&debugEmittersCheckBox);
 
 	debugForceFieldsCheckBox.Create(ICON_FORCE " Force Field visualizer: ");
 	debugForceFieldsCheckBox.SetTooltip("Visualize force fields");
 	debugForceFieldsCheckBox.SetScriptTip("SetDebugForceFieldsEnabled(bool enabled)");
-	debugForceFieldsCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugForceFields(args.bValue);
+	debugForceFieldsCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawDebugForceFields(args.bValue);
 		});
-	debugForceFieldsCheckBox.SetCheck(wi::renderer::GetToDrawDebugForceFields());
+	debugForceFieldsCheckBox.SetCheck(lb::renderer::GetToDrawDebugForceFields());
 	AddWidget(&debugForceFieldsCheckBox);
 
 	debugRaytraceBVHCheckBox.Create("RT BVH visualizer: ");
 	debugRaytraceBVHCheckBox.SetTooltip("Visualize scene BVH if raytracing is enabled (only for software raytracing currently)");
-	debugRaytraceBVHCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetRaytraceDebugBVHVisualizerEnabled(args.bValue);
+	debugRaytraceBVHCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetRaytraceDebugBVHVisualizerEnabled(args.bValue);
 		});
-	debugRaytraceBVHCheckBox.SetCheck(wi::renderer::GetRaytraceDebugBVHVisualizerEnabled());
+	debugRaytraceBVHCheckBox.SetCheck(lb::renderer::GetRaytraceDebugBVHVisualizerEnabled());
 	AddWidget(&debugRaytraceBVHCheckBox);
 
 	envProbesCheckBox.Create(ICON_ENVIRONMENTPROBE " Env probe visualizer: ");
 	envProbesCheckBox.SetTooltip("Toggle visualization of environment probes as reflective spheres");
-	envProbesCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugEnvProbes(args.bValue);
+	envProbesCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawDebugEnvProbes(args.bValue);
 		});
-	envProbesCheckBox.SetCheck(wi::renderer::GetToDrawDebugEnvProbes());
+	envProbesCheckBox.SetCheck(lb::renderer::GetToDrawDebugEnvProbes());
 	AddWidget(&envProbesCheckBox);
 
 	cameraVisCheckBox.Create(ICON_CAMERA " Camera visualizer: ");
 	cameraVisCheckBox.SetTooltip("Toggle visualization of camera proxies in the scene");
-	cameraVisCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugCameras(args.bValue);
+	cameraVisCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawDebugCameras(args.bValue);
 		});
-	cameraVisCheckBox.SetCheck(wi::renderer::GetToDrawDebugCameras());
+	cameraVisCheckBox.SetCheck(lb::renderer::GetToDrawDebugCameras());
 	AddWidget(&cameraVisCheckBox);
 
 	colliderVisCheckBox.Create(ICON_COLLIDER " Collider visualizer: ");
 	colliderVisCheckBox.SetTooltip("Toggle visualization of colliders in the scene");
-	colliderVisCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugColliders(args.bValue);
+	colliderVisCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawDebugColliders(args.bValue);
 		});
-	colliderVisCheckBox.SetCheck(wi::renderer::GetToDrawDebugColliders());
+	colliderVisCheckBox.SetCheck(lb::renderer::GetToDrawDebugColliders());
 	AddWidget(&colliderVisCheckBox);
 
 	springVisCheckBox.Create(ICON_SPRING " Spring visualizer: ");
 	springVisCheckBox.SetTooltip("Toggle visualization of springs in the scene");
-	springVisCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugSprings(args.bValue);
+	springVisCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawDebugSprings(args.bValue);
 		});
-	springVisCheckBox.SetCheck(wi::renderer::GetToDrawDebugSprings());
+	springVisCheckBox.SetCheck(lb::renderer::GetToDrawDebugSprings());
 	AddWidget(&springVisCheckBox);
 
 	gridHelperCheckBox.Create("Grid helper: ");
 	gridHelperCheckBox.SetTooltip("Toggle showing of unit visualizer grid in the world origin");
 	if (editor->main->config.GetSection("options").Has("grid_helper"))
 	{
-		wi::renderer::SetToDrawGridHelper(editor->main->config.GetSection("options").GetBool("grid_helper"));
+		lb::renderer::SetToDrawGridHelper(editor->main->config.GetSection("options").GetBool("grid_helper"));
 	}
-	gridHelperCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawGridHelper(args.bValue);
+	gridHelperCheckBox.OnClick([=](lb::gui::EventArgs args) {
+		lb::renderer::SetToDrawGridHelper(args.bValue);
 		editor->main->config.GetSection("options").Set("grid_helper", args.bValue);
 		editor->main->config.Commit();
 		});
-	gridHelperCheckBox.SetCheck(wi::renderer::GetToDrawGridHelper());
+	gridHelperCheckBox.SetCheck(lb::renderer::GetToDrawGridHelper());
 	AddWidget(&gridHelperCheckBox);
 
 
 	freezeCullingCameraCheckBox.Create("Freeze culling camera: ");
 	freezeCullingCameraCheckBox.SetTooltip("Freeze culling camera update. Scene culling will not be updated with the view");
-	freezeCullingCameraCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetFreezeCullingCameraEnabled(args.bValue);
+	freezeCullingCameraCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetFreezeCullingCameraEnabled(args.bValue);
 		});
-	freezeCullingCameraCheckBox.SetCheck(wi::renderer::GetFreezeCullingCameraEnabled());
+	freezeCullingCameraCheckBox.SetCheck(lb::renderer::GetFreezeCullingCameraEnabled());
 	AddWidget(&freezeCullingCameraCheckBox);
 
 
 
 	disableAlbedoMapsCheckBox.Create("Disable albedo maps: ");
 	disableAlbedoMapsCheckBox.SetTooltip("Disables albedo maps on objects for easier lighting debugging");
-	disableAlbedoMapsCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetDisableAlbedoMaps(args.bValue);
+	disableAlbedoMapsCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetDisableAlbedoMaps(args.bValue);
 		});
-	disableAlbedoMapsCheckBox.SetCheck(wi::renderer::IsDisableAlbedoMaps());
+	disableAlbedoMapsCheckBox.SetCheck(lb::renderer::IsDisableAlbedoMaps());
 	AddWidget(&disableAlbedoMapsCheckBox);
 
 
 	forceDiffuseLightingCheckBox.Create("Force diffuse lighting: ");
 	forceDiffuseLightingCheckBox.SetTooltip("Sets every surface fully diffuse, with zero specularity");
-	forceDiffuseLightingCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetForceDiffuseLighting(args.bValue);
+	forceDiffuseLightingCheckBox.OnClick([](lb::gui::EventArgs args) {
+		lb::renderer::SetForceDiffuseLighting(args.bValue);
 		});
-	forceDiffuseLightingCheckBox.SetCheck(wi::renderer::IsForceDiffuseLighting());
+	forceDiffuseLightingCheckBox.SetCheck(lb::renderer::IsForceDiffuseLighting());
 	AddWidget(&forceDiffuseLightingCheckBox);
 
 
@@ -160,7 +160,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	versionCheckBox.SetTooltip("Toggle the engine version display text in top left corner.");
 	editor->main->infoDisplay.watermark = editor->main->config.GetSection("options").GetBool("version");
 	versionCheckBox.SetCheck(editor->main->infoDisplay.watermark);
-	versionCheckBox.OnClick([&](wi::gui::EventArgs args) {
+	versionCheckBox.OnClick([&](lb::gui::EventArgs args) {
 		editor->main->infoDisplay.watermark = args.bValue;
 		editor->main->config.GetSection("options").Set("version", args.bValue);
 		editor->main->config.Commit();
@@ -172,7 +172,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	fpsCheckBox.SetTooltip("Toggle the FPS display text in top left corner.");
 	editor->main->infoDisplay.fpsinfo = editor->main->config.GetSection("options").GetBool("fps");
 	fpsCheckBox.SetCheck(editor->main->infoDisplay.fpsinfo);
-	fpsCheckBox.OnClick([&](wi::gui::EventArgs args) {
+	fpsCheckBox.OnClick([&](lb::gui::EventArgs args) {
 		editor->main->infoDisplay.fpsinfo = args.bValue;
 		editor->main->config.GetSection("options").Set("fps", args.bValue);
 		editor->main->config.Commit();
@@ -191,7 +191,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	editor->main->infoDisplay.logical_size = info;
 	editor->main->infoDisplay.pipeline_count = info;
 	otherinfoCheckBox.SetCheck(info);
-	otherinfoCheckBox.OnClick([&](wi::gui::EventArgs args) {
+	otherinfoCheckBox.OnClick([&](lb::gui::EventArgs args) {
 		editor->main->infoDisplay.heap_allocation_counter = args.bValue;
 		editor->main->infoDisplay.vram_usage = args.bValue;
 		editor->main->infoDisplay.device_name = args.bValue;
@@ -206,13 +206,13 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	otherinfoCheckBox.SetCheck(editor->main->infoDisplay.heap_allocation_counter);
 
 	saveModeComboBox.Create("Save Mode: ");
-	saveModeComboBox.AddItem("Embed resources " ICON_SAVE_EMBED, (uint64_t)wi::resourcemanager::Mode::EMBED_FILE_DATA);
-	saveModeComboBox.AddItem("No embedding " ICON_SAVE_NO_EMBED, (uint64_t)wi::resourcemanager::Mode::NO_EMBEDDING);
-	saveModeComboBox.SetTooltip("Choose whether to embed resources (textures, sounds...) in the scene file when saving, or keep them as separate files.\nThe Dump to header (" ICON_SAVE_HEADER ") option will use embedding and create a C++ header file with byte data of the scene to be used with wi::Archive serialization.");
-	saveModeComboBox.SetColor(wi::Color(50, 180, 100, 180), wi::gui::IDLE);
-	saveModeComboBox.SetColor(wi::Color(50, 220, 140, 255), wi::gui::FOCUS);
+	saveModeComboBox.AddItem("Embed resources " ICON_SAVE_EMBED, (uint64_t)lb::resourcemanager::Mode::EMBED_FILE_DATA);
+	saveModeComboBox.AddItem("No embedding " ICON_SAVE_NO_EMBED, (uint64_t)lb::resourcemanager::Mode::NO_EMBEDDING);
+	saveModeComboBox.SetTooltip("Choose whether to embed resources (textures, sounds...) in the scene file when saving, or keep them as separate files.\nThe Dump to header (" ICON_SAVE_HEADER ") option will use embedding and create a C++ header file with byte data of the scene to be used with lb::Archive serialization.");
+	saveModeComboBox.SetColor(lb::Color(50, 180, 100, 180), lb::gui::IDLE);
+	saveModeComboBox.SetColor(lb::Color(50, 220, 140, 255), lb::gui::FOCUS);
 	saveModeComboBox.SetSelected(editor->main->config.GetSection("options").GetInt("save_mode"));
-	saveModeComboBox.OnSelect([=](wi::gui::EventArgs args) {
+	saveModeComboBox.OnSelect([=](lb::gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("save_mode", args.iValue);
 		editor->main->config.Commit();
 		});
@@ -227,7 +227,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		transformToolOpacitySlider.SetValue(editor->main->config.GetSection("options").GetFloat("transform_tool_opacity"));
 		editor->translator.opacity = transformToolOpacitySlider.GetValue();
 	}
-	transformToolOpacitySlider.OnSlide([=](wi::gui::EventArgs args) {
+	transformToolOpacitySlider.OnSlide([=](lb::gui::EventArgs args) {
 		editor->translator.opacity = args.fValue;
 		editor->main->config.GetSection("options").Set("transform_tool_opacity", args.fValue);
 	});
@@ -240,7 +240,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	{
 		bonePickerOpacitySlider.SetValue(editor->main->config.GetSection("options").GetFloat("bone_picker_opacity"));
 	}
-	bonePickerOpacitySlider.OnSlide([=](wi::gui::EventArgs args) {
+	bonePickerOpacitySlider.OnSlide([=](lb::gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("bone_picker_opacity", args.fValue);
 	});
 	AddWidget(&bonePickerOpacitySlider);
@@ -253,14 +253,14 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	localizationButton.Create(ICON_LANGUAGE " Create Localization Template");
 	localizationButton.SetTooltip("Generate a file that can be used to edit localization for the Editor.\nThe template will be created from the currently selected language.");
 	localizationButton.SetSize(XMFLOAT2(100, 18));
-	localizationButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::SAVE;
+	localizationButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::helper::FileDialogParams params;
+		params.type = lb::helper::FileDialogParams::SAVE;
 		params.description = "XML file (.xml)";
 		params.extensions.push_back("xml");
-		wi::helper::FileDialog(params, [=](std::string fileName) {
+		lb::helper::FileDialog(params, [=](std::string fileName) {
 			editor->GetGUI().ExportLocalization(editor->current_localization);
-			std::string filenameExt = wi::helper::ForceExtension(fileName, params.extensions.back());
+			std::string filenameExt = lb::helper::ForceExtension(fileName, params.extensions.back());
 			editor->current_localization.Export(filenameExt);
 			editor->PostSaveText("Localization template created: ", filenameExt);
 		});
@@ -268,12 +268,12 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	AddWidget(&localizationButton);
 
 	languageCombo.Create("Language: ");
-	languageCombo.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Text | wi::gui::LocalizationEnabled::Tooltip);
+	languageCombo.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Text | lb::gui::LocalizationEnabled::Tooltip);
 	languageCombo.SetTooltip("Select a language. \nYou can also create a new language option by adding an XML file to the languages folder.\nThere is a button below that you can use to create a language template.");
 	languageCombo.AddItem("English");
-	languageCombo.SetColor(wi::Color(50, 180, 100, 180), wi::gui::IDLE);
-	languageCombo.SetColor(wi::Color(50, 220, 140, 255), wi::gui::FOCUS);
-	languageCombo.OnSelect([=](wi::gui::EventArgs args) {
+	languageCombo.SetColor(lb::Color(50, 180, 100, 180), lb::gui::IDLE);
+	languageCombo.SetColor(lb::Color(50, 220, 140, 255), lb::gui::FOCUS);
+	languageCombo.OnSelect([=](lb::gui::EventArgs args) {
 		if (args.iValue == 0)
 		{
 			editor->SetLocalization(editor->default_localization);
@@ -290,17 +290,17 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::backlog::post("Couldn't import localization file: " + filename, wi::backlog::LogLevel::Warning);
+			lb::backlog::post("Couldn't import localization file: " + filename, lb::backlog::LogLevel::Warning);
 		}
 	});
 	AddWidget(&languageCombo);
 
 	auto add_language = [this](std::string filename) {
-		std::string language_name = wi::helper::GetFileNameFromPath(filename);
-		language_name = wi::helper::RemoveExtension(language_name);
+		std::string language_name = lb::helper::GetFileNameFromPath(filename);
+		language_name = lb::helper::RemoveExtension(language_name);
 		languageCombo.AddItem(language_name);
 	};
-	wi::helper::GetFileNamesInDirectory(languages_directory, add_language, "XML");
+	lb::helper::GetFileNamesInDirectory(languages_directory, add_language, "XML");
 
 
 	enum class Theme
@@ -319,17 +319,17 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	themeCombo.AddItem("Soft " ICON_SOFT, (uint64_t)Theme::Soft);
 	themeCombo.AddItem("Hacking " ICON_HACKING, (uint64_t)Theme::Hacking);
 	themeCombo.AddItem("Nord " ICON_NORD, (uint64_t)Theme::Nord);
-	themeCombo.OnSelect([=](wi::gui::EventArgs args) {
+	themeCombo.OnSelect([=](lb::gui::EventArgs args) {
 
 		// Dark theme defaults:
-		wi::Color theme_color_idle = wi::Color(30, 40, 60, 200);
-		wi::Color theme_color_focus = wi::Color(70, 150, 170, 220);
-		wi::Color dark_point = wi::Color(10, 10, 20, 220); // darker elements will lerp towards this
-		wi::gui::Theme theme;
+		lb::Color theme_color_idle = lb::Color(30, 40, 60, 200);
+		lb::Color theme_color_focus = lb::Color(70, 150, 170, 220);
+		lb::Color dark_point = lb::Color(10, 10, 20, 220); // darker elements will lerp towards this
+		lb::gui::Theme theme;
 		theme.image.background = true;
-		theme.image.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-		theme.font.color = wi::Color(130, 210, 220, 255);
-		theme.shadow_color = wi::Color(80, 140, 180, 100);
+		theme.image.blendFlag = lb::enums::BLENDMODE_OPAQUE;
+		theme.font.color = lb::Color(130, 210, 220, 255);
+		theme.shadow_color = lb::Color(80, 140, 180, 100);
 
 		switch ((Theme)args.userdata)
 		{
@@ -340,37 +340,37 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			break;
 		case Theme::Bright:
 			editor->main->config.GetSection("options").Set("theme", "Bright");
-			theme_color_idle = wi::Color(200, 210, 220, 230);
-			theme_color_focus = wi::Color(210, 230, 255, 250);
-			dark_point = wi::Color(180, 180, 190, 230);
-			theme.shadow_color = wi::Color::Shadow();
-			theme.font.color = wi::Color(50, 50, 80, 255);
+			theme_color_idle = lb::Color(200, 210, 220, 230);
+			theme_color_focus = lb::Color(210, 230, 255, 250);
+			dark_point = lb::Color(180, 180, 190, 230);
+			theme.shadow_color = lb::Color::Shadow();
+			theme.font.color = lb::Color(50, 50, 80, 255);
 			break;
 		case Theme::Soft:
 			editor->main->config.GetSection("options").Set("theme", "Soft");
-			theme_color_idle = wi::Color(200, 180, 190, 190);
-			theme_color_focus = wi::Color(240, 190, 200, 230);
-			dark_point = wi::Color(100, 80, 90, 220);
-			theme.shadow_color = wi::Color(240, 190, 200, 180);
-			theme.font.color = wi::Color(255, 230, 240, 255);
+			theme_color_idle = lb::Color(200, 180, 190, 190);
+			theme_color_focus = lb::Color(240, 190, 200, 230);
+			dark_point = lb::Color(100, 80, 90, 220);
+			theme.shadow_color = lb::Color(240, 190, 200, 180);
+			theme.font.color = lb::Color(255, 230, 240, 255);
 			break;
 		case Theme::Hacking:
 			editor->main->config.GetSection("options").Set("theme", "Hacking");
-			theme_color_idle = wi::Color(0, 0, 0, 255);
-			theme_color_focus = wi::Color(0, 160, 60, 255);
-			dark_point = wi::Color(0, 0, 0, 255);
-			theme.shadow_color = wi::Color(0, 200, 90, 200);
-			theme.font.color = wi::Color(0, 200, 90, 255);
-			theme.font.shadow_color = wi::Color::Shadow();
+			theme_color_idle = lb::Color(0, 0, 0, 255);
+			theme_color_focus = lb::Color(0, 160, 60, 255);
+			dark_point = lb::Color(0, 0, 0, 255);
+			theme.shadow_color = lb::Color(0, 200, 90, 200);
+			theme.font.color = lb::Color(0, 200, 90, 255);
+			theme.font.shadow_color = lb::Color::Shadow();
 			break;
 		case Theme::Nord:
 			editor->main->config.GetSection("options").Set("theme", "Nord");
-			theme_color_idle = wi::Color(46, 52, 64, 255);
-			theme_color_focus = wi::Color(59, 66, 82, 255);
-			dark_point = wi::Color(46, 52, 64, 255);
-			theme.shadow_color = wi::Color(106, 112, 124, 200);
-			theme.font.color = wi::Color(236, 239, 244, 255);
-			theme.font.shadow_color = wi::Color::Shadow();
+			theme_color_idle = lb::Color(46, 52, 64, 255);
+			theme_color_focus = lb::Color(59, 66, 82, 255);
+			dark_point = lb::Color(46, 52, 64, 255);
+			theme.shadow_color = lb::Color(106, 112, 124, 200);
+			theme.font.color = lb::Color(236, 239, 244, 255);
+			theme.font.shadow_color = lb::Color::Shadow();
 			break;
 		}
 
@@ -379,52 +379,52 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		theme.tooltipFont = theme.font;
 		theme.tooltip_shadow_color = theme.shadow_color;
 
-		wi::Color theme_color_active = wi::Color::White();
-		wi::Color theme_color_deactivating = wi::Color::lerp(theme_color_focus, wi::Color::White(), 0.5f);
+		lb::Color theme_color_active = lb::Color::White();
+		lb::Color theme_color_deactivating = lb::Color::lerp(theme_color_focus, lb::Color::White(), 0.5f);
 
 		// Customize whole gui:
-		wi::gui::GUI& gui = editor->GetGUI();
+		lb::gui::GUI& gui = editor->GetGUI();
 		gui.SetTheme(theme); // set basic params to all states
 
 		// customize colors for specific states:
-		gui.SetColor(theme_color_idle, wi::gui::IDLE);
-		gui.SetColor(theme_color_focus, wi::gui::FOCUS);
-		gui.SetColor(theme_color_active, wi::gui::ACTIVE);
-		gui.SetColor(theme_color_deactivating, wi::gui::DEACTIVATING);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.7f), wi::gui::WIDGET_ID_WINDOW_BASE);
+		gui.SetColor(theme_color_idle, lb::gui::IDLE);
+		gui.SetColor(theme_color_focus, lb::gui::FOCUS);
+		gui.SetColor(theme_color_active, lb::gui::ACTIVE);
+		gui.SetColor(theme_color_deactivating, lb::gui::DEACTIVATING);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.7f), lb::gui::WIDGET_ID_WINDOW_BASE);
 
-		gui.SetColor(theme_color_focus, wi::gui::WIDGET_ID_TEXTINPUTFIELD_ACTIVE);
-		gui.SetColor(theme_color_focus, wi::gui::WIDGET_ID_TEXTINPUTFIELD_DEACTIVATING);
+		gui.SetColor(theme_color_focus, lb::gui::WIDGET_ID_TEXTINPUTFIELD_ACTIVE);
+		gui.SetColor(theme_color_focus, lb::gui::WIDGET_ID_TEXTINPUTFIELD_DEACTIVATING);
 
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.75f), wi::gui::WIDGET_ID_SLIDER_BASE_IDLE);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.8f), wi::gui::WIDGET_ID_SLIDER_BASE_FOCUS);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.85f), wi::gui::WIDGET_ID_SLIDER_BASE_ACTIVE);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.8f), wi::gui::WIDGET_ID_SLIDER_BASE_DEACTIVATING);
-		gui.SetColor(theme_color_idle, wi::gui::WIDGET_ID_SLIDER_KNOB_IDLE);
-		gui.SetColor(theme_color_focus, wi::gui::WIDGET_ID_SLIDER_KNOB_FOCUS);
-		gui.SetColor(theme_color_active, wi::gui::WIDGET_ID_SLIDER_KNOB_ACTIVE);
-		gui.SetColor(theme_color_deactivating, wi::gui::WIDGET_ID_SLIDER_KNOB_DEACTIVATING);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.75f), lb::gui::WIDGET_ID_SLIDER_BASE_IDLE);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.8f), lb::gui::WIDGET_ID_SLIDER_BASE_FOCUS);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.85f), lb::gui::WIDGET_ID_SLIDER_BASE_ACTIVE);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.8f), lb::gui::WIDGET_ID_SLIDER_BASE_DEACTIVATING);
+		gui.SetColor(theme_color_idle, lb::gui::WIDGET_ID_SLIDER_KNOB_IDLE);
+		gui.SetColor(theme_color_focus, lb::gui::WIDGET_ID_SLIDER_KNOB_FOCUS);
+		gui.SetColor(theme_color_active, lb::gui::WIDGET_ID_SLIDER_KNOB_ACTIVE);
+		gui.SetColor(theme_color_deactivating, lb::gui::WIDGET_ID_SLIDER_KNOB_DEACTIVATING);
 
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.75f), wi::gui::WIDGET_ID_SCROLLBAR_BASE_IDLE);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.8f), wi::gui::WIDGET_ID_SCROLLBAR_BASE_FOCUS);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.85f), wi::gui::WIDGET_ID_SCROLLBAR_BASE_ACTIVE);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.8f), wi::gui::WIDGET_ID_SCROLLBAR_BASE_DEACTIVATING);
-		gui.SetColor(theme_color_idle, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
-		gui.SetColor(theme_color_focus, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_HOVER);
-		gui.SetColor(theme_color_active, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_GRABBED);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.75f), lb::gui::WIDGET_ID_SCROLLBAR_BASE_IDLE);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.8f), lb::gui::WIDGET_ID_SCROLLBAR_BASE_FOCUS);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.85f), lb::gui::WIDGET_ID_SCROLLBAR_BASE_ACTIVE);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.8f), lb::gui::WIDGET_ID_SCROLLBAR_BASE_DEACTIVATING);
+		gui.SetColor(theme_color_idle, lb::gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
+		gui.SetColor(theme_color_focus, lb::gui::WIDGET_ID_SCROLLBAR_KNOB_HOVER);
+		gui.SetColor(theme_color_active, lb::gui::WIDGET_ID_SCROLLBAR_KNOB_GRABBED);
 
-		gui.SetColor(wi::Color::lerp(theme_color_idle, dark_point, 0.8f), wi::gui::WIDGET_ID_COMBO_DROPDOWN);
+		gui.SetColor(lb::Color::lerp(theme_color_idle, dark_point, 0.8f), lb::gui::WIDGET_ID_COMBO_DROPDOWN);
 
 		if ((Theme)args.userdata == Theme::Hacking)
 		{
-			gui.SetColor(wi::Color(0, 200, 90, 255), wi::gui::WIDGET_ID_SLIDER_KNOB_IDLE);
-			gui.SetColor(wi::Color(0, 200, 90, 255), wi::gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
+			gui.SetColor(lb::Color(0, 200, 90, 255), lb::gui::WIDGET_ID_SLIDER_KNOB_IDLE);
+			gui.SetColor(lb::Color(0, 200, 90, 255), lb::gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
 		}
 		
 		if ((Theme)args.userdata == Theme::Nord)
 		{
-			gui.SetColor(wi::Color(136, 192, 208, 255), wi::gui::WIDGET_ID_SLIDER_KNOB_IDLE);
-			gui.SetColor(wi::Color(76, 86, 106, 255), wi::gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
+			gui.SetColor(lb::Color(136, 192, 208, 255), lb::gui::WIDGET_ID_SLIDER_KNOB_IDLE);
+			gui.SetColor(lb::Color(76, 86, 106, 255), lb::gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
 		}
 
 		// customize individual elements:
@@ -435,11 +435,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		highlight.z *= 2;
 		editor->newEntityCombo.SetAngularHighlightColor(highlight);
 		editor->componentsWnd.newComponentCombo.SetAngularHighlightColor(highlight);
-		editor->componentsWnd.materialWnd.textureSlotButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->componentsWnd.spriteWnd.textureButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->paintToolWnd.brushTextureButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->paintToolWnd.revealTextureButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->aboutLabel.sprites[wi::gui::FOCUS] = editor->aboutLabel.sprites[wi::gui::IDLE];
+		editor->componentsWnd.materialWnd.textureSlotButton.SetColor(lb::Color::White(), lb::gui::IDLE);
+		editor->componentsWnd.spriteWnd.textureButton.SetColor(lb::Color::White(), lb::gui::IDLE);
+		editor->paintToolWnd.brushTextureButton.SetColor(lb::Color::White(), lb::gui::IDLE);
+		editor->paintToolWnd.revealTextureButton.SetColor(lb::Color::White(), lb::gui::IDLE);
+		editor->aboutLabel.sprites[lb::gui::FOCUS] = editor->aboutLabel.sprites[lb::gui::IDLE];
 		int scene_id = 0;
 		for (auto& editorscene : editor->scenes)
 		{
@@ -459,13 +459,13 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 			if (editor->current_scene == scene_id)
 			{
-				editorscene->tabSelectButton.sprites[wi::gui::IDLE].params.color = editor->newSceneButton.sprites[wi::gui::FOCUS].params.color;
+				editorscene->tabSelectButton.sprites[lb::gui::IDLE].params.color = editor->newSceneButton.sprites[lb::gui::FOCUS].params.color;
 			}
 			else
 			{
-				editorscene->tabSelectButton.sprites[wi::gui::IDLE].params.color = editor->newSceneButton.sprites[wi::gui::IDLE].params.color;
+				editorscene->tabSelectButton.sprites[lb::gui::IDLE].params.color = editor->newSceneButton.sprites[lb::gui::IDLE].params.color;
 			}
-			editorscene->tabCloseButton.SetColor(wi::Color::Error(), wi::gui::WIDGET_ID_FOCUS);
+			editorscene->tabCloseButton.SetColor(lb::Color::Error(), lb::gui::WIDGET_ID_FOCUS);
 			scene_id++;
 		}
 		for (int i = 0; i < arraysize(editor->newSceneButton.sprites); ++i)
@@ -542,7 +542,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			editor->cinemaButton.sprites[i].params.corners_rounding[2].radius = 10;
 			editor->cinemaButton.sprites[i].params.corners_rounding[3].radius = 10;
 		}
-		for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+		for (int i = 0; i < arraysize(lb::gui::Widget::sprites); ++i)
 		{
 			localizationButton.sprites[i].params.enableCornerRounding();
 			localizationButton.sprites[i].params.corners_rounding[0].radius = 8;
@@ -574,7 +574,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			editor->aboutWindow.sprites[i].params.corners_rounding[2].radius = 10;
 			editor->aboutWindow.sprites[i].params.corners_rounding[3].radius = 10;
 		}
-		for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+		for (int i = 0; i < arraysize(lb::gui::Widget::sprites); ++i)
 		{
 			editor->saveButton.sprites[i].params.enableCornerRounding();
 			editor->saveButton.sprites[i].params.corners_rounding[0].radius = 10;
@@ -615,7 +615,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : editor->componentsWnd.lightWnd.cascades)
 		{
-			x.removeButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+			x.removeButton.SetColor(lb::Color::Error(), lb::gui::WIDGETSTATE::FOCUS);
 			for (auto& sprite : x.removeButton.sprites)
 			{
 				sprite.params.enableCornerRounding();
@@ -626,7 +626,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : editor->componentsWnd.metadataWnd.entries)
 		{
-			x.remove.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+			x.remove.SetColor(lb::Color::Error(), lb::gui::WIDGETSTATE::FOCUS);
 			for (auto& sprite : x.remove.sprites)
 			{
 				sprite.params.enableCornerRounding();
@@ -635,7 +635,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			}
 		}
 
-		editor->componentsWnd.transformWnd.resetTranslationButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+		editor->componentsWnd.transformWnd.resetTranslationButton.SetColor(lb::Color::Error(), lb::gui::WIDGETSTATE::FOCUS);
 		for (auto& sprite : editor->componentsWnd.transformWnd.resetTranslationButton.sprites)
 		{
 			sprite.params.enableCornerRounding();
@@ -643,7 +643,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			sprite.params.corners_rounding[3].radius = 10;
 		}
 
-		editor->componentsWnd.transformWnd.resetScaleButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+		editor->componentsWnd.transformWnd.resetScaleButton.SetColor(lb::Color::Error(), lb::gui::WIDGETSTATE::FOCUS);
 		for (auto& sprite : editor->componentsWnd.transformWnd.resetScaleButton.sprites)
 		{
 			sprite.params.enableCornerRounding();
@@ -651,7 +651,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			sprite.params.corners_rounding[3].radius = 10;
 		}
 
-		editor->componentsWnd.transformWnd.resetScaleUniformButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+		editor->componentsWnd.transformWnd.resetScaleUniformButton.SetColor(lb::Color::Error(), lb::gui::WIDGETSTATE::FOCUS);
 		for (auto& sprite : editor->componentsWnd.transformWnd.resetScaleUniformButton.sprites)
 		{
 			sprite.params.enableCornerRounding();
@@ -661,11 +661,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : editor->componentsWnd.hairWnd.sprites)
 		{
-			x.SetColor(wi::Color::White(), wi::gui::IDLE);
+			x.SetColor(lb::Color::White(), lb::gui::IDLE);
 		}
 		for (auto& x : editor->componentsWnd.hairWnd.spriteRemoveButtons)
 		{
-			x.sprites[wi::gui::FOCUS].params.color = wi::Color::Error();
+			x.sprites[lb::gui::FOCUS].params.color = lb::Color::Error();
 			for (auto& sprite : x.sprites)
 			{
 				sprite.params.enableCornerRounding();
@@ -673,10 +673,10 @@ void GeneralWindow::Create(EditorComponent* _editor)
 				sprite.params.corners_rounding[3].radius = 10;
 			}
 		}
-		editor->componentsWnd.hairWnd.spriterectwnd.spriteButton.SetColor(wi::Color::White());
+		editor->componentsWnd.hairWnd.spriterectwnd.spriteButton.SetColor(lb::Color::White());
 		editor->componentsWnd.hairWnd.spriterectwnd.SetShadowRadius(5);
 
-		editor->componentsWnd.transformWnd.resetRotationButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+		editor->componentsWnd.transformWnd.resetRotationButton.SetColor(lb::Color::Error(), lb::gui::WIDGETSTATE::FOCUS);
 		for (auto& sprite : editor->componentsWnd.transformWnd.resetRotationButton.sprites)
 		{
 			sprite.params.enableCornerRounding();
@@ -701,12 +701,12 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		editor->save_text_color = theme.font.color;
 
-		editor->aboutLabel.SetShadowColor(wi::Color::Transparent());
-		editor->aboutLabel.SetColor(wi::Color::Transparent());
-		for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+		editor->aboutLabel.SetShadowColor(lb::Color::Transparent());
+		editor->aboutLabel.SetColor(lb::Color::Transparent());
+		for (int i = 0; i < arraysize(lb::gui::Widget::sprites); ++i)
 		{
 			editor->aboutLabel.sprites[i].params.disableBackground();
-			editor->aboutLabel.sprites[i].params.blendFlag = wi::enums::BLENDMODE_ALPHA;
+			editor->aboutLabel.sprites[i].params.blendFlag = lb::enums::BLENDMODE_ALPHA;
 		}
 
 	});
@@ -717,7 +717,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	eliminateCoarseCascadesButton.Create("EliminateCoarseCascades");
 	eliminateCoarseCascadesButton.SetTooltip("Eliminate the coarse cascade mask for every object in the scene.");
 	eliminateCoarseCascadesButton.SetSize(XMFLOAT2(100, 18));
-	eliminateCoarseCascadesButton.OnClick([=](wi::gui::EventArgs args) {
+	eliminateCoarseCascadesButton.OnClick([=](lb::gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 		for (size_t i = 0; i < scene.objects.GetCount(); ++i)
@@ -732,11 +732,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	ddsConvButton.Create("DDS Convert");
 	ddsConvButton.SetTooltip("All material textures in the scene will be converted to DDS format.\nDDS format is optimal for GPU and can be streamed.");
 	ddsConvButton.SetSize(XMFLOAT2(100, 18));
-	ddsConvButton.OnClick([=](wi::gui::EventArgs args) {
+	ddsConvButton.OnClick([=](lb::gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 
-		wi::unordered_map<std::string, wi::Resource> conv;
+		lb::unordered_map<std::string, lb::Resource> conv;
 		for (uint32_t i = 0; i < scene.materials.GetCount(); ++i)
 		{
 			MaterialComponent& material = scene.materials[i];
@@ -746,9 +746,9 @@ void GeneralWindow::Create(EditorComponent* _editor)
 					continue;
 				if (has_flag(x.resource.GetTexture().GetDesc().misc_flags, ResourceMiscFlag::SPARSE))
 					continue;
-				if (wi::helper::GetExtensionFromFileName(x.name).compare("DDS"))
+				if (lb::helper::GetExtensionFromFileName(x.name).compare("DDS"))
 				{
-					x.name = wi::helper::ReplaceExtension(x.name, "DDS");
+					x.name = lb::helper::ReplaceExtension(x.name, "DDS");
 					conv[x.name] = x.resource;
 				}
 			}
@@ -756,10 +756,10 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : conv)
 		{
-			wi::vector<uint8_t> filedata;
-			if (wi::helper::saveTextureToMemoryFile(x.second.GetTexture(), "DDS", filedata))
+			lb::vector<uint8_t> filedata;
+			if (lb::helper::saveTextureToMemoryFile(x.second.GetTexture(), "DDS", filedata))
 			{
-				x.second = wi::resourcemanager::Load(x.first, wi::resourcemanager::Flags::NONE, filedata.data(), filedata.size());
+				x.second = lb::resourcemanager::Load(x.first, lb::resourcemanager::Flags::NONE, filedata.data(), filedata.size());
 				x.second.SetFileData(std::move(filedata));
 			}
 		}
@@ -777,11 +777,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	ktxConvButton.Create("KTX2 Convert");
 	ktxConvButton.SetTooltip("All material textures in the scene will be converted to KTX2 format.\nTHIS MIGHT TAKE LONG, SO GET YOURSELF A COFFEE OR TEA!");
 	ktxConvButton.SetSize(XMFLOAT2(100, 18));
-	ktxConvButton.OnClick([=](wi::gui::EventArgs args) {
+	ktxConvButton.OnClick([=](lb::gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 
-		wi::unordered_map<std::string, wi::Resource> conv;
+		lb::unordered_map<std::string, lb::Resource> conv;
 		for (uint32_t i = 0; i < scene.materials.GetCount(); ++i)
 		{
 			MaterialComponent& material = scene.materials[i];
@@ -791,9 +791,9 @@ void GeneralWindow::Create(EditorComponent* _editor)
 					continue;
 				if (has_flag(x.resource.GetTexture().GetDesc().misc_flags, ResourceMiscFlag::SPARSE))
 					continue;
-				if (wi::helper::GetExtensionFromFileName(x.name).compare("KTX2"))
+				if (lb::helper::GetExtensionFromFileName(x.name).compare("KTX2"))
 				{
-					x.name = wi::helper::ReplaceExtension(x.name, "KTX2");
+					x.name = lb::helper::ReplaceExtension(x.name, "KTX2");
 					conv[x.name] = x.resource;
 				}
 			}
@@ -801,10 +801,10 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : conv)
 		{
-			wi::vector<uint8_t> filedata;
-			if (wi::helper::saveTextureToMemoryFile(x.second.GetTexture(), "KTX2", filedata))
+			lb::vector<uint8_t> filedata;
+			if (lb::helper::saveTextureToMemoryFile(x.second.GetTexture(), "KTX2", filedata))
 			{
-				x.second = wi::resourcemanager::Load(x.first, wi::resourcemanager::Flags::NONE, filedata.data(), filedata.size());
+				x.second = lb::resourcemanager::Load(x.first, lb::resourcemanager::Flags::NONE, filedata.data(), filedata.size());
 				x.second.SetFileData(std::move(filedata));
 			}
 		}
@@ -839,14 +839,14 @@ void GeneralWindow::RefreshLanguageSelectionAfterWholeGUIWasInitialized()
 
 void GeneralWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	float width = GetWidgetAreaSize().x - padding * 2;
 	float y = padding;
 	float jump = 20;
 	float x_off = 100;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = 155;
@@ -856,7 +856,7 @@ void GeneralWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_right = 0;
@@ -864,7 +864,7 @@ void GeneralWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding * 2;

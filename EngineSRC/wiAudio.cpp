@@ -31,7 +31,7 @@ static constexpr T AlignTo(T value, T alignment)
 #define fourccXWMA 'AMWX'
 #define fourccDPDS 'sdpd'
 
-namespace wi::audio
+namespace lb::audio
 {
 	static const XAUDIO2FX_REVERB_I3DL2_PARAMETERS reverbPresets[] =
 	{
@@ -82,7 +82,7 @@ namespace wi::audio
 
 		AudioInternal()
 		{
-			wi::Timer timer;
+			lb::Timer timer;
 
 			HRESULT hr;
 			hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
@@ -90,7 +90,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "XAudio2: CoInitializeEx returned error: 0x" << std::hex << hr;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 				return;
 			}
 
@@ -99,7 +99,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "XAudio2: XAudio2Create returned error: 0x" << std::hex << hr;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 				return;
 			}
 
@@ -115,7 +115,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "XAudio2: CreateMasteringVoice returned error: 0x" << std::hex << hr;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 				return;
 			}
 
@@ -141,7 +141,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "XAudio2: CreateSubmixVoice returned error: 0x" << std::hex << hr;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 					return;
 				}
 			}
@@ -153,7 +153,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "XAudio2: X3DAudioInitialize returned error: 0x" << std::hex << hr;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 				return;
 			}
 
@@ -164,7 +164,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "XAudio2: XAudio2CreateReverb returned error: 0x" << std::hex << hr;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 					return;
 				}
 
@@ -183,7 +183,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "XAudio2: CreateSubmixVoice returned error: 0x" << std::hex << hr;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 					return;
 				}
 
@@ -194,7 +194,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "XAudio2: SetEffectParameters returned error: 0x" << std::hex << hr;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 					return;
 				}
 			}
@@ -204,7 +204,7 @@ namespace wi::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			wi::backlog::post("wi::audio Initialized [XAudio2] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::backlog::post("lb::audio Initialized [XAudio2] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 		~AudioInternal()
 		{
@@ -238,7 +238,7 @@ namespace wi::audio
 	{
 		std::shared_ptr<AudioInternal> audio;
 		WAVEFORMATEX wfx = {};
-		wi::vector<uint8_t> audioData;
+		lb::vector<uint8_t> audioData;
 	};
 	struct SoundInstanceInternal : public IXAudio2VoiceCallback
 	{
@@ -246,8 +246,8 @@ namespace wi::audio
 		std::shared_ptr<SoundInternal> soundinternal;
 		IXAudio2SourceVoice* sourceVoice = nullptr;
 		XAUDIO2_VOICE_DETAILS voiceDetails = {};
-		wi::vector<float> outputMatrix;
-		wi::vector<float> channelAzimuths;
+		lb::vector<float> outputMatrix;
+		lb::vector<float> channelAzimuths;
 		XAUDIO2_BUFFER buffer = {};
 		bool ended = true;
 
@@ -361,8 +361,8 @@ namespace wi::audio
 
 	bool CreateSound(const std::string& filename, Sound* sound)
 	{
-		wi::vector<uint8_t> filedata;
-		bool success = wi::helper::FileRead(filename, filedata);
+		lb::vector<uint8_t> filedata;
+		bool success = lb::helper::FileRead(filename, filedata);
 		if (!success)
 		{
 			return false;
@@ -739,7 +739,7 @@ namespace wi::audio
 #define fourccFMT 0x20746d66
 #define fourccDATA 0x61746164
 
-namespace wi::audio
+namespace lb::audio
 {
 	static const FAudioFXReverbI3DL2Parameters reverbPresets[] = {
 		FAUDIOFX_I3DL2_PRESET_DEFAULT,
@@ -787,7 +787,7 @@ namespace wi::audio
 		FAudioBuffer termination_mark = {};
 
 		AudioInternal(){
-			wi::Timer timer;
+			lb::Timer timer;
 
 			uint32_t res;
 			res = FAudioCreate(&audioEngine, 0, FAUDIO_DEFAULT_PROCESSOR);
@@ -795,7 +795,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "FAudioCreate returned error: " << res;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 				return;
 			}
 
@@ -809,7 +809,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "FAudio_CreateMasteringVoice returned error: " << res;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 				return;
 			}
 		
@@ -826,7 +826,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudio_CreateSubmixVoice returned error: " << res;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 					return;
 				}
 			}
@@ -839,7 +839,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "F3DAudioInitialize returned error: " << res;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 				return;
 			}
 
@@ -850,7 +850,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudioCreateReverb returned error: " << res;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 					return;
 				}
 
@@ -871,7 +871,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudio_CreateSubmixVoice returned error: " << res;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
 					return;
 				}
 			}
@@ -881,7 +881,7 @@ namespace wi::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			wi::backlog::post("wi::audio Initialized [FAudio] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::backlog::post("lb::audio Initialized [FAudio] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 		~AudioInternal(){
 			if(reverbSubmix != nullptr)
@@ -909,15 +909,15 @@ namespace wi::audio
 	struct SoundInternal{
 		std::shared_ptr<AudioInternal> audio;
 		FAudioWaveFormatEx wfx = {};
-		wi::vector<uint8_t> audioData;
+		lb::vector<uint8_t> audioData;
 	};
 	struct SoundInstanceInternal{
 		std::shared_ptr<AudioInternal> audio;
 		std::shared_ptr<SoundInternal> soundinternal;
 		FAudioSourceVoice* sourceVoice = nullptr;
 		FAudioVoiceDetails voiceDetails = {};
-		wi::vector<float> outputMatrix;
-		wi::vector<float> channelAzimuths;
+		lb::vector<float> outputMatrix;
+		lb::vector<float> channelAzimuths;
 		FAudioBuffer buffer = {};
 		bool ended = true;
 
@@ -987,8 +987,8 @@ namespace wi::audio
 	}
 
 	bool CreateSound(const std::string& filename, Sound* sound) { 
-		wi::vector<uint8_t> filedata;
-		bool success = wi::helper::FileRead(filename, filedata);
+		lb::vector<uint8_t> filedata;
+		bool success = lb::helper::FileRead(filename, filedata);
 		if (!success)
 		{
 			return false;
@@ -1331,7 +1331,7 @@ namespace wi::audio
 // PS5 audio implementation in wiAudio_PS5.cpp extension file
 #else
 
-namespace wi::audio
+namespace lb::audio
 {
 	void Initialize() {}
 

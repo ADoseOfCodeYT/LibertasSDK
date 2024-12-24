@@ -1,9 +1,9 @@
 #include "wiSpriteFont.h"
 #include "wiHelper.h"
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi
+namespace lb
 {
 
 	void SpriteFont::FixedUpdate()
@@ -28,21 +28,21 @@ namespace wi
 		if (anim.typewriter.time > 0)
 		{
 			size_t text_length = text.length();
-			size_t text_length_prev = std::min(text_length, size_t(wi::math::Lerp(float(std::min(text_length, anim.typewriter.character_start)), float(text_length + 1), anim.typewriter.elapsed / anim.typewriter.time)));
+			size_t text_length_prev = std::min(text_length, size_t(lb::math::Lerp(float(std::min(text_length, anim.typewriter.character_start)), float(text_length + 1), anim.typewriter.elapsed / anim.typewriter.time)));
 			anim.typewriter.elapsed += dt;
-			size_t text_length_next = std::min(text_length, size_t(wi::math::Lerp(float(std::min(text_length, anim.typewriter.character_start)), float(text_length + 1), anim.typewriter.elapsed / anim.typewriter.time)));
+			size_t text_length_next = std::min(text_length, size_t(lb::math::Lerp(float(std::min(text_length, anim.typewriter.character_start)), float(text_length + 1), anim.typewriter.elapsed / anim.typewriter.time)));
 
 			if (anim.typewriter.soundinstance.IsValid())
 			{
-				if (!anim.typewriter.IsFinished() && wi::audio::IsEnded(&anim.typewriter.soundinstance) && text_length_prev != text_length_next && text[text_length_next - 1] != ' ' && anim.typewriter.soundinstance.IsValid())
+				if (!anim.typewriter.IsFinished() && lb::audio::IsEnded(&anim.typewriter.soundinstance) && text_length_prev != text_length_next && text[text_length_next - 1] != ' ' && anim.typewriter.soundinstance.IsValid())
 				{
-					wi::audio::Stop(&anim.typewriter.soundinstance);
+					lb::audio::Stop(&anim.typewriter.soundinstance);
 					if (!IsHidden())
 					{
-						wi::audio::Play(&anim.typewriter.soundinstance);
+						lb::audio::Play(&anim.typewriter.soundinstance);
 					}
 				}
-				wi::audio::ExitLoop(&anim.typewriter.soundinstance);
+				lb::audio::ExitLoop(&anim.typewriter.soundinstance);
 			}
 
 			if (anim.typewriter.looped && anim.typewriter.elapsed > anim.typewriter.time)
@@ -57,29 +57,29 @@ namespace wi
 		if (IsHidden())
 			return;
 
-		wi::font::Draw(text.c_str(), GetCurrentTextLength(), params, cmd);
+		lb::font::Draw(text.c_str(), GetCurrentTextLength(), params, cmd);
 	}
 
 	XMFLOAT2 SpriteFont::TextSize() const
 	{
-		return wi::font::TextSize(text, params);
+		return lb::font::TextSize(text, params);
 	}
 	float SpriteFont::TextWidth() const
 	{
-		return wi::font::TextWidth(text, params);
+		return lb::font::TextWidth(text, params);
 	}
 	float SpriteFont::TextHeight() const
 	{
-		return wi::font::TextHeight(text, params);
+		return lb::font::TextHeight(text, params);
 	}
 
 	void SpriteFont::SetText(const std::string& value)
 	{
-		wi::helper::StringConvert(value, text);
+		lb::helper::StringConvert(value, text);
 	}
 	void SpriteFont::SetText(std::string&& value)
 	{
-		wi::helper::StringConvert(value, text);
+		lb::helper::StringConvert(value, text);
 	}
 	void SpriteFont::SetText(const std::wstring& value)
 	{
@@ -93,7 +93,7 @@ namespace wi
 	std::string SpriteFont::GetTextA() const
 	{
 		std::string retVal;
-		wi::helper::StringConvert(text, retVal);
+		lb::helper::StringConvert(text, retVal);
 		return retVal;
 	}
 	const std::wstring& SpriteFont::GetText() const
@@ -106,12 +106,12 @@ namespace wi
 		size_t text_length = text.length();
 		if (anim.typewriter.time > 0)
 		{
-			text_length = std::min(text_length, size_t(wi::math::Lerp(float(std::min(text_length, anim.typewriter.character_start)), float(text_length + 1), anim.typewriter.elapsed / anim.typewriter.time)));
+			text_length = std::min(text_length, size_t(lb::math::Lerp(float(std::min(text_length, anim.typewriter.character_start)), float(text_length + 1), anim.typewriter.elapsed / anim.typewriter.time)));
 		}
 		return text_length;
 	}
 
-	void SpriteFont::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void SpriteFont::Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -151,11 +151,11 @@ namespace wi
 
 			if (!fontStyleName.empty())
 			{
-				wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+				lb::jobsystem::Execute(seri.ctx, [&](lb::jobsystem::JobArgs args) {
 					if (!fontStyleName.empty())
 					{
 						fontStyleName = dir + fontStyleName;
-						fontStyleResource = wi::resourcemanager::Load(fontStyleName);
+						fontStyleResource = lb::resourcemanager::Load(fontStyleName);
 						params.style = fontStyleResource.GetFontStyle();
 					}
 				});
@@ -168,7 +168,7 @@ namespace wi
 			archive << _flags;
 			std::string textA = GetTextA();
 			archive << textA;
-			archive << wi::helper::GetPathRelative(dir, fontStyleName);
+			archive << lb::helper::GetPathRelative(dir, fontStyleName);
 
 			archive << params._flags;
 			archive << params.position;

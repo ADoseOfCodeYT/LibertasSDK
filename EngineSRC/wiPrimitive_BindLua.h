@@ -3,7 +3,7 @@
 #include "wiLuna.h"
 #include "wiPrimitive.h"
 
-namespace wi::lua::primitive
+namespace lb::lua::primitive
 {
 	void Bind();
 
@@ -11,13 +11,13 @@ namespace wi::lua::primitive
 	class Ray_BindLua
 	{
 	public:
-		wi::primitive::Ray ray;
+		lb::primitive::Ray ray;
 
 		inline static constexpr char className[] = "Ray";
 		static Luna<Ray_BindLua>::FunctionType methods[];
 		static Luna<Ray_BindLua>::PropertyType properties[];
 
-		Ray_BindLua(const wi::primitive::Ray& ray) : ray(ray) {}
+		Ray_BindLua(const lb::primitive::Ray& ray) : ray(ray) {}
 		Ray_BindLua(lua_State *L);
 
 		int Intersects(lua_State* L);
@@ -32,13 +32,13 @@ namespace wi::lua::primitive
 	class AABB_BindLua
 	{
 	public:
-		wi::primitive::AABB aabb;
+		lb::primitive::AABB aabb;
 
 		inline static constexpr char className[] = "AABB";
 		static Luna<AABB_BindLua>::FunctionType methods[];
 		static Luna<AABB_BindLua>::PropertyType properties[];
 
-		AABB_BindLua(const wi::primitive::AABB& aabb) : aabb(aabb) {}
+		AABB_BindLua(const lb::primitive::AABB& aabb) : aabb(aabb) {}
 		AABB_BindLua(lua_State *L);
 
 		int Intersects(lua_State* L);
@@ -56,13 +56,13 @@ namespace wi::lua::primitive
 	class Sphere_BindLua
 	{
 	public:
-		wi::primitive::Sphere sphere;
+		lb::primitive::Sphere sphere;
 
 		inline static constexpr char className[] = "Sphere";
 		static Luna<Sphere_BindLua>::FunctionType methods[];
 		static Luna<Sphere_BindLua>::PropertyType properties[];
 
-		Sphere_BindLua(const wi::primitive::Sphere& sphere) : sphere(sphere) {}
+		Sphere_BindLua(const lb::primitive::Sphere& sphere) : sphere(sphere) {}
 		Sphere_BindLua(lua_State *L);
 
 		int Intersects(lua_State* L);
@@ -76,13 +76,13 @@ namespace wi::lua::primitive
 	class Capsule_BindLua
 	{
 	public:
-		wi::primitive::Capsule capsule;
+		lb::primitive::Capsule capsule;
 
 		inline static constexpr char className[] = "Capsule";
 		static Luna<Capsule_BindLua>::FunctionType methods[];
 		static Luna<Capsule_BindLua>::PropertyType properties[];
 
-		Capsule_BindLua(const wi::primitive::Capsule& capsule) : capsule(capsule) {}
+		Capsule_BindLua(const lb::primitive::Capsule& capsule) : capsule(capsule) {}
 		Capsule_BindLua(lua_State* L);
 
 		int Intersects(lua_State* L);

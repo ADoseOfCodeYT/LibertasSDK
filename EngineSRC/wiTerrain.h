@@ -10,7 +10,7 @@
 
 #include <memory>
 
-namespace wi::terrain
+namespace lb::terrain
 {
 	struct Chunk
 	{
@@ -29,16 +29,16 @@ namespace wi::terrain
 namespace std
 {
 	template <>
-	struct hash<wi::terrain::Chunk>
+	struct hash<lb::terrain::Chunk>
 	{
-		inline size_t operator()(const wi::terrain::Chunk& chunk) const
+		inline size_t operator()(const lb::terrain::Chunk& chunk) const
 		{
 			return chunk.compute_hash();
 		}
 	};
 }
 
-namespace wi::terrain
+namespace lb::terrain
 {
 	static constexpr int chunk_width = 64 + 3; // + 3: filler vertices for lod apron and grid perimeter
 	static constexpr float chunk_half_width = (chunk_width - 1) * 0.5f;
@@ -57,11 +57,11 @@ namespace wi::terrain
 	{
 		struct Map
 		{
-			wi::graphics::Texture texture;
-			wi::graphics::Texture texture_raw_block;
+			lb::graphics::Texture texture;
+			lb::graphics::Texture texture_raw_block;
 		};
 		Map maps[4];
-		wi::graphics::GPUBuffer tile_pool;
+		lb::graphics::GPUBuffer tile_pool;
 
 		uint8_t physical_tile_count_x = 0;
 		uint8_t physical_tile_count_y = 0;
@@ -76,32 +76,32 @@ namespace wi::terrain
 			}
 			constexpr operator uint16_t() const { return uint16_t(uint16_t(x) | (uint16_t(y) << 8u)); }
 		};
-		wi::vector<Tile> free_tiles;
+		lb::vector<Tile> free_tiles;
 
 		struct PhysicalTile
 		{
 			const Tile* last_used = nullptr;
 			uint64_t free_frames = 0;
 		};
-		wi::vector<PhysicalTile> physical_tiles;
+		lb::vector<PhysicalTile> physical_tiles;
 
 		struct Residency
 		{
-			wi::graphics::Texture feedbackMap;
-			wi::graphics::Texture residencyMap;
-			wi::graphics::GPUBuffer requestBuffer;
-			wi::graphics::GPUBuffer allocationBuffer;
-			wi::graphics::GPUBuffer allocationBuffer_CPU_readback[wi::graphics::GraphicsDevice::GetBufferCount()];
-			wi::graphics::GPUBuffer pageBuffer;
-			wi::graphics::GPUBuffer pageBuffer_CPU_upload[wi::graphics::GraphicsDevice::GetBufferCount()];
-			bool data_available_CPU[wi::graphics::GraphicsDevice::GetBufferCount()] = {};
+			lb::graphics::Texture feedbackMap;
+			lb::graphics::Texture residencyMap;
+			lb::graphics::GPUBuffer requestBuffer;
+			lb::graphics::GPUBuffer allocationBuffer;
+			lb::graphics::GPUBuffer allocationBuffer_CPU_readback[lb::graphics::GraphicsDevice::GetBufferCount()];
+			lb::graphics::GPUBuffer pageBuffer;
+			lb::graphics::GPUBuffer pageBuffer_CPU_upload[lb::graphics::GraphicsDevice::GetBufferCount()];
+			bool data_available_CPU[lb::graphics::GraphicsDevice::GetBufferCount()] = {};
 			int cpu_resource_id = 0;
 			uint32_t resolution = 0;
 
 			void init(uint32_t resolution);
 			void reset();
 		};
-		wi::unordered_map<uint32_t, wi::vector<std::shared_ptr<Residency>>> free_residencies; // per resolution residencies
+		lb::unordered_map<uint32_t, lb::vector<std::shared_ptr<Residency>>> free_residencies; // per resolution residencies
 
 		bool allocate_tile(Tile& tile)
 		{
@@ -164,7 +164,7 @@ namespace wi::terrain
 	struct VirtualTexture
 	{
 		std::shared_ptr<VirtualTextureAtlas::Residency> residency;
-		wi::vector<VirtualTextureAtlas::Tile> tiles;
+		lb::vector<VirtualTextureAtlas::Tile> tiles;
 		uint32_t lod_count = 0;
 		uint32_t resolution = 0;
 
@@ -188,7 +188,7 @@ namespace wi::terrain
 			uint32_t lod = 0;
 			uint32_t tile_index = 0;
 		};
-		wi::vector<AllocationRequest> allocation_requests;
+		lb::vector<AllocationRequest> allocation_requests;
 
 		// Attach this data to Virtual Texture because we will record these by separate CPU thread:
 		struct UpdateRequest
@@ -199,32 +199,32 @@ namespace wi::terrain
 			uint8_t tile_x = 0;
 			uint8_t tile_y = 0;
 		};
-		mutable wi::vector<UpdateRequest> update_requests;
-		wi::graphics::Texture blendmap;
+		mutable lb::vector<UpdateRequest> update_requests;
+		lb::graphics::Texture blendmap;
 	};
 
 	struct BlendmapLayer
 	{
-		wi::vector<uint8_t> pixels;
+		lb::vector<uint8_t> pixels;
 	};
 
 	struct ChunkData
 	{
-		wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-		wi::ecs::Entity grass_entity = wi::ecs::INVALID_ENTITY;
-		wi::ecs::Entity props_entity = wi::ecs::INVALID_ENTITY;
+		lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+		lb::ecs::Entity grass_entity = lb::ecs::INVALID_ENTITY;
+		lb::ecs::Entity props_entity = lb::ecs::INVALID_ENTITY;
 		const XMFLOAT3* mesh_vertex_positions = nullptr;
 		float prop_density_current = 1;
-		wi::HairParticleSystem grass;
+		lb::HairParticleSystem grass;
 		float grass_density_current = 1;
-		wi::vector<BlendmapLayer> blendmap_layers;
-		wi::graphics::Texture blendmap;
-		wi::primitive::Sphere sphere;
+		lb::vector<BlendmapLayer> blendmap_layers;
+		lb::graphics::Texture blendmap;
+		lb::primitive::Sphere sphere;
 		XMFLOAT3 position = XMFLOAT3(0, 0, 0);
 		bool visible = true;
 		std::shared_ptr<VirtualTexture> vt;
-		wi::vector<uint16_t> heightmap_data;
-		wi::graphics::Texture heightmap;
+		lb::vector<uint16_t> heightmap_data;
+		lb::graphics::Texture heightmap;
 
 		void enable_blendmap_layer(size_t materialIndex)
 		{
@@ -238,7 +238,7 @@ namespace wi::terrain
 
 	struct Prop
 	{
-		wi::vector<uint8_t> data; // serialized component data storage
+		lb::vector<uint8_t> data; // serialized component data storage
 		int min_count_per_chunk = 0; // a chunk will try to generate min this many props of this type
 		int max_count_per_chunk = 10; // a chunk will try to generate max this many props of this type
 		int region = 0; // region selection in range [0,3] (0: base/grass, 1: slopes, 2: low altitude (bottom level-0), 3: high altitude (0-top level))
@@ -269,30 +269,30 @@ namespace wi::terrain
 		};
 		uint32_t _flags = CENTER_TO_CAM | REMOVAL | GRASS;
 
-		wi::ecs::Entity terrainEntity = wi::ecs::INVALID_ENTITY;
-		wi::ecs::Entity chunkGroupEntity = wi::ecs::INVALID_ENTITY;
-		wi::scene::Scene* scene = nullptr;
-		wi::vector<wi::ecs::Entity> materialEntities = {};
-		wi::ecs::Entity grassEntity = wi::ecs::INVALID_ENTITY;
-		wi::scene::WeatherComponent weather;
-		wi::HairParticleSystem grass_properties;
-		wi::scene::MaterialComponent grass_material;
-		wi::unordered_map<Chunk, ChunkData> chunks;
+		lb::ecs::Entity terrainEntity = lb::ecs::INVALID_ENTITY;
+		lb::ecs::Entity chunkGroupEntity = lb::ecs::INVALID_ENTITY;
+		lb::scene::Scene* scene = nullptr;
+		lb::vector<lb::ecs::Entity> materialEntities = {};
+		lb::ecs::Entity grassEntity = lb::ecs::INVALID_ENTITY;
+		lb::scene::WeatherComponent weather;
+		lb::HairParticleSystem grass_properties;
+		lb::scene::MaterialComponent grass_material;
+		lb::unordered_map<Chunk, ChunkData> chunks;
 		Chunk center_chunk = {};
-		wi::noise::Perlin perlin_noise;
-		wi::vector<Prop> props;
+		lb::noise::Perlin perlin_noise;
+		lb::vector<Prop> props;
 		int grass_chunk_dist = 1;
 
 		// For generating scene on a background thread:
 		std::shared_ptr<Generator> generator;
 		float generation_time_budget_milliseconds = 12; // after this much time, the generation thread will exit. This can help avoid a very long running, resource consuming and slow cancellation generation
 
-		wi::vector<VirtualTexture*> virtual_textures_in_use;
-		wi::graphics::Sampler sampler;
+		lb::vector<VirtualTexture*> virtual_textures_in_use;
+		lb::graphics::Sampler sampler;
 		VirtualTextureAtlas atlas;
 
 		int chunk_buffer_range = 3; // how many chunks to upload to GPU in X and Z directions
-		wi::graphics::GPUBuffer chunk_buffer;
+		lb::graphics::GPUBuffer chunk_buffer;
 
 		constexpr bool IsCenterToCamEnabled() const { return _flags & CENTER_TO_CAM; }
 		constexpr bool IsRemovalEnabled() const { return _flags & REMOVAL; }
@@ -322,8 +322,8 @@ namespace wi::terrain
 		float region2 = 2;
 		float region3 = 8;
 
-		wi::vector<std::shared_ptr<Modifier>> modifiers;
-		wi::vector<Modifier*> modifiers_to_remove;
+		lb::vector<std::shared_ptr<Modifier>> modifiers;
+		lb::vector<Modifier*> modifiers_to_remove;
 
 		Terrain();
 		~Terrain();
@@ -332,24 +332,24 @@ namespace wi::terrain
 		//	This will remove previously existing terrain
 		void Generation_Restart();
 		// This will run the actual generation tasks, call it once per frame
-		void Generation_Update(const wi::scene::CameraComponent& camera);
+		void Generation_Update(const lb::scene::CameraComponent& camera);
 		// Tells the generation thread that it should be cancelled and blocks until that is confirmed
 		void Generation_Cancel();
 		// Creates the textures for a chunk data
 		void CreateChunkRegionTexture(ChunkData& chunk_data);
 
 		void UpdateVirtualTexturesCPU();
-		void UpdateVirtualTexturesGPU(wi::graphics::CommandList cmd) const;
-		void CopyVirtualTexturePageStatusGPU(wi::graphics::CommandList cmd) const;
-		void AllocateVirtualTextureTileRequestsGPU(wi::graphics::CommandList cmd) const;
-		void WritebackTileRequestsGPU(wi::graphics::CommandList cmd) const;
+		void UpdateVirtualTexturesGPU(lb::graphics::CommandList cmd) const;
+		void CopyVirtualTexturePageStatusGPU(lb::graphics::CommandList cmd) const;
+		void AllocateVirtualTextureTileRequestsGPU(lb::graphics::CommandList cmd) const;
+		void WritebackTileRequestsGPU(lb::graphics::CommandList cmd) const;
 
 		ShaderTerrain GetShaderTerrain() const;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 
 	private:
-		wi::vector<wi::scene::MaterialComponent> materials; // temp storage allocation
+		lb::vector<lb::scene::MaterialComponent> materials; // temp storage allocation
 	};
 
 	struct Modifier
@@ -381,7 +381,7 @@ namespace wi::terrain
 			{
 			default:
 			case BlendMode::Normal:
-				height = wi::math::Lerp(height, value, weight);
+				height = lb::math::Lerp(height, value, weight);
 				break;
 			case BlendMode::Multiply:
 				height *= value * weight;
@@ -396,7 +396,7 @@ namespace wi::terrain
 	{
 		int octaves = 6;
 		uint32_t seed = 0;
-		wi::noise::Perlin perlin_noise;
+		lb::noise::Perlin perlin_noise;
 
 		PerlinModifier() { type = Type::Perlin; }
 		void Seed(uint32_t seed) override
@@ -419,7 +419,7 @@ namespace wi::terrain
 		float falloff = 6;
 		float perturbation = 0.1f;
 		uint32_t seed = 0;
-		wi::noise::Perlin perlin_noise;
+		lb::noise::Perlin perlin_noise;
 
 		VoronoiModifier() { type = Type::Voronoi; }
 		void Seed(uint32_t seed) override
@@ -438,7 +438,7 @@ namespace wi::terrain
 				p.x += std::sin(angle) * perturbation;
 				p.y += std::cos(angle) * perturbation;
 			}
-			wi::noise::voronoi::Result res = wi::noise::voronoi::compute(p.x, p.y, (float)seed);
+			lb::noise::voronoi::Result res = lb::noise::voronoi::compute(p.x, p.y, (float)seed);
 			float weight = std::pow(1 - saturate((res.distance - shape) * fade), std::max(0.0001f, falloff));
 			Blend(height, weight);
 		}
@@ -447,7 +447,7 @@ namespace wi::terrain
 	{
 		float scale = 0.1f;
 
-		wi::vector<uint8_t> data;
+		lb::vector<uint8_t> data;
 		int width = 0;
 		int height = 0;
 

@@ -16,7 +16,7 @@
 #include "wiBVH.h"
 #include "wiPathQuery.h"
 
-namespace wi::scene
+namespace lb::scene
 {
 
 	struct NameComponent
@@ -27,7 +27,7 @@ namespace wi::scene
 		inline void operator=(std::string&& str) { name = std::move(str); }
 		inline bool operator==(const std::string& str) const { return name.compare(str) == 0; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct LayerComponent
@@ -39,7 +39,7 @@ namespace wi::scene
 
 		inline uint32_t GetLayerMask() const { return layerMask & propagationMask; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct TransformComponent
@@ -60,7 +60,7 @@ namespace wi::scene
 		// The world matrix can be computed from local scale, rotation, translation
 		//	- by calling UpdateTransform()
 		//	- or by calling SetDirty() and letting the TransformUpdateSystem handle the updating
-		XMFLOAT4X4 world = wi::math::IDENTITY_MATRIX;
+		XMFLOAT4X4 world = lb::math::IDENTITY_MATRIX;
 
 		inline void SetDirty(bool value = true) { if (value) { _flags |= DIRTY; } else { _flags &= ~DIRTY; } }
 		inline bool IsDirty() const { return _flags & DIRTY; }
@@ -99,15 +99,15 @@ namespace wi::scene
 		void Lerp(const TransformComponent& a, const TransformComponent& b, float t);
 		void CatmullRom(const TransformComponent& a, const TransformComponent& b, const TransformComponent& c, const TransformComponent& d, float t);
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct HierarchyComponent
 	{
-		wi::ecs::Entity parentID = wi::ecs::INVALID_ENTITY;
+		lb::ecs::Entity parentID = lb::ecs::INVALID_ENTITY;
 		uint32_t layerMask_bind; // saved child layermask at the time of binding
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct MaterialComponent
@@ -152,7 +152,7 @@ namespace wi::scene
 		} shaderType = SHADERTYPE_PBR;
 		static_assert(SHADERTYPE_COUNT == SHADERTYPE_BIN_COUNT, "These values must match!");
 
-		inline static const wi::vector<std::string> shaderTypeDefines[] = {
+		inline static const lb::vector<std::string> shaderTypeDefines[] = {
 			{}, // SHADERTYPE_PBR,
 			{"PLANARREFLECTION"}, // SHADERTYPE_PBR_PLANARREFLECTION,
 			{"PARALLAXOCCLUSIONMAPPING"}, // SHADERTYPE_PBR_PARALLAXOCCLUSIONMAPPING,
@@ -167,9 +167,9 @@ namespace wi::scene
 		};
 		static_assert(SHADERTYPE_COUNT == arraysize(shaderTypeDefines), "These values must match!");
 
-		wi::enums::STENCILREF engineStencilRef = wi::enums::STENCILREF_DEFAULT;
+		lb::enums::STENCILREF engineStencilRef = lb::enums::STENCILREF_DEFAULT;
 		uint8_t userStencilRef = 0;
-		wi::enums::BLENDMODE userBlendMode = wi::enums::BLENDMODE_OPAQUE;
+		lb::enums::BLENDMODE userBlendMode = lb::enums::BLENDMODE_OPAQUE;
 
 		XMFLOAT4 baseColor = XMFLOAT4(1, 1, 1, 1);
 		XMFLOAT4 specularColor = XMFLOAT4(1, 1, 1, 1);
@@ -198,7 +198,7 @@ namespace wi::scene
 		float clearcoat = 0;
 		float clearcoatRoughness = 0;
 
-		wi::graphics::ShadingRate shadingRate = wi::graphics::ShadingRate::RATE_1X1;
+		lb::graphics::ShadingRate shadingRate = lb::graphics::ShadingRate::RATE_1X1;
 
 		XMFLOAT2 texAnimDirection = XMFLOAT2(0, 0);
 		float texAnimFrameRate = 0.0f;
@@ -227,9 +227,9 @@ namespace wi::scene
 		struct TextureMap
 		{
 			std::string name;
-			wi::Resource resource;
+			lb::Resource resource;
 			uint32_t uvset = 0;
-			const wi::graphics::GPUResource* GetGPUResource() const
+			const lb::graphics::GPUResource* GetGPUResource() const
 			{
 				if (!resource.IsValid() || !resource.GetTexture().IsValid())
 					return nullptr;
@@ -273,7 +273,7 @@ namespace wi::scene
 		inline void SetOcclusionEnabled_Primary(bool value) { SetDirty(); if (value) { _flags |= OCCLUSION_PRIMARY; } else { _flags &= ~OCCLUSION_PRIMARY; } }
 		inline void SetOcclusionEnabled_Secondary(bool value) { SetDirty(); if (value) { _flags |= OCCLUSION_SECONDARY; } else { _flags &= ~OCCLUSION_SECONDARY; } }
 
-		inline wi::enums::BLENDMODE GetBlendMode() const { if (userBlendMode == wi::enums::BLENDMODE_OPAQUE && (GetFilterMask() & wi::enums::FILTER_TRANSPARENT)) return wi::enums::BLENDMODE_ALPHA; else return userBlendMode; }
+		inline lb::enums::BLENDMODE GetBlendMode() const { if (userBlendMode == lb::enums::BLENDMODE_OPAQUE && (GetFilterMask() & lb::enums::FILTER_TRANSPARENT)) return lb::enums::BLENDMODE_ALPHA; else return userBlendMode; }
 		inline bool IsCastingShadow() const { return _flags & CAST_SHADOW; }
 		inline bool IsAlphaTestEnabled() const { return alphaRef <= 1.0f - 1.0f / 256.0f; }
 		inline bool IsUsingVertexColors() const { return _flags & USE_VERTEXCOLORS; }
@@ -345,17 +345,17 @@ namespace wi::scene
 		void WriteShaderTextureSlot(ShaderMaterial* dest, int slot, int descriptor);
 
 		// Retrieve the array of textures from the material
-		void WriteTextures(const wi::graphics::GPUResource** dest, int count) const;
+		void WriteTextures(const lb::graphics::GPUResource** dest, int count) const;
 
-		// Returns the bitwise OR of all the wi::enums::FILTER flags applicable to this material
+		// Returns the bitwise OR of all the lb::enums::FILTER flags applicable to this material
 		uint32_t GetFilterMask() const;
 
-		wi::resourcemanager::Flags GetTextureSlotResourceFlags(TEXTURESLOT slot);
+		lb::resourcemanager::Flags GetTextureSlotResourceFlags(TEXTURESLOT slot);
 
 		// Create texture resources for GPU
 		void CreateRenderData(bool force_recreate = false);
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct MeshComponent
@@ -376,19 +376,19 @@ namespace wi::scene
 		};
 		uint32_t _flags = RENDERABLE;
 
-		wi::vector<XMFLOAT3> vertex_positions;
-		wi::vector<XMFLOAT3> vertex_normals;
-		wi::vector<XMFLOAT4> vertex_tangents;
-		wi::vector<XMFLOAT2> vertex_uvset_0;
-		wi::vector<XMFLOAT2> vertex_uvset_1;
-		wi::vector<XMUINT4> vertex_boneindices;
-		wi::vector<XMFLOAT4> vertex_boneweights;
-		wi::vector<XMUINT4> vertex_boneindices2;
-		wi::vector<XMFLOAT4> vertex_boneweights2;
-		wi::vector<XMFLOAT2> vertex_atlas;
-		wi::vector<uint32_t> vertex_colors;
-		wi::vector<uint8_t> vertex_windweights;
-		wi::vector<uint32_t> indices;
+		lb::vector<XMFLOAT3> vertex_positions;
+		lb::vector<XMFLOAT3> vertex_normals;
+		lb::vector<XMFLOAT4> vertex_tangents;
+		lb::vector<XMFLOAT2> vertex_uvset_0;
+		lb::vector<XMFLOAT2> vertex_uvset_1;
+		lb::vector<XMUINT4> vertex_boneindices;
+		lb::vector<XMFLOAT4> vertex_boneweights;
+		lb::vector<XMUINT4> vertex_boneindices2;
+		lb::vector<XMFLOAT4> vertex_boneweights2;
+		lb::vector<XMFLOAT2> vertex_atlas;
+		lb::vector<uint32_t> vertex_colors;
+		lb::vector<uint8_t> vertex_windweights;
+		lb::vector<uint32_t> indices;
 
 		enum MESH_SUBSET_FLAGS
 		{
@@ -398,7 +398,7 @@ namespace wi::scene
 		struct MeshSubset
 		{
 			std::string surfaceName; // custom identifier for user, not used by engine
-			wi::ecs::Entity materialID = wi::ecs::INVALID_ENTITY;
+			lb::ecs::Entity materialID = lb::ecs::INVALID_ENTITY;
 			uint32_t indexOffset = 0;
 			uint32_t indexCount = 0;
 
@@ -408,31 +408,31 @@ namespace wi::scene
 
 			constexpr bool IsDoubleSided() const { return flags & MESH_SUBSET_DOUBLESIDED; }
 		};
-		wi::vector<MeshSubset> subsets;
+		lb::vector<MeshSubset> subsets;
 
 		float tessellationFactor = 0.0f;
-		wi::ecs::Entity armatureID = wi::ecs::INVALID_ENTITY;
+		lb::ecs::Entity armatureID = lb::ecs::INVALID_ENTITY;
 
 		struct MorphTarget
 		{
-			wi::vector<XMFLOAT3> vertex_positions;
-			wi::vector<XMFLOAT3> vertex_normals;
-			wi::vector<uint32_t> sparse_indices_positions; // optional, these can be used to target vertices indirectly
-			wi::vector<uint32_t> sparse_indices_normals; // optional, these can be used to target vertices indirectly
+			lb::vector<XMFLOAT3> vertex_positions;
+			lb::vector<XMFLOAT3> vertex_normals;
+			lb::vector<uint32_t> sparse_indices_positions; // optional, these can be used to target vertices indirectly
+			lb::vector<uint32_t> sparse_indices_normals; // optional, these can be used to target vertices indirectly
 			float weight = 0;
 
 			// Non-serialized attributes:
 			uint64_t offset_pos = ~0ull;
 			uint64_t offset_nor = ~0ull;
 		};
-		wi::vector<MorphTarget> morph_targets;
+		lb::vector<MorphTarget> morph_targets;
 
 		uint32_t subsets_per_lod = 0; // this needs to be specified if there are multiple LOD levels
 
 		// Non-serialized attributes:
-		wi::primitive::AABB aabb;
-		wi::graphics::GPUBuffer generalBuffer; // index buffer + all static vertex buffers
-		wi::graphics::GPUBuffer streamoutBuffer; // all dynamic vertex buffers
+		lb::primitive::AABB aabb;
+		lb::graphics::GPUBuffer generalBuffer; // index buffer + all static vertex buffers
+		lb::graphics::GPUBuffer streamoutBuffer; // all dynamic vertex buffers
 		struct BufferView
 		{
 			uint64_t offset = ~0ull;
@@ -469,7 +469,7 @@ namespace wi::scene
 		XMFLOAT2 uv_range_min = XMFLOAT2(0, 0);
 		XMFLOAT2 uv_range_max = XMFLOAT2(1, 1);
 
-		wi::vector<wi::graphics::RaytracingAccelerationStructure> BLASes; // one BLAS per LOD
+		lb::vector<lb::graphics::RaytracingAccelerationStructure> BLASes; // one BLAS per LOD
 		enum BLAS_STATE
 		{
 			BLAS_STATE_NEEDS_REBUILD,
@@ -478,15 +478,15 @@ namespace wi::scene
 		};
 		mutable BLAS_STATE BLAS_state = BLAS_STATE_NEEDS_REBUILD;
 
-		wi::vector<wi::primitive::AABB> bvh_leaf_aabbs;
-		wi::BVH bvh;
+		lb::vector<lb::primitive::AABB> bvh_leaf_aabbs;
+		lb::BVH bvh;
 
 		struct SubsetClusterRange
 		{
 			uint32_t clusterOffset = 0;
 			uint32_t clusterCount = 0;
 		};
-		wi::vector<SubsetClusterRange> cluster_ranges;
+		lb::vector<SubsetClusterRange> cluster_ranges;
 
 		inline void SetRenderable(bool value) { if (value) { _flags |= RENDERABLE; } else { _flags &= ~RENDERABLE; } }
 		inline void SetDoubleSided(bool value) { if (value) { _flags |= DOUBLE_SIDED; } else { _flags &= ~DOUBLE_SIDED; } }
@@ -510,9 +510,9 @@ namespace wi::scene
 		inline bool IsQuantizedPositionsDisabled() const { return _flags & QUANTIZED_POSITIONS_DISABLED; }
 
 		inline float GetTessellationFactor() const { return tessellationFactor; }
-		inline wi::graphics::IndexBufferFormat GetIndexFormat() const { return wi::graphics::GetIndexBufferFormat((uint32_t)vertex_positions.size()); }
-		inline size_t GetIndexStride() const { return GetIndexFormat() == wi::graphics::IndexBufferFormat::UINT32 ? sizeof(uint32_t) : sizeof(uint16_t); }
-		inline bool IsSkinned() const { return armatureID != wi::ecs::INVALID_ENTITY; }
+		inline lb::graphics::IndexBufferFormat GetIndexFormat() const { return lb::graphics::GetIndexBufferFormat((uint32_t)vertex_positions.size()); }
+		inline size_t GetIndexStride() const { return GetIndexFormat() == lb::graphics::IndexBufferFormat::UINT32 ? sizeof(uint32_t) : sizeof(uint16_t); }
+		inline bool IsSkinned() const { return armatureID != lb::ecs::INVALID_ENTITY; }
 		inline uint32_t GetLODCount() const { return subsets_per_lod == 0 ? 1 : ((uint32_t)subsets.size() / subsets_per_lod); }
 		inline void GetLODSubsetRange(uint32_t lod, uint32_t& first_subset, uint32_t& last_subset) const
 		{
@@ -557,7 +557,7 @@ namespace wi::scene
 		void FlipNormals();
 		void Recenter();
 		void RecenterToBottom();
-		wi::primitive::Sphere GetBoundingSphere() const;
+		lb::primitive::Sphere GetBoundingSphere() const;
 
 		uint32_t GetBoneInfluenceDiv4() const
 		{
@@ -573,7 +573,7 @@ namespace wi::scene
 			return influence_div4;
 		}
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 
 		struct Vertex_POS16
 		{
@@ -582,33 +582,33 @@ namespace wi::scene
 			uint16_t z = 0;
 			uint16_t w = 0;
 
-			constexpr void FromFULL(const wi::primitive::AABB& aabb, XMFLOAT3 pos, uint8_t wind)
+			constexpr void FromFULL(const lb::primitive::AABB& aabb, XMFLOAT3 pos, uint8_t wind)
 			{
-				pos = wi::math::InverseLerp(aabb._min, aabb._max, pos); // UNORM remap
+				pos = lb::math::InverseLerp(aabb._min, aabb._max, pos); // UNORM remap
 				x = uint16_t(pos.x * 65535.0f);
 				y = uint16_t(pos.y * 65535.0f);
 				z = uint16_t(pos.z * 65535.0f);
 				w = uint16_t((float(wind) / 255.0f) * 65535.0f);
 			}
-			inline XMVECTOR LoadPOS(const wi::primitive::AABB& aabb) const
+			inline XMVECTOR LoadPOS(const lb::primitive::AABB& aabb) const
 			{
 				XMFLOAT3 v = GetPOS(aabb);
 				return XMLoadFloat3(&v);
 			}
-			constexpr XMFLOAT3 GetPOS(const wi::primitive::AABB& aabb) const
+			constexpr XMFLOAT3 GetPOS(const lb::primitive::AABB& aabb) const
 			{
 				XMFLOAT3 v = XMFLOAT3(
 					float(x) / 65535.0f,
 					float(y) / 65535.0f,
 					float(z) / 65535.0f
 				);
-				return wi::math::Lerp(aabb._min, aabb._max, v);
+				return lb::math::Lerp(aabb._min, aabb._max, v);
 			}
 			constexpr uint8_t GetWind() const
 			{
 				return uint8_t((float(w) / 65535.0f) * 255);
 			}
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R16G16B16A16_UNORM;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R16G16B16A16_UNORM;
 		};
 		struct Vertex_POS32
 		{
@@ -630,7 +630,7 @@ namespace wi::scene
 			{
 				return XMFLOAT3(x, y, z);
 			}
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R32G32B32_FLOAT;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R32G32B32_FLOAT;
 		};
 		struct Vertex_POS32W
 		{
@@ -658,9 +658,9 @@ namespace wi::scene
 			{
 				return uint8_t(w * 255);
 			}
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R32G32B32A32_FLOAT;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R32G32B32A32_FLOAT;
 		};
-		wi::graphics::Format position_format = Vertex_POS16::FORMAT; // CreateRenderData() will choose the appropriate format
+		lb::graphics::Format position_format = Vertex_POS16::FORMAT; // CreateRenderData() will choose the appropriate format
 
 		struct Vertex_TEX
 		{
@@ -669,16 +669,16 @@ namespace wi::scene
 
 			constexpr void FromFULL(const XMFLOAT2& uv, const XMFLOAT2& uv_range_min = XMFLOAT2(0, 0), const XMFLOAT2& uv_range_max = XMFLOAT2(1, 1))
 			{
-				x = uint16_t(wi::math::InverseLerp(uv_range_min.x, uv_range_max.x, uv.x) * 65535.0f);
-				y = uint16_t(wi::math::InverseLerp(uv_range_min.y, uv_range_max.y, uv.y) * 65535.0f);
+				x = uint16_t(lb::math::InverseLerp(uv_range_min.x, uv_range_max.x, uv.x) * 65535.0f);
+				y = uint16_t(lb::math::InverseLerp(uv_range_min.y, uv_range_max.y, uv.y) * 65535.0f);
 			}
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R16G16_UNORM;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R16G16_UNORM;
 		};
 		struct Vertex_UVS
 		{
 			Vertex_TEX uv0;
 			Vertex_TEX uv1;
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R16G16B16A16_UNORM;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R16G16B16A16_UNORM;
 		};
 		struct Vertex_BON
 		{
@@ -712,7 +712,7 @@ namespace wi::scene
 		struct Vertex_COL
 		{
 			uint32_t color = 0;
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R8G8B8A8_UNORM;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R8G8B8A8_UNORM;
 		};
 		struct Vertex_NOR
 		{
@@ -750,7 +750,7 @@ namespace wi::scene
 					0
 				);
 			}
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R8G8B8A8_SNORM;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R8G8B8A8_SNORM;
 		};
 		struct Vertex_TAN
 		{
@@ -781,7 +781,7 @@ namespace wi::scene
 					float(w) / 127.5f
 				);
 			}
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R8G8B8A8_SNORM;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R8G8B8A8_SNORM;
 		};
 
 	};
@@ -804,7 +804,7 @@ namespace wi::scene
 		inline void SetDirty(bool value = true) { if (value) { _flags |= DIRTY; } else { _flags &= ~DIRTY; } }
 		inline bool IsDirty() const { return _flags & DIRTY; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct ObjectComponent
@@ -826,7 +826,7 @@ namespace wi::scene
 		};
 		uint32_t _flags = RENDERABLE | CAST_SHADOW;
 
-		wi::ecs::Entity meshID = wi::ecs::INVALID_ENTITY;
+		lb::ecs::Entity meshID = lb::ecs::INVALID_ENTITY;
 		uint32_t cascadeMask = 0; // which shadow cascades to skip from lowest detail to highest detail (0: skip none, 1: skip first, etc...)
 		uint32_t filterMask = 0;
 		XMFLOAT4 color = XMFLOAT4(1, 1, 1, 1);
@@ -836,9 +836,9 @@ namespace wi::scene
 		float draw_distance = std::numeric_limits<float>::max(); // object will begin to fade out at this distance to camera
 		uint32_t lightmapWidth = 0;
 		uint32_t lightmapHeight = 0;
-		wi::vector<uint8_t> lightmapTextureData;
+		lb::vector<uint8_t> lightmapTextureData;
 		uint32_t sort_priority = 0; // increase to draw earlier (currently 4 bits will be used)
-		wi::vector<uint8_t> vertex_ao;
+		lb::vector<uint8_t> vertex_ao;
 		float alphaRef = 1;
 		XMFLOAT4 rimHighlightColor = XMFLOAT4(1, 1, 1, 0);
 		float rimHighlightFalloff = 8;
@@ -846,12 +846,12 @@ namespace wi::scene
 		// Non-serialized attributes:
 		uint32_t filterMaskDynamic = 0;
 
-		wi::graphics::Texture lightmap_render;
-		wi::graphics::Texture lightmap;
+		lb::graphics::Texture lightmap_render;
+		lb::graphics::Texture lightmap;
 		mutable uint32_t lightmapIterationCount = 0;
-		wi::graphics::GPUBuffer vb_ao;
+		lb::graphics::GPUBuffer vb_ao;
 		int vb_ao_srv = -1;
-		wi::graphics::GPUBuffer wetmap;
+		lb::graphics::GPUBuffer wetmap;
 		mutable bool wetmap_cleared = false;
 
 		XMFLOAT3 center = XMFLOAT3(0, 0, 0);
@@ -904,14 +904,14 @@ namespace wi::scene
 		void SaveLightmap(); // not thread safe if LIGHTMAP_BLOCK_COMPRESSION is enabled!
 		void CompressLightmap(); // not thread safe if LIGHTMAP_BLOCK_COMPRESSION is enabled!
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 
 		void CreateRenderData();
 		void DeleteRenderData();
 		struct Vertex_AO
 		{
 			uint8_t value = 0;
-			static constexpr wi::graphics::Format FORMAT = wi::graphics::Format::R8_UNORM;
+			static constexpr lb::graphics::Format FORMAT = lb::graphics::Format::R8_UNORM;
 		};
 	};
 
@@ -975,7 +975,7 @@ namespace wi::scene
 		inline bool IsKinematic() const { return _flags & KINEMATIC; }
 		inline bool IsStartDeactivated() const { return _flags & START_DEACTIVATED; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct SoftBodyPhysicsComponent
@@ -996,16 +996,16 @@ namespace wi::scene
 		float pressure = 0.0f;
 		float vertex_radius = 0.2f; // how much distance vertices keep from other physics bodies
 		float detail = 1; // LOD target detail [0,1]
-		wi::vector<uint32_t> physicsIndices; // physics vertex connectivity
-		wi::vector<uint32_t> physicsToGraphicsVertexMapping; // maps graphics vertex index to physics vertex index of the same position
-		wi::vector<float> weights; // weight per physics vertex controlling the mass. (0: disable weight (no physics, only animation), 1: default weight)
+		lb::vector<uint32_t> physicsIndices; // physics vertex connectivity
+		lb::vector<uint32_t> physicsToGraphicsVertexMapping; // maps graphics vertex index to physics vertex index of the same position
+		lb::vector<float> weights; // weight per physics vertex controlling the mass. (0: disable weight (no physics, only animation), 1: default weight)
 
 		// Non-serialized attributes:
 		std::shared_ptr<void> physicsobject = nullptr; // You can set to null to recreate the physics object the next time phsyics system will be running.
-		XMFLOAT4X4 worldMatrix = wi::math::IDENTITY_MATRIX;
+		XMFLOAT4X4 worldMatrix = lb::math::IDENTITY_MATRIX;
 		uint32_t gpuBoneOffset = 0;
-		wi::vector<ShaderTransform> boneData; // simulated soft body nodes as bone matrices that can be fed into skinning
-		wi::primitive::AABB aabb;
+		lb::vector<ShaderTransform> boneData; // simulated soft body nodes as bone matrices that can be fed into skinning
+		lb::primitive::AABB aabb;
 
 		inline void SetDisableDeactivation(bool value) { if (value) { _flags |= DISABLE_DEACTIVATION; } else { _flags &= ~DISABLE_DEACTIVATION; } }
 		inline void SetWindEnabled(bool value) { if (value) { _flags |= WIND; } else { _flags &= ~WIND; } }
@@ -1029,7 +1029,7 @@ namespace wi::scene
 		// Create physics represenation of graphics mesh
 		void CreateFromMesh(MeshComponent& mesh);
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct ArmatureComponent
@@ -1040,15 +1040,15 @@ namespace wi::scene
 		};
 		uint32_t _flags = EMPTY;
 
-		wi::vector<wi::ecs::Entity> boneCollection;
-		wi::vector<XMFLOAT4X4> inverseBindMatrices;
+		lb::vector<lb::ecs::Entity> boneCollection;
+		lb::vector<XMFLOAT4X4> inverseBindMatrices;
 
 		// Non-serialized attributes:
-		wi::primitive::AABB aabb;
+		lb::primitive::AABB aabb;
 		uint32_t gpuBoneOffset = 0;
-		wi::vector<ShaderTransform> boneData;
+		lb::vector<ShaderTransform> boneData;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct LightComponent
@@ -1087,8 +1087,8 @@ namespace wi::scene
 		float length = 0;
 		float volumetric_boost = 0; // increase the strength of volumetric fog only for this light
 
-		wi::vector<float> cascade_distances = { 8,80,800 };
-		wi::vector<std::string> lensFlareNames;
+		lb::vector<float> cascade_distances = { 8,80,800 };
+		lb::vector<std::string> lensFlareNames;
 
 		int forced_shadow_resolution = -1; // -1: disabled, greater: fixed shadow map resolution
 
@@ -1099,7 +1099,7 @@ namespace wi::scene
 		XMFLOAT3 scale = XMFLOAT3(1, 1, 1);
 		mutable int occlusionquery = -1;
 
-		wi::vector<wi::Resource> lensFlareRimTextures;
+		lb::vector<lb::Resource> lensFlareRimTextures;
 
 		inline void SetCastShadow(bool value) { if (value) { _flags |= CAST_SHADOW; } else { _flags &= ~CAST_SHADOW; } }
 		inline void SetVolumetricsEnabled(bool value) { if (value) { _flags |= VOLUMETRICS; } else { _flags &= ~VOLUMETRICS; } }
@@ -1130,10 +1130,10 @@ namespace wi::scene
 		{
 			switch (type)
 			{
-			case wi::scene::LightComponent::POINT:
+			case lb::scene::LightComponent::POINT:
 				intensity = energy * 20;
 				break;
-			case wi::scene::LightComponent::SPOT:
+			case lb::scene::LightComponent::SPOT:
 				intensity = energy * 200;
 				break;
 			default:
@@ -1141,7 +1141,7 @@ namespace wi::scene
 			}
 		}
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct CameraComponent
@@ -1171,13 +1171,13 @@ namespace wi::scene
 		XMFLOAT3 Up = XMFLOAT3(0, 1, 0);
 		XMFLOAT3X3 rotationMatrix;
 		XMFLOAT4X4 View, Projection, VP;
-		wi::primitive::Frustum frustum;
+		lb::primitive::Frustum frustum;
 		XMFLOAT4X4 InvView, InvProjection, InvVP;
 		XMFLOAT2 jitter;
 		XMFLOAT4 clipPlane = XMFLOAT4(0, 0, 0, 0); // default: no clip plane
 		XMFLOAT4 clipPlaneOriginal = XMFLOAT4(0, 0, 0, 0); // not reversed clip plane
-		wi::Canvas canvas;
-		wi::graphics::Rect scissor;
+		lb::Canvas canvas;
+		lb::graphics::Rect scissor;
 		uint32_t sample_count = 1;
 		int texture_primitiveID_index = -1;
 		int texture_depth_index = -1;
@@ -1228,7 +1228,7 @@ namespace wi::scene
 
 		void Lerp(const CameraComponent& a, const CameraComponent& b, float t);
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct EnvironmentProbeComponent
@@ -1246,8 +1246,8 @@ namespace wi::scene
 		std::string textureName; // if texture is coming from an asset
 
 		// Non-serialized attributes:
-		wi::graphics::Texture texture;
-		wi::Resource resource; // if texture is coming from an asset
+		lb::graphics::Texture texture;
+		lb::Resource resource; // if texture is coming from an asset
 		XMFLOAT3 position;
 		float range;
 		XMFLOAT4X4 inverseMatrix;
@@ -1266,7 +1266,7 @@ namespace wi::scene
 		void CreateRenderData();
 		void DeleteResource();
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct ForceFieldComponent
@@ -1292,7 +1292,7 @@ namespace wi::scene
 
 		inline float GetRange() const { return range; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct DecalComponent
@@ -1322,14 +1322,14 @@ namespace wi::scene
 		XMFLOAT4X4 world;
 		XMFLOAT4 texMulAdd;
 
-		wi::Resource texture;
-		wi::Resource normal;
-		wi::Resource surfacemap;
-		wi::Resource displacementmap;
+		lb::Resource texture;
+		lb::Resource normal;
+		lb::Resource surfacemap;
+		lb::Resource displacementmap;
 
 		inline float GetOpacity() const { return color.w; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct AnimationDataComponent
@@ -1340,10 +1340,10 @@ namespace wi::scene
 		};
 		uint32_t _flags = EMPTY;
 
-		wi::vector<float> keyframe_times;
-		wi::vector<float> keyframe_data;
+		lb::vector<float> keyframe_times;
+		lb::vector<float> keyframe_data;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct AnimationComponent
@@ -1371,7 +1371,7 @@ namespace wi::scene
 			};
 			uint32_t _flags = EMPTY;
 
-			wi::ecs::Entity target = wi::ecs::INVALID_ENTITY;
+			lb::ecs::Entity target = lb::ecs::INVALID_ENTITY;
 			int samplerIndex = -1;
 			int retargetIndex = -1;
 
@@ -1448,7 +1448,7 @@ namespace wi::scene
 			};
 			uint32_t _flags = LOOPED;
 
-			wi::ecs::Entity data = wi::ecs::INVALID_ENTITY;
+			lb::ecs::Entity data = lb::ecs::INVALID_ENTITY;
 
 			enum Mode
 			{
@@ -1466,23 +1466,23 @@ namespace wi::scene
 		};
 		struct RetargetSourceData
 		{
-			wi::ecs::Entity source = wi::ecs::INVALID_ENTITY;
-			XMFLOAT4X4 dstRelativeMatrix = wi::math::IDENTITY_MATRIX;
-			XMFLOAT4X4 srcRelativeParentMatrix = wi::math::IDENTITY_MATRIX;
+			lb::ecs::Entity source = lb::ecs::INVALID_ENTITY;
+			XMFLOAT4X4 dstRelativeMatrix = lb::math::IDENTITY_MATRIX;
+			XMFLOAT4X4 srcRelativeParentMatrix = lb::math::IDENTITY_MATRIX;
 		};
 
-		wi::vector<AnimationChannel> channels;
-		wi::vector<AnimationSampler> samplers;
-		wi::vector<RetargetSourceData> retargets;
+		lb::vector<AnimationChannel> channels;
+		lb::vector<AnimationSampler> samplers;
+		lb::vector<RetargetSourceData> retargets;
 
 		// Non-serialzied attributes:
-		wi::vector<float> morph_weights_temp;
+		lb::vector<float> morph_weights_temp;
 		float last_update_time = 0;
 
 		// Root Motion
 		XMFLOAT3 rootTranslationOffset;
 		XMFLOAT4 rootRotationOffset;
-		wi::ecs::Entity rootMotionBone;
+		lb::ecs::Entity rootMotionBone;
 
 		XMVECTOR rootPrevTranslation = XMVectorSet(-69, 420, 69, -420);
 		XMVECTOR rootPrevRotation = XMVectorSet(-69, 420, 69, -420);
@@ -1510,10 +1510,10 @@ namespace wi::scene
 		inline void RootMotionOff() { _flags &= ~ROOT_MOTION; }
 		inline XMFLOAT3 GetRootTranslation() const { return rootTranslationOffset; }
 		inline XMFLOAT4 GetRootRotation() const { return rootRotationOffset; }
-		inline wi::ecs::Entity GetRootMotionBone() const { return rootMotionBone; }
-		inline void SetRootMotionBone(wi::ecs::Entity _rootMotionBone) { rootMotionBone = _rootMotionBone; }
+		inline lb::ecs::Entity GetRootMotionBone() const { return rootMotionBone; }
+		inline void SetRootMotionBone(lb::ecs::Entity _rootMotionBone) { rootMotionBone = _rootMotionBone; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct WeatherComponent
@@ -1581,7 +1581,7 @@ namespace wi::scene
 		float rain_splash_scale = 0.1f;
 		XMFLOAT4 rain_color = XMFLOAT4(0.6f, 0.8f, 1, 0.5f);
 
-		wi::Ocean::OceanParameters oceanParameters;
+		lb::Ocean::OceanParameters oceanParameters;
 		AtmosphereParameters atmosphereParameters;
 		VolumetricCloudParameters volumetricCloudParameters;
 
@@ -1592,13 +1592,13 @@ namespace wi::scene
 
 		// Non-serialized attributes:
 		uint32_t most_important_light_index = ~0u;
-		wi::Resource skyMap;
-		wi::Resource colorGradingMap;
-		wi::Resource volumetricCloudsWeatherMapFirst;
-		wi::Resource volumetricCloudsWeatherMapSecond;
+		lb::Resource skyMap;
+		lb::Resource colorGradingMap;
+		lb::Resource volumetricCloudsWeatherMapFirst;
+		lb::Resource volumetricCloudsWeatherMapSecond;
 		XMFLOAT4 stars_rotation_quaternion = XMFLOAT4(0, 0, 0, 1);
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct SoundComponent
@@ -1613,8 +1613,8 @@ namespace wi::scene
 		uint32_t _flags = LOOPED;
 
 		std::string filename;
-		wi::Resource soundResource;
-		wi::audio::SoundInstance soundinstance;
+		lb::Resource soundResource;
+		lb::audio::SoundInstance soundinstance;
 		float volume = 1;
 
 		inline bool IsPlaying() const { return _flags & PLAYING; }
@@ -1626,7 +1626,7 @@ namespace wi::scene
 		void SetLooped(bool value = true);
 		void SetDisable3D(bool value = true);
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct VideoComponent
@@ -1640,8 +1640,8 @@ namespace wi::scene
 		uint32_t _flags = LOOPED;
 
 		std::string filename;
-		wi::Resource videoResource;
-		wi::video::VideoInstance videoinstance;
+		lb::Resource videoResource;
+		lb::video::VideoInstance videoinstance;
 
 		inline bool IsPlaying() const { return _flags & PLAYING; }
 		inline bool IsLooped() const { return _flags & LOOPED; }
@@ -1650,7 +1650,7 @@ namespace wi::scene
 		inline void Stop() { _flags &= ~PLAYING; }
 		inline void SetLooped(bool value = true) { if (value) { _flags |= LOOPED; } else { _flags &= ~LOOPED; } }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct InverseKinematicsComponent
@@ -1662,7 +1662,7 @@ namespace wi::scene
 		};
 		uint32_t _flags = EMPTY;
 
-		wi::ecs::Entity target = wi::ecs::INVALID_ENTITY; // which entity to follow (must have a transform component)
+		lb::ecs::Entity target = lb::ecs::INVALID_ENTITY; // which entity to follow (must have a transform component)
 		uint32_t chain_length = 0; // recursive depth
 		uint32_t iteration_count = 1; // computation step count. Increase this too for greater chain length
 
@@ -1673,7 +1673,7 @@ namespace wi::scene
 		inline void SetDisabled(bool value = true) { if (value) { _flags |= DISABLED; } else { _flags &= ~DISABLED; } }
 		inline bool IsDisabled() const { return _flags & DISABLED; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct SpringComponent
@@ -1701,8 +1701,8 @@ namespace wi::scene
 		XMFLOAT3 boneAxis = {};
 
 		// These are maintained for top-down chained update by spring dependency system:
-		wi::vector<SpringComponent*> children;
-		wi::ecs::Entity entity;
+		lb::vector<SpringComponent*> children;
+		lb::ecs::Entity entity;
 		TransformComponent* transform = nullptr;
 		TransformComponent* parent_transform = nullptr;
 
@@ -1714,7 +1714,7 @@ namespace wi::scene
 		inline bool IsDisabled() const { return _flags & DISABLED; }
 		inline bool IsGravityEnabled() const { return _flags & GRAVITY_ENABLED; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct ColliderComponent
@@ -1746,12 +1746,12 @@ namespace wi::scene
 		XMFLOAT3 tail = {};
 
 		// Non-serialized attributes:
-		wi::primitive::Sphere sphere;
-		wi::primitive::Capsule capsule;
-		wi::primitive::Plane plane;
+		lb::primitive::Sphere sphere;
+		lb::primitive::Capsule capsule;
+		lb::primitive::Plane plane;
 		uint32_t layerMask = ~0u;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct ScriptComponent
@@ -1767,8 +1767,8 @@ namespace wi::scene
 		std::string filename;
 
 		// Non-serialized attributes:
-		wi::vector<uint8_t> script; // compiled script binary data
-		wi::Resource resource;
+		lb::vector<uint8_t> script; // compiled script binary data
+		lb::Resource resource;
 		size_t script_hash = 0;
 
 		inline void Play() { _flags |= PLAYING; }
@@ -1780,7 +1780,7 @@ namespace wi::scene
 
 		void CreateFromFile(const std::string& filename);
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct ExpressionComponent
@@ -1868,11 +1868,11 @@ namespace wi::scene
 
 			struct MorphTargetBinding
 			{
-				wi::ecs::Entity meshID = wi::ecs::INVALID_ENTITY;
+				lb::ecs::Entity meshID = lb::ecs::INVALID_ENTITY;
 				int index = 0;
 				float weight = 0;
 			};
-			wi::vector<MorphTargetBinding> morph_target_bindings;
+			lb::vector<MorphTargetBinding> morph_target_bindings;
 
 			constexpr bool IsDirty() const { return _flags & DIRTY; }
 			constexpr bool IsBinary() const { return _flags & BINARY; }
@@ -1890,7 +1890,7 @@ namespace wi::scene
 				weight = value;
 			}
 		};
-		wi::vector<Expression> expressions;
+		lb::vector<Expression> expressions;
 
 		constexpr bool IsForceTalkingEnabled() const { return _flags & FORCE_TALKING; }
 
@@ -1905,7 +1905,7 @@ namespace wi::scene
 		float talking_weight_prev_prev = 0;
 		float talking_weight_prev = 0;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct HumanoidComponent
@@ -1989,7 +1989,7 @@ namespace wi::scene
 
 			Count
 		};
-		wi::ecs::Entity bones[size_t(HumanoidBone::Count)] = {};
+		lb::ecs::Entity bones[size_t(HumanoidBone::Count)] = {};
 
 		constexpr bool IsLookAtEnabled() const { return _flags & LOOKAT; }
 		constexpr bool IsRagdollPhysicsEnabled() const { return _flags & RAGDOLL_PHYSICS; }
@@ -2020,12 +2020,12 @@ namespace wi::scene
 		struct RagdollBodypart
 		{
 			HumanoidBone bone;
-			wi::primitive::Capsule capsule;
+			lb::primitive::Capsule capsule;
 		};
-		wi::vector<RagdollBodypart> ragdoll_bodyparts;
-		wi::primitive::AABB ragdoll_bounds;
+		lb::vector<RagdollBodypart> ragdoll_bodyparts;
+		lb::primitive::AABB ragdoll_bounds;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct MetadataComponent
@@ -2051,9 +2051,9 @@ namespace wi::scene
 		template<typename T>
 		struct OrderedNamedValues
 		{
-			wi::unordered_map<std::string, size_t> lookup; // name -> value hash lookup
-			wi::vector<std::string> names; // ordered names
-			wi::vector<T> values; // ordered values
+			lb::unordered_map<std::string, size_t> lookup; // name -> value hash lookup
+			lb::vector<std::string> names; // ordered names
+			lb::vector<T> values; // ordered values
 
 			void reserve(size_t capacity)
 			{
@@ -2119,7 +2119,7 @@ namespace wi::scene
 		OrderedNamedValues<float> float_values;
 		OrderedNamedValues<std::string> string_values;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 
 	struct CharacterComponent
@@ -2161,14 +2161,14 @@ namespace wi::scene
 		bool wall_intersect = false;
 		bool swimming = false;
 		bool humanoid_checked = false;
-		wi::ecs::Entity humanoidEntity = wi::ecs::INVALID_ENTITY;
-		wi::ecs::Entity left_foot = wi::ecs::INVALID_ENTITY;
-		wi::ecs::Entity right_foot = wi::ecs::INVALID_ENTITY;
+		lb::ecs::Entity humanoidEntity = lb::ecs::INVALID_ENTITY;
+		lb::ecs::Entity left_foot = lb::ecs::INVALID_ENTITY;
+		lb::ecs::Entity right_foot = lb::ecs::INVALID_ENTITY;
 		float root_offset = 0;
 		bool foot_placement_enabled = true;
-		wi::PathQuery pathquery; // completed
-		wi::vector<wi::ecs::Entity> animations;
-		wi::ecs::Entity currentAnimation = wi::ecs::INVALID_ENTITY;
+		lb::PathQuery pathquery; // completed
+		lb::vector<lb::ecs::Entity> animations;
+		lb::ecs::Entity currentAnimation = lb::ecs::INVALID_ENTITY;
 		float anim_amount = 1;
 		bool reset_anim = true;
 		bool anim_ended = true;
@@ -2176,16 +2176,16 @@ namespace wi::scene
 		bool process_goal = false;
 		struct PathfindingThreadContext
 		{
-			wi::jobsystem::context ctx;
+			lb::jobsystem::context ctx;
 			volatile long process_goal_completed = 0;
-			wi::PathQuery pathquery_work; // working
+			lb::PathQuery pathquery_work; // working
 			~PathfindingThreadContext()
 			{
-				wi::jobsystem::Wait(ctx);
+				lb::jobsystem::Wait(ctx);
 			}
 		};
 		std::shared_ptr<PathfindingThreadContext> pathfinding_thread; // separate allocation, mustn't be reallocated while path finding thread is running
-		const wi::VoxelGrid* voxelgrid = nullptr;
+		const lb::VoxelGrid* voxelgrid = nullptr;
 
 		// Apply movement to the character in the next update
 		void Move(const XMFLOAT3& direction);
@@ -2198,8 +2198,8 @@ namespace wi::scene
 		// Lean sideways, negative values mean left, positive values mean right
 		void Lean(float amount);
 
-		void AddAnimation(wi::ecs::Entity entity);
-		void PlayAnimation(wi::ecs::Entity entity);
+		void AddAnimation(lb::ecs::Entity entity);
+		void PlayAnimation(lb::ecs::Entity entity);
 		void StopAnimation();
 		void SetAnimationAmount(float amount);
 		float GetAnimationAmount() const;
@@ -2221,7 +2221,7 @@ namespace wi::scene
 		XMFLOAT3 GetVelocity() const;
 
 		// Returns the capsule representing the character, that is also used in collisions
-		wi::primitive::Capsule GetCapsule() const;
+		lb::primitive::Capsule GetCapsule() const;
 
 		// Set the facing direction immediately
 		void SetFacing(const XMFLOAT3& value);
@@ -2255,7 +2255,7 @@ namespace wi::scene
 
 		// Set the goal for path finding, it will be processed the next time the scene is updated.
 		//	You can get the results by accessing the pathquery object of the character.
-		void SetPathGoal(const XMFLOAT3& goal, const wi::VoxelGrid* voxelgrid);
+		void SetPathGoal(const XMFLOAT3& goal, const lb::VoxelGrid* voxelgrid);
 
 		// Enable/disable the character's processing
 		void SetActive(bool value);
@@ -2266,6 +2266,6 @@ namespace wi::scene
 		bool IsCharacterToCharacterCollisionDisabled() const { return _flags & CHARACTER_TO_CHARACTER_COLLISION_DISABLED; }
 		void SetCharacterToCharacterCollisionDisabled(bool value = true) { if (value) { _flags |= CHARACTER_TO_CHARACTER_COLLISION_DISABLED; } else { _flags &= ~CHARACTER_TO_CHARACTER_COLLISION_DISABLED; } }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 	};
 }

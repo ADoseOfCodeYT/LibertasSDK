@@ -7,10 +7,10 @@
 #include "wiEventHandler.h"
 #include "wiTimer.h"
 
-using namespace wi::enums;
-using namespace wi::graphics;
+using namespace lb::enums;
+using namespace lb::graphics;
 
-namespace wi::image
+namespace lb::image
 {
 	static Sampler samplers[SAMPLER_COUNT];
 	static Shader vertexShader;
@@ -32,21 +32,21 @@ namespace wi::image
 	};
 	static PipelineState imagePSO[BLENDMODE_COUNT][STENCILMODE_COUNT][STENCILREFMODE_COUNT][DEPTH_TEST_MODE_COUNT][STRIP_MODE_COUNT];
 	static thread_local Texture backgroundTexture;
-	static thread_local wi::Canvas canvas;
+	static thread_local lb::Canvas canvas;
 
 	void SetBackground(const Texture& texture)
 	{
 		backgroundTexture = texture;
 	}
 
-	void SetCanvas(const wi::Canvas& current_canvas)
+	void SetCanvas(const lb::Canvas& current_canvas)
 	{
 		canvas = current_canvas;
 	}
 
 	void Draw(const Texture* texture, const Params& params, CommandList cmd)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		const Sampler* sampler = &samplers[SAMPLER_LINEAR_CLAMP];
 
@@ -129,7 +129,7 @@ namespace wi::image
 			const float lightAngleScale = 1.0f / std::max(0.001f, innerConeAngleCos - outerConeAngleCos);
 			const float lightAngleOffset = -outerConeAngleCos * lightAngleScale;
 			image.angular_softness_direction = params.angular_softness_direction;
-			image.angular_softness_mad = wi::math::pack_half2(lightAngleScale, lightAngleOffset);
+			image.angular_softness_mad = lb::math::pack_half2(lightAngleScale, lightAngleOffset);
 		}
 
 		image.saturation = params.saturation;
@@ -197,7 +197,7 @@ namespace wi::image
 			}
 			else
 			{
-				// Asserts will check that a proper canvas was set for this cmd with wi::image::SetCanvas()
+				// Asserts will check that a proper canvas was set for this cmd with lb::image::SetCanvas()
 				//	The canvas must be set to have dpi aware rendering
 				assert(canvas.width > 0);
 				assert(canvas.height > 0);
@@ -291,7 +291,7 @@ namespace wi::image
 					for (int j = 0; j < rounding.segments; ++j)
 					{
 						float t = float(j) / float(rounding.segments - 1);
-						XMVECTOR bezier = wi::math::GetQuadraticBezierPos(start, B, end, t);
+						XMVECTOR bezier = lb::math::GetQuadraticBezierPos(start, B, end, t);
 						XMStoreFloat4(vertices + vi, XMVector2Transform(bezier, M));
 						indices[ii++] = 0;
 						indices[ii++] = vi - 1;
@@ -361,7 +361,7 @@ namespace wi::image
 		uint32_t stencilRef = params.stencilRef;
 		if (params.stencilRefMode == STENCILREFMODE_USER)
 		{
-			stencilRef = wi::renderer::CombineStencilrefs(STENCILREF_EMPTY, (uint8_t)stencilRef);
+			stencilRef = lb::renderer::CombineStencilrefs(STENCILREF_EMPTY, (uint8_t)stencilRef);
 		}
 		device->BindStencilRef(stencilRef, cmd);
 
@@ -377,10 +377,10 @@ namespace wi::image
 		{
 			switch (strip_mode)
 			{
-			case wi::image::STRIP_OFF:
+			case lb::image::STRIP_OFF:
 				device->DrawIndexed(index_count, 0, 0, cmd); // corner rounding with indexed geometry
 				break;
-			case wi::image::STRIP_ON:
+			case lb::image::STRIP_ON:
 			default:
 				device->Draw(4, 0, cmd); // simple quad
 				break;
@@ -393,10 +393,10 @@ namespace wi::image
 
 	void LoadShaders()
 	{
-		wi::renderer::LoadShader(ShaderStage::VS, vertexShader, "imageVS.cso");
-		wi::renderer::LoadShader(ShaderStage::PS, pixelShader, "imagePS.cso");
+		lb::renderer::LoadShader(ShaderStage::VS, vertexShader, "imageVS.cso");
+		lb::renderer::LoadShader(ShaderStage::PS, pixelShader, "imagePS.cso");
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		PipelineStateDesc desc;
 		desc.vs = &vertexShader;
@@ -436,9 +436,9 @@ namespace wi::image
 
 	void Initialize()
 	{
-		wi::Timer timer;
+		lb::Timer timer;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		RasterizerState rs;
 		rs.fill_mode = FillMode::SOLID;
@@ -644,10 +644,10 @@ namespace wi::image
 		samplerDesc.max_anisotropy = 16;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_ANISO_MIRROR]);
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 
-		wi::backlog::post("wi::image Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("lb::image Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 }

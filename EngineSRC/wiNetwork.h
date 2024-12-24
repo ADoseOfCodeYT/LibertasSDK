@@ -4,7 +4,7 @@
 #include <memory>
 #include <array>
 
-namespace wi::network
+namespace lb::network
 {
 	struct Socket
 	{

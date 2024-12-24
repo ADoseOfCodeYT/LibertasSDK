@@ -1,21 +1,21 @@
 #include "stdafx.h"
 #include "EnvProbeWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 const std::string default_text = "Environment probes can be used to capture the scene from a specific location in a 360 degrees panorama. The probes will be used for reflections fallback, where a better reflection type is not available. The probes can affect the ambient colors slightly.\nTip: You can scale, rotate and move the probes to set up parallax correct rendering to affect a specific area only. The parallax correction will take effect inside the probe's bounds (indicated with a cyan colored box).";
 
 void EnvProbeWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_ENVIRONMENTPROBE " Environment Probe", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_ENVIRONMENTPROBE " Environment Probe", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(420, 340));
 
 	closeButton.SetTooltip("Delete EnvironmentProbeComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -31,7 +31,7 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	infoLabel.Create("");
 	infoLabel.SetSize(XMFLOAT2(300, 120));
 	infoLabel.SetPos(XMFLOAT2(x, y));
-	infoLabel.SetColor(wi::Color::Transparent());
+	infoLabel.SetColor(lb::Color::Transparent());
 	AddWidget(&infoLabel);
 	y += infoLabel.GetScale().y + 5;
 
@@ -39,8 +39,8 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	realTimeCheckBox.SetTooltip("Enable continuous rendering of the probe in every frame.");
 	realTimeCheckBox.SetPos(XMFLOAT2(x + 100, y));
 	realTimeCheckBox.SetEnabled(false);
-	realTimeCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	realTimeCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			EnvironmentProbeComponent* probe = scene.probes.GetComponent(x.entity);
@@ -56,8 +56,8 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	msaaCheckBox.SetTooltip("Enable Multi Sampling Anti Aliasing for the probe, this will improve its quality.");
 	msaaCheckBox.SetPos(XMFLOAT2(x + 200, y));
 	msaaCheckBox.SetEnabled(false);
-	msaaCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	msaaCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			EnvironmentProbeComponent* probe = scene.probes.GetComponent(x.entity);
@@ -73,8 +73,8 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	refreshButton.SetTooltip("Re-renders the selected probe.");
 	refreshButton.SetPos(XMFLOAT2(x, y+= step));
 	refreshButton.SetEnabled(false);
-	refreshButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	refreshButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			EnvironmentProbeComponent* probe = scene.probes.GetComponent(x.entity);
@@ -89,8 +89,8 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	refreshAllButton.SetTooltip("Re-renders all probes in the scene.");
 	refreshAllButton.SetPos(XMFLOAT2(x + 120, y));
 	refreshAllButton.SetEnabled(true);
-	refreshAllButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	refreshAllButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			EnvironmentProbeComponent* probe = scene.probes.GetComponent(x.entity);
@@ -105,8 +105,8 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	importButton.SetTooltip("Import a DDS texture file into the selected environment probe.");
 	importButton.SetPos(XMFLOAT2(x, y += step));
 	importButton.SetEnabled(false);
-	importButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	importButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			EnvironmentProbeComponent* probe = scene.probes.GetComponent(x.entity);
@@ -114,22 +114,22 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 				continue;
 			if (probe != nullptr && probe->texture.IsValid())
 			{
-				wi::helper::FileDialogParams params;
-				params.type = wi::helper::FileDialogParams::OPEN;
+				lb::helper::FileDialogParams params;
+				params.type = lb::helper::FileDialogParams::OPEN;
 				params.description = "DDS";
 				params.extensions = { "DDS" };
-				wi::helper::FileDialog(params, [=](std::string fileName) {
-					wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+				lb::helper::FileDialog(params, [=](std::string fileName) {
+					lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-						wi::Resource resource = wi::resourcemanager::Load(fileName);
-						if (has_flag(resource.GetTexture().GetDesc().misc_flags, wi::graphics::ResourceMiscFlag::TEXTURECUBE))
+						lb::Resource resource = lb::resourcemanager::Load(fileName);
+						if (has_flag(resource.GetTexture().GetDesc().misc_flags, lb::graphics::ResourceMiscFlag::TEXTURECUBE))
 						{
 							probe->textureName = fileName;
 							probe->CreateRenderData();
 						}
 						else
 						{
-							wi::helper::messageBox("Error!", "The texture you tried to open is not a cubemap texture, so it won't be imported!");
+							lb::helper::messageBox("Error!", "The texture you tried to open is not a cubemap texture, so it won't be imported!");
 						}
 
 						});
@@ -144,8 +144,8 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	exportButton.SetTooltip("Export the selected probe into a DDS cubemap texture file.");
 	exportButton.SetPos(XMFLOAT2(x, y += step));
 	exportButton.SetEnabled(false);
-	exportButton.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	exportButton.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			EnvironmentProbeComponent* probe = scene.probes.GetComponent(x.entity);
@@ -153,21 +153,21 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 				continue;
 			if (probe != nullptr && probe->texture.IsValid())
 			{
-				wi::helper::FileDialogParams params;
-				params.type = wi::helper::FileDialogParams::SAVE;
+				lb::helper::FileDialogParams params;
+				params.type = lb::helper::FileDialogParams::SAVE;
 				params.description = "DDS";
 				params.extensions = { "DDS" };
-				wi::helper::FileDialog(params, [=](std::string fileName) {
-					wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+				lb::helper::FileDialog(params, [=](std::string fileName) {
+					lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-						std::string extension = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(fileName));
+						std::string extension = lb::helper::toUpper(lb::helper::GetExtensionFromFileName(fileName));
 						std::string filename_replaced = fileName;
 						if (extension != "DDS")
 						{
-							filename_replaced = wi::helper::ReplaceExtension(fileName, "DDS");
+							filename_replaced = lb::helper::ReplaceExtension(fileName, "DDS");
 						}
 
-						bool success = wi::helper::saveTextureToFile(probe->texture, filename_replaced);
+						bool success = lb::helper::saveTextureToFile(probe->texture, filename_replaced);
 						assert(success);
 
 						if (success)
@@ -193,8 +193,8 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	resolutionCombo.AddItem("512", 512);
 	resolutionCombo.AddItem("1024", 1024);
 	resolutionCombo.AddItem("2048", 2048);
-	resolutionCombo.OnSelect([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	resolutionCombo.OnSelect([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			EnvironmentProbeComponent* probe = scene.probes.GetComponent(x.entity);
@@ -236,10 +236,10 @@ void EnvProbeWindow::SetEntity(Entity entity)
 		resolutionCombo.SetSelectedByUserdata(probe->resolution);
 
 		std::string text =
-			"GPU Memory usage: " + wi::helper::GetMemorySizeText(probe->GetMemorySizeInBytes()) + "\n" +
+			"GPU Memory usage: " + lb::helper::GetMemorySizeText(probe->GetMemorySizeInBytes()) + "\n" +
 			"Resolution: " + std::to_string(probe->texture.desc.width) + "\n" +
 			"Mipmaps: " + std::to_string(probe->texture.desc.mip_levels) + "\n" +
-			"Format: " + std::string(wi::graphics::GetFormatString(probe->texture.desc.format)) + "\n"
+			"Format: " + std::string(lb::graphics::GetFormatString(probe->texture.desc.format)) + "\n"
 			;
 		if (!probe->textureName.empty())
 		{
@@ -254,7 +254,7 @@ void EnvProbeWindow::SetEntity(Entity entity)
 
 void EnvProbeWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -263,7 +263,7 @@ void EnvProbeWindow::ResizeLayout()
 	const float margin_left = 80;
 	const float margin_right = padding;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -271,14 +271,14 @@ void EnvProbeWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

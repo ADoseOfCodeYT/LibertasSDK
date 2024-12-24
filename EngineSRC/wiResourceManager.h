@@ -11,33 +11,33 @@
 #include <memory>
 #include <string>
 
-namespace wi
+namespace lb
 {
 	// This can hold an asset
-	//	It can be loaded from file or memory using wi::resourcemanager::Load()
+	//	It can be loaded from file or memory using lb::resourcemanager::Load()
 	struct Resource
 	{
 		std::shared_ptr<void> internal_state;
 		inline bool IsValid() const { return internal_state.get() != nullptr; }
 
-		const wi::vector<uint8_t>& GetFileData() const;
-		const wi::graphics::Texture& GetTexture() const;
-		const wi::audio::Sound& GetSound() const;
+		const lb::vector<uint8_t>& GetFileData() const;
+		const lb::graphics::Texture& GetTexture() const;
+		const lb::audio::Sound& GetSound() const;
 		const std::string& GetScript() const;
 		size_t GetScriptHash() const;
-		const wi::video::Video& GetVideo() const;
+		const lb::video::Video& GetVideo() const;
 		int GetTextureSRGBSubresource() const;
 		int GetFontStyle() const;
 
-		void SetFileData(const wi::vector<uint8_t>& data);
-		void SetFileData(wi::vector<uint8_t>&& data);
+		void SetFileData(const lb::vector<uint8_t>& data);
+		void SetFileData(lb::vector<uint8_t>&& data);
 		// Allows to set a Texture to the resource from outside
 		//	srgb_subresource: you can provide a subresource for SRGB view if the texture is going to be used as SRGB with the GetTextureSRGBSubresource() (optional)
-		void SetTexture(const wi::graphics::Texture& texture, int srgb_subresource = -1);
-		void SetTextureVirtual(const wi::graphics::GPUBuffer& tile_pool, const wi::graphics::Texture& residency, const wi::graphics::Texture& feedback); // for virtual texture, bind additional resources to have same lifetime
-		void SetSound(const wi::audio::Sound& sound);
+		void SetTexture(const lb::graphics::Texture& texture, int srgb_subresource = -1);
+		void SetTextureVirtual(const lb::graphics::GPUBuffer& tile_pool, const lb::graphics::Texture& residency, const lb::graphics::Texture& feedback); // for virtual texture, bind additional resources to have same lifetime
+		void SetSound(const lb::audio::Sound& sound);
 		void SetScript(const std::string& script);
-		void SetVideo(const wi::video::Video& script);
+		void SetVideo(const lb::video::Video& script);
 
 		// Resource marked for recreate on resourcemanager::Load()
 		void SetOutdated();
@@ -60,11 +60,11 @@ namespace wi
 		};
 		void SetMode(Mode param);
 		Mode GetMode();
-		wi::vector<std::string> GetSupportedImageExtensions();
-		wi::vector<std::string> GetSupportedSoundExtensions();
-		wi::vector<std::string> GetSupportedVideoExtensions();
-		wi::vector<std::string> GetSupportedScriptExtensions();
-		wi::vector<std::string> GetSupportedFontStyleExtensions();
+		lb::vector<std::string> GetSupportedImageExtensions();
+		lb::vector<std::string> GetSupportedSoundExtensions();
+		lb::vector<std::string> GetSupportedVideoExtensions();
+		lb::vector<std::string> GetSupportedScriptExtensions();
+		lb::vector<std::string> GetSupportedFontStyleExtensions();
 
 		// Order of these must not change as the flags can be serialized!
 		enum class Flags
@@ -116,16 +116,16 @@ namespace wi
 
 		struct ResourceSerializer
 		{
-			wi::vector<Resource> resources;
+			lb::vector<Resource> resources;
 		};
 
-		void Serialize_READ(wi::Archive& archive, ResourceSerializer& resources);
-		void Serialize_WRITE(wi::Archive& archive, const wi::unordered_set<std::string>& resource_names);
+		void Serialize_READ(lb::Archive& archive, ResourceSerializer& resources);
+		void Serialize_WRITE(lb::Archive& archive, const lb::unordered_set<std::string>& resource_names);
 	}
 
 }
 
 template<>
-struct enable_bitmask_operators<wi::resourcemanager::Flags> {
+struct enable_bitmask_operators<lb::resourcemanager::Flags> {
 	static const bool enable = true;
 };

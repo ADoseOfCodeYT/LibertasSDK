@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace wi
+namespace lb
 {
 	class Sprite;
 	class SpriteFont;
@@ -14,12 +14,12 @@ namespace wi
 		public RenderPath
 	{
 	protected:
-		wi::graphics::Texture rtStenciled;
-		wi::graphics::Texture rtStenciled_resolved;
-		wi::graphics::Texture rtFinal;
-		wi::graphics::Texture rtFinal_MSAA;
+		lb::graphics::Texture rtStenciled;
+		lb::graphics::Texture rtStenciled_resolved;
+		lb::graphics::Texture rtFinal;
+		lb::graphics::Texture rtFinal_MSAA;
 
-		wi::gui::GUI GUI;
+		lb::gui::GUI GUI;
 
 		XMUINT2 current_buffersize{};
 		float current_layoutscale{};
@@ -39,24 +39,24 @@ namespace wi
 		void Update(float dt) override;
 		void FixedUpdate() override;
 		void Render() const override;
-		void Compose(wi::graphics::CommandList cmd) const override;
+		void Compose(lb::graphics::CommandList cmd) const override;
 
 		virtual void setMSAASampleCount(uint32_t value) { msaaSampleCount = value; }
 		constexpr uint32_t getMSAASampleCount() const { return msaaSampleCount; }
 
-		const wi::graphics::Texture& GetRenderResult() const { return rtFinal; }
-		virtual const wi::graphics::Texture* GetDepthStencil() const { return nullptr; }
-		virtual const wi::graphics::Texture* GetGUIBlurredBackground() const { return nullptr; }
+		const lb::graphics::Texture& GetRenderResult() const { return rtFinal; }
+		virtual const lb::graphics::Texture* GetDepthStencil() const { return nullptr; }
+		virtual const lb::graphics::Texture* GetGUIBlurredBackground() const { return nullptr; }
 
-		void AddSprite(wi::Sprite* sprite, const std::string& layer = "");
-		void RemoveSprite(wi::Sprite* sprite);
+		void AddSprite(lb::Sprite* sprite, const std::string& layer = "");
+		void RemoveSprite(lb::Sprite* sprite);
 		void ClearSprites();
-		int GetSpriteOrder(wi::Sprite* sprite);
+		int GetSpriteOrder(lb::Sprite* sprite);
 
-		void AddFont(wi::SpriteFont* font, const std::string& layer = "");
-		void RemoveFont(wi::SpriteFont* font);
+		void AddFont(lb::SpriteFont* font, const std::string& layer = "");
+		void RemoveFont(lb::SpriteFont* font);
 		void ClearFonts();
-		int GetFontOrder(wi::SpriteFont* font);
+		int GetFontOrder(lb::SpriteFont* font);
 
 		struct RenderItem2D
 		{
@@ -67,27 +67,27 @@ namespace wi
 			} type = TYPE::SPRITE;
 			union
 			{
-				wi::Sprite* sprite = nullptr;
-				wi::SpriteFont* font;
+				lb::Sprite* sprite = nullptr;
+				lb::SpriteFont* font;
 			};
 			int order = 0;
 		};
 		struct RenderLayer2D
 		{
-			wi::vector<RenderItem2D> items;
+			lb::vector<RenderItem2D> items;
 			std::string name;
 			int order = 0;
 		};
-		wi::vector<RenderLayer2D> layers{ 1 };
+		lb::vector<RenderLayer2D> layers{ 1 };
 		void AddLayer(const std::string& name);
 		void SetLayerOrder(const std::string& name, int order);
-		void SetSpriteOrder(wi::Sprite* sprite, int order);
-		void SetFontOrder(wi::SpriteFont* font, int order);
+		void SetSpriteOrder(lb::Sprite* sprite, int order);
+		void SetFontOrder(lb::SpriteFont* font, int order);
 		void SortLayers();
 		void CleanLayers();
 
-		const wi::gui::GUI& GetGUI() const { return GUI; }
-		wi::gui::GUI& GetGUI() { return GUI; }
+		const lb::gui::GUI& GetGUI() const { return GUI; }
+		lb::gui::GUI& GetGUI() { return GUI; }
 
 		float resolutionScale = 1.0f;
 		XMUINT2 GetInternalResolution() const

@@ -1,7 +1,7 @@
 #ifndef LIBERTASENGINE_VERSION_DEFINED
 #define LIBERTASENGINE_VERSION_DEFINED
 
-namespace wi::version
+namespace lb::version
 {
 	long GetVersion();
 	// major features

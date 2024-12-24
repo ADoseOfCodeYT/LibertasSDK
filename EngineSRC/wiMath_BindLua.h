@@ -4,7 +4,7 @@
 #include "wiLuna.h"
 #include "wiMath.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 	class Vector_BindLua
 	{
@@ -88,7 +88,7 @@ namespace wi::lua
 	class Matrix_BindLua
 	{
 	public:
-		XMFLOAT4X4 data = wi::math::IDENTITY_MATRIX;
+		XMFLOAT4X4 data = lb::math::IDENTITY_MATRIX;
 		inline static constexpr char className[] = "Matrix";
 		static Luna<Matrix_BindLua>::FunctionType methods[];
 		static Luna<Matrix_BindLua>::PropertyType properties[];

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DummyVisualizer.h"
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
 void DummyVisualizer::Draw(
 	const XMFLOAT3* vertices,
@@ -11,7 +11,7 @@ void DummyVisualizer::Draw(
 	const XMMATRIX& matrix,
 	const XMFLOAT4& color,
 	bool depth,
-	wi::graphics::CommandList cmd
+	lb::graphics::CommandList cmd
 )
 {
 	GraphicsDevice* device = GetDevice();
@@ -21,18 +21,18 @@ void DummyVisualizer::Draw(
 	{
 		static auto LoadShaders = [depth] {
 			PipelineStateDesc desc;
-			desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-			desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-			desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+			desc.vs = lb::renderer::GetShader(lb::enums::VSTYPE_VERTEXCOLOR);
+			desc.ps = lb::renderer::GetShader(lb::enums::PSTYPE_VERTEXCOLOR);
+			desc.il = lb::renderer::GetInputLayout(lb::enums::ILTYPE_VERTEXCOLOR);
+			desc.rs = lb::renderer::GetRasterizerState(lb::enums::RSTYPE_DOUBLESIDED);
+			desc.bs = lb::renderer::GetBlendState(lb::enums::BSTYPE_TRANSPARENT);
 			desc.pt = PrimitiveTopology::TRIANGLELIST;
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHDISABLED);
-			wi::graphics::GetDevice()->CreatePipelineState(&desc, &pso[0]);
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEFAULT);
-			wi::graphics::GetDevice()->CreatePipelineState(&desc, &pso[1]);
+			desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEPTHDISABLED);
+			lb::graphics::GetDevice()->CreatePipelineState(&desc, &pso[0]);
+			desc.dss = lb::renderer::GetDepthStencilState(lb::enums::DSSTYPE_DEFAULT);
+			lb::graphics::GetDevice()->CreatePipelineState(&desc, &pso[1]);
 		};
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 	}
 	struct Vertex
@@ -90,37 +90,37 @@ void DummyVisualizer::Draw(
 
 namespace dummy
 {
-	void draw_male(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd)
+	void draw_male(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd)
 	{
 #include "dummy_male.h"
 		static DummyVisualizer vis;
 		vis.Draw(vertices, arraysize(vertices), indices, arraysize(indices), matrix, color, depth, cmd);
 	}
-	void draw_female(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd)
+	void draw_female(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd)
 	{
 #include "dummy_female.h"
 		static DummyVisualizer vis;
 		vis.Draw(vertices, arraysize(vertices), indices, arraysize(indices), matrix, color, depth, cmd);
 	}
-	void draw_soldier(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd)
+	void draw_soldier(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd)
 	{
 #include "dummy_soldier.h"
 		static DummyVisualizer vis;
 		vis.Draw(vertices, arraysize(vertices), indices, arraysize(indices), matrix, color, depth, cmd);
 	}
-	void draw_direction(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd)
+	void draw_direction(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd)
 	{
 #include "dummy_direction.h"
 		static DummyVisualizer vis;
 		vis.Draw(vertices, arraysize(vertices), indices, arraysize(indices), matrix, color, depth, cmd);
 	}
-	void draw_waypoint(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd)
+	void draw_waypoint(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd)
 	{
 #include "dummy_waypoint.h"
 		static DummyVisualizer vis;
 		vis.Draw(vertices, arraysize(vertices), indices, arraysize(indices), matrix, color, depth, cmd);
 	}
-	void draw_pickup(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd)
+	void draw_pickup(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd)
 	{
 #include "dummy_pickup.h"
 		static DummyVisualizer vis;

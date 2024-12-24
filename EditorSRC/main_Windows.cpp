@@ -42,7 +42,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	BOOL dpi_success = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 	assert(dpi_success);
 
-	wi::arguments::Parse(lpCmdLine); // if you wish to use command line arguments, here is a good place to parse them...
+	lb::arguments::Parse(lpCmdLine); // if you wish to use command line arguments, here is a good place to parse them...
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -111,7 +111,7 @@ BOOL CreateEditorWindow(int nCmdShow)
 	bool fullscreen = false;
 	bool borderless = false;
 
-	wi::Timer timer;
+	lb::Timer timer;
 	if (editor.config.Open("config.ini"))
 	{
 		if (editor.config.Has("width"))
@@ -123,7 +123,7 @@ BOOL CreateEditorWindow(int nCmdShow)
 		borderless = editor.config.GetBool("borderless");
 		editor.allow_hdr = editor.config.GetBool("allow_hdr");
 
-		wi::backlog::post("config.ini loaded in " + std::to_string(timer.elapsed_milliseconds()) + " milliseconds\n");
+		lb::backlog::post("config.ini loaded in " + std::to_string(timer.elapsed_milliseconds()) + " milliseconds\n");
 	}
 
 	HWND hWnd = NULL;
@@ -228,18 +228,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_BACK:
-			wi::gui::TextInputField::DeleteFromInput();
+			lb::gui::TextInputField::DeleteFromInput();
 			break;
 		case VK_RETURN:
 			break;
 		default:
 			const wchar_t c = (const wchar_t)wParam;
-			wi::gui::TextInputField::AddInput(c);
+			lb::gui::TextInputField::AddInput(c);
 			break;
 		}
 		break;
 	case WM_INPUT:
-		wi::input::rawinput::ParseMessage((void*)lParam);
+		lb::input::rawinput::ParseMessage((void*)lParam);
 		break;
 	case WM_POINTERUPDATE:
 		{
@@ -248,10 +248,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				ScreenToClient(hWnd, &pen_info.pointerInfo.ptPixelLocation);
 				const float dpiscaling = (float)GetDpiForWindow(hWnd) / 96.0f;
-				wi::input::Pen pen;
+				lb::input::Pen pen;
 				pen.position = XMFLOAT2(pen_info.pointerInfo.ptPixelLocation.x / dpiscaling, pen_info.pointerInfo.ptPixelLocation.y / dpiscaling);
 				pen.pressure = float(pen_info.pressure) / 1024.0f;
-				wi::input::SetPen(pen);
+				lb::input::SetPen(pen);
 			}
 		}
 		break;
@@ -292,7 +292,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					continue;
 				}
 				std::string filename;
-				wi::helper::StringConvert(wfilename, filename);
+				lb::helper::StringConvert(wfilename, filename);
 				editor.renderComponent.Open(filename);
 			}
 			SetForegroundWindow(hWnd);
@@ -302,7 +302,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
         break;
 	case WM_SETCURSOR:
-		// cursor is handled by wi::input, if this is passed through here, it can cause cursor flickering
+		// cursor is handled by lb::input, if this is passed through here, it can cause cursor flickering
 		break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

@@ -5,7 +5,7 @@
 #include "wiRenderPath2D_BindLua.h"
 #include "wiScene_BindLua.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	class RenderPath3D_BindLua : public RenderPath2D_BindLua
@@ -24,8 +24,8 @@ namespace wi::lua
 		}
 		RenderPath3D_BindLua(lua_State* L)
 		{
-			renderpath.scene = wi::lua::scene::GetGlobalScene();
-			renderpath.camera = wi::lua::scene::GetGlobalCamera();
+			renderpath.scene = lb::lua::scene::GetGlobalScene();
+			renderpath.camera = lb::lua::scene::GetGlobalCamera();
 			this->component = &renderpath;
 		}
 

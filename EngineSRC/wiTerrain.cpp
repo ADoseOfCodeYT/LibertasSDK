@@ -14,21 +14,21 @@
 #include <string>
 #include <atomic>
 
-using namespace wi::ecs;
-using namespace wi::scene;
-using namespace wi::graphics;
+using namespace lb::ecs;
+using namespace lb::scene;
+using namespace lb::graphics;
 
-namespace wi::terrain
+namespace lb::terrain
 {
 	struct ChunkIndices
 	{
-		wi::vector<uint32_t> indices;
+		lb::vector<uint32_t> indices;
 		struct LOD
 		{
 			uint32_t indexOffset = 0;
 			uint32_t indexCount = 0;
 		};
-		wi::vector<LOD> lods;
+		lb::vector<LOD> lods;
 
 		ChunkIndices()
 		{
@@ -179,12 +179,12 @@ namespace wi::terrain
 
 	struct Generator
 	{
-		wi::scene::Scene scene; // The background generation thread can safely add things to this, it will be merged into the main scene when it is safe to do so
-		wi::jobsystem::context workload;
+		lb::scene::Scene scene; // The background generation thread can safely add things to this, it will be merged into the main scene when it is safe to do so
+		lb::jobsystem::context workload;
 		std::atomic_bool cancelled{ false };
 	};
 
-	wi::jobsystem::context virtual_texture_ctx;
+	lb::jobsystem::context virtual_texture_ctx;
 
 	static std::mutex locker;
 
@@ -227,8 +227,8 @@ namespace wi::terrain
 			td.usage = Usage::DEFAULT;
 			td.layout = ResourceState::UNORDERED_ACCESS;
 			td.mip_levels = lod_count;
-			wi::vector<uint32_t> default_data(td.width * td.height);
-			wi::vector<SubresourceData> initdata(lod_count);
+			lb::vector<uint32_t> default_data(td.width * td.height);
+			lb::vector<SubresourceData> initdata(lod_count);
 			for (uint32_t lod = 0; lod < lod_count; ++lod)
 			{
 				initdata[lod].data_ptr = default_data.data();
@@ -260,7 +260,7 @@ namespace wi::terrain
 				bd.usage = Usage::DEFAULT;
 				bd.bind_flags = BindFlag::UNORDERED_ACCESS;
 				bd.size = sizeof(uint32_t) * tile_count;
-				wi::vector<uint32_t> data(tile_count);
+				lb::vector<uint32_t> data(tile_count);
 				std::fill(data.begin(), data.end(), 0xFF);
 				success = device->CreateBuffer(&bd, data.data(), &requestBuffer);
 				assert(success);
@@ -272,7 +272,7 @@ namespace wi::terrain
 				bd.usage = Usage::DEFAULT;
 				bd.bind_flags = BindFlag::UNORDERED_ACCESS;
 				bd.size = sizeof(uint32_t) * (tile_count + 1); // +1: atomic global counter
-				wi::vector<uint32_t> data(tile_count + 1);
+				lb::vector<uint32_t> data(tile_count + 1);
 				success = device->CreateBuffer(&bd, data.data(), &allocationBuffer);
 				assert(success);
 				device->SetName(&allocationBuffer, "VirtualTexture::allocationBuffer");
@@ -421,7 +421,7 @@ namespace wi::terrain
 	Terrain::~Terrain()
 	{
 		Generation_Cancel();
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		lb::jobsystem::Wait(virtual_texture_ctx);
 	}
 
 	void Terrain::Generation_Restart()
@@ -583,7 +583,7 @@ namespace wi::terrain
 			restart_generation = true;
 			modifiers_to_remove.clear();
 		}
-		for (wi::ecs::Entity entity : materialEntities)
+		for (lb::ecs::Entity entity : materialEntities)
 		{
 			MaterialComponent* material = scene->materials.GetComponent(entity);
 			if (material == nullptr)
@@ -644,7 +644,7 @@ namespace wi::terrain
 
 		if (scene->materials.GetCount() > 0)
 		{
-			for (wi::ecs::Entity entity : materialEntities)
+			for (lb::ecs::Entity entity : materialEntities)
 			{
 				MaterialComponent* material = scene->materials.GetComponent(entity);
 				if (material == nullptr)
@@ -697,7 +697,7 @@ namespace wi::terrain
 			chunk_data.visible = camera.frustum.CheckSphere(chunk_data.sphere.center, chunk_data.sphere.radius);
 			const int dist = std::max(std::abs(center_chunk.x - chunk.x), std::abs(center_chunk.z - chunk.z));
 
-			if (wi::renderer::GetOcclusionCullingEnabled())
+			if (lb::renderer::GetOcclusionCullingEnabled())
 			{
 				size_t object_index = scene->objects.GetIndex(chunk_data.entity);
 				if (object_index < scene->occlusion_results_objects.size())
@@ -773,7 +773,7 @@ namespace wi::terrain
 			// Grass property update:
 			if (chunk_data.visible && chunk_data.grass_entity != INVALID_ENTITY)
 			{
-				wi::HairParticleSystem* grass = scene->hairs.GetComponent(chunk_data.grass_entity);
+				lb::HairParticleSystem* grass = scene->hairs.GetComponent(chunk_data.grass_entity);
 				if (grass != nullptr)
 				{
 					chunk_data.grass_density_current = grass_density;
@@ -848,13 +848,13 @@ namespace wi::terrain
 			desc.stride = sizeof(ShaderTerrainChunk);
 			bool success = device->CreateBuffer(&desc, nullptr, &chunk_buffer);
 			assert(success);
-			device->SetName(&chunk_buffer, "wi::terrain::Terrain::chunk_buffer");
+			device->SetName(&chunk_buffer, "lb::terrain::Terrain::chunk_buffer");
 		}
 
 		// Start the generation on a background thread and keep it running until the next frame
-		wi::jobsystem::Execute(generator->workload, [=](wi::jobsystem::JobArgs args) {
+		lb::jobsystem::Execute(generator->workload, [=](lb::jobsystem::JobArgs args) {
 
-			wi::Timer timer;
+			lb::Timer timer;
 			bool generated_something = false;
 
 			auto request_chunk = [&](int offset_x, int offset_z)
@@ -871,8 +871,8 @@ namespace wi::terrain
 					chunk_data.entity = generator->scene.Entity_CreateObject("chunk_" + std::to_string(chunk.x) + "_" + std::to_string(chunk.z));
 					ObjectComponent& object = *generator->scene.objects.GetComponent(chunk_data.entity);
 					object.lod_distance_multiplier = lod_multiplier;
-					object.filterMask |= wi::enums::FILTER_NAVIGATION_MESH;
-					object.filterMask |= wi::enums::FILTER_TERRAIN;
+					object.filterMask |= lb::enums::FILTER_NAVIGATION_MESH;
+					object.filterMask |= lb::enums::FILTER_TERRAIN;
 					generator->scene.Component_Attach(chunk_data.entity, chunkGroupEntity);
 
 					TransformComponent& transform = *generator->scene.transforms.GetComponent(chunk_data.entity);
@@ -916,7 +916,7 @@ namespace wi::terrain
 
 					chunk_data.heightmap_data.resize(vertexCount);
 
-					wi::HairParticleSystem grass = grass_properties;
+					lb::HairParticleSystem grass = grass_properties;
 					grass.vertex_lengths.resize(vertexCount);
 					std::atomic<uint32_t> grass_valid_vertex_count{ 0 };
 
@@ -925,8 +925,8 @@ namespace wi::terrain
 					slope_cast_shadow.store(false);
 
 					// Do a parallel for loop over all the chunk's vertices and compute their properties:
-					wi::jobsystem::context ctx;
-					wi::jobsystem::Dispatch(ctx, vertexCount, chunk_width, [&](wi::jobsystem::JobArgs args) {
+					lb::jobsystem::context ctx;
+					lb::jobsystem::Dispatch(ctx, vertexCount, chunk_width, [&](lb::jobsystem::JobArgs args) {
 						uint32_t index = args.jobIndex;
 						const float x = (float(index % chunk_width) - chunk_half_width) * chunk_scale;
 						const float z = (float(index / chunk_width) - chunk_half_width) * chunk_scale;
@@ -948,7 +948,7 @@ namespace wi::terrain
 							{
 								chunk_data.heightmap_data[index] = uint16_t(height * 65535);
 							}
-							height = wi::math::Lerp(bottomLevel, topLevel, height);
+							height = lb::math::Lerp(bottomLevel, topLevel, height);
 							corners[i] = XMVectorSet(world_pos.x, height, world_pos.y, 0);
 						}
 						const float height = XMVectorGetY(corners[0]);
@@ -964,8 +964,8 @@ namespace wi::terrain
 
 						float region_base = 1;
 						float region_slope = region1 == 0 ? 1 : smoothstep(0.0f, region1, slope_amount);
-						float region_low_altitude = region2 == 0 ? 1 : smoothstep(0.0f, region2, wi::math::InverseLerp(0, bottomLevel, height));
-						float region_high_altitude = region3 == 0 ? 1 : smoothstep(0.0f, region3, wi::math::InverseLerp(0, topLevel, height));
+						float region_low_altitude = region2 == 0 ? 1 : smoothstep(0.0f, region2, lb::math::InverseLerp(0, bottomLevel, height));
+						float region_high_altitude = region3 == 0 ? 1 : smoothstep(0.0f, region3, lb::math::InverseLerp(0, topLevel, height));
 
 						region_low_altitude = saturate(region_low_altitude - region_slope);
 						region_high_altitude = saturate(region_high_altitude - region_slope);
@@ -1002,12 +1002,12 @@ namespace wi::terrain
 							grass.vertex_lengths[index] = 0;
 						}
 						});
-					wi::jobsystem::Wait(ctx); // wait until chunk's vertex buffer is fully generated
+					lb::jobsystem::Wait(ctx); // wait until chunk's vertex buffer is fully generated
 					
 					object.SetCastShadow(slope_cast_shadow.load());
 					mesh.SetDoubleSidedShadow(slope_cast_shadow.load());
 
-					wi::jobsystem::Execute(ctx, [&](wi::jobsystem::JobArgs args) {
+					lb::jobsystem::Execute(ctx, [&](lb::jobsystem::JobArgs args) {
 						mesh.CreateRenderData();
 						chunk_data.sphere.center = mesh.aabb.getCenter();
 						chunk_data.sphere.center.x += chunk_data.position.x;
@@ -1026,7 +1026,7 @@ namespace wi::terrain
 						chunk_data.grass.CreateFromMesh(mesh);
 					}
 
-					wi::jobsystem::Wait(ctx); // wait until mesh.CreateRenderData() async task finishes
+					lb::jobsystem::Wait(ctx); // wait until mesh.CreateRenderData() async task finishes
 
 					// Create the textures for virtual texture update:
 					CreateChunkRegionTexture(chunk_data);
@@ -1047,7 +1047,7 @@ namespace wi::terrain
 						{
 							// add patch for this chunk
 							chunk_data.grass_entity = CreateEntity();
-							wi::HairParticleSystem& grass = generator->scene.hairs.Create(chunk_data.grass_entity);
+							lb::HairParticleSystem& grass = generator->scene.hairs.Create(chunk_data.grass_entity);
 							grass = chunk_data.grass;
 							chunk_data.grass_density_current = grass_density;
 							grass.strandCount = uint32_t(grass.strandCount * chunk_data.grass_density_current);
@@ -1077,7 +1077,7 @@ namespace wi::terrain
 							generator->scene.Component_Attach(chunk_data.props_entity, chunk_data.entity, true);
 							chunk_data.prop_density_current = prop_density;
 
-							wi::random::RNG rng((uint32_t)chunk.compute_hash() ^ seed);
+							lb::random::RNG rng((uint32_t)chunk.compute_hash() ^ seed);
 
 							for (const auto& prop : props)
 							{
@@ -1096,9 +1096,9 @@ namespace wi::terrain
 									const XMFLOAT3& pos0 = chunk_data.mesh_vertex_positions[ind0];
 									const XMFLOAT3& pos1 = chunk_data.mesh_vertex_positions[ind1];
 									const XMFLOAT3& pos2 = chunk_data.mesh_vertex_positions[ind2];
-									XMFLOAT4 region0 = wi::Color(chunk_data.blendmap_layers[0].pixels[ind0], chunk_data.blendmap_layers[1].pixels[ind0], chunk_data.blendmap_layers[2].pixels[ind0], chunk_data.blendmap_layers[3].pixels[ind0]);
-									XMFLOAT4 region1 = wi::Color(chunk_data.blendmap_layers[0].pixels[ind1], chunk_data.blendmap_layers[1].pixels[ind1], chunk_data.blendmap_layers[2].pixels[ind1], chunk_data.blendmap_layers[3].pixels[ind1]);
-									XMFLOAT4 region2 = wi::Color(chunk_data.blendmap_layers[0].pixels[ind2], chunk_data.blendmap_layers[1].pixels[ind2], chunk_data.blendmap_layers[2].pixels[ind2], chunk_data.blendmap_layers[3].pixels[ind2]);
+									XMFLOAT4 region0 = lb::Color(chunk_data.blendmap_layers[0].pixels[ind0], chunk_data.blendmap_layers[1].pixels[ind0], chunk_data.blendmap_layers[2].pixels[ind0], chunk_data.blendmap_layers[3].pixels[ind0]);
+									XMFLOAT4 region1 = lb::Color(chunk_data.blendmap_layers[0].pixels[ind1], chunk_data.blendmap_layers[1].pixels[ind1], chunk_data.blendmap_layers[2].pixels[ind1], chunk_data.blendmap_layers[3].pixels[ind1]);
+									XMFLOAT4 region2 = lb::Color(chunk_data.blendmap_layers[0].pixels[ind2], chunk_data.blendmap_layers[1].pixels[ind2], chunk_data.blendmap_layers[2].pixels[ind2], chunk_data.blendmap_layers[3].pixels[ind2]);
 									weight_norm(region0);
 									weight_norm(region1);
 									weight_norm(region2);
@@ -1124,14 +1124,14 @@ namespace wi::terrain
 									const float chance = std::pow(((float*)&region)[prop.region], prop.region_power) * noise;
 									if (chance > prop.threshold)
 									{
-										wi::Archive archive = wi::Archive(prop.data.data(), prop.data.size());
+										lb::Archive archive = lb::Archive(prop.data.data(), prop.data.size());
 										EntitySerializer seri;
 										Entity entity = generator->scene.Entity_Serialize(
 											archive,
 											seri,
 											INVALID_ENTITY,
-											wi::scene::Scene::EntitySerializeFlags::RECURSIVE |
-											wi::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+											lb::scene::Scene::EntitySerializeFlags::RECURSIVE |
+											lb::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
 										);
 										NameComponent* name = generator->scene.names.GetComponent(entity);
 										if (name != nullptr)
@@ -1144,8 +1144,8 @@ namespace wi::terrain
 											transform = &generator->scene.transforms.Create(entity);
 										}
 										transform->translation_local = vertex_pos;
-										transform->translation_local.y += wi::math::Lerp(prop.min_y_offset, prop.max_y_offset, rng.next_float());
-										const float scaling = wi::math::Lerp(prop.min_size, prop.max_size, rng.next_float());
+										transform->translation_local.y += lb::math::Lerp(prop.min_y_offset, prop.max_y_offset, rng.next_float());
+										const float scaling = lb::math::Lerp(prop.min_size, prop.max_size, rng.next_float());
 										transform->Scale(XMFLOAT3(scaling, scaling, scaling));
 										transform->RotateRollPitchYaw(XMFLOAT3(0, XM_2PI * rng.next_float(), 0));
 										transform->SetDirty();
@@ -1215,7 +1215,7 @@ namespace wi::terrain
 		if (generator == nullptr)
 			return;
 		generator->cancelled.store(true); // tell the generation thread that work must be stopped
-		wi::jobsystem::Wait(generator->workload); // waits until generation thread exits
+		lb::jobsystem::Wait(generator->workload); // waits until generation thread exits
 		generator->cancelled.store(false); // the next generation can run
 	}
 
@@ -1237,7 +1237,7 @@ namespace wi::terrain
 
 			bool success = device->CreateTexture(&desc, &data, &chunk_data.heightmap);
 			assert(success);
-			device->SetName(&chunk_data.heightmap, "wi::terrain::ChunkData::heightmap");
+			device->SetName(&chunk_data.heightmap, "lb::terrain::ChunkData::heightmap");
 		}
 
 		if (!chunk_data.blendmap.IsValid() || chunk_data.blendmap.desc.array_size != (uint32_t)chunk_data.blendmap_layers.size())
@@ -1249,7 +1249,7 @@ namespace wi::terrain
 			desc.format = Format::R8_UNORM;
 			desc.bind_flags = BindFlag::SHADER_RESOURCE;
 
-			wi::vector<SubresourceData> data(chunk_data.blendmap_layers.size());
+			lb::vector<SubresourceData> data(chunk_data.blendmap_layers.size());
 			for (size_t i = 0; i < chunk_data.blendmap_layers.size(); ++i)
 			{
 				data[i].data_ptr = chunk_data.blendmap_layers[i].pixels.data();
@@ -1258,14 +1258,14 @@ namespace wi::terrain
 
 			bool success = device->CreateTexture(&desc, data.data(), &chunk_data.blendmap);
 			assert(success);
-			device->SetName(&chunk_data.blendmap, "wi::terrain::ChunkData::blendmap");
+			device->SetName(&chunk_data.blendmap, "lb::terrain::ChunkData::blendmap");
 		}
 	}
 
 	void Terrain::UpdateVirtualTexturesCPU()
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
-		virtual_texture_ctx.priority = wi::jobsystem::Priority::Low;
+		lb::jobsystem::Wait(virtual_texture_ctx);
+		virtual_texture_ctx.priority = lb::jobsystem::Priority::Low;
 
 		GraphicsDevice* device = GetDevice();
 		virtual_textures_in_use.clear();
@@ -1476,7 +1476,7 @@ namespace wi::terrain
 				continue;
 		}
 
-		wi::jobsystem::Execute(virtual_texture_ctx, [this](wi::jobsystem::JobArgs args) {
+		lb::jobsystem::Execute(virtual_texture_ctx, [this](lb::jobsystem::JobArgs args) {
 
 			// Update state of physical tiles:
 			//	Potentially each physical tile is getting marked as unused here (free_frames > 0), unless GPU requested them to be resident
@@ -1618,13 +1618,13 @@ namespace wi::terrain
 
 	void Terrain::UpdateVirtualTexturesGPU(CommandList cmd) const
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		lb::jobsystem::Wait(virtual_texture_ctx);
 		GraphicsDevice* device = GetDevice();
 		device->EventBegin("Terrain - UpdateVirtualTexturesGPU", cmd);
-		auto range = wi::profiler::BeginRangeGPU("Terrain - UpdateVirtualTexturesGPU", cmd);
+		auto range = lb::profiler::BeginRangeGPU("Terrain - UpdateVirtualTexturesGPU", cmd);
 
 		device->EventBegin("Update Residency Maps", cmd);
-		device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_VIRTUALTEXTURE_RESIDENCYUPDATE), cmd);
+		device->BindComputeShader(lb::renderer::GetShader(lb::enums::CSTYPE_VIRTUALTEXTURE_RESIDENCYUPDATE), cmd);
 		for (const VirtualTexture* vt : virtual_textures_in_use)
 		{
 			if (vt->residency == nullptr)
@@ -1657,7 +1657,7 @@ namespace wi::terrain
 		device->EventEnd(cmd);
 
 		device->EventBegin("Render Tile Regions", cmd);
-		wi::renderer::BindCommonResources(cmd);
+		lb::renderer::BindCommonResources(cmd);
 		for (const VirtualTexture* vt : virtual_textures_in_use)
 		{
 			if (vt->update_requests.empty())
@@ -1669,19 +1669,19 @@ namespace wi::terrain
 				switch (map_type)
 				{
 				case MaterialComponent::BASECOLORMAP:
-					device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_BASECOLORMAP), cmd);
+					device->BindComputeShader(lb::renderer::GetShader(lb::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_BASECOLORMAP), cmd);
 					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::BASECOLORMAP].texture_raw_block, SubresourceType::UAV);
 					break;
 				case MaterialComponent::NORMALMAP:
-					device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_NORMALMAP), cmd);
+					device->BindComputeShader(lb::renderer::GetShader(lb::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_NORMALMAP), cmd);
 					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::NORMALMAP].texture_raw_block, SubresourceType::UAV);
 					break;
 				case MaterialComponent::SURFACEMAP:
-					device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_SURFACEMAP), cmd);
+					device->BindComputeShader(lb::renderer::GetShader(lb::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_SURFACEMAP), cmd);
 					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::SURFACEMAP].texture_raw_block, SubresourceType::UAV);
 					break;
 				case MaterialComponent::EMISSIVEMAP:
-					device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_EMISSIVEMAP), cmd);
+					device->BindComputeShader(lb::renderer::GetShader(lb::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_EMISSIVEMAP), cmd);
 					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::EMISSIVEMAP].texture_raw_block, SubresourceType::UAV);
 					break;
 				default:
@@ -1767,13 +1767,13 @@ namespace wi::terrain
 		device->Barrier(GPUBarrier::Memory(), cmd);
 		device->EventEnd(cmd);
 
-		wi::profiler::EndRange(range);
+		lb::profiler::EndRange(range);
 		device->EventEnd(cmd);
 	}
 
 	void Terrain::CopyVirtualTexturePageStatusGPU(CommandList cmd) const
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		lb::jobsystem::Wait(virtual_texture_ctx);
 		GraphicsDevice* device = GetDevice();
 		device->EventBegin("Terrain - CopyVirtualTexturePageStatusGPU", cmd);
 		for (const VirtualTexture* vt : virtual_textures_in_use)
@@ -1818,14 +1818,14 @@ namespace wi::terrain
 
 	void Terrain::AllocateVirtualTextureTileRequestsGPU(CommandList cmd) const
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		lb::jobsystem::Wait(virtual_texture_ctx);
 		GraphicsDevice* device = GetDevice();
 
 		device->EventBegin("Terrain - AllocateVirtualTextureTileRequestsGPU", cmd);
 
 		{
 			device->EventBegin("Tile Requests", cmd);
-			device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_VIRTUALTEXTURE_TILEREQUESTS), cmd);
+			device->BindComputeShader(lb::renderer::GetShader(lb::enums::CSTYPE_VIRTUALTEXTURE_TILEREQUESTS), cmd);
 			for (const VirtualTexture* vt : virtual_textures_in_use)
 			{
 				if (vt->residency == nullptr)
@@ -1852,7 +1852,7 @@ namespace wi::terrain
 
 		{
 			device->EventBegin("Tile Allocation Requests", cmd);
-			device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_VIRTUALTEXTURE_TILEALLOCATE), cmd);
+			device->BindComputeShader(lb::renderer::GetShader(lb::enums::CSTYPE_VIRTUALTEXTURE_TILEALLOCATE), cmd);
 			for (const VirtualTexture* vt : virtual_textures_in_use)
 			{
 				if (vt->residency == nullptr)
@@ -1882,7 +1882,7 @@ namespace wi::terrain
 
 	void Terrain::WritebackTileRequestsGPU(CommandList cmd) const
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		lb::jobsystem::Wait(virtual_texture_ctx);
 		GraphicsDevice* device = GetDevice();
 
 		device->EventBegin("Terrain - WritebackTileRequestsGPU", cmd);
@@ -1892,10 +1892,10 @@ namespace wi::terrain
 			if (vt->residency == nullptr)
 				continue;
 			device->CopyResource(&vt->residency->allocationBuffer_CPU_readback[vt->residency->cpu_resource_id], &vt->residency->allocationBuffer, cmd);
-			wi::renderer::PushBarrier(GPUBarrier::Buffer(&vt->residency->allocationBuffer, ResourceState::COPY_SRC, ResourceState::COPY_DST));
+			lb::renderer::PushBarrier(GPUBarrier::Buffer(&vt->residency->allocationBuffer, ResourceState::COPY_SRC, ResourceState::COPY_DST));
 		}
 
-		wi::renderer::FlushBarriers(cmd);
+		lb::renderer::FlushBarriers(cmd);
 
 		device->EventEnd(cmd);
 
@@ -1908,7 +1908,7 @@ namespace wi::terrain
 			// Note: instead of ClearUAV, we use copies from default initialized resources
 			//	With this it can be put on the async copy queue
 			//	Also, using the ClearUAV was having a very bad performance especially with DX12
-			static wi::unordered_map<uint32_t, VirtualTextureAtlas::Residency> clear_residencies;
+			static lb::unordered_map<uint32_t, VirtualTextureAtlas::Residency> clear_residencies;
 			VirtualTextureAtlas::Residency& clear = clear_residencies[vt->resolution];
 			if (clear.resolution != vt->resolution)
 			{
@@ -1918,9 +1918,9 @@ namespace wi::terrain
 			device->CopyResource(&vt->residency->requestBuffer, &clear.requestBuffer, cmd);
 			device->CopyResource(&vt->residency->allocationBuffer, &clear.allocationBuffer, cmd);
 
-			wi::renderer::PushBarrier(GPUBarrier::Image(&vt->residency->residencyMap, ResourceState::COPY_DST, ResourceState::COPY_SRC));
+			lb::renderer::PushBarrier(GPUBarrier::Image(&vt->residency->residencyMap, ResourceState::COPY_DST, ResourceState::COPY_SRC));
 		}
-		wi::renderer::FlushBarriers(cmd);
+		lb::renderer::FlushBarriers(cmd);
 		device->EventEnd(cmd);
 	}
 
@@ -1948,16 +1948,16 @@ namespace wi::terrain
 		return shader_terrain;
 	}
 
-	void Terrain::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void Terrain::Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri)
 	{
 		Generation_Cancel();
 
 		// Note: separate component types serialized within terrain must NOT use the version of the terrain, but their own!
 		ComponentLibrary& library = *seri.componentlibrary;
 		const uint64_t terrain_version = seri.GetVersion();
-		const uint64_t grass_version = seri.GetVersion("wi::scene::Scene::hairs");
-		const uint64_t material_version = seri.GetVersion("wi::scene::Scene::materials");
-		const uint64_t weather_version = seri.GetVersion("wi::scene::Scene::weathers");
+		const uint64_t grass_version = seri.GetVersion("lb::scene::Scene::hairs");
+		const uint64_t material_version = seri.GetVersion("lb::scene::Scene::materials");
+		const uint64_t weather_version = seri.GetVersion("lb::scene::Scene::weathers");
 
 		if (archive.IsReadMode())
 		{
@@ -2007,22 +2007,22 @@ namespace wi::terrain
 					{
 						// Serialize the prop data in read mode and remap internal entity references:
 						Scene tmp_scene;
-						wi::Archive tmp_archive = wi::Archive(prop.data.data(), prop.data.size());
+						lb::Archive tmp_archive = lb::Archive(prop.data.data(), prop.data.size());
 						Entity entity = tmp_scene.Entity_Serialize(
 							tmp_archive,
 							seri,
 							INVALID_ENTITY,
-							wi::scene::Scene::EntitySerializeFlags::RECURSIVE
+							lb::scene::Scene::EntitySerializeFlags::RECURSIVE
 						);
 
 						// Serialize again with the remapped references:
-						wi::Archive remapped_archive;
+						lb::Archive remapped_archive;
 						remapped_archive.SetReadModeAndResetPos(false);
 						tmp_scene.Entity_Serialize(
 							remapped_archive,
 							seri,
 							entity,
-							wi::scene::Scene::EntitySerializeFlags::RECURSIVE
+							lb::scene::Scene::EntitySerializeFlags::RECURSIVE
 						);
 
 						// Replace original data with remapped references for current session:
@@ -2043,13 +2043,13 @@ namespace wi::terrain
 					tmp_scene.names.Create(object_entity) = name;
 					tmp_scene.objects.Create(object_entity) = object;
 					tmp_scene.transforms.Create(object_entity);
-					wi::Archive archive;
+					lb::Archive archive;
 					EntitySerializer seri;
 					tmp_scene.Entity_Serialize(
 						archive,
 						seri,
 						object_entity,
-						wi::scene::Scene::EntitySerializeFlags::RECURSIVE | wi::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+						lb::scene::Scene::EntitySerializeFlags::RECURSIVE | lb::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
 					);
 					archive.WriteData(prop.data);
 				}
@@ -2097,7 +2097,7 @@ namespace wi::terrain
 				}
 				else
 				{
-					wi::vector<wi::Color> blendmap4;
+					lb::vector<lb::Color> blendmap4;
 					archive >> blendmap4;
 					chunk_data.blendmap_layers.resize(4);
 					for (size_t i = 0; i < 4; ++i)
@@ -2323,13 +2323,13 @@ namespace wi::terrain
 		{
 			// Convert terrain version below 4 to newer version:
 			seri.version = material_version;
-			wi::scene::MaterialComponent materials[MATERIAL_COUNT];
+			lb::scene::MaterialComponent materials[MATERIAL_COUNT];
 			materials[MATERIAL_BASE].Serialize(archive, seri);
 			materials[MATERIAL_SLOPE].Serialize(archive, seri);
 			materials[MATERIAL_LOW_ALTITUDE].Serialize(archive, seri);
 			materials[MATERIAL_HIGH_ALTITUDE].Serialize(archive, seri);
 			grass_material.Serialize(archive, seri);
-			wi::jobsystem::Wait(seri.ctx); // wait for material CreateRenderData() that was asynchronously launched in Serialize()!
+			lb::jobsystem::Wait(seri.ctx); // wait for material CreateRenderData() that was asynchronously launched in Serialize()!
 
 			materialEntities[MATERIAL_BASE] = CreateEntity();
 			materialEntities[MATERIAL_SLOPE] = CreateEntity();
@@ -2337,14 +2337,14 @@ namespace wi::terrain
 			materialEntities[MATERIAL_HIGH_ALTITUDE] = CreateEntity();
 			grassEntity = CreateEntity();
 
-			ComponentManager<MaterialComponent>* scene_materials = library.Get<MaterialComponent>("wi::scene::Scene::materials");
+			ComponentManager<MaterialComponent>* scene_materials = library.Get<MaterialComponent>("lb::scene::Scene::materials");
 			scene_materials->Create(materialEntities[MATERIAL_BASE]) = materials[MATERIAL_BASE];
 			scene_materials->Create(materialEntities[MATERIAL_SLOPE]) = materials[MATERIAL_SLOPE];
 			scene_materials->Create(materialEntities[MATERIAL_LOW_ALTITUDE]) = materials[MATERIAL_LOW_ALTITUDE];
 			scene_materials->Create(materialEntities[MATERIAL_HIGH_ALTITUDE]) = materials[MATERIAL_HIGH_ALTITUDE];
 			scene_materials->Create(grassEntity) = grass_material;
 
-			ComponentManager<NameComponent>* scene_names = library.Get<NameComponent>("wi::scene::Scene::names");
+			ComponentManager<NameComponent>* scene_names = library.Get<NameComponent>("lb::scene::Scene::names");
 			scene_names->Create(materialEntities[MATERIAL_BASE]).name = "material_base";
 			scene_names->Create(materialEntities[MATERIAL_SLOPE]).name = "material_slope";
 			scene_names->Create(materialEntities[MATERIAL_LOW_ALTITUDE]).name = "material_low_altitude";
@@ -2361,7 +2361,7 @@ namespace wi::terrain
 			grass_properties.Serialize(archive, seri);
 			seri.version = terrain_version;
 
-			ComponentManager<wi::HairParticleSystem>* scene_hairs = library.Get<wi::HairParticleSystem>("wi::scene::Scene::hairs");
+			ComponentManager<lb::HairParticleSystem>* scene_hairs = library.Get<lb::HairParticleSystem>("lb::scene::Scene::hairs");
 			scene_hairs->Create(grassEntity) = grass_properties;
 		}
 

@@ -255,7 +255,7 @@ An example of initializing application and blocking until whole engine was initi
 Application app;
 app.SetWindow(hWnd);
 app.Initialize(); // this returns immediately, but engine sub-system begin to be initialized in the background...
-wi::initializer::WaitForInitializationsToFinish(); // block until all engine sub-systems are ready. If this is called before Run(), then initialization screen won't be shown.
+lb::initializer::WaitForInitializationsToFinish(); // block until all engine sub-systems are ready. If this is called before Run(), then initialization screen won't be shown.
 while(true)
 {
 	app.Run();
@@ -306,7 +306,7 @@ Capable of handling 2D rendering to offscreen buffer in Render() function, or ju
 [[Header]](../../WickedEngine/wiRenderPath3D.h) [[Cpp]](../../WickedEngine/wiRenderPath3D.cpp)
 Base class for implementing 3D rendering paths. It also supports everything that the Renderpath2D does.
 
-The post process chain is also implemented here. This means that the order of the post processes and the resources that they use are defined here, but the individual post process rendering on a lower level is implemented in the `wi::renderer` as core engine features. Read more about post process implementation in the [wi::renderer section](#post-processing). 
+The post process chain is also implemented here. This means that the order of the post processes and the resources that they use are defined here, but the individual post process rendering on a lower level is implemented in the `lb::renderer` as core engine features. Read more about post process implementation in the [lb::renderer section](#post-processing). 
 
 The post process chain is implemented in `RenderPath3D::RenderPostprocessChain()` function and divided into multiple parts:
 - HDR<br/>
@@ -320,7 +320,7 @@ The HDR and LDR post process chain are using the "ping-ponging" technique, which
 
 ### RenderPath3D_PathTracing
 [[Header]](../../WickedEngine/wiRenderPath3D_PathTracing.h) [[Cpp]](../../WickedEngine/wiRenderPath3D_PathTracing.cpp)
-Implements a compute shader based path tracing solution. In a static scene, the rendering will converge to ground truth. When something changes in the scene (something moves, ot material changes, etc...), the convergence will be restarted from the beginning. The raytracing is implemented in [wi::renderer](#wi::renderer) and multiple [shaders](#shaders). The ray tracing is available on any GPU that supports compute shaders.
+Implements a compute shader based path tracing solution. In a static scene, the rendering will converge to ground truth. When something changes in the scene (something moves, ot material changes, etc...), the convergence will be restarted from the beginning. The raytracing is implemented in [lb::renderer](#lb::renderer) and multiple [shaders](#shaders). The ray tracing is available on any GPU that supports compute shaders.
 
 #### Denoiser
 To enable denoising for path traced images, you can use the [Open Image Denoise library](https://github.com/OpenImageDenoise/oidn). To enable this functionality, the engine will try to include the "OpenImageDenoise/oidn.hpp" file. If this file could be included, it will attempt to link with OpenImageDenoise.lib and tbb.lib. It is also required to provide the OpenImageDenoise.dll and tbb.dll near the exe to correctly launch the application after this. If you satisfy these steps, the denoiser will work automatically after the path tracer reached the target sample count. The final path traced image will be denoised and presented to the screen.
@@ -394,14 +394,14 @@ MyComponent& component = components[entity];
 A useful pattern is to offload the iteration of a large component manager to the job system, to parallelize the work:
 
 ```cpp
-wi::jobsystem::context ctx;
-wi::jobsystem::Dispatch(ctx, (uint32_t)components.GetCount(), 64, [&](wi::jobsystem::JobArgs args){
+lb::jobsystem::context ctx;
+lb::jobsystem::Dispatch(ctx, (uint32_t)components.GetCount(), 64, [&](lb::jobsystem::JobArgs args){
 	MyComponent& component = components[args.jobIndex];
 	Entity entity = components[args.jobIndex];
 	// Do things...
 });
 // optionally, do unrelated things here...
-wi::jobsystem::Wait(ctx); // wait for Dispatch to finish
+lb::jobsystem::Wait(ctx); // wait for Dispatch to finish
 ```
 In this example, each entity/component will be iterated by one job, and 64 batch of jobs will be executed on one thread as a group. This can greatly improve performance when iterating a large component manager.
 
@@ -589,7 +589,7 @@ The event system can be used to execute system-wide tasks. Any system can "subsc
 - Subscribe <br/>
 The first parameter is the event ID. Core system events are negative numbers. The user can choose any positive number to create custom events. 
 The second parameter is a function to be executed, with a userdata argument. The userdata argument can hold any custom data that the user desires.
-The return value is a `wi::eventhandler::Handle` type. When this is object is destroyed, the event subscription for the function will be removed.
+The return value is a `lb::eventhandler::Handle` type. When this is object is destroyed, the event subscription for the function will be removed.
 Multiple functions can be subscribed to a single event ID.
 - FireEvent <br/>
 The first argument is the event id, that says which events to invoke. 
@@ -877,7 +877,7 @@ Video decoding can be used to decode compressed video bitstream in real time on 
 - Run the `GraphicsDevice::VideoDecode` operation providing correct arguments to decode a single video frame. You are responsible to provide correct H264 arguments and DPB picture indices.
 - You will need to manually read from the DPB texture (eg. in a shader) and resolve the YUV format to RGB if you want.
 
-All this is demonstrated in the [wi::video](../../WickedEngine/wiVideo.cpp) implementation.
+All this is demonstrated in the [lb::video](../../WickedEngine/wiVideo.cpp) implementation.
 
 
 #### GraphicsDevice_DX11
@@ -913,8 +913,8 @@ The `flags` argument can contain various modifiers that determine what kind of o
 
 - `DRAWSCENE_OPAQUE`: Opaque object will be rendered
 - `DRAWSCENE_TRANSPARENT`: Transparent objects will be rendered. Objects will be sorted back-to front, for blending purposes
-- `DRAWSCENE_OCCLUSIONCULLING`: Occluded objects won't be rendered. [Occlusion culling](#occlusion-culling) can be globally switched on/off using `wi::renderer::SetOcclusionCullingEnabled()`
-- `DRAWSCENE_TESSELLATION`: Enable [tessellation](#tessellation) (if hardware supports it). [Tessellation](#tessellation) can be globally switched on/off using `wi::renderer::SetTessellationEnabled()`
+- `DRAWSCENE_OCCLUSIONCULLING`: Occluded objects won't be rendered. [Occlusion culling](#occlusion-culling) can be globally switched on/off using `lb::renderer::SetOcclusionCullingEnabled()`
+- `DRAWSCENE_TESSELLATION`: Enable [tessellation](#tessellation) (if hardware supports it). [Tessellation](#tessellation) can be globally switched on/off using `lb::renderer::SetTessellationEnabled()`
 - `DRAWSCENE_HAIRPARTICLE`: Allow drawing hair particles
 - `DRAWSCENE_IMPOSTOR` : Allow drawing impostors
 - `DRAWSCENE_OCEAN` : Allow drawing the ocean
@@ -924,7 +924,7 @@ The `flags` argument can contain various modifiers that determine what kind of o
 Tessellation can be used when rendering objects. Tessellation requires a GPU hardware feature and can enable displacement mapping on vertices or smoothing mesh silhouettes dynamically while rendering objects. Tessellation will be used when `tessellation` parameter to the [DrawScene](#drawscene) was set to `true` and the GPU supports the tessellation feature. Tessellation level can be specified per [MeshComponent](#meshcomponent)'s `tessellationFactor` parameter. Tessellation level will be modulated by distance from camera, so that tessellation factor will fade out on more distant objects. Greater tessellation factor means more detailed geometry will be generated.
 
 #### Occlusion Culling
-Occlusion culling is a technique to determine which objects are within the camera, but are completely behind an other objects, such that they wouldn't be rendered. The depth buffer already does occlusion culling on the GPU, however, we would like to perform this earlier than submitting the mesh to the GPU for drawing, so essentially do the occlusion culling on CPU. A hybrid approach is used here, which uses the results from a previously rendered frame (that was rendered by GPU) to determine if an object will be visible in the current frame. For this, we first render the object into the previous frame's depth buffer, and use the previous frame's camera matrices, however, the current position of the object. In fact, we only render bounding boxes instead of objects, for performance reasons. Occlusion queries are used while rendering, and the CPU can read the results of the queries in a later frame. We keep track of how many frames the object was not visible, and if it was not visible for a certain amount, we omit it from rendering. If it suddenly becomes visible later, we immediately enable rendering it again. This technique means that results will lag behind for a few frames (latency between cpu and gpu and latency of using previous frame's depth buffer). These are implemented in the functions `wi::renderer::OcclusionCulling_Render()` and `wi::renderer::OcclusionCulling_Read()`. 
+Occlusion culling is a technique to determine which objects are within the camera, but are completely behind an other objects, such that they wouldn't be rendered. The depth buffer already does occlusion culling on the GPU, however, we would like to perform this earlier than submitting the mesh to the GPU for drawing, so essentially do the occlusion culling on CPU. A hybrid approach is used here, which uses the results from a previously rendered frame (that was rendered by GPU) to determine if an object will be visible in the current frame. For this, we first render the object into the previous frame's depth buffer, and use the previous frame's camera matrices, however, the current position of the object. In fact, we only render bounding boxes instead of objects, for performance reasons. Occlusion queries are used while rendering, and the CPU can read the results of the queries in a later frame. We keep track of how many frames the object was not visible, and if it was not visible for a certain amount, we omit it from rendering. If it suddenly becomes visible later, we immediately enable rendering it again. This technique means that results will lag behind for a few frames (latency between cpu and gpu and latency of using previous frame's depth buffer). These are implemented in the functions `lb::renderer::OcclusionCulling_Render()` and `lb::renderer::OcclusionCulling_Read()`. 
 
 #### Shadow Maps
 The `DrawShadowmaps()` function will render shadow maps for each active dynamic light that are within the camera [frustum](#frustum). There are two types of shadow maps, 2D and Cube shadow maps. The maximum number of usable shadow maps are set up with calling `SetShadowProps2D()` or `SetShadowPropsCube()` functions, where the parameters will specify the maximum number of shadow maps and resolution. The shadow slots for each light must be already assigned, because this is a rendering function and is not allowed to modify the state of the [Scene](#scene) and [lights](#lightcomponent). The shadow slots will be set up in the [UpdatePerFrameData()](#updateperframedata) function that is called every frame by the `RenderPath3D`.
@@ -937,26 +937,26 @@ Begin rendering the frame on GPU. This means that GPU compute jobs are kicked, s
 
 #### Ray tracing (hardware accelerated)
 
-Hardware accelerated ray tracing API is now available, so a variety of renderer features are available using that. If the hardware support is available, the `Scene` will allocate a top level acceleration structure, and the meshes will allocate bottom level acceleration structures for themselves. Updating these is done by simply calling `wi::renderer::UpdateRaytracingAccelerationStructures(cmd)`. The updates will happen on the GPU timeline, so provide a [CommandList](#work-submission) as argument. The top level acceleration structure will be rebuilt from scratch. The bottom level acceleration structures will be rebuilt from scratch once, and then they will be updated (refitted).
+Hardware accelerated ray tracing API is now available, so a variety of renderer features are available using that. If the hardware support is available, the `Scene` will allocate a top level acceleration structure, and the meshes will allocate bottom level acceleration structures for themselves. Updating these is done by simply calling `lb::renderer::UpdateRaytracingAccelerationStructures(cmd)`. The updates will happen on the GPU timeline, so provide a [CommandList](#work-submission) as argument. The top level acceleration structure will be rebuilt from scratch. The bottom level acceleration structures will be rebuilt from scratch once, and then they will be updated (refitted).
 
 After the acceleration structures are updated, ray tracing shaders can use it after binding to a shader resource slot.
 
 #### Ray tracing (legacy)
-Ray tracing can be used in multiple ways to render the scene. The `RayTraceScene()` function will render the scene with path tracing. The result will be written to a texture that is provided as parameter. The texture must have been created with `UNORDERED_ACCESS` bind flags, because it will be written in compute shaders. The scene BVH structure must have been already built to use this, it can be accomplished by calling `wi::renderer::UpdateRaytracingAccelerationStructures()`. The [RenderPath3D_Pathracing](#renderpath3d_pathtracing) uses this ray tracing functionality to render a path traced scene.
+Ray tracing can be used in multiple ways to render the scene. The `RayTraceScene()` function will render the scene with path tracing. The result will be written to a texture that is provided as parameter. The texture must have been created with `UNORDERED_ACCESS` bind flags, because it will be written in compute shaders. The scene BVH structure must have been already built to use this, it can be accomplished by calling `lb::renderer::UpdateRaytracingAccelerationStructures()`. The [RenderPath3D_Pathracing](#renderpath3d_pathtracing) uses this ray tracing functionality to render a path traced scene.
 
 Other than path tracing, the scene BVH can be rendered by using the `RayTraceSceneBVH` function. This will render the bounding box hierarchy to the screen as a heatmap. Blue colors mean that few boxes were hit per pixel, and with more bounding box hits the colors go to green, yellow, red, and finally white. This is useful to determine how expensive the scene is with regards to ray tracing performance.
 
-The lightmap baking is also using ray tracing on the GPU to precompute static lighting for objects in the scene. [Objects](#objectcomponent) that contain lightmap atlas texture coordinate set can start lightmap rendering by setting `ObjectComponent::SetLightmapRenderRequest(true)`. Every object that have this flag set will have their lightmaps updated by performing ray traced rendering by the [wi::renderer](#wi::renderer) internally. Lightmap texture coordinates can be generated by a separate tool, such as the Wicked Engine Editor application. Lightmaps will be rendered to a global lightmap atlas that can be used by all shaders to read static lighting data. The global lightmap atlas texture contains lightmaps from all objects inside the scene in a compact format for performance. Apart from that, each object contains its own lightmap in a full precision texture format that can be post-processed and saved to disc for later use. To denoise lightmaps, follow the same steps as the path tracer denoiser setup described in the [Denoiser](#denoiser) section.
+The lightmap baking is also using ray tracing on the GPU to precompute static lighting for objects in the scene. [Objects](#objectcomponent) that contain lightmap atlas texture coordinate set can start lightmap rendering by setting `ObjectComponent::SetLightmapRenderRequest(true)`. Every object that have this flag set will have their lightmaps updated by performing ray traced rendering by the [lb::renderer](#lb::renderer) internally. Lightmap texture coordinates can be generated by a separate tool, such as the Wicked Engine Editor application. Lightmaps will be rendered to a global lightmap atlas that can be used by all shaders to read static lighting data. The global lightmap atlas texture contains lightmaps from all objects inside the scene in a compact format for performance. Apart from that, each object contains its own lightmap in a full precision texture format that can be post-processed and saved to disc for later use. To denoise lightmaps, follow the same steps as the path tracer denoiser setup described in the [Denoiser](#denoiser) section.
 
 #### Scene BVH
-The scene BVH can be rebuilt from scratch using the `wi::renderer::UpdateRaytracingAccelerationStructures()` function. The [ray tracing](#ray-tracing) features require the scene BVH to be built before using them. This is using the [wiGPUBVH](#wigpubvh) facility to build the BVH using compute shaders running on the GPU when hardware ray tracing is not available. Otherwise it uses ray tracing acceleration structure API objects. 
+The scene BVH can be rebuilt from scratch using the `lb::renderer::UpdateRaytracingAccelerationStructures()` function. The [ray tracing](#ray-tracing) features require the scene BVH to be built before using them. This is using the [wiGPUBVH](#wigpubvh) facility to build the BVH using compute shaders running on the GPU when hardware ray tracing is not available. Otherwise it uses ray tracing acceleration structure API objects. 
 
 #### Decals
 The [DecalComponents](#decalcomponent) in the scene can be rendered differently based on the rendering technique that is being used. The two main rendering techinques are forward and deferred rendering. 
 
 <b>Forward rendering</b> is aimed at low bandwidth consumption, so the scene lighting is computed in one rendering pass, right when rendering the scene objects to the screen. In this case, all of the decals are also processed in the object rendering shaders automatically. In this case a decal atlas will need to be generated, because all decal textures must be available to sample in a single shader, but this is handled automatically inside the [UpdateRenderData](#updaterenderdata) function.
 
-<b>Deferred rendering</b> techniques are outputting G-buffers, and compute lighting in a separate pass that is decoupled from the object rendering pass. Decals are rendered one by one on top of the albedo buffer using the function `wi::renderer::DrawDeferredDecals()`. All the lighting will be computed on top after the decals were rendered to the albedo in a separate render pass to complete the final scene.
+<b>Deferred rendering</b> techniques are outputting G-buffers, and compute lighting in a separate pass that is decoupled from the object rendering pass. Decals are rendered one by one on top of the albedo buffer using the function `lb::renderer::DrawDeferredDecals()`. All the lighting will be computed on top after the decals were rendered to the albedo in a separate render pass to complete the final scene.
 
 #### Environment probes
 [EnvironmentProbeComponents](#environmentprobecomponent) can be placed into the scene and if they are tagged as invalid using the `EnvironmentProbeComponent::SetDirty(true)` flag, they will be rendered to a cubemap array that is accessible in all shaders. They will also be rendered in real time every frame if the `EnvironmentProbeComponent::SetRealTime(true)` flag is set. The cubemaps of these contain indirect specular information from a point source that can be used as approximate reflections for close by objects.
@@ -964,7 +964,7 @@ The [DecalComponents](#decalcomponent) in the scene can be rendered differently 
 The probes also must have [TransformComponent](#transformcomponent) associated to the same entity. This will be used to position the probes in the scene, but also to scale and rotate them. The scale/position/rotation defines an oriented bounding box (OBB) that will be used to perform parallax corrected environment mapping. This means that reflections inside the box volume will not appear as infinitely distant, but constrained inside the volume, to achieve more believable illusion.
 
 #### Post processing
-There are several post processing effects implemented in the `wi::renderer`. They are all implemented in a single function with their name starting with Postprocess_, like for example: `wi::renderer::Postprocess_SSAO()`. They are aimed to be stateless functions, with their function signature clearly indicating input-output parameters and resources.
+There are several post processing effects implemented in the `lb::renderer`. They are all implemented in a single function with their name starting with Postprocess_, like for example: `lb::renderer::Postprocess_SSAO()`. They are aimed to be stateless functions, with their function signature clearly indicating input-output parameters and resources.
 
 The chain/order of post processes is not implemented here, only the single effects themselves. The order of post processes is more of a user responsibility, so it should be implemented in the [High Level Interface](#high-level-interface). For reference, a default post-process chain is implemented in [RenderPath3D::RenderPostProcessChain()](#renderpath3d) function.
 
@@ -973,22 +973,22 @@ Instanced rendering will be always used automatically when rendering objects. Th
 
 [ObjectComponents](#objectcomponent) can override [stencil](#stencil) settings for the [material](#materialcomponent). In case multiple [ObjectComponents](#objectcomponent) share the same mesh, but some are using different stencil overrides, those could be removed from the instanced batch, so there is some overhead to modifying stencil overrides for objects.
 
-<i>Tip: to find out more about how instancing is used to batch objects together, take a look at the `RenderMeshes()` function inside [wi::renderer.cpp](../WickedEngine/wi::renderer.cpp)</i>
+<i>Tip: to find out more about how instancing is used to batch objects together, take a look at the `RenderMeshes()` function inside [lb::renderer.cpp](../WickedEngine/lb::renderer.cpp)</i>
 
 #### Stencil
 If a depth stencil buffer is bound when using [DrawScene()](#drawscene), the stencil buffer will be written. The stencil is a 8-bit mask that can be used to achieve different kinds of screen space effects for different objects. [MaterialComponents](#materialcomponent) and [ObjectComponents](#objectcomponent) have the ability to set the stencil value that will be rendered. The 8-bit stencil value is separated into two parts:
 - The first 4 bits are reseved for engine-specific values, such as to separate skin, sky, common materials from each other. these values are contained in [wiEnums](#wienums) in the `STENCILREF` enum.
 - The last 4 bits are reserved for user stencil values. The application can decide what it wants to use these for.
 
-Please use the `wi::renderer::CombineStencilrefs()` function to specify stencil masks in a future-proof way.
+Please use the `lb::renderer::CombineStencilrefs()` function to specify stencil masks in a future-proof way.
 
 The [Pipeline States](#pipeline-states) have a `DepthStencilState` type member which will control how the stencil mask is used in the graphics pipeline for any custom rendering effect. The functionality is supposed to be equivalent and closely matching of what DirectX 11 provides, so for further information, refer to the [DirectX 11 documentation of Depth Stencil States](https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-depth-stencil).
 
 #### Loading Shaders
-While the [GraphicsDevice is responsible of creating shaders and pipeline states](#pipeline-states-and-shaders), loading the shader files themselves are not handled by the graphics device. The `wi::renderer::LoadShader(ShaderStage::)` is a helper function that provides this feature. This is internally loading shaders from a common shader path, that is by default the "../WickedEngine/shaders" directory (relative to the application working directory), so the filename provided to this function must be relative to that path. Every system in the engine that loads shaders uses this function to load shaders from the same folder, which makes it very easy to reload shaders on demand with the `wi::renderer::ReloadShaders()` function. This is useful for when the developer modifies a shader and recompiles it, the engine can reload it while the application is running. The developer can modify the common shader path with the `wi::renderer::SetShaderPath()` to any path of preference. The developer is free to load shaders with a custom loader, from any path too, but the `wi::renderer::ReloadShaders()` functionality might not work in that case for those shaders.
+While the [GraphicsDevice is responsible of creating shaders and pipeline states](#pipeline-states-and-shaders), loading the shader files themselves are not handled by the graphics device. The `lb::renderer::LoadShader(ShaderStage::)` is a helper function that provides this feature. This is internally loading shaders from a common shader path, that is by default the "../WickedEngine/shaders" directory (relative to the application working directory), so the filename provided to this function must be relative to that path. Every system in the engine that loads shaders uses this function to load shaders from the same folder, which makes it very easy to reload shaders on demand with the `lb::renderer::ReloadShaders()` function. This is useful for when the developer modifies a shader and recompiles it, the engine can reload it while the application is running. The developer can modify the common shader path with the `lb::renderer::SetShaderPath()` to any path of preference. The developer is free to load shaders with a custom loader, from any path too, but the `lb::renderer::ReloadShaders()` functionality might not work in that case for those shaders.
 
 #### Debug Draw
-Debug geometry can be rendered by calling the `wi::renderer::DrawDebugWorld()` function and setting up debug geometries, or enabling debug features. The `DrawDebugWorld()` is already called by [RenderPath3D](#renderpath3d), so the developer can simply just worry about configure debug drawing features and add debug geometries and drawing will happen at the right place (if the developer decided to use [RenderPath3D](#renderpath3d) in their application). 
+Debug geometry can be rendered by calling the `lb::renderer::DrawDebugWorld()` function and setting up debug geometries, or enabling debug features. The `DrawDebugWorld()` is already called by [RenderPath3D](#renderpath3d), so the developer can simply just worry about configure debug drawing features and add debug geometries and drawing will happen at the right place (if the developer decided to use [RenderPath3D](#renderpath3d) in their application). 
 
 The user provided debug geometry features at present are: 
 - `DrawBox()`: provide a transformation matrix and color to render a wireframe box mesh with the desired transformation and color. The box will be only rendered for a single frame.
@@ -1007,13 +1007,13 @@ Configuring other debug rendering functionality:
 - `SetToDrawDebugCameras()`: Cameras will be rendered as oriented boxes.
 
 #### Animation Skinning
-[MeshComponents](#meshcomponent) that have their `armatureID` associated with an [ArmatureComponent](#armaturecomponent) will be skinned inside the `wi::renderer::UpdateRenderData()` function. This means that their vertex buffer will be animated with compute shaders, and the animated vertex buffer will be used throughout the rest of the frame. 
+[MeshComponents](#meshcomponent) that have their `armatureID` associated with an [ArmatureComponent](#armaturecomponent) will be skinned inside the `lb::renderer::UpdateRenderData()` function. This means that their vertex buffer will be animated with compute shaders, and the animated vertex buffer will be used throughout the rest of the frame. 
 
 
 #### Custom Shaders
-Apart from the built in material shaders, the developer can create a library of custom shaders from the application side and assign them to materials. The `wi::renderer::RegisterCustomShader()` function is used to register a custom shader from the application. The function returns the ID of the custom shader that can be input to the `MaterialComponent::SetCustomShaderID()` function. 
+Apart from the built in material shaders, the developer can create a library of custom shaders from the application side and assign them to materials. The `lb::renderer::RegisterCustomShader()` function is used to register a custom shader from the application. The function returns the ID of the custom shader that can be input to the `MaterialComponent::SetCustomShaderID()` function. 
 
-The `CustomShader` is essentially the combination of a [Pipeline State Object](#pipeline-states-and-shaders) for each `RENDERPASS` that specifies whether it is to be drawn in a transparent or opaque, or other kind of pass within a `RENDERPASS`. The developer is responsible of creating a fully valid pipeline state to render a mesh. If a pipeline state is left as empty for a combination of `RENDERPASS`, then the material will simply be skipped and not rendered in that pass. The other part of `CustomShader` is a name, that can be used as simple identifier for the user, and a `filterMask` that will be used to indicate what kind of material this is to multiple systems. You can set the `filterMask` to any combination of `wi::enums::FILTER` for your purposes, but you have to include `FILTER_OPAQUE` or `FILTER_TRANSPARENT` to indicate if this is going to be rendered in opaque or transparent passes (or both).
+The `CustomShader` is essentially the combination of a [Pipeline State Object](#pipeline-states-and-shaders) for each `RENDERPASS` that specifies whether it is to be drawn in a transparent or opaque, or other kind of pass within a `RENDERPASS`. The developer is responsible of creating a fully valid pipeline state to render a mesh. If a pipeline state is left as empty for a combination of `RENDERPASS`, then the material will simply be skipped and not rendered in that pass. The other part of `CustomShader` is a name, that can be used as simple identifier for the user, and a `filterMask` that will be used to indicate what kind of material this is to multiple systems. You can set the `filterMask` to any combination of `lb::enums::FILTER` for your purposes, but you have to include `FILTER_OPAQUE` or `FILTER_TRANSPARENT` to indicate if this is going to be rendered in opaque or transparent passes (or both).
 
 The `MaterialComponent::userdata` can also be used to provide a small amount of custom material data that will be available to shaders. You can access that in shaders from `ShaderMaterial::userdata`. If the built in user data is not enough for your purposes, you can create additional `GPUBuffer` objects and send descriptor indices in user data to access extended user data indirectly.
 
@@ -1022,7 +1022,7 @@ To look at an example, take a look at the built in Hologram custom shader and se
 
 ### Enums
 [[Header]](../../WickedEngine/wiEnums.h)
-This is a collection of enum values used by the wi::renderer to identify graphics resources. Usually arrays of the same resource type are declared and the XYZENUM_COUNT values tell the length of the array. The other XYZENUM_VALUE represents a single element within that array. This makes the code easy to manage, for example:
+This is a collection of enum values used by the lb::renderer to identify graphics resources. Usually arrays of the same resource type are declared and the XYZENUM_COUNT values tell the length of the array. The other XYZENUM_VALUE represents a single element within that array. This makes the code easy to manage, for example:
 
 ```cpp
 enum CBTYPE
@@ -1043,19 +1043,19 @@ This is widely used to make code straight forward and easy to add new objects, w
 [[Header]](../../WickedEngine/wiImage.h) [[Cpp]](../../WickedEngine/wiImage.cpp)
 This can render images to the screen in a simple manner. You can draw an image like this:
 ```cpp
-wi::image::SetCanvas(canvas); // setting the canvas area is required to set the drawing area and perform DPI scaling (this is only for the current thread)
-wi::image::Draw(myTexture, wiImageParams(10, 20, 256, 128), cmd);
+lb::image::SetCanvas(canvas); // setting the canvas area is required to set the drawing area and perform DPI scaling (this is only for the current thread)
+lb::image::Draw(myTexture, wiImageParams(10, 20, 256, 128), cmd);
 ```
 The example will draw a 2D texture image to the position (10, 20), with a size of 256 x 128 pixels to the current render pass. There are a lot of other parameters to customize the rendered image, for more information see wiImageParams structure.
-- wi::image::Params <br/>
+- lb::image::Params <br/>
 Describe all parameters of how and where to draw the image on the screen.
 
 ### Font Renderer
 [[Header]](../../WickedEngine/wiFont.h) [[Cpp]](../../WickedEngine/wiFont.cpp)
 This can render fonts to the screen in a simple manner. You can render a font as simple as this:
 ```cpp
-wi::font::SetCanvas(canvas); // setting the canvas area is required to set the drawing area and perform DPI scaling (this is only for the current thread)
-wi::font::Draw("write this!", wiFontParams(10, 20), cmd);
+lb::font::SetCanvas(canvas); // setting the canvas area is required to set the drawing area and perform DPI scaling (this is only for the current thread)
+lb::font::Draw("write this!", wiFontParams(10, 20), cmd);
 ```
 Which will write the text <i>write this!</i> to 10, 20 pixel position onto the screen. There are many other parameters to describe the font's position, size, color, etc. See the wiFontParams structure for more details.
 - wiFontParams <br/>

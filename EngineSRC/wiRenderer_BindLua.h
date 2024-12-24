@@ -1,7 +1,7 @@
 #pragma once
 #include "wiLua.h"
 
-namespace wi::lua::renderer
+namespace lb::lua::renderer
 {
 	void Bind();
 };

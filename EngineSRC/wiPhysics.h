@@ -6,7 +6,7 @@
 
 #include <memory>
 
-namespace wi::physics
+namespace lb::physics
 {
 	// Initializes the physics engine
 	void Initialize();
@@ -42,30 +42,30 @@ namespace wi::physics
 
 	// Update the physics state, run simulation, etc.
 	void RunPhysicsUpdateSystem(
-		wi::jobsystem::context& ctx,
-		wi::scene::Scene& scene,
+		lb::jobsystem::context& ctx,
+		lb::scene::Scene& scene,
 		float dt
 	);
 
 	// Set linear velocity to rigid body
 	void SetLinearVelocity(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		lb::scene::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& velocity
 	);
 	// Set angular velocity to rigid body
 	void SetAngularVelocity(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		lb::scene::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& velocity
 	);
 
 	// Apply force at body center
 	void ApplyForce(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		lb::scene::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& force
 	);
 	// Apply force at position
 	void ApplyForceAt(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		lb::scene::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& force,
 		const XMFLOAT3& at,
 		bool at_local = true // whether at is in local space of the body or not (global)
@@ -73,31 +73,31 @@ namespace wi::physics
 
 	// Apply impulse at body center
 	void ApplyImpulse(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		lb::scene::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& impulse
 	);
 	void ApplyImpulse(
-		wi::scene::HumanoidComponent& humanoid,
-		wi::scene::HumanoidComponent::HumanoidBone bone,
+		lb::scene::HumanoidComponent& humanoid,
+		lb::scene::HumanoidComponent::HumanoidBone bone,
 		const XMFLOAT3& impulse
 	);
 	// Apply impulse at position
 	void ApplyImpulseAt(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		lb::scene::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& impulse,
 		const XMFLOAT3& at,
 		bool at_local = true // whether at is in local space of the body or not (global)
 	);
 	void ApplyImpulseAt(
-		wi::scene::HumanoidComponent& humanoid,
-		wi::scene::HumanoidComponent::HumanoidBone bone,
+		lb::scene::HumanoidComponent& humanoid,
+		lb::scene::HumanoidComponent::HumanoidBone bone,
 		const XMFLOAT3& impulse,
 		const XMFLOAT3& at,
 		bool at_local = true // whether at is in local space of the body or not (global)
 	);
 
 	void ApplyTorque(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		lb::scene::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& torque
 	);
 
@@ -107,35 +107,35 @@ namespace wi::physics
 		Inactive,
 	};
 	void SetActivationState(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		lb::scene::RigidBodyPhysicsComponent& physicscomponent,
 		ActivationState state
 	);
 	void SetActivationState(
-		wi::scene::SoftBodyPhysicsComponent& physicscomponent,
+		lb::scene::SoftBodyPhysicsComponent& physicscomponent,
 		ActivationState state
 	);
-	void ActivateAllRigidBodies(wi::scene::Scene& scene);
+	void ActivateAllRigidBodies(lb::scene::Scene& scene);
 
 	XMFLOAT3 GetSoftBodyNodePosition(
-		wi::scene::SoftBodyPhysicsComponent& physicscomponent,
+		lb::scene::SoftBodyPhysicsComponent& physicscomponent,
 		uint32_t physicsIndex
 	);
 
 	struct RayIntersectionResult
 	{
-		wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
+		lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
 		XMFLOAT3 position = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 position_local = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 normal = XMFLOAT3(0, 0, 0);
-		wi::ecs::Entity humanoid_ragdoll_entity = wi::ecs::INVALID_ENTITY;
-		wi::scene::HumanoidComponent::HumanoidBone humanoid_bone = wi::scene::HumanoidComponent::HumanoidBone::Count;
+		lb::ecs::Entity humanoid_ragdoll_entity = lb::ecs::INVALID_ENTITY;
+		lb::scene::HumanoidComponent::HumanoidBone humanoid_bone = lb::scene::HumanoidComponent::HumanoidBone::Count;
 		int softbody_triangleID = -1;
 		const void* physicsobject = nullptr;
-		constexpr bool IsValid() const { return entity != wi::ecs::INVALID_ENTITY; }
+		constexpr bool IsValid() const { return entity != lb::ecs::INVALID_ENTITY; }
 	};
 	RayIntersectionResult Intersects(
-		const wi::scene::Scene& scene,
-		wi::primitive::Ray ray
+		const lb::scene::Scene& scene,
+		lb::primitive::Ray ray
 	);
 
 	struct PickDragOperation
@@ -144,8 +144,8 @@ namespace wi::physics
 		inline bool IsValid() const { return internal_state != nullptr; }
 	};
 	void PickDrag(
-		const wi::scene::Scene& scene,
-		wi::primitive::Ray ray,
+		const lb::scene::Scene& scene,
+		lb::primitive::Ray ray,
 		PickDragOperation& op
 	);
 }

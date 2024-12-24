@@ -5,7 +5,7 @@
 #include "wiResourceManager.h"
 #include "wiScene.h"
 
-namespace wi
+namespace lb
 {
 
 	class RenderPath3D :
@@ -43,7 +43,7 @@ namespace wi
 		float lightShaftsStrength = 0.2f;
 		float raytracedReflectionsRange = 10000.0f;
 		float reflectionRoughnessCutoff = 0.6f;
-		wi::renderer::Tonemap tonemap = wi::renderer::Tonemap::ACES;
+		lb::renderer::Tonemap tonemap = lb::renderer::Tonemap::ACES;
 		float hdr_calibration = 1;
 
 		AO ao = AO_DISABLED;
@@ -70,93 +70,93 @@ namespace wi
 		mutable bool first_frame = true;
 
 	public:
-		wi::graphics::Texture rtMain;
-		wi::graphics::Texture rtMain_render; // can be MSAA
-		wi::graphics::Texture rtPrimitiveID;
-		wi::graphics::Texture rtPrimitiveID_render; // can be MSAA
-		wi::graphics::Texture rtVelocity; // optional R16G16_FLOAT
-		wi::graphics::Texture rtReflection; // contains the scene rendered for planar reflections, MSAA
-		wi::graphics::Texture rtReflection_resolved; // contains the scene rendered for planar reflections, single sample
-		wi::graphics::Texture rtSSR; // standard screen-space reflection results
-		wi::graphics::Texture rtSceneCopy; // contains the rendered scene that can be fed into transparent pass for distortion effect
-		wi::graphics::Texture rtSceneCopy_tmp; // temporary for gaussian mipchain
-		wi::graphics::Texture rtWaterRipple; // water ripple sprite normal maps are rendered into this
-		wi::graphics::Texture rtParticleDistortion_render; // contains distortive particles (can be MSAA)
-		wi::graphics::Texture rtParticleDistortion; // contains distortive particles
-		wi::graphics::Texture rtVolumetricLights; // contains the volumetric light results
-		wi::graphics::Texture rtBloom; // contains the bright parts of the image + mipchain
-		wi::graphics::Texture rtBloom_tmp; // temporary for bloom downsampling
-		wi::graphics::Texture rtAO; // full res AO
-		wi::graphics::Texture rtShadow; // raytraced shadows mask
-		wi::graphics::Texture rtSun[2]; // 0: sun render target used for lightshafts (can be MSAA), 1: radial blurred lightshafts
-		wi::graphics::Texture rtSun_resolved; // sun render target, but the resolved version if MSAA is enabled
-		wi::graphics::Texture rtGUIBlurredBackground[3];	// downsampled, gaussian blurred scene for GUI
-		wi::graphics::Texture rtShadingRate; // UINT8 shading rate per tile
-		wi::graphics::Texture rtOutlineSource; // linear depth but only the regions which have outline stencil
+		lb::graphics::Texture rtMain;
+		lb::graphics::Texture rtMain_render; // can be MSAA
+		lb::graphics::Texture rtPrimitiveID;
+		lb::graphics::Texture rtPrimitiveID_render; // can be MSAA
+		lb::graphics::Texture rtVelocity; // optional R16G16_FLOAT
+		lb::graphics::Texture rtReflection; // contains the scene rendered for planar reflections, MSAA
+		lb::graphics::Texture rtReflection_resolved; // contains the scene rendered for planar reflections, single sample
+		lb::graphics::Texture rtSSR; // standard screen-space reflection results
+		lb::graphics::Texture rtSceneCopy; // contains the rendered scene that can be fed into transparent pass for distortion effect
+		lb::graphics::Texture rtSceneCopy_tmp; // temporary for gaussian mipchain
+		lb::graphics::Texture rtWaterRipple; // water ripple sprite normal maps are rendered into this
+		lb::graphics::Texture rtParticleDistortion_render; // contains distortive particles (can be MSAA)
+		lb::graphics::Texture rtParticleDistortion; // contains distortive particles
+		lb::graphics::Texture rtVolumetricLights; // contains the volumetric light results
+		lb::graphics::Texture rtBloom; // contains the bright parts of the image + mipchain
+		lb::graphics::Texture rtBloom_tmp; // temporary for bloom downsampling
+		lb::graphics::Texture rtAO; // full res AO
+		lb::graphics::Texture rtShadow; // raytraced shadows mask
+		lb::graphics::Texture rtSun[2]; // 0: sun render target used for lightshafts (can be MSAA), 1: radial blurred lightshafts
+		lb::graphics::Texture rtSun_resolved; // sun render target, but the resolved version if MSAA is enabled
+		lb::graphics::Texture rtGUIBlurredBackground[3];	// downsampled, gaussian blurred scene for GUI
+		lb::graphics::Texture rtShadingRate; // UINT8 shading rate per tile
+		lb::graphics::Texture rtOutlineSource; // linear depth but only the regions which have outline stencil
 
-		wi::graphics::Texture rtPostprocess; // ping-pong with main scene RT in post-process chain
+		lb::graphics::Texture rtPostprocess; // ping-pong with main scene RT in post-process chain
 
-		wi::graphics::Texture depthBuffer_Main; // used for depth-testing, can be MSAA
-		wi::graphics::Texture depthBuffer_Copy; // used for shader resource, single sample
-		wi::graphics::Texture depthBuffer_Copy1; // used for disocclusion check
-		wi::graphics::Texture depthBuffer_Reflection; // used for reflection, MSAA
-		wi::graphics::Texture depthBuffer_Reflection_resolved; // used for reflection, single sample
-		wi::graphics::Texture rtLinearDepth; // linear depth result + mipchain (max filter)
-		wi::graphics::Texture reprojectedDepth; // prev frame depth reprojected into current, and downsampled for meshlet occlusion culling
+		lb::graphics::Texture depthBuffer_Main; // used for depth-testing, can be MSAA
+		lb::graphics::Texture depthBuffer_Copy; // used for shader resource, single sample
+		lb::graphics::Texture depthBuffer_Copy1; // used for disocclusion check
+		lb::graphics::Texture depthBuffer_Reflection; // used for reflection, MSAA
+		lb::graphics::Texture depthBuffer_Reflection_resolved; // used for reflection, single sample
+		lb::graphics::Texture rtLinearDepth; // linear depth result + mipchain (max filter)
+		lb::graphics::Texture reprojectedDepth; // prev frame depth reprojected into current, and downsampled for meshlet occlusion culling
 
-		wi::graphics::Texture debugUAV; // debug UAV can be used by some shaders...
-		wi::renderer::TiledLightResources tiledLightResources;
-		wi::renderer::TiledLightResources tiledLightResources_planarReflection;
-		wi::renderer::LuminanceResources luminanceResources;
-		wi::renderer::SSAOResources ssaoResources;
-		wi::renderer::RTAOResources rtaoResources;
-		wi::renderer::RTReflectionResources rtreflectionResources;
-		wi::renderer::SSRResources ssrResources;
-		wi::renderer::RTShadowResources rtshadowResources;
-		wi::renderer::ScreenSpaceShadowResources screenspaceshadowResources;
-		wi::renderer::DepthOfFieldResources depthoffieldResources;
-		wi::renderer::MotionBlurResources motionblurResources;
-		wi::renderer::AerialPerspectiveResources aerialperspectiveResources;
-		wi::renderer::AerialPerspectiveResources aerialperspectiveResources_reflection;
-		wi::renderer::VolumetricCloudResources volumetriccloudResources;
-		wi::renderer::VolumetricCloudResources volumetriccloudResources_reflection;
-		wi::renderer::BloomResources bloomResources;
-		wi::renderer::TemporalAAResources temporalAAResources;
-		wi::renderer::VisibilityResources visibilityResources;
-		wi::renderer::VXGIResources vxgiResources;
+		lb::graphics::Texture debugUAV; // debug UAV can be used by some shaders...
+		lb::renderer::TiledLightResources tiledLightResources;
+		lb::renderer::TiledLightResources tiledLightResources_planarReflection;
+		lb::renderer::LuminanceResources luminanceResources;
+		lb::renderer::SSAOResources ssaoResources;
+		lb::renderer::RTAOResources rtaoResources;
+		lb::renderer::RTReflectionResources rtreflectionResources;
+		lb::renderer::SSRResources ssrResources;
+		lb::renderer::RTShadowResources rtshadowResources;
+		lb::renderer::ScreenSpaceShadowResources screenspaceshadowResources;
+		lb::renderer::DepthOfFieldResources depthoffieldResources;
+		lb::renderer::MotionBlurResources motionblurResources;
+		lb::renderer::AerialPerspectiveResources aerialperspectiveResources;
+		lb::renderer::AerialPerspectiveResources aerialperspectiveResources_reflection;
+		lb::renderer::VolumetricCloudResources volumetriccloudResources;
+		lb::renderer::VolumetricCloudResources volumetriccloudResources_reflection;
+		lb::renderer::BloomResources bloomResources;
+		lb::renderer::TemporalAAResources temporalAAResources;
+		lb::renderer::VisibilityResources visibilityResources;
+		lb::renderer::VXGIResources vxgiResources;
 
-		wi::graphics::CommandList video_cmd;
-		wi::vector<wi::video::VideoInstance*> video_instances_tmp;
+		lb::graphics::CommandList video_cmd;
+		lb::vector<lb::video::VideoInstance*> video_instances_tmp;
 
-		wi::graphics::Texture distortion_overlay; // optional full screen distortion from an asset
+		lb::graphics::Texture distortion_overlay; // optional full screen distortion from an asset
 
-		mutable const wi::graphics::Texture* lastPostprocessRT = &rtPostprocess;
+		mutable const lb::graphics::Texture* lastPostprocessRT = &rtPostprocess;
 		// Post-processes are ping-ponged, this function helps to obtain the last postprocess render target that was written
-		const wi::graphics::Texture* GetLastPostprocessRT() const
+		const lb::graphics::Texture* GetLastPostprocessRT() const
 		{
 			return lastPostprocessRT;
 		}
 
-		virtual void RenderAO(wi::graphics::CommandList cmd) const;
-		virtual void RenderSSR(wi::graphics::CommandList cmd) const;
-		virtual void RenderOutline(wi::graphics::CommandList cmd) const;
-		virtual void RenderLightShafts(wi::graphics::CommandList cmd) const;
-		virtual void RenderVolumetrics(wi::graphics::CommandList cmd) const;
-		virtual void RenderSceneMIPChain(wi::graphics::CommandList cmd) const;
-		virtual void RenderTransparents(wi::graphics::CommandList cmd) const;
-		virtual void RenderPostprocessChain(wi::graphics::CommandList cmd) const;
+		virtual void RenderAO(lb::graphics::CommandList cmd) const;
+		virtual void RenderSSR(lb::graphics::CommandList cmd) const;
+		virtual void RenderOutline(lb::graphics::CommandList cmd) const;
+		virtual void RenderLightShafts(lb::graphics::CommandList cmd) const;
+		virtual void RenderVolumetrics(lb::graphics::CommandList cmd) const;
+		virtual void RenderSceneMIPChain(lb::graphics::CommandList cmd) const;
+		virtual void RenderTransparents(lb::graphics::CommandList cmd) const;
+		virtual void RenderPostprocessChain(lb::graphics::CommandList cmd) const;
 
 		void DeleteGPUResources() override;
 		void ResizeBuffers() override;
 
-		wi::scene::CameraComponent* camera = &wi::scene::GetCamera();
-		wi::scene::CameraComponent camera_previous;
-		wi::scene::CameraComponent camera_reflection;
-		wi::scene::CameraComponent camera_reflection_previous;
+		lb::scene::CameraComponent* camera = &lb::scene::GetCamera();
+		lb::scene::CameraComponent camera_previous;
+		lb::scene::CameraComponent camera_reflection;
+		lb::scene::CameraComponent camera_reflection_previous;
 
-		wi::scene::Scene* scene = &wi::scene::GetScene();
-		wi::renderer::Visibility visibility_main;
-		wi::renderer::Visibility visibility_reflection;
+		lb::scene::Scene* scene = &lb::scene::GetScene();
+		lb::renderer::Visibility visibility_main;
+		lb::renderer::Visibility visibility_reflection;
 
 		FrameCB frameCB = {};
 
@@ -167,18 +167,18 @@ namespace wi
 		float crop_top = 0;
 		float crop_right = 0;
 		float crop_bottom = 0;
-		wi::graphics::Rect GetScissorNativeResolution() const
+		lb::graphics::Rect GetScissorNativeResolution() const
 		{
-			wi::graphics::Rect scissor;
+			lb::graphics::Rect scissor;
 			scissor.left = int(LogicalToPhysical(crop_left));
 			scissor.top = int(LogicalToPhysical(crop_top));
 			scissor.right = int(GetPhysicalWidth() - LogicalToPhysical(crop_right));
 			scissor.bottom = int(GetPhysicalHeight() - LogicalToPhysical(crop_bottom));
 			return scissor;
 		}
-		wi::graphics::Rect GetScissorInternalResolution() const
+		lb::graphics::Rect GetScissorInternalResolution() const
 		{
-			wi::graphics::Rect scissor;
+			lb::graphics::Rect scissor;
 			scissor.left = int(LogicalToPhysical(crop_left) * resolutionScale);
 			scissor.top = int(LogicalToPhysical(crop_top) * resolutionScale);
 			scissor.right = int(GetInternalResolution().x - LogicalToPhysical(crop_right) * resolutionScale);
@@ -186,8 +186,8 @@ namespace wi
 			return scissor;
 		}
 
-		const wi::graphics::Texture* GetDepthStencil() const override { return &depthBuffer_Main; }
-		const wi::graphics::Texture* GetGUIBlurredBackground() const override { return &rtGUIBlurredBackground[2]; }
+		const lb::graphics::Texture* GetDepthStencil() const override { return &depthBuffer_Main; }
+		const lb::graphics::Texture* GetGUIBlurredBackground() const override { return &rtGUIBlurredBackground[2]; }
 
 		constexpr float getExposure() const { return exposure; }
 		constexpr float getHDRCalibration() const { return hdr_calibration; }
@@ -212,7 +212,7 @@ namespace wi
 		constexpr float getLightShaftsStrength() const { return lightShaftsStrength; }
 		constexpr float getRaytracedReflectionsRange() const { return raytracedReflectionsRange; }
 		constexpr float getReflectionRoughnessCutoff() const { return reflectionRoughnessCutoff; }
-		constexpr wi::renderer::Tonemap getTonemap() const { return tonemap; }
+		constexpr lb::renderer::Tonemap getTonemap() const { return tonemap; }
 
 		constexpr bool getAOEnabled() const { return ao != AO_DISABLED; }
 		constexpr AO getAO() const { return ao; }
@@ -261,7 +261,7 @@ namespace wi
 		constexpr void setLightShaftsStrength(float value) { lightShaftsStrength = value; }
 		constexpr void setRaytracedReflectionsRange(float value) { raytracedReflectionsRange = value; }
 		constexpr void setReflectionRoughnessCutoff(float value) { reflectionRoughnessCutoff = value; }
-		constexpr void setTonemap(wi::renderer::Tonemap value) { tonemap = value; }
+		constexpr void setTonemap(lb::renderer::Tonemap value) { tonemap = value; }
 		constexpr void setVisibilityComputeShadingEnabled(bool value) { visibility_shading_in_compute = value; }
 
 		void setAO(AO value);
@@ -289,7 +289,7 @@ namespace wi
 		struct CustomPostprocess
 		{
 			std::string name = "CustomPostprocess";
-			wi::graphics::Shader computeshader;
+			lb::graphics::Shader computeshader;
 			XMFLOAT4 params0;
 			XMFLOAT4 params1;
 			enum class Stage
@@ -298,12 +298,12 @@ namespace wi
 				AfterTonemap // After tonemap, in display color space
 			} stage = Stage::AfterTonemap;
 		};
-		wi::vector<CustomPostprocess> custom_post_processes;
+		lb::vector<CustomPostprocess> custom_post_processes;
 
 		void PreUpdate() override;
 		void Update(float dt) override;
 		void Render() const override;
-		void Compose(wi::graphics::CommandList cmd) const override;
+		void Compose(lb::graphics::CommandList cmd) const override;
 
 		void Stop() override;
 		void Start() override;

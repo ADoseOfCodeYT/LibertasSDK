@@ -2,7 +2,7 @@
 #include "wiRenderPath3D.h"
 #include "wiVector.h"
 
-namespace wi
+namespace lb
 {
 
 	class RenderPath3D_PathTracing :
@@ -11,18 +11,18 @@ namespace wi
 	protected:
 		int sam = -1;
 		int target = 1024;
-		wi::graphics::Texture traceResult;
-		wi::graphics::Texture traceDepth;
-		wi::graphics::Texture traceStencil;
+		lb::graphics::Texture traceResult;
+		lb::graphics::Texture traceDepth;
+		lb::graphics::Texture traceStencil;
 
-		wi::vector<uint8_t> texturedata_src;
-		wi::vector<uint8_t> texturedata_dst;
-		wi::vector<uint8_t> texturedata_albedo;
-		wi::vector<uint8_t> texturedata_normal;
-		wi::graphics::Texture denoiserAlbedo;
-		wi::graphics::Texture denoiserNormal;
-		wi::graphics::Texture denoiserResult;
-		wi::jobsystem::context denoiserContext;
+		lb::vector<uint8_t> texturedata_src;
+		lb::vector<uint8_t> texturedata_dst;
+		lb::vector<uint8_t> texturedata_albedo;
+		lb::vector<uint8_t> texturedata_normal;
+		lb::graphics::Texture denoiserAlbedo;
+		lb::graphics::Texture denoiserNormal;
+		lb::graphics::Texture denoiserResult;
+		lb::jobsystem::context denoiserContext;
 
 		void ResizeBuffers() override;
 
@@ -30,7 +30,7 @@ namespace wi
 
 		void Update(float dt) override;
 		void Render() const override;
-		void Compose(wi::graphics::CommandList cmd) const override;
+		void Compose(lb::graphics::CommandList cmd) const override;
 
 		int getCurrentSampleCount() const { return sam; }
 		void setTargetSampleCount(int value) { target = value; }

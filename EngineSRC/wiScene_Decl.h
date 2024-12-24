@@ -1,6 +1,6 @@
 #pragma once
 
-namespace wi::scene
+namespace lb::scene
 {
 	struct NameComponent;
 	struct LayerComponent;

@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "MaterialWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::graphics;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void MaterialPickerWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create("Materials", wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::RESIZE_RIGHT);
+	lb::gui::Window::Create("Materials", lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::RESIZE_RIGHT);
 	SetText("Materials " ICON_MATERIALBROWSER);
 	SetSize(XMFLOAT2(300, 400));
 
@@ -22,7 +22,7 @@ void MaterialPickerWindow::RecreateButtons()
 {
 	if (editor == nullptr)
 		return;
-	const wi::scene::Scene& scene = editor->GetCurrentScene();
+	const lb::scene::Scene& scene = editor->GetCurrentScene();
 	for (auto& x : buttons)
 	{
 		RemoveWidget(&x);
@@ -33,24 +33,24 @@ void MaterialPickerWindow::RecreateButtons()
 	{
 		Entity entity = scene.materials.GetEntity(i);
 
-		wi::gui::Button& button = buttons[i];
+		lb::gui::Button& button = buttons[i];
 		button.Create("");
 		AddWidget(&button);
 		button.SetVisible(false);
 
-		button.OnClick([entity, this](wi::gui::EventArgs args) {
+		button.OnClick([entity, this](lb::gui::EventArgs args) {
 
-			wi::Archive& archive = editor->AdvanceHistory();
+			lb::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_SELECTION;
 			// record PREVIOUS selection state...
 			editor->RecordSelection(archive);
 
-			if (!editor->translator.selected.empty() && wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT))
+			if (!editor->translator.selected.empty() && lb::input::Down(lb::input::KEYBOARD_BUTTON_LSHIFT))
 			{
 				// Union selection:
-				wi::vector<wi::scene::PickResult> saved = editor->translator.selected;
+				lb::vector<lb::scene::PickResult> saved = editor->translator.selected;
 				editor->translator.selected.clear();
-				for (const wi::scene::PickResult& picked : saved)
+				for (const lb::scene::PickResult& picked : saved)
 				{
 					editor->AddSelected(picked);
 				}
@@ -73,14 +73,14 @@ void MaterialPickerWindow::RecreateButtons()
 
 void MaterialPickerWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 
 	if (editor == nullptr || IsCollapsed() || !IsVisible())
 	{
 		return;
 	}
 
-	const wi::scene::Scene& scene = editor->GetCurrentScene();
+	const lb::scene::Scene& scene = editor->GetCurrentScene();
 	if (buttons.size() != scene.materials.GetCount())
 	{
 		RecreateButtons();
@@ -90,12 +90,12 @@ void MaterialPickerWindow::ResizeLayout()
 	zoomSlider.SetPos(XMFLOAT2(55, 0));
 	zoomSlider.SetSize(XMFLOAT2(GetWidgetAreaSize().x - 100 - 5, 20));
 
-	wi::gui::Theme theme;
-	theme.image.CopyFrom(sprites[wi::gui::IDLE].params);
+	lb::gui::Theme theme;
+	theme.image.CopyFrom(sprites[lb::gui::IDLE].params);
 	theme.image.background = false;
-	theme.image.blendFlag = wi::enums::BLENDMODE_ALPHA;
+	theme.image.blendFlag = lb::enums::BLENDMODE_ALPHA;
 	theme.font.CopyFrom(font.params);
-	theme.shadow_color = wi::Color::lerp(theme.font.color, wi::Color::Transparent(), 0.25f);
+	theme.shadow_color = lb::Color::lerp(theme.font.color, lb::Color::Transparent(), 0.25f);
 	theme.tooltipFont.CopyFrom(tooltipFont.params);
 	theme.tooltipImage.CopyFrom(tooltipSprite.params);
 
@@ -109,19 +109,19 @@ void MaterialPickerWindow::ResizeLayout()
 		const MaterialComponent& material = scene.materials[i];
 		Entity entity = scene.materials.GetEntity(i);
 
-		wi::gui::Button& button = buttons[i];
+		lb::gui::Button& button = buttons[i];
 		button.SetVisible(IsVisible() && !IsCollapsed());
 
 		button.SetTheme(theme);
-		button.SetColor(wi::Color::White());
-		button.SetColor(wi::Color(255, 255, 255, 150), wi::gui::IDLE);
+		button.SetColor(lb::Color::White());
+		button.SetColor(lb::Color(255, 255, 255, 150), lb::gui::IDLE);
 		button.SetShadowRadius(0);
 
 		for (auto& picked : editor->translator.selected)
 		{
 			if (picked.entity == entity)
 			{
-				button.SetColor(wi::Color::White());
+				button.SetColor(lb::Color::White());
 				button.SetShadowRadius(3);
 				break;
 			}
@@ -151,8 +151,8 @@ void MaterialPickerWindow::ResizeLayout()
 			}
 			button.SetTooltip(name->name);
 		}
-		button.font.params.h_align = wi::font::WIFALIGN_CENTER;
-		button.font.params.v_align = wi::font::WIFALIGN_BOTTOM;
+		button.font.params.h_align = lb::font::WIFALIGN_CENTER;
+		button.font.params.v_align = lb::font::WIFALIGN_BOTTOM;
 
 		button.SetSize(XMFLOAT2(preview_size, preview_size));
 		button.SetPos(XMFLOAT2((i % cells) * (preview_size + border) + border, offset_y));

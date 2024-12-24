@@ -1,16 +1,16 @@
 #pragma once
 class EditorComponent;
 
-class NameWindow : public wi::gui::Window
+class NameWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::TextInputField nameInput;
+	lb::gui::TextInputField nameInput;
 
 	void ResizeLayout() override;
 };

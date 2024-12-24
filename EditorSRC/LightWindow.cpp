@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include "LightWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::graphics;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::graphics;
+using namespace lb::scene;
 
 void LightWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_POINTLIGHT " Light", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_POINTLIGHT " Light", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(650, 940));
 
 	closeButton.SetTooltip("Delete LightComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -34,12 +34,12 @@ void LightWindow::Create(EditorComponent* _editor)
 
 	float mod_x = 10;
 
-	colorPicker.Create("Light Color", wi::gui::Window::WindowControls::NONE);
+	colorPicker.Create("Light Color", lb::gui::Window::WindowControls::NONE);
 	colorPicker.SetPos(XMFLOAT2(mod_x, y));
 	colorPicker.SetVisible(true);
 	colorPicker.SetEnabled(false);
-	colorPicker.OnColorChanged([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	colorPicker.OnColorChanged([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -57,8 +57,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	intensitySlider.Create(0, 1000, 0, 100000, "Intensity: ");
 	intensitySlider.SetSize(XMFLOAT2(wid, hei));
 	intensitySlider.SetPos(XMFLOAT2(x, y));
-	intensitySlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	intensitySlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -75,8 +75,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	rangeSlider.Create(1, 1000, 0, 100000, "Range: ");
 	rangeSlider.SetSize(XMFLOAT2(wid, hei));
 	rangeSlider.SetPos(XMFLOAT2(x, y += step));
-	rangeSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	rangeSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -93,8 +93,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	radiusSlider.Create(0, 10, 0, 100000, "Radius: ");
 	radiusSlider.SetSize(XMFLOAT2(wid, hei));
 	radiusSlider.SetPos(XMFLOAT2(x, y += step));
-	radiusSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	radiusSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -111,8 +111,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	lengthSlider.Create(0, 10, 0, 100000, "Length: ");
 	lengthSlider.SetSize(XMFLOAT2(wid, hei));
 	lengthSlider.SetPos(XMFLOAT2(x, y += step));
-	lengthSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	lengthSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -129,8 +129,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	outerConeAngleSlider.Create(0.1f, XM_PIDIV2 - 0.01f, 0, 100000, "Outer Cone Angle: ");
 	outerConeAngleSlider.SetSize(XMFLOAT2(wid, hei));
 	outerConeAngleSlider.SetPos(XMFLOAT2(x, y += step));
-	outerConeAngleSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	outerConeAngleSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -147,8 +147,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	innerConeAngleSlider.Create(0, XM_PI - 0.01f, 0, 100000, "Inner Cone Angle: ");
 	innerConeAngleSlider.SetSize(XMFLOAT2(wid, hei));
 	innerConeAngleSlider.SetPos(XMFLOAT2(x, y += step));
-	innerConeAngleSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	innerConeAngleSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -165,8 +165,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	volumetricBoostSlider.Create(0, 10, 0, 1000, "Volumetric boost: ");
 	volumetricBoostSlider.SetSize(XMFLOAT2(wid, hei));
 	volumetricBoostSlider.SetPos(XMFLOAT2(x, y += step));
-	volumetricBoostSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	volumetricBoostSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -182,8 +182,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	shadowCheckBox.Create("Shadow: ");
 	shadowCheckBox.SetSize(XMFLOAT2(hei, hei));
 	shadowCheckBox.SetPos(XMFLOAT2(x, y += step));
-	shadowCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	shadowCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -200,8 +200,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	volumetricsCheckBox.Create("Volumetric: ");
 	volumetricsCheckBox.SetSize(XMFLOAT2(hei, hei));
 	volumetricsCheckBox.SetPos(XMFLOAT2(x, y += step));
-	volumetricsCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	volumetricsCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -218,8 +218,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	haloCheckBox.Create("Visualizer: ");
 	haloCheckBox.SetSize(XMFLOAT2(hei, hei));
 	haloCheckBox.SetPos(XMFLOAT2(x, y += step));
-	haloCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	haloCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -236,8 +236,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	staticCheckBox.Create("Static: ");
 	staticCheckBox.SetSize(XMFLOAT2(hei, hei));
 	staticCheckBox.SetPos(XMFLOAT2(x, y += step));
-	staticCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	staticCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -254,8 +254,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	volumetricCloudsCheckBox.Create("Volumetric Clouds: ");
 	volumetricCloudsCheckBox.SetSize(XMFLOAT2(hei, hei));
 	volumetricCloudsCheckBox.SetPos(XMFLOAT2(x, y += step));
-	volumetricCloudsCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	volumetricCloudsCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -272,10 +272,10 @@ void LightWindow::Create(EditorComponent* _editor)
 	typeSelectorComboBox.Create("Type: ");
 	typeSelectorComboBox.SetSize(XMFLOAT2(wid, hei));
 	typeSelectorComboBox.SetPos(XMFLOAT2(x, y += step));
-	typeSelectorComboBox.OnSelect([&](wi::gui::EventArgs args) {
+	typeSelectorComboBox.OnSelect([&](lb::gui::EventArgs args) {
 		if (args.iValue < 0)
 			return;
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -305,8 +305,8 @@ void LightWindow::Create(EditorComponent* _editor)
 	shadowResolutionComboBox.AddItem("512", 512);
 	shadowResolutionComboBox.AddItem("1024", 1024);
 	shadowResolutionComboBox.AddItem("2048", 2048);
-	shadowResolutionComboBox.OnSelect([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	shadowResolutionComboBox.OnSelect([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -333,7 +333,7 @@ void LightWindow::Create(EditorComponent* _editor)
 		lensflare_Button[i].SetTooltip("Load a lensflare texture to this slot");
 		lensflare_Button[i].SetPos(XMFLOAT2(mod_x, y += step));
 		lensflare_Button[i].SetSize(XMFLOAT2(mod_wid, hei));
-		lensflare_Button[i].OnClick([=](wi::gui::EventArgs args) {
+		lensflare_Button[i].OnClick([=](lb::gui::EventArgs args) {
 			LightComponent* light = editor->GetCurrentScene().lights.GetComponent(entity);
 			if (light == nullptr)
 				return;
@@ -352,15 +352,15 @@ void LightWindow::Create(EditorComponent* _editor)
 			}
 			else
 			{
-				wi::helper::FileDialogParams params;
-				params.type = wi::helper::FileDialogParams::OPEN;
+				lb::helper::FileDialogParams params;
+				params.type = lb::helper::FileDialogParams::OPEN;
 				params.description = "Texture";
-				params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-				wi::helper::FileDialog(params, [this, light, i](std::string fileName) {
-					wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-						light->lensFlareRimTextures[i] = wi::resourcemanager::Load(fileName);
+				params.extensions = lb::resourcemanager::GetSupportedImageExtensions();
+				lb::helper::FileDialog(params, [this, light, i](std::string fileName) {
+					lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+						light->lensFlareRimTextures[i] = lb::resourcemanager::Load(fileName);
 						light->lensFlareNames[i] = fileName;
-						lensflare_Button[i].SetText(wi::helper::GetFileNameFromPath(fileName));
+						lensflare_Button[i].SetText(lb::helper::GetFileNameFromPath(fileName));
 					});
 				});
 			}
@@ -402,7 +402,7 @@ void LightWindow::SetEntity(Entity entity)
 		volumetricCloudsCheckBox.SetEnabled(true);
 		volumetricCloudsCheckBox.SetCheck(light->IsVolumetricCloudsEnabled());
 		colorPicker.SetEnabled(true);
-		colorPicker.SetPickColor(wi::Color::fromFloat3(light->color));
+		colorPicker.SetPickColor(lb::Color::fromFloat3(light->color));
 		typeSelectorComboBox.SetSelectedWithoutCallback((int)light->GetType());
 		shadowResolutionComboBox.SetSelectedByUserdataWithoutCallback(uint64_t(light->forced_shadow_resolution));
 		shadowResolutionComboBox.SetEnabled(true);
@@ -415,7 +415,7 @@ void LightWindow::SetEntity(Entity entity)
 			{
 				if (light->lensFlareRimTextures.size() > i && light->lensFlareRimTextures[i].IsValid() && !light->lensFlareNames[i].empty())
 				{
-					lensflare_Button[i].SetText(wi::helper::GetFileNameFromPath(light->lensFlareNames[i]));
+					lensflare_Button[i].SetText(lb::helper::GetFileNameFromPath(light->lensFlareNames[i]));
 				}
 				else
 				{
@@ -482,7 +482,7 @@ void LightWindow::RefreshCascades()
 		cascade.distanceSlider.Create(1, 1000, 0, 1000, "");
 		cascade.distanceSlider.SetTooltip("Specify cascade's maximum reach distance from camera.\nNote: Increasing cascades indices should use increasing distances.");
 		cascade.distanceSlider.SetSize(XMFLOAT2(100, 18));
-		cascade.distanceSlider.OnSlide([=](wi::gui::EventArgs args) {
+		cascade.distanceSlider.OnSlide([=](lb::gui::EventArgs args) {
 			light->cascade_distances[counter] = args.fValue;
 		});
 		cascade.distanceSlider.SetValue(light->cascade_distances[counter]);
@@ -493,7 +493,7 @@ void LightWindow::RefreshCascades()
 		cascade.removeButton.SetTooltip("Remove this shadow cascade");
 		cascade.removeButton.SetDescription("Cascade " + std::to_string(counter) + ": ");
 		cascade.removeButton.SetSize(XMFLOAT2(18, 18));
-		cascade.removeButton.OnClick([=](wi::gui::EventArgs args) {
+		cascade.removeButton.OnClick([=](lb::gui::EventArgs args) {
 			light->cascade_distances.erase(light->cascade_distances.begin() + counter);
 			RefreshCascades();
 		});
@@ -506,7 +506,7 @@ void LightWindow::RefreshCascades()
 	addCascadeButton.Create("Add shadow cascade");
 	addCascadeButton.SetTooltip("Add new shadow cascade. Note that for each shadow cascades, the scene will be rendered again, so adding more will affect performance!");
 	addCascadeButton.SetSize(XMFLOAT2(100, 20));
-	addCascadeButton.OnClick([=](wi::gui::EventArgs args) {
+	addCascadeButton.OnClick([=](lb::gui::EventArgs args) {
 		float prev_cascade = 1;
 		if (!light->cascade_distances.empty())
 		{
@@ -525,13 +525,13 @@ void LightWindow::RefreshCascades()
 
 void LightWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
 	float jump = 20;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = 140;
@@ -541,7 +541,7 @@ void LightWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_right = 40;
@@ -549,7 +549,7 @@ void LightWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

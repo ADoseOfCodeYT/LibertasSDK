@@ -6,7 +6,7 @@
 #include "wiCanvas.h"
 #include "wiPrimitive.h"
 
-namespace wi::image
+namespace lb::image
 {
 	// Do not alter order or value because it is bound to lua manually!
 	enum STENCILMODE
@@ -104,22 +104,22 @@ namespace wi::image
 		uint8_t stencilRef = 0;
 		STENCILMODE stencilComp = STENCILMODE_DISABLED;
 		STENCILREFMODE stencilRefMode = STENCILREFMODE_ALL;
-		wi::enums::BLENDMODE blendFlag = wi::enums::BLENDMODE_ALPHA;
+		lb::enums::BLENDMODE blendFlag = lb::enums::BLENDMODE_ALPHA;
 		SAMPLEMODE sampleFlag = SAMPLEMODE_MIRROR;
 		QUALITY quality = QUALITY_LINEAR;
 
-		const wi::graphics::Texture* maskMap = nullptr;
-		const wi::graphics::Texture* backgroundMap = nullptr;
+		const lb::graphics::Texture* maskMap = nullptr;
+		const lb::graphics::Texture* backgroundMap = nullptr;
 		int image_subresource = -1;
 		int mask_subresource = -1;
 		int background_subresource = -1;
 
 		// Set a mask map that will be used to multiply the base image
-		constexpr void setMaskMap(const wi::graphics::Texture* tex) { maskMap = tex; }
+		constexpr void setMaskMap(const lb::graphics::Texture* tex) { maskMap = tex; }
 		// Set a texture that will be used to blend to the transparent part of the image with screen coordinates
 		//	Will be used if using enableBackground()
-		//	If you don't set this per image, then wi::image::SetBackground() will be used instead
-		constexpr void setBackgroundMap(const wi::graphics::Texture* tex) { backgroundMap = tex; }
+		//	If you don't set this per image, then lb::image::SetBackground() will be used instead
+		constexpr void setBackgroundMap(const lb::graphics::Texture* tex) { backgroundMap = tex; }
 
 		constexpr bool isDrawRectEnabled() const { return _flags & DRAWRECT; }
 		constexpr bool isDrawRect2Enabled() const { return _flags & DRAWRECT2; }
@@ -146,7 +146,7 @@ namespace wi::image
 		// enable full screen override. It will draw the image over the full screen, disabling any positioning and sizing setup
 		constexpr void enableFullScreen() { _flags |= FULLSCREEN; }
 		// enable background, which samples a background screen texture on transparent areas instead of alpha blending
-		//	the background tex should be bound with wi::image::SetBackground() beforehand
+		//	the background tex should be bound with lb::image::SetBackground() beforehand
 		constexpr void enableBackground() { _flags |= BACKGROUND; }
 		// enable HDR10 output mapping, if this image can be interpreted in linear space and converted to HDR10 display format
 		constexpr void enableHDR10OutputMapping() { _flags |= OUTPUT_COLOR_SPACE_HDR10_ST2084; }
@@ -198,7 +198,7 @@ namespace wi::image
 
 		Params(
 			const XMFLOAT4& color,
-			wi::enums::BLENDMODE blendFlag = wi::enums::BLENDMODE_ALPHA,
+			lb::enums::BLENDMODE blendFlag = lb::enums::BLENDMODE_ALPHA,
 			bool background = false
 		) :
 			color(color),
@@ -211,7 +211,7 @@ namespace wi::image
 		}
 
 		Params(
-			const wi::primitive::Hitbox2D& hitbox, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1)
+			const lb::primitive::Hitbox2D& hitbox, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1)
 		) :
 			pos(XMFLOAT3(hitbox.pos.x, hitbox.pos.y, 0)),
 			siz(hitbox.siz),
@@ -221,13 +221,13 @@ namespace wi::image
 
 
 	// Set canvas to handle DPI-aware image rendering (applied to all image rendering commands on the current thread)
-	void SetCanvas(const wi::Canvas& current_canvas);
+	void SetCanvas(const lb::Canvas& current_canvas);
 
 	// Set a background texture (applied to all image rendering commands on the current thread that used enableBackground())
-	void SetBackground(const wi::graphics::Texture& texture);
+	void SetBackground(const lb::graphics::Texture& texture);
 
 	// Draw the specified texture with the specified parameters
-	void Draw(const wi::graphics::Texture* texture, const Params& params, wi::graphics::CommandList cmd);
+	void Draw(const lb::graphics::Texture* texture, const Params& params, lb::graphics::CommandList cmd);
 
 	// Initializes the image renderer
 	void Initialize();

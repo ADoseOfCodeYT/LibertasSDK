@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "CameraComponentWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void CameraPreview::RenderPreview()
 {
@@ -27,23 +27,23 @@ void CameraPreview::RenderPreview()
 		}
 	}
 }
-void CameraPreview::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+void CameraPreview::Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const
 {
-	wi::gui::Widget::Render(canvas, cmd);
+	lb::gui::Widget::Render(canvas, cmd);
 
 	if (renderpath.scene != nullptr && renderpath.camera != nullptr)
 	{
-		wi::image::Params params;
+		lb::image::Params params;
 		params.pos = translation;
 		params.siz = XMFLOAT2(scale.x, scale.y);
 		params.color = shadow_color;
-		params.blendFlag = wi::enums::BLENDMODE_ALPHA;
+		params.blendFlag = lb::enums::BLENDMODE_ALPHA;
 		params.enableCornerRounding();
 		params.corners_rounding[0].radius = 10;
 		params.corners_rounding[1].radius = 10;
 		params.corners_rounding[2].radius = 10;
 		params.corners_rounding[3].radius = 10;
-		wi::image::Draw(nullptr, params, cmd);
+		lb::image::Draw(nullptr, params, cmd);
 
 		params.pos.x += 4;
 		params.pos.y += 4;
@@ -53,27 +53,27 @@ void CameraPreview::Render(const wi::Canvas& canvas, wi::graphics::CommandList c
 		params.corners_rounding[1].radius = 8;
 		params.corners_rounding[2].radius = 8;
 		params.corners_rounding[3].radius = 8;
-		params.color = wi::Color::White();
-		params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-		wi::image::Draw(renderpath.GetLastPostprocessRT(), params, cmd);
+		params.color = lb::Color::White();
+		params.blendFlag = lb::enums::BLENDMODE_OPAQUE;
+		lb::image::Draw(renderpath.GetLastPostprocessRT(), params, cmd);
 
-		wi::font::Draw("Camera preview:", wi::font::Params(params.pos.x + 2, params.pos.y + 2), cmd);
+		lb::font::Draw("Camera preview:", lb::font::Params(params.pos.x + 2, params.pos.y + 2), cmd);
 	}
 }
 
 void CameraComponentWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_CAMERA " Camera", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_CAMERA " Camera", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	editor->GetCurrentEditorScene().camera_transform.MatrixTransform(editor->GetCurrentEditorScene().camera.GetInvView());
 	editor->GetCurrentEditorScene().camera_transform.UpdateTransform();
 
 	SetSize(XMFLOAT2(320, 400));
 
 	closeButton.SetTooltip("Delete CameraComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -95,8 +95,8 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	farPlaneSlider.SetSize(XMFLOAT2(wid, hei));
 	farPlaneSlider.SetPos(XMFLOAT2(x, y));
 	farPlaneSlider.SetValue(editor->GetCurrentEditorScene().camera.zFarP);
-	farPlaneSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	farPlaneSlider.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			CameraComponent* camera = scene.cameras.GetComponent(x.entity);
@@ -113,8 +113,8 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	nearPlaneSlider.SetSize(XMFLOAT2(wid, hei));
 	nearPlaneSlider.SetPos(XMFLOAT2(x, y += step));
 	nearPlaneSlider.SetValue(editor->GetCurrentEditorScene().camera.zNearP);
-	nearPlaneSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	nearPlaneSlider.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			CameraComponent* camera = scene.cameras.GetComponent(x.entity);
@@ -131,8 +131,8 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	fovSlider.SetSize(XMFLOAT2(wid, hei));
 	fovSlider.SetPos(XMFLOAT2(x, y += step));
 	fovSlider.SetValue(editor->GetCurrentEditorScene().camera.fov / XM_PI * 180.f);
-	fovSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	fovSlider.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			CameraComponent* camera = scene.cameras.GetComponent(x.entity);
@@ -148,8 +148,8 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	focalLengthSlider.SetTooltip("Controls the depth of field effect's focus distance");
 	focalLengthSlider.SetSize(XMFLOAT2(wid, hei));
 	focalLengthSlider.SetPos(XMFLOAT2(x, y += step));
-	focalLengthSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	focalLengthSlider.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			CameraComponent* camera = scene.cameras.GetComponent(x.entity);
@@ -165,8 +165,8 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	apertureSizeSlider.SetTooltip("Controls the depth of field effect's strength");
 	apertureSizeSlider.SetSize(XMFLOAT2(wid, hei));
 	apertureSizeSlider.SetPos(XMFLOAT2(x, y += step));
-	apertureSizeSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	apertureSizeSlider.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			CameraComponent* camera = scene.cameras.GetComponent(x.entity);
@@ -182,8 +182,8 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	apertureShapeXSlider.SetTooltip("Controls the depth of field effect's bokeh shape");
 	apertureShapeXSlider.SetSize(XMFLOAT2(wid, hei));
 	apertureShapeXSlider.SetPos(XMFLOAT2(x, y += step));
-	apertureShapeXSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	apertureShapeXSlider.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			CameraComponent* camera = scene.cameras.GetComponent(x.entity);
@@ -199,8 +199,8 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	apertureShapeYSlider.SetTooltip("Controls the depth of field effect's bokeh shape");
 	apertureShapeYSlider.SetSize(XMFLOAT2(wid, hei));
 	apertureShapeYSlider.SetPos(XMFLOAT2(x, y += step));
-	apertureShapeYSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	apertureShapeYSlider.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			CameraComponent* camera = scene.cameras.GetComponent(x.entity);
@@ -257,13 +257,13 @@ void CameraComponentWindow::SetEntity(Entity entity)
 
 void CameraComponentWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
 	float jump = 20;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = 140;
@@ -273,7 +273,7 @@ void CameraComponentWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_right = 45;
@@ -281,7 +281,7 @@ void CameraComponentWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

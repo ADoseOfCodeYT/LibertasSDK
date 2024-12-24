@@ -5,7 +5,7 @@
 #include "wiVector.h"
 #include "wiCanvas.h"
 
-namespace wi::input
+namespace lb::input
 {
 	// Do not alter order as it is bound to lua manually!
 	enum BUTTON
@@ -176,14 +176,14 @@ namespace wi::input
 	{
 		float vibration_left = 0;	// left vibration motor (0: no vibration, 1: maximum vibration)
 		float vibration_right = 0;	// right vibration motor (0: no vibration, 1: maximum vibration)
-		wi::Color led_color;			// led color
+		lb::Color led_color;			// led color
 	};
 
 	// call once at app start
 	void Initialize();
 
 	// call once per frame
-	void Update(wi::platform::window_type window, wi::Canvas canvas);
+	void Update(lb::platform::window_type window, lb::Canvas canvas);
 
 	// Some things need to be cleared for next frame, like touches and delta states
 	//	These things can occasionally be updated outside engine's loop, depending on operating system messages
@@ -240,7 +240,7 @@ namespace wi::input
 		// current position of touch
 		XMFLOAT2 pos;
 	};
-	const wi::vector<Touch>& GetTouches();
+	const lb::vector<Touch>& GetTouches();
 
 	enum CURSOR
 	{

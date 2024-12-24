@@ -15,9 +15,9 @@
 #include <mutex>
 #include <unordered_map>
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi
+namespace lb
 {
 	struct StreamingTexture
 	{
@@ -37,13 +37,13 @@ namespace wi
 	struct ResourceInternal
 	{
 		resourcemanager::Flags flags = resourcemanager::Flags::NONE;
-		wi::graphics::Texture texture;
+		lb::graphics::Texture texture;
 		int srgb_subresource = -1;
-		wi::audio::Sound sound;
+		lb::audio::Sound sound;
 		std::string script;
 		size_t script_hash = 0;
-		wi::video::Video video;
-		wi::vector<uint8_t> filedata;
+		lb::video::Video video;
+		lb::vector<uint8_t> filedata;
 		int font_style = -1;
 
 		// Original filename:
@@ -62,22 +62,22 @@ namespace wi
 		uint32_t streaming_unload_delay = 0;
 
 		// Virtual texture things:
-		wi::graphics::GPUBuffer tile_pool;
-		wi::graphics::Texture texture_feedback;
-		wi::graphics::Texture texture_residency;
+		lb::graphics::GPUBuffer tile_pool;
+		lb::graphics::Texture texture_feedback;
+		lb::graphics::Texture texture_residency;
 	};
 
-	const wi::vector<uint8_t>& Resource::GetFileData() const
+	const lb::vector<uint8_t>& Resource::GetFileData() const
 	{
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->filedata;
 	}
-	const wi::graphics::Texture& Resource::GetTexture() const
+	const lb::graphics::Texture& Resource::GetTexture() const
 	{
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->texture;
 	}
-	const wi::audio::Sound& Resource::GetSound() const
+	const lb::audio::Sound& Resource::GetSound() const
 	{
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->sound;
@@ -94,7 +94,7 @@ namespace wi
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->script_hash;
 	}
-	const wi::video::Video& Resource::GetVideo() const
+	const lb::video::Video& Resource::GetVideo() const
 	{
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->video;
@@ -110,7 +110,7 @@ namespace wi
 		return resourceinternal->font_style;
 	}
 
-	void Resource::SetFileData(const wi::vector<uint8_t>& data)
+	void Resource::SetFileData(const lb::vector<uint8_t>& data)
 	{
 		if (internal_state == nullptr)
 		{
@@ -119,7 +119,7 @@ namespace wi
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->filedata = data;
 	}
-	void Resource::SetFileData(wi::vector<uint8_t>&& data)
+	void Resource::SetFileData(lb::vector<uint8_t>&& data)
 	{
 		if (internal_state == nullptr)
 		{
@@ -128,7 +128,7 @@ namespace wi
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->filedata = data;
 	}
-	void Resource::SetTexture(const wi::graphics::Texture& texture, int srgb_subresource)
+	void Resource::SetTexture(const lb::graphics::Texture& texture, int srgb_subresource)
 	{
 		if (internal_state == nullptr)
 		{
@@ -149,7 +149,7 @@ namespace wi
 		resourceinternal->texture_residency = residency;
 		resourceinternal->texture_feedback = feedback;
 	}
-	void Resource::SetSound(const wi::audio::Sound& sound)
+	void Resource::SetSound(const lb::audio::Sound& sound)
 	{
 		if (internal_state == nullptr)
 		{
@@ -167,7 +167,7 @@ namespace wi
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->script = script;
 	}
-	void Resource::SetVideo(const wi::video::Video& video)
+	void Resource::SetVideo(const lb::video::Video& video)
 	{
 		if (internal_state == nullptr)
 		{
@@ -220,7 +220,7 @@ namespace wi
 			VIDEO,
 			FONTSTYLE,
 		};
-		static const wi::unordered_map<std::string, DataType> types = {
+		static const lb::unordered_map<std::string, DataType> types = {
 			{"BASIS", DataType::IMAGE},
 			{"KTX2", DataType::IMAGE},
 			{"JPG", DataType::IMAGE},
@@ -237,9 +237,9 @@ namespace wi
 			{"MP4", DataType::VIDEO},
 			{"TTF", DataType::FONTSTYLE},
 		};
-		wi::vector<std::string> GetSupportedImageExtensions()
+		lb::vector<std::string> GetSupportedImageExtensions()
 		{
-			wi::vector<std::string> ret;
+			lb::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::IMAGE)
@@ -249,9 +249,9 @@ namespace wi
 			}
 			return ret;
 		}
-		wi::vector<std::string> GetSupportedSoundExtensions()
+		lb::vector<std::string> GetSupportedSoundExtensions()
 		{
-			wi::vector<std::string> ret;
+			lb::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::SOUND)
@@ -261,9 +261,9 @@ namespace wi
 			}
 			return ret;
 		}
-		wi::vector<std::string> GetSupportedVideoExtensions()
+		lb::vector<std::string> GetSupportedVideoExtensions()
 		{
-			wi::vector<std::string> ret;
+			lb::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::VIDEO)
@@ -273,9 +273,9 @@ namespace wi
 			}
 			return ret;
 		}
-		wi::vector<std::string> GetSupportedScriptExtensions()
+		lb::vector<std::string> GetSupportedScriptExtensions()
 		{
-			wi::vector<std::string> ret;
+			lb::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::SCRIPT)
@@ -285,9 +285,9 @@ namespace wi
 			}
 			return ret;
 		}
-		wi::vector<std::string> GetSupportedFontStyleExtensions()
+		lb::vector<std::string> GetSupportedFontStyleExtensions()
 		{
-			wi::vector<std::string> ret;
+			lb::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::FONTSTYLE)
@@ -306,7 +306,7 @@ namespace wi
 			ResourceInternal* resource
 		)
 		{
-			std::string ext = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(name));
+			std::string ext = lb::helper::toUpper(lb::helper::GetExtensionFromFileName(name));
 			DataType type;
 
 			// dynamic type selection:
@@ -328,7 +328,7 @@ namespace wi
 			{
 			case DataType::IMAGE:
 			{
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = lb::graphics::GetDevice();
 				if (!ext.compare("KTX2"))
 				{
 					flags &= ~Flags::STREAMING; // disable streaming
@@ -403,9 +403,9 @@ namespace wi
 									}
 								}
 							}
-							wi::vector<uint8_t> transcoded_data(transcoded_data_size);
+							lb::vector<uint8_t> transcoded_data(transcoded_data_size);
 
-							wi::vector<SubresourceData> InitData;
+							lb::vector<SubresourceData> InitData;
 							size_t transcoded_data_offset = 0;
 							for (uint32_t layer = 0; layer < layers; ++layer)
 							{
@@ -438,13 +438,13 @@ namespace wi
 											}
 											else
 											{
-												wi::backlog::post("KTX2 transcoding error while loading image!", wi::backlog::LogLevel::Error);
+												lb::backlog::post("KTX2 transcoding error while loading image!", lb::backlog::LogLevel::Error);
 												assert(0);
 											}
 										}
 										else
 										{
-											wi::backlog::post("KTX2 transcoding error while loading image level info!", wi::backlog::LogLevel::Error);
+											lb::backlog::post("KTX2 transcoding error while loading image level info!", lb::backlog::LogLevel::Error);
 											assert(0);
 										}
 									}
@@ -539,9 +539,9 @@ namespace wi
 											transcoded_data_size += bytes_per_block * pixel_or_block_count;
 										}
 									}
-									wi::vector<uint8_t> transcoded_data(transcoded_data_size);
+									lb::vector<uint8_t> transcoded_data(transcoded_data_size);
 
-									wi::vector<SubresourceData> InitData;
+									lb::vector<SubresourceData> InitData;
 									size_t transcoded_data_offset = 0;
 									for (uint32_t mip = 0; mip < desc.mip_levels; ++mip)
 									{
@@ -571,13 +571,13 @@ namespace wi
 											}
 											else
 											{
-												wi::backlog::post("BASIS transcoding error while loading image!", wi::backlog::LogLevel::Error);
+												lb::backlog::post("BASIS transcoding error while loading image!", lb::backlog::LogLevel::Error);
 												assert(0);
 											}
 										}
 										else
 										{
-											wi::backlog::post("BASIS transcoding error while loading image level info!", wi::backlog::LogLevel::Error);
+											lb::backlog::post("BASIS transcoding error while loading image level info!", lb::backlog::LogLevel::Error);
 											assert(0);
 										}
 									}
@@ -726,7 +726,7 @@ namespace wi
 							desc.height = AlignTo(desc.height, GetFormatBlockSize(desc.format));
 						}
 
-						wi::vector<SubresourceData> initdata_heap;
+						lb::vector<SubresourceData> initdata_heap;
 						SubresourceData initdata_stack[16] = {};
 						SubresourceData* initdata = nullptr;
 
@@ -934,7 +934,7 @@ namespace wi
 									uint16_t r, g, b;
 								};
 								const Color3* color3 = (const Color3*)rgba;
-								wi::Color16* color4 = (wi::Color16*)malloc(width * height * sizeof(wi::Color16));
+								lb::Color16* color4 = (lb::Color16*)malloc(width * height * sizeof(lb::Color16));
 								for (int i = 0; i < width * height; ++i)
 								{
 									color4[i].setR(color3[i].r);
@@ -980,7 +980,7 @@ namespace wi
 									uint8_t r, g, b;
 								};
 								const Color3* color3 = (const Color3*)rgba;
-								wi::Color* color4 = (wi::Color*)malloc(width * height * sizeof(wi::Color));
+								lb::Color* color4 = (lb::Color*)malloc(width * height * sizeof(lb::Color));
 								for (int i = 0; i < width * height; ++i)
 								{
 									color4[i].setR(color3[i].r);
@@ -1021,7 +1021,7 @@ namespace wi
 								desc.height != 16 ||
 								format != Format::R8G8B8A8_UNORM)
 							{
-								wi::helper::messageBox("The Dimensions must be 256 x 16 for color grading LUT and format must be RGB or RGBA!", "Error");
+								lb::helper::messageBox("The Dimensions must be 256 x 16 for color grading LUT and format must be RGB or RGBA!", "Error");
 							}
 							else
 							{
@@ -1094,7 +1094,7 @@ namespace wi
 								);
 							}
 
-							wi::renderer::AddDeferredMIPGen(resource->texture, true);
+							lb::renderer::AddDeferredMIPGen(resource->texture, true);
 
 							if (has_flag(flags, Flags::IMPORT_BLOCK_COMPRESSED))
 							{
@@ -1133,7 +1133,7 @@ namespace wi
 									);
 								}
 
-								wi::renderer::AddDeferredBlockCompression(uncompressed_src, resource->texture);
+								lb::renderer::AddDeferredBlockCompression(uncompressed_src, resource->texture);
 							}
 						}
 					}
@@ -1144,7 +1144,7 @@ namespace wi
 
 			case DataType::SOUND:
 			{
-				success = wi::audio::CreateSound(filedata, filesize, &resource->sound);
+				success = lb::audio::CreateSound(filedata, filesize, &resource->sound);
 			}
 			break;
 
@@ -1152,20 +1152,20 @@ namespace wi
 			{
 				resource->script.resize(filesize);
 				std::memcpy(resource->script.data(), filedata, filesize);
-				resource->script_hash = wi::helper::string_hash(resource->script.c_str());
+				resource->script_hash = lb::helper::string_hash(resource->script.c_str());
 				success = true;
 			}
 			break;
 
 			case DataType::VIDEO:
 			{
-				success = wi::video::CreateVideo(filedata, filesize, &resource->video);
+				success = lb::video::CreateVideo(filedata, filesize, &resource->video);
 			}
 			break;
 
 			case DataType::FONTSTYLE:
 			{
-				resource->font_style = wi::font::AddFontStyle(name, filedata, filesize, true);
+				resource->font_style = lb::font::AddFontStyle(name, filedata, filesize, true);
 				success = resource->font_style >= 0;
 			}
 			break;
@@ -1205,11 +1205,11 @@ namespace wi
 			uint64_t timestamp = 0;
 			if(!container_filename.empty())
 			{
-				timestamp = wi::helper::FileTimestamp(container_filename);
+				timestamp = lb::helper::FileTimestamp(container_filename);
 			}
 			else
 			{
-				timestamp = wi::helper::FileTimestamp(name);
+				timestamp = lb::helper::FileTimestamp(name);
 			}
 
 			if (resource == nullptr || resource->timestamp < timestamp)
@@ -1261,7 +1261,7 @@ namespace wi
 			{
 				if (resource->filedata.empty())
 				{
-					if (!wi::helper::FileRead(resource->container_filename, resource->filedata, resource->container_filesize, resource->container_fileoffset))
+					if (!lb::helper::FileRead(resource->container_filename, resource->filedata, resource->container_filesize, resource->container_fileoffset))
 					{
 						resource.reset();
 						return Resource();
@@ -1318,8 +1318,8 @@ namespace wi
 			locker.unlock();
 		}
 
-		wi::jobsystem::context streaming_ctx;
-		wi::vector<std::shared_ptr<ResourceInternal>> streaming_texture_jobs;
+		lb::jobsystem::context streaming_ctx;
+		lb::vector<std::shared_ptr<ResourceInternal>> streaming_texture_jobs;
 		struct StreamingTextureReplace
 		{
 			std::shared_ptr<ResourceInternal> resource;
@@ -1327,7 +1327,7 @@ namespace wi
 			int srgb_subresource = -1;
 		};
 		std::mutex streaming_replacement_mutex;
-		wi::vector<StreamingTextureReplace> streaming_texture_replacements;
+		lb::vector<StreamingTextureReplace> streaming_texture_replacements;
 		float streaming_threshold = 0.8f;
 		float streaming_fade_speed = 4;
 
@@ -1367,7 +1367,7 @@ namespace wi
 					const float mip_offset = float(resource->streaming_texture.mip_count - desc.mip_levels);
 					float min_lod_clamp_absolute_next = resource->streaming_texture.min_lod_clamp_absolute - dt * streaming_fade_speed;
 					min_lod_clamp_absolute_next = std::max(mip_offset, min_lod_clamp_absolute_next);
-					if (wi::math::float_equal(min_lod_clamp_absolute_next, resource->streaming_texture.min_lod_clamp_absolute))
+					if (lb::math::float_equal(min_lod_clamp_absolute_next, resource->streaming_texture.min_lod_clamp_absolute))
 						continue;
 					resource->streaming_texture.min_lod_clamp_absolute = min_lod_clamp_absolute_next;
 
@@ -1405,7 +1405,7 @@ namespace wi
 			}
 
 			// If previous streaming jobs were not finished, we cancel this until next frame:
-			if (wi::jobsystem::IsBusy(streaming_ctx))
+			if (lb::jobsystem::IsBusy(streaming_ctx))
 			{
 				locker.unlock();
 				return;
@@ -1429,8 +1429,8 @@ namespace wi
 				return;
 
 			// One low priority thread will be responsible for streaming, to not cause any hitching while rendering:
-			streaming_ctx.priority = wi::jobsystem::Priority::Streaming;
-			wi::jobsystem::Execute(streaming_ctx, [](wi::jobsystem::JobArgs args) {
+			streaming_ctx.priority = lb::jobsystem::Priority::Streaming;
+			lb::jobsystem::Execute(streaming_ctx, [](lb::jobsystem::JobArgs args) {
 				for(auto& resource : streaming_texture_jobs)
 				{
 					TextureDesc desc = resource->texture.desc;
@@ -1479,13 +1479,13 @@ namespace wi
 						const size_t mip_data_offset = resource->streaming_texture.streaming_data[mip_offset].data_offset;
 						const uint8_t* firstmipdata = resource->filedata.data();
 
-						static wi::vector<uint8_t> streaming_file; // make this static to not reallocate for each file loading
+						static lb::vector<uint8_t> streaming_file; // make this static to not reallocate for each file loading
 						if (firstmipdata == nullptr)
 						{
 							// If file data is not available, then open the file partially with the streaming file parameters:
 							size_t filesize = resource->container_filesize - mip_data_offset;
 							size_t fileoffset = resource->container_fileoffset + mip_data_offset;
-							if (!wi::helper::FileRead(
+							if (!lb::helper::FileRead(
 								resource->container_filename,
 								streaming_file,
 								filesize,
@@ -1551,7 +1551,7 @@ namespace wi
 				if (resourceinternal == nullptr)
 					continue;
 
-				uint64_t timestamp = wi::helper::FileTimestamp(resourceinternal->filename);
+				uint64_t timestamp = lb::helper::FileTimestamp(resourceinternal->filename);
 				if (resourceinternal->timestamp < timestamp)
 					return true;
 			}
@@ -1568,36 +1568,36 @@ namespace wi
 				if (resourceinternal == nullptr)
 					continue;
 
-				uint64_t timestamp = wi::helper::FileTimestamp(resourceinternal->filename);
+				uint64_t timestamp = lb::helper::FileTimestamp(resourceinternal->filename);
 				if (resourceinternal->timestamp < timestamp)
 				{
-					wi::vector<uint8_t> filedata;
-					if (wi::helper::FileRead(resourceinternal->filename, filedata))
+					lb::vector<uint8_t> filedata;
+					if (lb::helper::FileRead(resourceinternal->filename, filedata))
 					{
 						if (resourceinternal->streaming_texture.mip_count > 1)
-							wi::jobsystem::Wait(streaming_ctx); // reloading a resource that is potentially streaming needs to wait for current streaming job to end
+							lb::jobsystem::Wait(streaming_ctx); // reloading a resource that is potentially streaming needs to wait for current streaming job to end
 						if (LoadResourceDirectly(resourceinternal->filename, resourceinternal->flags, filedata.data(), filedata.size(), resourceinternal.get()))
 						{
 							resourceinternal->timestamp = timestamp;
 							resourceinternal->container_filename = resourceinternal->filename;
 							resourceinternal->container_fileoffset = 0;
 							resourceinternal->container_filesize = ~0ull;
-							wi::backlog::post("[resourcemanager] reload success: " + resourceinternal->filename);
+							lb::backlog::post("[resourcemanager] reload success: " + resourceinternal->filename);
 						}
 						else
 						{
-							wi::backlog::post("[resourcemanager] reload failure - LoadResourceDirectly returned false: " + resourceinternal->filename, wi::backlog::LogLevel::Error);
+							lb::backlog::post("[resourcemanager] reload failure - LoadResourceDirectly returned false: " + resourceinternal->filename, lb::backlog::LogLevel::Error);
 						}
 					}
 					else
 					{
-						wi::backlog::post("[resourcemanager] reload failure - file data could not be read: " + resourceinternal->filename, wi::backlog::LogLevel::Error);
+						lb::backlog::post("[resourcemanager] reload failure - file data could not be read: " + resourceinternal->filename, lb::backlog::LogLevel::Error);
 					}
 				}
 			}
 		}
 
-		void Serialize_READ(wi::Archive& archive, ResourceSerializer& seri)
+		void Serialize_READ(lb::Archive& archive, ResourceSerializer& seri)
 		{
 			assert(archive.IsReadMode());
 			size_t serializable_count = 0;
@@ -1609,11 +1609,11 @@ namespace wi
 				const uint8_t* filedata = nullptr;
 				size_t filesize = 0;
 			};
-			wi::vector<TempResource> temp_resources;
+			lb::vector<TempResource> temp_resources;
 			temp_resources.resize(serializable_count);
 
-			wi::jobsystem::context ctx;
-			ctx.priority = wi::jobsystem::Priority::Low;
+			lb::jobsystem::context ctx;
+			ctx.priority = lb::jobsystem::Priority::Low;
 
 			for (size_t i = 0; i < serializable_count; ++i)
 			{
@@ -1638,7 +1638,7 @@ namespace wi
 					continue;
 
 				// "Loading" the resource can happen asynchronously to serialization of file data, to improve performance
-				wi::jobsystem::Execute(ctx, [i, &temp_resources, &seri, &archive, file_offset](wi::jobsystem::JobArgs args) {
+				lb::jobsystem::Execute(ctx, [i, &temp_resources, &seri, &archive, file_offset](lb::jobsystem::JobArgs args) {
 					auto& tmp_resource = temp_resources[i];
 					auto res = Load(
 						tmp_resource.name,
@@ -1654,9 +1654,9 @@ namespace wi
 					seri_locker.unlock();
 				});
 			}
-			wi::jobsystem::Wait(ctx);
+			lb::jobsystem::Wait(ctx);
 		}
-		void Serialize_WRITE(wi::Archive& archive, const wi::unordered_set<std::string>& resource_names)
+		void Serialize_WRITE(lb::Archive& archive, const lb::unordered_set<std::string>& resource_names)
 		{
 			assert(!archive.IsReadMode());
 
@@ -1696,11 +1696,11 @@ namespace wi
 					if (resource != nullptr)
 					{
 						std::string name = it->first;
-						wi::helper::MakePathRelative(archive.GetSourceDirectory(), name);
+						lb::helper::MakePathRelative(archive.GetSourceDirectory(), name);
 
 						if (resource->filedata.empty())
 						{
-							wi::helper::FileRead(
+							lb::helper::FileRead(
 								resource->container_filename,
 								resource->filedata,
 								resource->container_filesize,

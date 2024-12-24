@@ -11,22 +11,22 @@ private:
 	float angle = 0;
 	float angle_start = 0;
 	bool has_selected_transform = false;
-	wi::vector<uint64_t> temp_filters;
+	lb::vector<uint64_t> temp_filters;
 public:
 
-	void Update(const wi::scene::CameraComponent& camera, const XMFLOAT4& currentMouse, const wi::Canvas& canvas);
-	void Draw(const wi::scene::CameraComponent& camera, const XMFLOAT4& currentMouse, wi::graphics::CommandList cmd) const;
+	void Update(const lb::scene::CameraComponent& camera, const XMFLOAT4& currentMouse, const lb::Canvas& canvas);
+	void Draw(const lb::scene::CameraComponent& camera, const XMFLOAT4& currentMouse, lb::graphics::CommandList cmd) const;
 
 	// Attach selection to translator temporarily
 	void PreTranslate();
 	// Apply translator to selection
 	void PostTranslate();
 
-	wi::scene::Scene* scene = nullptr;
-	wi::scene::TransformComponent transform;
-	wi::vector<wi::scene::PickResult> selected; // all the selected picks
-	wi::unordered_set<wi::ecs::Entity> selectedEntitiesLookup; // fast lookup for selected entities
-	wi::vector<wi::ecs::Entity> selectedEntitiesNonRecursive; // selected entities that don't contain entities that would be included in recursive iterations
+	lb::scene::Scene* scene = nullptr;
+	lb::scene::TransformComponent transform;
+	lb::vector<lb::scene::PickResult> selected; // all the selected picks
+	lb::unordered_set<lb::ecs::Entity> selectedEntitiesLookup; // fast lookup for selected entities
+	lb::vector<lb::ecs::Entity> selectedEntitiesNonRecursive; // selected entities that don't contain entities that would be included in recursive iterations
 
 	float scale_snap = 1;
 	float rotate_snap = XM_PIDIV4;
@@ -45,8 +45,8 @@ public:
 		TRANSLATOR_XYZ,
 	} state = TRANSLATOR_IDLE;
 
-	XMMATRIX GetMirrorMatrix(TRANSLATOR_STATE state, const wi::scene::CameraComponent& camera) const;
-	void WriteAxisText(TRANSLATOR_STATE axis, const wi::scene::CameraComponent& camera, char* text) const;
+	XMMATRIX GetMirrorMatrix(TRANSLATOR_STATE state, const lb::scene::CameraComponent& camera) const;
+	void WriteAxisText(TRANSLATOR_STATE axis, const lb::scene::CameraComponent& camera, char* text) const;
 
 	float dist = 1;
 
@@ -76,8 +76,8 @@ public:
 
 	bool IsInteracting() const { return state != TRANSLATOR_IDLE; }
 
-	wi::scene::TransformComponent transform_start;
-	wi::vector<XMFLOAT4X4> matrices_start;
-	wi::vector<XMFLOAT4X4> matrices_current;
+	lb::scene::TransformComponent transform_start;
+	lb::vector<XMFLOAT4X4> matrices_start;
+	lb::vector<XMFLOAT4X4> matrices_current;
 };
 

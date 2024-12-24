@@ -6,7 +6,7 @@
 
 #include <functional>
 
-namespace wi
+namespace lb
 {
 
 	class Application;
@@ -15,12 +15,12 @@ namespace wi
 		public RenderPath2D
 	{
 	protected:
-		wi::jobsystem::context ctx;
-		wi::vector<std::function<void(wi::jobsystem::JobArgs)>> tasks;
+		lb::jobsystem::context ctx;
+		lb::vector<std::function<void(lb::jobsystem::JobArgs)>> tasks;
 		std::function<void()> finish;
 		uint32_t launchedTasks = 0;
 	public:
-		wi::Resource backgroundTexture;
+		lb::Resource backgroundTexture;
 
 		enum class BackgroundMode
 		{
@@ -30,9 +30,9 @@ namespace wi
 		} background_mode = BackgroundMode::Fill;
 
 		//Add a loading task which should be executed
-		void addLoadingFunction(std::function<void(wi::jobsystem::JobArgs)> loadingFunction);
+		void addLoadingFunction(std::function<void(lb::jobsystem::JobArgs)> loadingFunction);
 		//Helper for loading a whole renderable component
-		void addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds = 0, wi::Color fadeColor = wi::Color(0, 0, 0, 255));
+		void addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds = 0, lb::Color fadeColor = lb::Color(0, 0, 0, 255));
 		//Set a function that should be called when the loading finishes
 		void onFinished(std::function<void()> finishFunction);
 		//See if the loading is currently running
@@ -45,7 +45,7 @@ namespace wi
 		//Start Executing the tasks and mark the loading as active
 		void Start() override;
 
-		void Compose(wi::graphics::CommandList cmd) const override;
+		void Compose(lb::graphics::CommandList cmd) const override;
 	};
 
 }

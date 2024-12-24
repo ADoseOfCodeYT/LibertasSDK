@@ -5,7 +5,7 @@
 #include "wiRenderPath_BindLua.h"
 
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	class RenderPath2D_BindLua : public RenderPath_BindLua

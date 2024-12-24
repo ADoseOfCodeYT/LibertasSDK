@@ -1,32 +1,32 @@
 #pragma once
 class EditorComponent;
 
-class PaintToolWindow : public wi::gui::Window
+class PaintToolWindow : public lb::gui::Window
 {
 	float rot = 0;
 	float stroke_dist = 0;
 	size_t history_textureIndex = 0;
 	struct TextureSlot
 	{
-		wi::graphics::Texture texture;
+		lb::graphics::Texture texture;
 		int srgb_subresource = -1;
 	};
-	wi::vector<TextureSlot> history_textures;
-	TextureSlot GetEditTextureSlot(const wi::scene::MaterialComponent& material, int* uvset = nullptr);
-	void ReplaceEditTextureSlot(wi::scene::MaterialComponent& material, const TextureSlot& textureslot);
+	lb::vector<TextureSlot> history_textures;
+	TextureSlot GetEditTextureSlot(const lb::scene::MaterialComponent& material, int* uvset = nullptr);
+	void ReplaceEditTextureSlot(lb::scene::MaterialComponent& material, const TextureSlot& textureslot);
 
-	wi::unordered_map<wi::ecs::Entity, wi::Archive> historyStartDatas;
+	lb::unordered_map<lb::ecs::Entity, lb::Archive> historyStartDatas;
 
 	struct SculptingIndex
 	{
 		size_t ind;
 		float affection;
 	};
-	wi::vector<SculptingIndex> sculpting_indices;
+	lb::vector<SculptingIndex> sculpting_indices;
 	XMFLOAT3 sculpting_normal = XMFLOAT3(0, 0, 0);
 
-	wi::Resource brushTex;
-	wi::Resource revealTex;
+	lb::Resource brushTex;
+	lb::Resource revealTex;
 
 	struct Stroke
 	{
@@ -40,32 +40,32 @@ public:
 
 	EditorComponent* editor = nullptr;
 
-	wi::gui::ComboBox modeComboBox;
-	wi::gui::Label infoLabel;
-	wi::gui::Slider radiusSlider;
-	wi::gui::Slider amountSlider;
-	wi::gui::Slider smoothnessSlider;
-	wi::gui::Slider spacingSlider;
-	wi::gui::Slider rotationSlider;
-	wi::gui::Slider stabilizerSlider;
-	wi::gui::CheckBox backfaceCheckBox;
-	wi::gui::CheckBox wireCheckBox;
-	wi::gui::CheckBox pressureCheckBox;
-	wi::gui::CheckBox alphaCheckBox;
-	wi::gui::CheckBox terrainCheckBox;
-	wi::gui::ColorPicker colorPicker;
-	wi::gui::ComboBox textureSlotComboBox;
-	wi::gui::ComboBox brushShapeComboBox;
-	wi::gui::Button saveTextureButton;
-	wi::gui::Button brushTextureButton;
-	wi::gui::Button revealTextureButton;
-	wi::gui::ComboBox axisCombo;
+	lb::gui::ComboBox modeComboBox;
+	lb::gui::Label infoLabel;
+	lb::gui::Slider radiusSlider;
+	lb::gui::Slider amountSlider;
+	lb::gui::Slider smoothnessSlider;
+	lb::gui::Slider spacingSlider;
+	lb::gui::Slider rotationSlider;
+	lb::gui::Slider stabilizerSlider;
+	lb::gui::CheckBox backfaceCheckBox;
+	lb::gui::CheckBox wireCheckBox;
+	lb::gui::CheckBox pressureCheckBox;
+	lb::gui::CheckBox alphaCheckBox;
+	lb::gui::CheckBox terrainCheckBox;
+	lb::gui::ColorPicker colorPicker;
+	lb::gui::ComboBox textureSlotComboBox;
+	lb::gui::ComboBox brushShapeComboBox;
+	lb::gui::Button saveTextureButton;
+	lb::gui::Button brushTextureButton;
+	lb::gui::Button revealTextureButton;
+	lb::gui::ComboBox axisCombo;
 
 	void Update(float dt);
-	void DrawBrush(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const;
+	void DrawBrush(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const;
 
 	XMFLOAT2 pos = XMFLOAT2(0, 0);
-	wi::scene::PickResult brushIntersect;
+	lb::scene::PickResult brushIntersect;
 
 	enum MODE
 	{
@@ -92,17 +92,17 @@ public:
 		Z
 	};
 
-	wi::vector<wi::gui::Button> terrain_material_buttons;
+	lb::vector<lb::gui::Button> terrain_material_buttons;
 	size_t terrain_material_layer = 0;
 
 	float texture_paint_radius = 50;
 	float vertex_paint_radius = 0.1f;
 	float terrain_paint_radius = 5;
 
-	wi::Archive* currentHistory = nullptr;
-	void WriteHistoryData(wi::ecs::Entity entity, wi::Archive& archive, wi::graphics::CommandList cmd = wi::graphics::CommandList());
-	void RecordHistory(wi::ecs::Entity entity, wi::graphics::CommandList cmd = wi::graphics::CommandList());
-	void ConsumeHistoryOperation(wi::Archive& archive, bool undo);
+	lb::Archive* currentHistory = nullptr;
+	void WriteHistoryData(lb::ecs::Entity entity, lb::Archive& archive, lb::graphics::CommandList cmd = lb::graphics::CommandList());
+	void RecordHistory(lb::ecs::Entity entity, lb::graphics::CommandList cmd = lb::graphics::CommandList());
+	void ConsumeHistoryOperation(lb::Archive& archive, bool undo);
 
 	void ResizeLayout() override;
 

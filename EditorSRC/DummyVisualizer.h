@@ -2,7 +2,7 @@
 
 struct DummyVisualizer
 {
-	wi::graphics::GPUBuffer buffer;
+	lb::graphics::GPUBuffer buffer;
 
 	void Draw(
 		const XMFLOAT3* vertices,
@@ -12,16 +12,16 @@ struct DummyVisualizer
 		const XMMATRIX& matrix,
 		const XMFLOAT4& color,
 		bool depth,
-		wi::graphics::CommandList cmd
+		lb::graphics::CommandList cmd
 	);
 };
 
 namespace dummy
 {
-	void draw_male(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd);
-	void draw_female(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd);
-	void draw_soldier(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd);
-	void draw_direction(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd);
-	void draw_waypoint(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd);
-	void draw_pickup(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd);
+	void draw_male(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd);
+	void draw_female(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd);
+	void draw_soldier(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd);
+	void draw_direction(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd);
+	void draw_waypoint(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd);
+	void draw_pickup(const XMMATRIX& matrix, const XMFLOAT4& color, bool depth, lb::graphics::CommandList cmd);
 }

@@ -2,7 +2,7 @@
 #include "CommonInclude.h"
 #include "wiGraphicsDevice.h"
 
-namespace wi::gpusortlib
+namespace lb::gpusortlib
 {
 	// Perform bitonic sort on a GPU dataset
 	//	maxCount				-	Maximum size of the dataset. GPU count can be smaller (see: counterBuffer_read param)
@@ -12,11 +12,11 @@ namespace wi::gpusortlib
 	//	indexBuffer_write		-	The index list which to sort. Contains index values which can index the sortBase_read buffer. This will be modified (Read + Write)
 	void Sort(
 		uint32_t maxCount, 
-		const wi::graphics::GPUBuffer& comparisonBuffer_read, 
-		const wi::graphics::GPUBuffer& counterBuffer_read, 
+		const lb::graphics::GPUBuffer& comparisonBuffer_read, 
+		const lb::graphics::GPUBuffer& counterBuffer_read, 
 		uint32_t counterReadOffset, 
-		const wi::graphics::GPUBuffer& indexBuffer_write,
-		wi::graphics::CommandList cmd
+		const lb::graphics::GPUBuffer& indexBuffer_write,
+		lb::graphics::CommandList cmd
 	);
 
 	void Initialize();

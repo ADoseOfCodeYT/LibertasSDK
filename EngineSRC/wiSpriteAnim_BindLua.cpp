@@ -1,7 +1,7 @@
 #include "wiSpriteAnim_BindLua.h"
 #include "wiMath_BindLua.h"
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	Luna<SpriteAnim_BindLua>::FunctionType SpriteAnim_BindLua::methods[] = {
@@ -44,25 +44,25 @@ namespace wi::lua
 		{ nullptr, nullptr }
 	};
 
-	SpriteAnim_BindLua::SpriteAnim_BindLua(const wi::Sprite::Anim& anim) :anim(anim)
+	SpriteAnim_BindLua::SpriteAnim_BindLua(const lb::Sprite::Anim& anim) :anim(anim)
 	{
 	}
 
 	SpriteAnim_BindLua::SpriteAnim_BindLua(lua_State* L)
 	{
-		anim = wi::Sprite::Anim();
+		anim = lb::Sprite::Anim();
 	}
 
 	int SpriteAnim_BindLua::SetRot(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.rot = wi::lua::SGetFloat(L, 1);
+			anim.rot = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetRot(float rot) not enough arguments!");
+			lb::lua::SError(L, "SetRot(float rot) not enough arguments!");
 		}
 		return 0;
 	}
@@ -72,72 +72,72 @@ namespace wi::lua
 	}
 	int SpriteAnim_BindLua::SetOpacity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.opa = wi::lua::SGetFloat(L, 1);
+			anim.opa = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetOpacity(float val) not enough arguments!");
+			lb::lua::SError(L, "SetOpacity(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetFade(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.fad = wi::lua::SGetFloat(L, 1);
+			anim.fad = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetFade(float val) not enough arguments!");
+			lb::lua::SError(L, "SetFade(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetWobbleAnimAmount(lua_State* L) 
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.wobbleAnim.amount = XMFLOAT2(wi::lua::SGetFloat(L, 1), wi::lua::SGetFloat(L, 1));
+			anim.wobbleAnim.amount = XMFLOAT2(lb::lua::SGetFloat(L, 1), lb::lua::SGetFloat(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetWobbleAnimAmount(float val) not enough arguments!");
+			lb::lua::SError(L, "SetWobbleAnimAmount(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetWobbleAnimSpeed(lua_State* L) 
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.wobbleAnim.speed = wi::lua::SGetFloat(L, 1);
+			anim.wobbleAnim.speed = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetWobbleAnimSpeed(float val) not enough arguments!");
+			lb::lua::SError(L, "SetWobbleAnimSpeed(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetRepeatable(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.repeatable = wi::lua::SGetBool(L, 1);
+			anim.repeatable = lb::lua::SGetBool(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetRepeatable(float val) not enough arguments!");
+			lb::lua::SError(L, "SetRepeatable(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetVelocity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -147,44 +147,44 @@ namespace wi::lua
 			}
 			else
 			{
-				wi::lua::SError(L, "SetVelocity(Vector val) argument is not a Vector!");
+				lb::lua::SError(L, "SetVelocity(Vector val) argument is not a Vector!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetVelocity(Vector val) not enough arguments!");
+			lb::lua::SError(L, "SetVelocity(Vector val) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetScaleX(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.scaleX = wi::lua::SGetFloat(L, 1);
+			anim.scaleX = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetScaleX(float val) not enough arguments!");
+			lb::lua::SError(L, "SetScaleX(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetScaleY(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.scaleY = wi::lua::SGetFloat(L, 1);
+			anim.scaleY = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetScaleY(float val) not enough arguments!");
+			lb::lua::SError(L, "SetScaleY(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetMovingTexAnim(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			MovingTexAnim_BindLua* data = Luna<MovingTexAnim_BindLua>::lightcheck(L, 1);
@@ -194,18 +194,18 @@ namespace wi::lua
 			}
 			else
 			{
-				wi::lua::SError(L, "SetMovingTexAnim(MovingTexAnim data) argument is not a MovingTexAnim!");
+				lb::lua::SError(L, "SetMovingTexAnim(MovingTexAnim data) argument is not a MovingTexAnim!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetMovingTexAnim(MovingTexAnim data) not enough arguments!");
+			lb::lua::SError(L, "SetMovingTexAnim(MovingTexAnim data) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteAnim_BindLua::SetDrawRecAnim(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			DrawRectAnim_BindLua* data = Luna<DrawRectAnim_BindLua>::lightcheck(L, 1);
@@ -215,19 +215,19 @@ namespace wi::lua
 			}
 			else
 			{
-				wi::lua::SError(L, "SetDrawRecAnim(DrawRecAnim data) argument is not a DrawRecAnim!");
+				lb::lua::SError(L, "SetDrawRecAnim(DrawRecAnim data) argument is not a DrawRecAnim!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDrawRecAnim(DrawRecAnim data) not enough arguments!");
+			lb::lua::SError(L, "SetDrawRecAnim(DrawRecAnim data) not enough arguments!");
 		}
 		return 0;
 	}
 
 	int SpriteAnim_BindLua::GetRot(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, anim.rot);
+		lb::lua::SSetFloat(L, anim.rot);
 		return 1;
 	}
 	int SpriteAnim_BindLua::GetRotation(lua_State* L)
@@ -236,17 +236,17 @@ namespace wi::lua
 	}
 	int SpriteAnim_BindLua::GetOpacity(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, anim.opa);
+		lb::lua::SSetFloat(L, anim.opa);
 		return 1;
 	}
 	int SpriteAnim_BindLua::GetFade(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, anim.fad);
+		lb::lua::SSetFloat(L, anim.fad);
 		return 1;
 	}
 	int SpriteAnim_BindLua::GetRepeatable(lua_State* L)
 	{
-		wi::lua::SSetBool(L, anim.repeatable);
+		lb::lua::SSetBool(L, anim.repeatable);
 		return 1;
 	}
 	int SpriteAnim_BindLua::GetVelocity(lua_State* L)
@@ -256,12 +256,12 @@ namespace wi::lua
 	}
 	int SpriteAnim_BindLua::GetScaleX(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, anim.scaleX);
+		lb::lua::SSetFloat(L, anim.scaleX);
 		return 1;
 	}
 	int SpriteAnim_BindLua::GetScaleY(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, anim.scaleY);
+		lb::lua::SSetFloat(L, anim.scaleY);
 		return 1;
 	}
 	int SpriteAnim_BindLua::GetMovingTexAnim(lua_State* L)
@@ -281,9 +281,9 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<SpriteAnim_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<MovingTexAnim_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<DrawRectAnim_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<SpriteAnim_BindLua>::Register(lb::lua::GetLuaState());
+			Luna<MovingTexAnim_BindLua>::Register(lb::lua::GetLuaState());
+			Luna<DrawRectAnim_BindLua>::Register(lb::lua::GetLuaState());
 		}
 	}
 
@@ -304,20 +304,20 @@ namespace wi::lua
 		{ nullptr, nullptr }
 	};
 
-	MovingTexAnim_BindLua::MovingTexAnim_BindLua(const wi::Sprite::Anim::MovingTexAnim& anim) :anim(anim)
+	MovingTexAnim_BindLua::MovingTexAnim_BindLua(const lb::Sprite::Anim::MovingTexAnim& anim) :anim(anim)
 	{
 	}
 
 	MovingTexAnim_BindLua::MovingTexAnim_BindLua(lua_State* L)
 	{
-		anim = wi::Sprite::Anim::MovingTexAnim();
-		int argc = wi::lua::SGetArgCount(L);
+		anim = lb::Sprite::Anim::MovingTexAnim();
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.speedX = wi::lua::SGetFloat(L, 1);
+			anim.speedX = lb::lua::SGetFloat(L, 1);
 			if (argc > 1)
 			{
-				anim.speedY = wi::lua::SGetFloat(L, 2);
+				anim.speedY = lb::lua::SGetFloat(L, 2);
 			}
 		}
 	}
@@ -328,39 +328,39 @@ namespace wi::lua
 
 	int MovingTexAnim_BindLua::SetSpeedX(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.speedX = wi::lua::SGetFloat(L, 1);
+			anim.speedX = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetSpeedX(float val) not enough arguments!");
+			lb::lua::SError(L, "SetSpeedX(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int MovingTexAnim_BindLua::SetSpeedY(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.speedY = wi::lua::SGetFloat(L, 1);
+			anim.speedY = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetSpeedY(float val) not enough arguments!");
+			lb::lua::SError(L, "SetSpeedY(float val) not enough arguments!");
 		}
 		return 0;
 	}
 
 	int MovingTexAnim_BindLua::GetSpeedX(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, anim.speedX);
+		lb::lua::SSetFloat(L, anim.speedX);
 		return 1;
 	}
 	int MovingTexAnim_BindLua::GetSpeedY(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, anim.speedY);
+		lb::lua::SSetFloat(L, anim.speedY);
 		return 1;
 	}
 
@@ -383,13 +383,13 @@ namespace wi::lua
 		{ NULL, NULL }
 	};
 
-	DrawRectAnim_BindLua::DrawRectAnim_BindLua(const wi::Sprite::Anim::DrawRectAnim& anim) :anim(anim)
+	DrawRectAnim_BindLua::DrawRectAnim_BindLua(const lb::Sprite::Anim::DrawRectAnim& anim) :anim(anim)
 	{
 	}
 
 	DrawRectAnim_BindLua::DrawRectAnim_BindLua(lua_State* L)
 	{
-		anim = wi::Sprite::Anim::DrawRectAnim();
+		anim = lb::Sprite::Anim::DrawRectAnim();
 	}
 
 	DrawRectAnim_BindLua::~DrawRectAnim_BindLua()
@@ -398,57 +398,57 @@ namespace wi::lua
 
 	int DrawRectAnim_BindLua::SetFrameRate(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.frameRate = wi::lua::SGetFloat(L, 1);
+			anim.frameRate = lb::lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetFrameRate(float val) not enough arguments!");
+			lb::lua::SError(L, "SetFrameRate(float val) not enough arguments!");
 		}
 		return 0;
 	}
 	int DrawRectAnim_BindLua::SetFrameCount(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.frameCount = wi::lua::SGetInt(L, 1);
+			anim.frameCount = lb::lua::SGetInt(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetFrameCount(int val) not enough arguments!");
+			lb::lua::SError(L, "SetFrameCount(int val) not enough arguments!");
 		}
 		return 0;
 	}
 	int DrawRectAnim_BindLua::SetHorizontalFrameCount(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			anim.horizontalFrameCount = wi::lua::SGetInt(L, 1);
+			anim.horizontalFrameCount = lb::lua::SGetInt(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetHorizontalFrameCount(int val) not enough arguments!");
+			lb::lua::SError(L, "SetHorizontalFrameCount(int val) not enough arguments!");
 		}
 		return 0;
 	}
 
 	int DrawRectAnim_BindLua::GetFrameRate(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, anim.frameRate);
+		lb::lua::SSetFloat(L, anim.frameRate);
 		return 1;
 	}
 	int DrawRectAnim_BindLua::GetFrameCount(lua_State* L)
 	{
-		wi::lua::SSetInt(L, anim.frameCount);
+		lb::lua::SSetInt(L, anim.frameCount);
 		return 1;
 	}
 	int DrawRectAnim_BindLua::GetHorizontalFrameCount(lua_State* L)
 	{
-		wi::lua::SSetInt(L, anim.horizontalFrameCount);
+		lb::lua::SSetInt(L, anim.horizontalFrameCount);
 		return 1;
 	}
 

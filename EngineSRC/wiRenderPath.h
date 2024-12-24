@@ -3,9 +3,9 @@
 #include "wiGraphicsDevice.h"
 #include "wiCanvas.h"
 
-namespace wi
+namespace lb
 {
-	class RenderPath : public wi::Canvas
+	class RenderPath : public lb::Canvas
 	{
 	private:
 		uint32_t layerMask = 0xFFFFFFFF;
@@ -33,11 +33,11 @@ namespace wi
 		virtual void Render() const {}
 		// Compose the rendered layers (for example blend the layers together as Images)
 		// This will be rendered to the backbuffer
-		virtual void Compose(wi::graphics::CommandList cmd) const {}
+		virtual void Compose(lb::graphics::CommandList cmd) const {}
 
 		inline uint32_t getLayerMask() const { return layerMask; }
 		inline void setlayerMask(uint32_t value) { layerMask = value; }
 
-		wi::graphics::ColorSpace colorspace = wi::graphics::ColorSpace::SRGB;
+		lb::graphics::ColorSpace colorspace = lb::graphics::ColorSpace::SRGB;
 	};
 }

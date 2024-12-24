@@ -3,9 +3,9 @@
 #include "wiMath_BindLua.h"
 #include "wiHelper.h"
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi::lua
+namespace lb::lua
 {
 
 	Luna<Texture_BindLua>::FunctionType Texture_BindLua::methods[] = {
@@ -27,42 +27,42 @@ namespace wi::lua
 
 	Texture_BindLua::Texture_BindLua(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			std::string name = wi::lua::SGetString(L, 1);
-			resource = wi::resourcemanager::Load(name);
+			std::string name = lb::lua::SGetString(L, 1);
+			resource = lb::resourcemanager::Load(name);
 		}
 	}
 
 	int Texture_BindLua::GetLogo(lua_State* L)
 	{
-		Luna<Texture_BindLua>::push(L, *wi::texturehelper::getLogo());
+		Luna<Texture_BindLua>::push(L, *lb::texturehelper::getLogo());
 		return 1;
 	}
 	int Texture_BindLua::CreateGradientTexture(lua_State* L)
 	{
-		wi::texturehelper::GradientType gradient_type = wi::texturehelper::GradientType::Linear;
+		lb::texturehelper::GradientType gradient_type = lb::texturehelper::GradientType::Linear;
 		uint32_t width = 256;
 		uint32_t height = 256;
 		XMFLOAT2 uv_start = XMFLOAT2(0, 0);
 		XMFLOAT2 uv_end = XMFLOAT2(0, 0);
-		wi::texturehelper::GradientFlags gradient_flags = wi::texturehelper::GradientFlags::None;
+		lb::texturehelper::GradientFlags gradient_flags = lb::texturehelper::GradientFlags::None;
 		std::string swizzle_string;
 		float perlin_scale = 1;
 		uint32_t perlin_seed = 1234u;
 		int perlin_octaves = 8;
 		float perlin_persistence = 0.5f;
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			gradient_type = (wi::texturehelper::GradientType)wi::lua::SGetInt(L, 1);
+			gradient_type = (lb::texturehelper::GradientType)lb::lua::SGetInt(L, 1);
 			if (argc > 1)
 			{
-				width = (uint32_t)wi::lua::SGetInt(L, 2);
+				width = (uint32_t)lb::lua::SGetInt(L, 2);
 				if (argc > 2)
 				{
-					height = (uint32_t)wi::lua::SGetInt(L, 3);
+					height = (uint32_t)lb::lua::SGetInt(L, 3);
 					if (argc > 3)
 					{
 						Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 4);
@@ -72,7 +72,7 @@ namespace wi::lua
 						}
 						else
 						{
-							wi::lua::SError(L, "CreateGradientTexture() uv_start argument is not a vector!");
+							lb::lua::SError(L, "CreateGradientTexture() uv_start argument is not a vector!");
 						}
 						if (argc > 4)
 						{
@@ -83,26 +83,26 @@ namespace wi::lua
 							}
 							else
 							{
-								wi::lua::SError(L, "CreateGradientTexture() uv_end argument is not a vector!");
+								lb::lua::SError(L, "CreateGradientTexture() uv_end argument is not a vector!");
 							}
 							if (argc > 5)
 							{
-								gradient_flags = (wi::texturehelper::GradientFlags)wi::lua::SGetInt(L, 6);
+								gradient_flags = (lb::texturehelper::GradientFlags)lb::lua::SGetInt(L, 6);
 								if (argc > 6)
 								{
-									swizzle_string = wi::lua::SGetString(L, 7);
+									swizzle_string = lb::lua::SGetString(L, 7);
 									if (argc > 7)
 									{
-										perlin_scale = wi::lua::SGetFloat(L, 8);
+										perlin_scale = lb::lua::SGetFloat(L, 8);
 										if (argc > 8)
 										{
-											perlin_seed = (uint32_t)wi::lua::SGetInt(L, 9);
+											perlin_seed = (uint32_t)lb::lua::SGetInt(L, 9);
 											if (argc > 9)
 											{
-												perlin_octaves = wi::lua::SGetInt(L, 10);
+												perlin_octaves = lb::lua::SGetInt(L, 10);
 												if (argc > 10)
 												{
-													perlin_persistence = wi::lua::SGetFloat(L, 11);
+													perlin_persistence = lb::lua::SGetFloat(L, 11);
 												}
 											}
 										}
@@ -114,12 +114,12 @@ namespace wi::lua
 				}
 			}
 		}
-		wi::graphics::Texture texture = wi::texturehelper::CreateGradientTexture(
+		lb::graphics::Texture texture = lb::texturehelper::CreateGradientTexture(
 			gradient_type,
 			width, height,
 			uv_start, uv_end,
 			gradient_flags,
-			wi::graphics::SwizzleFromString(swizzle_string.c_str()),
+			lb::graphics::SwizzleFromString(swizzle_string.c_str()),
 			perlin_scale,
 			perlin_seed,
 			perlin_octaves,
@@ -138,13 +138,13 @@ namespace wi::lua
 		float blend = 1;
 		float edge_smoothness = 0.04f;
 
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			width = (uint32_t)wi::lua::SGetInt(L, 1);
+			width = (uint32_t)lb::lua::SGetInt(L, 1);
 			if (argc > 1)
 			{
-				height = (uint32_t)wi::lua::SGetInt(L, 2);
+				height = (uint32_t)lb::lua::SGetInt(L, 2);
 				if (argc > 2)
 				{
 					Vector_BindLua* v1 = Luna<Vector_BindLua>::lightcheck(L, 3);
@@ -154,21 +154,21 @@ namespace wi::lua
 					}
 					else
 					{
-						wi::lua::SError(L, "CreateLensDistortionNormalMap() uv_start argument is not a vector!");
+						lb::lua::SError(L, "CreateLensDistortionNormalMap() uv_start argument is not a vector!");
 					}
 
 					if (argc > 3)
 					{
-						radius = wi::lua::SGetFloat(L, 4);
+						radius = lb::lua::SGetFloat(L, 4);
 						if (argc > 4)
 						{
-							squish = wi::lua::SGetFloat(L, 5);
+							squish = lb::lua::SGetFloat(L, 5);
 							if (argc > 5)
 							{
-								blend = wi::lua::SGetFloat(L, 6);
+								blend = lb::lua::SGetFloat(L, 6);
 								if (argc > 6)
 								{
-									edge_smoothness = wi::lua::SGetFloat(L, 7);
+									edge_smoothness = lb::lua::SGetFloat(L, 7);
 								}
 							}
 						}
@@ -177,7 +177,7 @@ namespace wi::lua
 			}
 		}
 
-		wi::graphics::Texture texture = wi::texturehelper::CreateLensDistortionNormalMap(
+		lb::graphics::Texture texture = lb::texturehelper::CreateLensDistortionNormalMap(
 			width, height,
 			uv_start,
 			radius,
@@ -190,63 +190,63 @@ namespace wi::lua
 	}
 	int Texture_BindLua::Save(lua_State* L)
 	{
-		if (wi::lua::SGetArgCount(L) == 0)
+		if (lb::lua::SGetArgCount(L) == 0)
 		{
-			wi::lua::SError(L, "Texture::Save(string filename) filename parameter is not provided!");
+			lb::lua::SError(L, "Texture::Save(string filename) filename parameter is not provided!");
 			return 0;
 		}
 		if (!resource.IsValid() || !resource.GetTexture().IsValid())
 		{
-			wi::lua::SError(L, "Texture::Save(string filename) texture is invalid!");
+			lb::lua::SError(L, "Texture::Save(string filename) texture is invalid!");
 			return 0;
 		}
-		wi::helper::saveTextureToFile(resource.GetTexture(), wi::lua::SGetString(L, 1));
+		lb::helper::saveTextureToFile(resource.GetTexture(), lb::lua::SGetString(L, 1));
 		return 0;
 	}
 
 	int Texture_BindLua::IsValid(lua_State* L)
 	{
-		wi::lua::SSetBool(L, resource.IsValid() && resource.GetTexture().IsValid());
+		lb::lua::SSetBool(L, resource.IsValid() && resource.GetTexture().IsValid());
 		return 1;
 	}
 	int Texture_BindLua::GetWidth(lua_State* L)
 	{
 		if (!resource.IsValid() || !resource.GetTexture().IsValid())
 		{
-			wi::lua::SSetInt(L, 0);
+			lb::lua::SSetInt(L, 0);
 			return 1;
 		}
-		wi::lua::SSetInt(L, resource.GetTexture().GetDesc().width);
+		lb::lua::SSetInt(L, resource.GetTexture().GetDesc().width);
 		return 1;
 	}
 	int Texture_BindLua::GetHeight(lua_State* L)
 	{
 		if (!resource.IsValid() || !resource.GetTexture().IsValid())
 		{
-			wi::lua::SSetInt(L, 0);
+			lb::lua::SSetInt(L, 0);
 			return 1;
 		}
-		wi::lua::SSetInt(L, resource.GetTexture().GetDesc().height);
+		lb::lua::SSetInt(L, resource.GetTexture().GetDesc().height);
 		return 1;
 	}
 	int Texture_BindLua::GetDepth(lua_State* L)
 	{
 		if (!resource.IsValid() || !resource.GetTexture().IsValid())
 		{
-			wi::lua::SSetInt(L, 0);
+			lb::lua::SSetInt(L, 0);
 			return 1;
 		}
-		wi::lua::SSetInt(L, resource.GetTexture().GetDesc().depth);
+		lb::lua::SSetInt(L, resource.GetTexture().GetDesc().depth);
 		return 1;
 	}
 	int Texture_BindLua::GetArraySize(lua_State* L)
 	{
 		if (!resource.IsValid() || !resource.GetTexture().IsValid())
 		{
-			wi::lua::SSetInt(L, 0);
+			lb::lua::SSetInt(L, 0);
 			return 1;
 		}
-		wi::lua::SSetInt(L, resource.GetTexture().GetDesc().array_size);
+		lb::lua::SSetInt(L, resource.GetTexture().GetDesc().array_size);
 		return 1;
 	}
 
@@ -256,9 +256,9 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Texture_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<Texture_BindLua>::push_global(wi::lua::GetLuaState(), "texturehelper");
-			wi::lua::RunText(R"(
+			Luna<Texture_BindLua>::Register(lb::lua::GetLuaState());
+			Luna<Texture_BindLua>::push_global(lb::lua::GetLuaState(), "texturehelper");
+			lb::lua::RunText(R"(
 GradientType = {
 	Linear = 0,
 	Circular = 1,

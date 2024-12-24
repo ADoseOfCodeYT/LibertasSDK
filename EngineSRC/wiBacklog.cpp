@@ -18,9 +18,9 @@
 #include <thread>
 #include <iostream>
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi::backlog
+namespace lb::backlog
 {
 	bool enabled = false;
 	bool was_ever_enabled = enabled;
@@ -36,13 +36,13 @@ namespace wi::backlog
 	float pos = 5;
 	float scroll = 0;
 	int historyPos = 0;
-	wi::font::Params font_params;
-	wi::SpinLock logLock;
+	lb::font::Params font_params;
+	lb::SpinLock logLock;
 	Texture backgroundTex;
 	bool refitscroll = false;
-	wi::gui::TextInputField inputField;
-	wi::gui::Button toggleButton;
-	wi::gui::GUI GUI;
+	lb::gui::TextInputField inputField;
+	lb::gui::Button toggleButton;
+	lb::gui::GUI GUI;
 
 	bool locked = false;
 	bool blockLuaExec = false;
@@ -60,9 +60,9 @@ namespace wi::backlog
 	}
 	void write_logfile()
 	{
-		static const std::string filename = wi::helper::GetCurrentPath() + "/log.txt";
+		static const std::string filename = lb::helper::GetCurrentPath() + "/log.txt";
 		std::string text = getText(); // will lock mutex
-		wi::helper::FileWrite(filename, (const uint8_t*)text.c_str(), text.length());
+		lb::helper::FileWrite(filename, (const uint8_t*)text.c_str(), text.length());
 	}
 
 	// The logwriter object will automatically write out the backlog to the temp folder when it's destroyed
@@ -84,35 +84,35 @@ namespace wi::backlog
 	{
 		scroll += dir;
 	}
-	void Update(const wi::Canvas& canvas, float dt)
+	void Update(const lb::Canvas& canvas, float dt)
 	{
 		if (!locked)
 		{
-			if (wi::input::Press(wi::input::KEYBOARD_BUTTON_HOME) && !GUI.IsTyping())
+			if (lb::input::Press(lb::input::KEYBOARD_BUTTON_HOME) && !GUI.IsTyping())
 			{
 				Toggle();
 			}
 
 			if (isActive())
 			{
-				if (wi::input::Press(wi::input::KEYBOARD_BUTTON_UP))
+				if (lb::input::Press(lb::input::KEYBOARD_BUTTON_UP))
 				{
 					historyPrev();
 				}
-				if (wi::input::Press(wi::input::KEYBOARD_BUTTON_DOWN))
+				if (lb::input::Press(lb::input::KEYBOARD_BUTTON_DOWN))
 				{
 					historyNext();
 				}
-				if (wi::input::Down(wi::input::KEYBOARD_BUTTON_PAGEUP))
+				if (lb::input::Down(lb::input::KEYBOARD_BUTTON_PAGEUP))
 				{
 					Scroll(1000.0f * dt);
 				}
-				if (wi::input::Down(wi::input::KEYBOARD_BUTTON_PAGEDOWN))
+				if (lb::input::Down(lb::input::KEYBOARD_BUTTON_PAGEDOWN))
 				{
 					Scroll(-1000.0f * dt);
 				}
 
-				Scroll(wi::input::GetPointer().z * 20);
+				Scroll(lb::input::GetPointer().z * 20);
 
 				static bool created = false;
 				if (!created)
@@ -120,7 +120,7 @@ namespace wi::backlog
 					created = true;
 					inputField.Create("");
 					inputField.SetCancelInputEnabled(false);
-					inputField.OnInputAccepted([](wi::gui::EventArgs args) {
+					inputField.OnInputAccepted([](lb::gui::EventArgs args) {
 						historyPos = 0;
 						post(args.sValue);
 						LogEntry entry;
@@ -133,7 +133,7 @@ namespace wi::backlog
 						}
 						if (!blockLuaExec)
 						{
-							wi::lua::RunText(args.sValue);
+							lb::lua::RunText(args.sValue);
 						}
 						else
 						{
@@ -141,36 +141,36 @@ namespace wi::backlog
 						}
 						inputField.SetText("");
 					});
-					wi::Color theme_color_idle = wi::Color(30, 40, 60, 200);
-					wi::Color theme_color_focus = wi::Color(70, 150, 170, 220);
-					wi::Color theme_color_active = wi::Color::White();
-					wi::Color theme_color_deactivating = wi::Color::lerp(theme_color_focus, wi::Color::White(), 0.5f);
+					lb::Color theme_color_idle = lb::Color(30, 40, 60, 200);
+					lb::Color theme_color_focus = lb::Color(70, 150, 170, 220);
+					lb::Color theme_color_active = lb::Color::White();
+					lb::Color theme_color_deactivating = lb::Color::lerp(theme_color_focus, lb::Color::White(), 0.5f);
 					inputField.SetColor(theme_color_idle); // all states the same, it's gonna be always active anyway
-					inputField.font.params.color = wi::Color(160, 240, 250, 255);
-					inputField.font.params.shadowColor = wi::Color::Transparent();
+					inputField.font.params.color = lb::Color(160, 240, 250, 255);
+					inputField.font.params.shadowColor = lb::Color::Transparent();
 
 					toggleButton.Create("V");
-					toggleButton.OnClick([](wi::gui::EventArgs args) {
+					toggleButton.OnClick([](lb::gui::EventArgs args) {
 						Toggle();
 						});
-					toggleButton.SetColor(theme_color_idle, wi::gui::IDLE);
-					toggleButton.SetColor(theme_color_focus, wi::gui::FOCUS);
-					toggleButton.SetColor(theme_color_active, wi::gui::ACTIVE);
-					toggleButton.SetColor(theme_color_deactivating, wi::gui::DEACTIVATING);
+					toggleButton.SetColor(theme_color_idle, lb::gui::IDLE);
+					toggleButton.SetColor(theme_color_focus, lb::gui::FOCUS);
+					toggleButton.SetColor(theme_color_active, lb::gui::ACTIVE);
+					toggleButton.SetColor(theme_color_deactivating, lb::gui::DEACTIVATING);
 					toggleButton.SetShadowRadius(5);
-					toggleButton.SetShadowColor(wi::Color(80, 140, 180, 100));
-					toggleButton.font.params.color = wi::Color(160, 240, 250, 255);
+					toggleButton.SetShadowColor(lb::Color(80, 140, 180, 100));
+					toggleButton.font.params.color = lb::Color(160, 240, 250, 255);
 					toggleButton.font.params.rotation = XM_PI;
 					toggleButton.font.params.size = 24;
 					toggleButton.font.params.scaling = 3;
-					toggleButton.font.params.shadowColor = wi::Color::Transparent();
+					toggleButton.font.params.shadowColor = lb::Color::Transparent();
 					for (int i = 0; i < arraysize(toggleButton.sprites); ++i)
 					{
 						toggleButton.sprites[i].params.enableCornerRounding();
 						toggleButton.sprites[i].params.corners_rounding[2].radius = 50;
 					}
 				}
-				if (inputField.GetState() != wi::gui::ACTIVE)
+				if (inputField.GetState() != lb::gui::ACTIVE)
 				{
 					inputField.SetAsActive();
 				}
@@ -190,7 +190,7 @@ namespace wi::backlog
 		{
 			pos -= speed * dt;
 		}
-		pos = wi::math::Clamp(pos, -canvas.GetLogicalHeight(), 0);
+		pos = lb::math::Clamp(pos, -canvas.GetLogicalHeight(), 0);
 
 		inputField.SetSize(XMFLOAT2(canvas.GetLogicalWidth() - 40, 20));
 		inputField.SetPos(XMFLOAT2(20, canvas.GetLogicalHeight() - 40 + pos));
@@ -201,7 +201,7 @@ namespace wi::backlog
 		toggleButton.Update(canvas, dt);
 	}
 	void Draw(
-		const wi::Canvas& canvas,
+		const lb::Canvas& canvas,
 		CommandList cmd,
 		ColorSpace colorspace
 	)
@@ -217,21 +217,21 @@ namespace wi::backlog
 		if (!backgroundTex.IsValid())
 		{
 			const uint8_t colorData[] = { 0, 0, 43, 200, 43, 31, 141, 223 };
-			wi::texturehelper::CreateTexture(backgroundTex, colorData, 1, 2);
-			device->SetName(&backgroundTex, "wi::backlog::backgroundTex");
+			lb::texturehelper::CreateTexture(backgroundTex, colorData, 1, 2);
+			device->SetName(&backgroundTex, "lb::backlog::backgroundTex");
 		}
 
-		wi::image::Params fx = wi::image::Params((float)canvas.GetLogicalWidth(), (float)canvas.GetLogicalHeight());
+		lb::image::Params fx = lb::image::Params((float)canvas.GetLogicalWidth(), (float)canvas.GetLogicalHeight());
 		fx.pos = XMFLOAT3(0, pos, 0);
-		fx.opacity = wi::math::Lerp(1, 0, -pos / canvas.GetLogicalHeight());
+		fx.opacity = lb::math::Lerp(1, 0, -pos / canvas.GetLogicalHeight());
 		if (colorspace != ColorSpace::SRGB)
 		{
 			fx.enableLinearOutputMapping(9);
 		}
-		wi::image::Draw(&backgroundTex, fx, cmd);
+		lb::image::Draw(&backgroundTex, fx, cmd);
 
-		wi::image::Params inputbg;
-		inputbg.color = wi::Color(80, 140, 180, 200);
+		lb::image::Params inputbg;
+		inputbg.color = lb::Color(80, 140, 180, 200);
 		inputbg.pos = inputField.translation;
 		inputbg.pos.x -= 8;
 		inputbg.pos.y -= 8;
@@ -247,7 +247,7 @@ namespace wi::backlog
 		{
 			inputbg.enableLinearOutputMapping(9);
 		}
-		wi::image::Draw(nullptr, inputbg, cmd);
+		lb::image::Draw(nullptr, inputbg, cmd);
 
 		if (colorspace != ColorSpace::SRGB)
 		{
@@ -281,18 +281,18 @@ namespace wi::backlog
 	}
 
 	void DrawOutputText(
-		const wi::Canvas& canvas,
+		const lb::Canvas& canvas,
 		CommandList cmd,
 		ColorSpace colorspace
 	)
 	{
 		std::scoped_lock lock(logLock);
-		wi::font::SetCanvas(canvas); // always set here as it can be called from outside...
-		wi::font::Params params = font_params;
+		lb::font::SetCanvas(canvas); // always set here as it can be called from outside...
+		lb::font::Params params = font_params;
 		params.cursor = {};
 		if (refitscroll)
 		{
-			float textheight = wi::font::TextHeight(getTextWithoutLock(), params);
+			float textheight = lb::font::TextHeight(getTextWithoutLock(), params);
 			float limit = canvas.GetLogicalHeight() - 50;
 			if (scroll + textheight > limit)
 			{
@@ -312,16 +312,16 @@ namespace wi::backlog
 			switch (x.level)
 			{
 			case LogLevel::Warning:
-				params.color = wi::Color::Warning();
+				params.color = lb::Color::Warning();
 				break;
 			case LogLevel::Error:
-				params.color = wi::Color::Error();
+				params.color = lb::Color::Error();
 				break;
 			default:
 				params.color = font_params.color;
 				break;
 			}
-			params.cursor = wi::font::Draw(x.text, params, cmd);
+			params.cursor = lb::font::Draw(x.text, params, cmd);
 		}
 		unseen = LogLevel::None;
 	}
@@ -378,13 +378,13 @@ namespace wi::backlog
 			{
 			default:
 			case LogLevel::Default:
-				wi::helper::DebugOut(str, wi::helper::DebugLevel::Normal);
+				lb::helper::DebugOut(str, lb::helper::DebugLevel::Normal);
 				break;
 			case LogLevel::Warning:
-				wi::helper::DebugOut(str, wi::helper::DebugLevel::Warning);
+				lb::helper::DebugOut(str, lb::helper::DebugLevel::Warning);
 				break;
 			case LogLevel::Error:
-				wi::helper::DebugOut(str, wi::helper::DebugLevel::Error);
+				lb::helper::DebugOut(str, lb::helper::DebugLevel::Error);
 				break;
 			}
 
@@ -442,7 +442,7 @@ namespace wi::backlog
 	{
 		font_params.spacingY = value;
 	}
-	void setFontColor(wi::Color color)
+	void setFontColor(lb::Color color)
 	{
 		font_params.color = color;
 	}

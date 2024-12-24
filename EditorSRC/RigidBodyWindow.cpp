@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include "RigidBodyWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void RigidBodyWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_RIGIDBODY " Rigid Body Physics", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_RIGIDBODY " Rigid Body Physics", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(670, 440));
 
 	closeButton.SetTooltip("Delete RigidBodyPhysicsComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -41,8 +41,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	collisionShapeComboBox.AddItem("Cylinder", RigidBodyPhysicsComponent::CollisionShape::CYLINDER);
 	collisionShapeComboBox.AddItem("Convex Hull", RigidBodyPhysicsComponent::CollisionShape::CONVEX_HULL);
 	collisionShapeComboBox.AddItem("Triangle Mesh", RigidBodyPhysicsComponent::CollisionShape::TRIANGLE_MESH);
-	collisionShapeComboBox.OnSelect([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	collisionShapeComboBox.OnSelect([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -66,8 +66,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	XSlider.Create(0, 10, 1, 100000, "X: ");
 	XSlider.SetSize(XMFLOAT2(wid, hei));
 	XSlider.SetPos(XMFLOAT2(x, y += step));
-	XSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	XSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -96,8 +96,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	YSlider.Create(0, 10, 1, 100000, "Y: ");
 	YSlider.SetSize(XMFLOAT2(wid, hei));
 	YSlider.SetPos(XMFLOAT2(x, y += step));
-	YSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	YSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -123,8 +123,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	ZSlider.Create(0, 10, 1, 100000, "Z: ");
 	ZSlider.SetSize(XMFLOAT2(wid, hei));
 	ZSlider.SetPos(XMFLOAT2(x, y += step));
-	ZSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	ZSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -152,8 +152,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	massSlider.SetTooltip("Set the mass amount for the physics engine.");
 	massSlider.SetSize(XMFLOAT2(wid, hei));
 	massSlider.SetPos(XMFLOAT2(x, y += step));
-	massSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	massSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -170,8 +170,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	frictionSlider.SetTooltip("Set the friction amount for the physics engine.");
 	frictionSlider.SetSize(XMFLOAT2(wid, hei));
 	frictionSlider.SetPos(XMFLOAT2(x, y += step));
-	frictionSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	frictionSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -187,8 +187,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	restitutionSlider.SetTooltip("Set the restitution amount for the physics engine.");
 	restitutionSlider.SetSize(XMFLOAT2(wid, hei));
 	restitutionSlider.SetPos(XMFLOAT2(x, y += step));
-	restitutionSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	restitutionSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -204,8 +204,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	lineardampingSlider.SetTooltip("Set the linear damping amount for the physics engine.");
 	lineardampingSlider.SetSize(XMFLOAT2(wid, hei));
 	lineardampingSlider.SetPos(XMFLOAT2(x, y += step));
-	lineardampingSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	lineardampingSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -222,8 +222,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	angulardampingSlider.SetTooltip("Set the angular damping amount for the physics engine.");
 	angulardampingSlider.SetSize(XMFLOAT2(wid, hei));
 	angulardampingSlider.SetPos(XMFLOAT2(x, y += step));
-	angulardampingSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	angulardampingSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -240,8 +240,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	buoyancySlider.SetTooltip("Higher buoyancy will make the bodies float up faster in water.");
 	buoyancySlider.SetSize(XMFLOAT2(wid, hei));
 	buoyancySlider.SetPos(XMFLOAT2(x, y += step));
-	buoyancySlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	buoyancySlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -258,8 +258,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	physicsMeshLODSlider.SetTooltip("Specify which LOD to use for triangle mesh physics.");
 	physicsMeshLODSlider.SetSize(XMFLOAT2(wid, hei));
 	physicsMeshLODSlider.SetPos(XMFLOAT2(x, y += step));
-	physicsMeshLODSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	physicsMeshLODSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -282,8 +282,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	kinematicCheckBox.SetSize(XMFLOAT2(hei, hei));
 	kinematicCheckBox.SetPos(XMFLOAT2(x, y += step));
 	kinematicCheckBox.SetCheck(false);
-	kinematicCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	kinematicCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -301,8 +301,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	disabledeactivationCheckBox.SetSize(XMFLOAT2(hei, hei));
 	disabledeactivationCheckBox.SetPos(XMFLOAT2(x, y += step));
 	disabledeactivationCheckBox.SetCheck(false);
-	disabledeactivationCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	disabledeactivationCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -320,8 +320,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	startDeactivatedCheckBox.SetSize(XMFLOAT2(hei, hei));
 	startDeactivatedCheckBox.SetPos(XMFLOAT2(x, y += step));
 	startDeactivatedCheckBox.SetCheck(false);
-	startDeactivatedCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	startDeactivatedCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -340,8 +340,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	offsetXSlider.SetTooltip("Set a local offset relative to the object transform");
 	offsetXSlider.SetSize(XMFLOAT2(wid, hei));
 	offsetXSlider.SetPos(XMFLOAT2(x, y += step));
-	offsetXSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	offsetXSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -358,8 +358,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	offsetYSlider.SetTooltip("Set a local offset relative to the object transform");
 	offsetYSlider.SetSize(XMFLOAT2(wid, hei));
 	offsetYSlider.SetPos(XMFLOAT2(x, y += step));
-	offsetYSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	offsetYSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -376,8 +376,8 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	offsetZSlider.SetTooltip("Set a local offset relative to the object transform");
 	offsetZSlider.SetSize(XMFLOAT2(wid, hei));
 	offsetZSlider.SetPos(XMFLOAT2(x, y += step));
-	offsetZSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	offsetZSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -491,7 +491,7 @@ void RigidBodyWindow::SetEntity(Entity entity)
 
 void RigidBodyWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -500,7 +500,7 @@ void RigidBodyWindow::ResizeLayout()
 	const float margin_left = 120;
 	const float margin_right = 40;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -508,14 +508,14 @@ void RigidBodyWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

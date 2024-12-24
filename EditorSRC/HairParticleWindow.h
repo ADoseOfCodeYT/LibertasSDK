@@ -5,35 +5,35 @@ class EditorComponent;
 
 class MaterialWindow;
 
-class HairParticleWindow : public wi::gui::Window
+class HairParticleWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity;
+	void SetEntity(lb::ecs::Entity entity);
 
 	void UpdateData();
 
-	wi::HairParticleSystem* GetHair();
+	lb::HairParticleSystem* GetHair();
 
-	wi::gui::Label infoLabel;
-	wi::gui::ComboBox meshComboBox;
-	wi::gui::Slider lengthSlider;
-	wi::gui::Slider widthSlider;
-	wi::gui::Slider stiffnessSlider;
-	wi::gui::Slider randomnessSlider;
-	wi::gui::Slider countSlider;
-	wi::gui::Slider segmentcountSlider;
-	wi::gui::Slider randomSeedSlider;
-	wi::gui::Slider viewDistanceSlider;
-	wi::gui::Slider uniformitySlider;
+	lb::gui::Label infoLabel;
+	lb::gui::ComboBox meshComboBox;
+	lb::gui::Slider lengthSlider;
+	lb::gui::Slider widthSlider;
+	lb::gui::Slider stiffnessSlider;
+	lb::gui::Slider randomnessSlider;
+	lb::gui::Slider countSlider;
+	lb::gui::Slider segmentcountSlider;
+	lb::gui::Slider randomSeedSlider;
+	lb::gui::Slider viewDistanceSlider;
+	lb::gui::Slider uniformitySlider;
 
-	wi::gui::Button addSpriteButton;
-	wi::vector<wi::gui::Button> sprites;
-	wi::vector<wi::gui::Button> spriteRemoveButtons;
-	wi::vector<wi::gui::Slider> spriteSizeSliders;
+	lb::gui::Button addSpriteButton;
+	lb::vector<lb::gui::Button> sprites;
+	lb::vector<lb::gui::Button> spriteRemoveButtons;
+	lb::vector<lb::gui::Slider> spriteSizeSliders;
 
 	SpriteRectWindow spriterectwnd;
 

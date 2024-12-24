@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include "ArmatureWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void ArmatureWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_ARMATURE " Armature", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_ARMATURE " Armature", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(670, 380));
 
 	closeButton.SetTooltip("Delete ArmatureComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -39,8 +39,8 @@ void ArmatureWindow::Create(EditorComponent* _editor)
 	resetPoseButton.Create("Reset Pose");
 	resetPoseButton.SetTooltip("Reset Pose will be performed on the Armature, based on the bone inverse bind matrices.");
 	resetPoseButton.SetSize(XMFLOAT2(wid, hei));
-	resetPoseButton.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	resetPoseButton.OnClick([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		scene.ResetPose(entity);
 	});
 	AddWidget(&resetPoseButton);
@@ -48,11 +48,11 @@ void ArmatureWindow::Create(EditorComponent* _editor)
 	createHumanoidButton.Create("Try to create humanoid rig");
 	createHumanoidButton.SetTooltip("Tries to create a humanoid component based on bone naming convention.\nIt supports the VRM and Mixamo naming convention.");
 	createHumanoidButton.SetSize(XMFLOAT2(wid, hei));
-	createHumanoidButton.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	createHumanoidButton.OnClick([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		if (scene.humanoids.Contains(entity))
 		{
-			wi::helper::messageBox("Humanoid Component already exists!");
+			lb::helper::messageBox("Humanoid Component already exists!");
 			return;
 		}
 
@@ -60,7 +60,7 @@ void ArmatureWindow::Create(EditorComponent* _editor)
 		if (armature == nullptr)
 			return;
 
-		static const wi::unordered_map<HumanoidComponent::HumanoidBone, wi::vector<std::string>> mapping = {
+		static const lb::unordered_map<HumanoidComponent::HumanoidBone, lb::vector<std::string>> mapping = {
 			{HumanoidComponent::HumanoidBone::Hips, {"Hips"}},
 			{HumanoidComponent::HumanoidBone::Spine, {"Spine"}},
 			{HumanoidComponent::HumanoidBone::Chest, {"Chest", "Spine1"}},
@@ -143,7 +143,7 @@ void ArmatureWindow::Create(EditorComponent* _editor)
 					{
 						for (auto& candidate : it->second)
 						{
-							if (wi::helper::toUpper(name->name).find(wi::helper::toUpper(candidate)) != std::string::npos)
+							if (lb::helper::toUpper(name->name).find(lb::helper::toUpper(candidate)) != std::string::npos)
 							{
 								humanoidBone = bone;
 								found_anything = true;
@@ -164,7 +164,7 @@ void ArmatureWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::messageBox("No matching humanoid bones found!");
+			lb::helper::messageBox("No matching humanoid bones found!");
 		}
 	});
 	AddWidget(&createHumanoidButton);
@@ -172,12 +172,12 @@ void ArmatureWindow::Create(EditorComponent* _editor)
 	boneList.Create("Bones: ");
 	boneList.SetSize(XMFLOAT2(wid, 200));
 	boneList.SetPos(XMFLOAT2(4, y += step));
-	boneList.OnSelect([=](wi::gui::EventArgs args) {
+	boneList.OnSelect([=](lb::gui::EventArgs args) {
 
 		if (args.iValue < 0)
 			return;
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_SELECTION;
 		// record PREVIOUS selection state...
 		editor->RecordSelection(archive);
@@ -186,10 +186,10 @@ void ArmatureWindow::Create(EditorComponent* _editor)
 
 		for (int i = 0; i < boneList.GetItemCount(); ++i)
 		{
-			const wi::gui::TreeList::Item& item = boneList.GetItem(i);
+			const lb::gui::TreeList::Item& item = boneList.GetItem(i);
 			if (item.selected)
 			{
-				wi::scene::PickResult pick;
+				lb::scene::PickResult pick;
 				pick.entity = (Entity)item.userdata;
 				editor->AddSelected(pick);
 			}
@@ -236,7 +236,7 @@ void ArmatureWindow::RefreshBoneList()
 		boneList.ClearItems();
 		for (Entity bone : armature->boneCollection)
 		{
-			wi::gui::TreeList::Item item;
+			lb::gui::TreeList::Item item;
 			item.userdata = bone;
 			item.name += ICON_BONE " ";
 
@@ -260,7 +260,7 @@ void ArmatureWindow::RefreshBoneList()
 
 void ArmatureWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -269,7 +269,7 @@ void ArmatureWindow::ResizeLayout()
 	const float margin_left = 110;
 	const float margin_right = 45;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -277,14 +277,14 @@ void ArmatureWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

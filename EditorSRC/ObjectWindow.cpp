@@ -4,8 +4,8 @@
 
 #include "xatlas.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 static void SetPixel(uint8_t *dest, int destWidth, int x, int y, const uint8_t *color)
 {
@@ -86,7 +86,7 @@ static Atlas_Dim GenerateMeshAtlas(MeshComponent& meshcomponent, uint32_t resolu
 		mesh.indexFormat = xatlas::IndexFormat::UInt32;
 		xatlas::AddMeshError error = xatlas::AddMesh(atlas, mesh);
 		if (error != xatlas::AddMeshError::Success) {
-			wi::helper::messageBox(xatlas::StringForEnum(error), "Adding mesh to xatlas failed!");
+			lb::helper::messageBox(xatlas::StringForEnum(error), "Adding mesh to xatlas failed!");
 			return dim;
 		}
 	}
@@ -111,15 +111,15 @@ static Atlas_Dim GenerateMeshAtlas(MeshComponent& meshcomponent, uint32_t resolu
 		// Note: we must recreate all vertex buffers, because the index buffer will be different (the atlas could have removed shared vertices)
 		meshcomponent.indices.clear();
 		meshcomponent.indices.resize(mesh.indexCount);
-		wi::vector<XMFLOAT3> positions(mesh.vertexCount);
-		wi::vector<XMFLOAT2> atlas(mesh.vertexCount);
-		wi::vector<XMFLOAT3> normals;
-		wi::vector<XMFLOAT4> tangents;
-		wi::vector<XMFLOAT2> uvset_0;
-		wi::vector<XMFLOAT2> uvset_1;
-		wi::vector<uint32_t> colors;
-		wi::vector<XMUINT4> boneindices;
-		wi::vector<XMFLOAT4> boneweights;
+		lb::vector<XMFLOAT3> positions(mesh.vertexCount);
+		lb::vector<XMFLOAT2> atlas(mesh.vertexCount);
+		lb::vector<XMFLOAT3> normals;
+		lb::vector<XMFLOAT4> tangents;
+		lb::vector<XMFLOAT2> uvset_0;
+		lb::vector<XMFLOAT2> uvset_1;
+		lb::vector<uint32_t> colors;
+		lb::vector<XMUINT4> boneindices;
+		lb::vector<XMFLOAT4> boneweights;
 		if (!meshcomponent.vertex_normals.empty())
 		{
 			normals.resize(mesh.vertexCount);
@@ -258,13 +258,13 @@ void ObjectWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_OBJECT " Object", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_OBJECT " Object", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(670, 940));
 
 	closeButton.SetTooltip("Delete ObjectComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -283,13 +283,13 @@ void ObjectWindow::Create(EditorComponent* _editor)
 
 	meshCombo.Create("Mesh: ");
 	meshCombo.SetSize(XMFLOAT2(wid, hei));
-	meshCombo.OnSelect([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	meshCombo.OnSelect([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		ObjectComponent* object = scene.objects.GetComponent(entity);
 		if (object == nullptr)
 			return;
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -304,8 +304,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	renderableCheckBox.SetSize(XMFLOAT2(hei, hei));
 	renderableCheckBox.SetPos(XMFLOAT2(x, y));
 	renderableCheckBox.SetCheck(true);
-	renderableCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	renderableCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -322,8 +322,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	shadowCheckBox.SetSize(XMFLOAT2(hei, hei));
 	shadowCheckBox.SetPos(XMFLOAT2(x, y += step));
 	shadowCheckBox.SetCheck(true);
-	shadowCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	shadowCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -340,8 +340,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	navmeshCheckBox.SetSize(XMFLOAT2(hei, hei));
 	navmeshCheckBox.SetPos(XMFLOAT2(x, y += step));
 	navmeshCheckBox.SetCheck(true);
-	navmeshCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	navmeshCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -349,7 +349,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 			{
 				if (args.bValue)
 				{
-					object->filterMask |= wi::enums::FILTER_NAVIGATION_MESH;
+					object->filterMask |= lb::enums::FILTER_NAVIGATION_MESH;
 
 					MeshComponent* mesh = scene.meshes.GetComponent(object->meshID);
 					if (mesh != nullptr)
@@ -359,7 +359,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 				}
 				else
 				{
-					object->filterMask &= ~wi::enums::FILTER_NAVIGATION_MESH;
+					object->filterMask &= ~lb::enums::FILTER_NAVIGATION_MESH;
 				}
 			}
 		}
@@ -371,8 +371,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	foregroundCheckBox.SetSize(XMFLOAT2(hei, hei));
 	foregroundCheckBox.SetPos(XMFLOAT2(x, y += step));
 	foregroundCheckBox.SetCheck(true);
-	foregroundCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	foregroundCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -389,8 +389,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	notVisibleInMainCameraCheckBox.SetSize(XMFLOAT2(hei, hei));
 	notVisibleInMainCameraCheckBox.SetPos(XMFLOAT2(x, y += step));
 	notVisibleInMainCameraCheckBox.SetCheck(true);
-	notVisibleInMainCameraCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	notVisibleInMainCameraCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -407,8 +407,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	notVisibleInReflectionsCheckBox.SetSize(XMFLOAT2(hei, hei));
 	notVisibleInReflectionsCheckBox.SetPos(XMFLOAT2(x, y += step));
 	notVisibleInReflectionsCheckBox.SetCheck(true);
-	notVisibleInReflectionsCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	notVisibleInReflectionsCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -425,8 +425,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	wetmapCheckBox.SetSize(XMFLOAT2(hei, hei));
 	wetmapCheckBox.SetPos(XMFLOAT2(x, y += step));
 	wetmapCheckBox.SetCheck(true);
-	wetmapCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	wetmapCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -442,7 +442,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	ditherSlider.SetTooltip("Adjust transparency of the object. Opaque materials will use dithered transparency in this case!");
 	ditherSlider.SetSize(XMFLOAT2(wid, hei));
 	ditherSlider.SetPos(XMFLOAT2(x, y += step));
-	ditherSlider.OnSlide([&](wi::gui::EventArgs args) {
+	ditherSlider.OnSlide([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -455,7 +455,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	alphaRefSlider.SetTooltip("Adjust alpha ref per instance.\nThis is an additional value on top of material's alpha ref, used for alpha testing (alpha cutout).");
 	alphaRefSlider.SetSize(XMFLOAT2(wid, hei));
 	alphaRefSlider.SetPos(XMFLOAT2(x, y += step));
-	alphaRefSlider.OnSlide([&](wi::gui::EventArgs args) {
+	alphaRefSlider.OnSlide([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -468,7 +468,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	rimHighlightIntesitySlider.SetTooltip("Strength of the rim highlight color.");
 	rimHighlightIntesitySlider.SetSize(XMFLOAT2(wid, hei));
 	rimHighlightIntesitySlider.SetPos(XMFLOAT2(x, y += step));
-	rimHighlightIntesitySlider.OnSlide([&](wi::gui::EventArgs args) {
+	rimHighlightIntesitySlider.OnSlide([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -481,7 +481,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	rimHighlightFalloffSlider.SetTooltip("Rim falloff power of the rim highlight effect.");
 	rimHighlightFalloffSlider.SetSize(XMFLOAT2(wid, hei));
 	rimHighlightFalloffSlider.SetPos(XMFLOAT2(x, y += step));
-	rimHighlightFalloffSlider.OnSlide([&](wi::gui::EventArgs args) {
+	rimHighlightFalloffSlider.OnSlide([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -494,7 +494,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	cascadeMaskSlider.SetTooltip("How many shadow cascades to skip when rendering this object into shadow maps? (0: skip none, it will be in all cascades, 1: skip first (biggest cascade), ...etc...");
 	cascadeMaskSlider.SetSize(XMFLOAT2(wid, hei));
 	cascadeMaskSlider.SetPos(XMFLOAT2(x, y += step));
-	cascadeMaskSlider.OnSlide([&](wi::gui::EventArgs args) {
+	cascadeMaskSlider.OnSlide([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -507,7 +507,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	lodSlider.SetTooltip("How much the distance to camera will affect LOD selection. (If the mesh has lods)");
 	lodSlider.SetSize(XMFLOAT2(wid, hei));
 	lodSlider.SetPos(XMFLOAT2(x, y += step));
-	lodSlider.OnSlide([&](wi::gui::EventArgs args) {
+	lodSlider.OnSlide([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -520,7 +520,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	drawdistanceSlider.SetTooltip("Specify the draw distance of the object");
 	drawdistanceSlider.SetSize(XMFLOAT2(wid, hei));
 	drawdistanceSlider.SetPos(XMFLOAT2(x, y += step));
-	drawdistanceSlider.OnSlide([&](wi::gui::EventArgs args) {
+	drawdistanceSlider.OnSlide([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -533,7 +533,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	sortPrioritySlider.SetTooltip("Set to larger value to draw earlier (most useful for transparents with alpha blending, if the sorting order by distance is not good enough)");
 	sortPrioritySlider.SetSize(XMFLOAT2(wid, hei));
 	sortPrioritySlider.SetPos(XMFLOAT2(x, y += step));
-	sortPrioritySlider.OnSlide([&](wi::gui::EventArgs args) {
+	sortPrioritySlider.OnSlide([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -549,8 +549,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	lightmapResolutionSlider.SetTooltip("Set the approximate resolution for this object's lightmap. This will be packed into the larger global lightmap later.");
 	lightmapResolutionSlider.SetSize(XMFLOAT2(wid, hei));
 	lightmapResolutionSlider.SetPos(XMFLOAT2(x, y += step));
-	lightmapResolutionSlider.OnSlide([&](wi::gui::EventArgs args) {
-		lightmapResolutionSlider.SetValue(float(wi::math::GetNextPowerOfTwo(uint32_t(args.fValue)))); 
+	lightmapResolutionSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lightmapResolutionSlider.SetValue(float(lb::math::GetNextPowerOfTwo(uint32_t(args.fValue)))); 
 	});
 	AddWidget(&lightmapResolutionSlider);
 
@@ -559,8 +559,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	lightmapBlockCompressionCheckBox.SetSize(XMFLOAT2(hei, hei));
 	lightmapBlockCompressionCheckBox.SetPos(XMFLOAT2(x, y += step));
 	lightmapBlockCompressionCheckBox.SetCheck(true);
-	lightmapBlockCompressionCheckBox.OnClick([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	lightmapBlockCompressionCheckBox.OnClick([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -587,7 +587,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	generateLightmapButton.SetTooltip("Render the lightmap for only this object. It will automatically combined with the global lightmap.");
 	generateLightmapButton.SetPos(XMFLOAT2(x, y += step));
 	generateLightmapButton.SetSize(XMFLOAT2(wid, hei));
-	generateLightmapButton.OnClick([&](wi::gui::EventArgs args) {
+	generateLightmapButton.OnClick([&](lb::gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 
@@ -600,8 +600,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 		};
 		UV_GEN_TYPE gen_type = (UV_GEN_TYPE)lightmapSourceUVSetComboBox.GetSelected();
 
-		wi::unordered_set<ObjectComponent*> gen_objects;
-		wi::unordered_map<MeshComponent*, Atlas_Dim> gen_meshes;
+		lb::unordered_set<ObjectComponent*> gen_objects;
+		lb::unordered_map<MeshComponent*, Atlas_Dim> gen_meshes;
 
 		for (auto& x : this->editor->translator.selected)
 		{
@@ -619,7 +619,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 
 		}
 
-		wi::jobsystem::context ctx;
+		lb::jobsystem::context ctx;
 
 		for (auto& it : gen_meshes)
 		{
@@ -636,12 +636,12 @@ void ObjectWindow::Create(EditorComponent* _editor)
 			}
 			else if (gen_type == UV_GEN_GENERATE_ATLAS)
 			{
-				wi::jobsystem::Execute(ctx, [&](wi::jobsystem::JobArgs args) {
+				lb::jobsystem::Execute(ctx, [&](lb::jobsystem::JobArgs args) {
 					it.second = GenerateMeshAtlas(mesh, (uint32_t)lightmapResolutionSlider.GetValue());
 				});
 			}
 		}
-		wi::jobsystem::Wait(ctx);
+		lb::jobsystem::Wait(ctx);
 
 		for (auto& x : gen_objects)
 		{
@@ -668,7 +668,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	stopLightmapGenButton.SetTooltip("Stop the lightmap rendering and save the lightmap.\nIf denoiser is enabled, this is the point at which lightmap will be denoised, which could take a while.");
 	stopLightmapGenButton.SetPos(XMFLOAT2(x, y += step));
 	stopLightmapGenButton.SetSize(XMFLOAT2(wid, hei));
-	stopLightmapGenButton.OnClick([&](wi::gui::EventArgs args) {
+	stopLightmapGenButton.OnClick([&](lb::gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 
@@ -689,7 +689,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	clearLightmapButton.SetTooltip("Clear the lightmap from this object.");
 	clearLightmapButton.SetPos(XMFLOAT2(x, y += step));
 	clearLightmapButton.SetSize(XMFLOAT2(wid, hei));
-	clearLightmapButton.OnClick([&](wi::gui::EventArgs args) {
+	clearLightmapButton.OnClick([&](lb::gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 
@@ -713,13 +713,13 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	vertexAOButton.SetPos(XMFLOAT2(x, y += step));
 	vertexAOButton.SetSize(XMFLOAT2(wid, hei));
 	vertexAOButton.SetLocalizationEnabled(false);
-	vertexAOButton.OnClick([&](wi::gui::EventArgs args) {
+	vertexAOButton.OnClick([&](lb::gui::EventArgs args) {
 		const Scene& scene = editor->GetCurrentScene();
 
 		// Build BVHs for everything selected:
 		if (!deleteAOMode)
 		{
-			wi::Timer timer;
+			lb::Timer timer;
 			for (auto& x : this->editor->translator.selected)
 			{
 				ObjectComponent* objectcomponent = scene.objects.GetComponent(x.entity);
@@ -735,7 +735,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 					}
 				}
 			}
-			wi::backlog::post("Building BVHs for vertex AO took " + wi::helper::GetTimerDurationText((float)timer.elapsed_seconds()));
+			lb::backlog::post("Building BVHs for vertex AO took " + lb::helper::GetTimerDurationText((float)timer.elapsed_seconds()));
 		}
 
 		for (auto& x : this->editor->translator.selected)
@@ -754,35 +754,35 @@ void ObjectWindow::Create(EditorComponent* _editor)
 						continue;
 					if (meshcomponent->vertex_normals.size() != meshcomponent->vertex_positions.size())
 						continue;
-					wi::Timer timer;
-					using namespace wi::primitive;
+					lb::Timer timer;
+					using namespace lb::primitive;
 					objectcomponent->vertex_ao.resize(meshcomponent->vertex_positions.size());
 					const size_t objectcomponentIndex = scene.objects.GetIndex(x.entity);
 
-					uint32_t groupSizePerCore = wi::jobsystem::DispatchGroupCount((uint32_t)objectcomponent->vertex_ao.size(), wi::jobsystem::GetThreadCount());
+					uint32_t groupSizePerCore = lb::jobsystem::DispatchGroupCount((uint32_t)objectcomponent->vertex_ao.size(), lb::jobsystem::GetThreadCount());
 
-					wi::jobsystem::context ctx;
-					wi::jobsystem::Dispatch(ctx, (uint32_t)objectcomponent->vertex_ao.size(), groupSizePerCore, [&](wi::jobsystem::JobArgs args) {
+					lb::jobsystem::context ctx;
+					lb::jobsystem::Dispatch(ctx, (uint32_t)objectcomponent->vertex_ao.size(), groupSizePerCore, [&](lb::jobsystem::JobArgs args) {
 						XMFLOAT3 position = meshcomponent->vertex_positions[args.jobIndex];
 						XMFLOAT3 normal = meshcomponent->vertex_normals[args.jobIndex];
 						const XMMATRIX W = XMLoadFloat4x4(&scene.matrix_objects[objectcomponentIndex]);
 						XMStoreFloat3(&position, XMVector3Transform(XMLoadFloat3(&position), W));
 						XMStoreFloat3(&normal, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&normal), XMMatrixTranspose(XMMatrixInverse(nullptr, W)))));
-						const XMMATRIX TBN = wi::math::GetTangentSpace(normal);
+						const XMMATRIX TBN = lb::math::GetTangentSpace(normal);
 						float accum = 0;
 						const uint32_t samplecount = (uint32_t)vertexAORayCountSlider.GetValue();
 						const float raylength = vertexAORayLengthSlider.GetValue();
 						const XMVECTOR rayOrigin = XMLoadFloat3(&position);
 						for (uint32_t sam = 0; sam < samplecount; ++sam)
 						{
-							XMFLOAT2 hamm = wi::math::Hammersley2D(sam, samplecount);
-							XMFLOAT3 hemi = wi::math::HemispherePoint_Cos(hamm.x, hamm.y);
+							XMFLOAT2 hamm = lb::math::Hammersley2D(sam, samplecount);
+							XMFLOAT3 hemi = lb::math::HemispherePoint_Cos(hamm.x, hamm.y);
 							XMVECTOR rayDirection = XMLoadFloat3(&hemi);
 							rayDirection = XMVector3TransformNormal(rayDirection, TBN);
 							rayDirection = XMVector3Normalize(rayDirection);
 							XMStoreFloat3(&hemi, rayDirection);
 
-							wi::primitive::Ray ray(position, hemi, 0.0001f, raylength);
+							lb::primitive::Ray ray(position, hemi, 0.0001f, raylength);
 
 							bool hit = false;
 							for (size_t objectIndex = 0; (objectIndex < scene.aabb_objects.size()) && !hit; ++objectIndex)
@@ -818,7 +818,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 
 									float distance;
 									XMFLOAT2 bary;
-									if (wi::math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary, ray.TMin, ray.TMax))
+									if (lb::math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary, ray.TMin, ray.TMax))
 										return true;
 									return false;
 								};
@@ -835,7 +835,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 										if (subset.indexCount == 0)
 											return false;
 										const MaterialComponent* material = scene.materials.GetComponent(subset.materialID);
-										if (material != nullptr && material->GetBlendMode() != wi::enums::BLENDMODE_OPAQUE)
+										if (material != nullptr && material->GetBlendMode() != lb::enums::BLENDMODE_OPAQUE)
 											return false;
 										const uint32_t indexOffset = subset.indexOffset;
 										if (intersect_triangle(subsetIndex, indexOffset, triangleIndex))
@@ -855,7 +855,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 										if (subset.indexCount == 0)
 											continue;
 										const MaterialComponent* material = scene.materials.GetComponent(subset.materialID);
-										if (material != nullptr && material->GetBlendMode() != wi::enums::BLENDMODE_OPAQUE)
+										if (material != nullptr && material->GetBlendMode() != lb::enums::BLENDMODE_OPAQUE)
 											continue;
 										const uint32_t indexOffset = subset.indexOffset;
 										const uint32_t triangleCount = subset.indexCount / 3;
@@ -874,8 +874,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 						accum /= float(samplecount);
 						objectcomponent->vertex_ao[args.jobIndex] = uint8_t(accum * 255);
 					});
-					wi::jobsystem::Wait(ctx);
-					wi::backlog::post("Vertex AO baking took " + wi::helper::GetTimerDurationText((float)timer.elapsed_seconds()));
+					lb::jobsystem::Wait(ctx);
+					lb::backlog::post("Vertex AO baking took " + lb::helper::GetTimerDurationText((float)timer.elapsed_seconds()));
 				}
 				objectcomponent->CreateRenderData();
 			}
@@ -926,11 +926,11 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	colorComboBox.SetTooltip("Choose the destination data of the color picker.");
 	AddWidget(&colorComboBox);
 
-	colorPicker.Create("Object Color", wi::gui::Window::WindowControls::NONE);
+	colorPicker.Create("Object Color", lb::gui::Window::WindowControls::NONE);
 	colorPicker.SetPos(XMFLOAT2(5, y += step));
 	colorPicker.SetVisible(true);
 	colorPicker.SetEnabled(true);
-	colorPicker.OnColorChanged([&](wi::gui::EventArgs args) {
+	colorPicker.OnColorChanged([&](lb::gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -1018,7 +1018,7 @@ void ObjectWindow::SetEntity(Entity entity)
 		notVisibleInMainCameraCheckBox.SetCheck(object->IsNotVisibleInMainCamera());
 		notVisibleInReflectionsCheckBox.SetCheck(object->IsNotVisibleInReflections());
 		wetmapCheckBox.SetCheck(object->IsWetmapEnabled());
-		navmeshCheckBox.SetCheck(object->filterMask & wi::enums::FILTER_NAVIGATION_MESH);
+		navmeshCheckBox.SetCheck(object->filterMask & lb::enums::FILTER_NAVIGATION_MESH);
 		cascadeMaskSlider.SetValue((float)object->cascadeMask);
 		ditherSlider.SetValue(object->GetTransparency());
 		alphaRefSlider.SetValue(object->alphaRef);
@@ -1032,13 +1032,13 @@ void ObjectWindow::SetEntity(Entity entity)
 		{
 		default:
 		case 0:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(object->color));
+			colorPicker.SetPickColor(lb::Color::fromFloat4(object->color));
 			break;
 		case 1:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(object->emissiveColor));
+			colorPicker.SetPickColor(lb::Color::fromFloat4(object->emissiveColor));
 			break;
 		case 2:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(object->rimHighlightColor));
+			colorPicker.SetPickColor(lb::Color::fromFloat4(object->rimHighlightColor));
 			break;
 		}
 
@@ -1056,7 +1056,7 @@ void ObjectWindow::SetEntity(Entity entity)
 
 void ObjectWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -1065,7 +1065,7 @@ void ObjectWindow::ResizeLayout()
 	float margin_left = 140;
 	float margin_right = 40;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -1073,14 +1073,14 @@ void ObjectWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "HairParticleWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void HairParticleWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_HAIR " Hair Particle System", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_HAIR " Hair Particle System", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(600, 1000));
 
 	closeButton.SetTooltip("Delete HairParticleSystem");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -38,11 +38,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	meshComboBox.SetSize(XMFLOAT2(wid, hei));
 	meshComboBox.SetPos(XMFLOAT2(x, y));
 	meshComboBox.SetEnabled(false);
-	meshComboBox.OnSelect([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	meshComboBox.OnSelect([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			if (args.iValue == 0)
@@ -63,11 +63,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	countSlider.Create(0, 100000, 1000, 100000, "Strand Count: ");
 	countSlider.SetSize(XMFLOAT2(wid, hei));
 	countSlider.SetPos(XMFLOAT2(x, y += step));
-	countSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	countSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			hair->strandCount = (uint32_t)args.iValue;
@@ -81,11 +81,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	lengthSlider.Create(0, 4, 1, 1000, "Length: ");
 	lengthSlider.SetSize(XMFLOAT2(wid, hei));
 	lengthSlider.SetPos(XMFLOAT2(x, y += step));
-	lengthSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	lengthSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			hair->length = args.fValue;
@@ -99,11 +99,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	widthSlider.Create(0, 2, 1, 1000, "Width: ");
 	widthSlider.SetSize(XMFLOAT2(wid, hei));
 	widthSlider.SetPos(XMFLOAT2(x, y += step));
-	widthSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	widthSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			hair->width = args.fValue;
@@ -117,11 +117,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	stiffnessSlider.Create(0, 20, 5, 1000, "Stiffness: ");
 	stiffnessSlider.SetSize(XMFLOAT2(wid, hei));
 	stiffnessSlider.SetPos(XMFLOAT2(x, y += step));
-	stiffnessSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	stiffnessSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			hair->stiffness = args.fValue;
@@ -135,11 +135,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	randomnessSlider.Create(0, 1, 0.2f, 1000, "Randomness: ");
 	randomnessSlider.SetSize(XMFLOAT2(wid, hei));
 	randomnessSlider.SetPos(XMFLOAT2(x, y += step));
-	randomnessSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	randomnessSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			hair->randomness = args.fValue;
@@ -153,11 +153,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	//segmentcountSlider.Create(1, 10, 1, 9, "Segment Count: ");
 	//segmentcountSlider.SetSize(XMFLOAT2(wid, hei));
 	//segmentcountSlider.SetPos(XMFLOAT2(x, y += step));
-	//segmentcountSlider.OnSlide([&](wi::gui::EventArgs args) {
-	//	wi::scene::Scene& scene = editor->GetCurrentScene();
+	//segmentcountSlider.OnSlide([&](lb::gui::EventArgs args) {
+	//	lb::scene::Scene& scene = editor->GetCurrentScene();
 	//	for (auto& x : editor->translator.selected)
 	//	{
-	//		wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+	//		lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 	//		if (hair == nullptr)
 	//			continue;
 	//		hair->segmentCount = (uint32_t)args.iValue;
@@ -170,11 +170,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	randomSeedSlider.Create(1, 12345, 1, 12344, "Random seed: ");
 	randomSeedSlider.SetSize(XMFLOAT2(wid, hei));
 	randomSeedSlider.SetPos(XMFLOAT2(x, y += step));
-	randomSeedSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	randomSeedSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			hair->randomSeed = (uint32_t)args.iValue;
@@ -188,11 +188,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	viewDistanceSlider.Create(0, 1000, 100, 10000, "View distance: ");
 	viewDistanceSlider.SetSize(XMFLOAT2(wid, hei));
 	viewDistanceSlider.SetPos(XMFLOAT2(x, y += step));
-	viewDistanceSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	viewDistanceSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			hair->viewDistance = args.fValue;
@@ -206,11 +206,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	uniformitySlider.Create(0.01f, 2.0f, 0.1f, 1000, "Uniformity: ");
 	uniformitySlider.SetSize(XMFLOAT2(wid, hei));
 	uniformitySlider.SetPos(XMFLOAT2(x, y += step));
-	uniformitySlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	uniformitySlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+			lb::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 			if (hair == nullptr)
 				continue;
 			hair->uniformity = args.fValue;
@@ -221,7 +221,7 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	AddWidget(&uniformitySlider);
 
 	addSpriteButton.Create("Select sprite rect");
-	addSpriteButton.OnClick([&](wi::gui::EventArgs args) {
+	addSpriteButton.OnClick([&](lb::gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 		if (!scene.materials.Contains(entity))
@@ -229,11 +229,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 			scene.materials.Create(entity);
 		}
 		const MaterialComponent* material = scene.materials.GetComponent(entity);
-		wi::Sprite sprite;
+		lb::Sprite sprite;
 		sprite.textureResource = material->textures[MaterialComponent::BASECOLORMAP].resource;
 		if (!sprite.textureResource.IsValid() || !sprite.textureResource.GetTexture().IsValid())
 		{
-			sprite.textureResource.SetTexture(*wi::texturehelper::getWhite());
+			sprite.textureResource.SetTexture(*lb::texturehelper::getWhite());
 		}
 
 		spriterectwnd.SetVisible(true);
@@ -243,14 +243,14 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 
 		spriterectwnd.OnAccepted([=]() {
 
-			wi::HairParticleSystem* hair = GetHair();
+			lb::HairParticleSystem* hair = GetHair();
 			if (hair == nullptr)
 				return;
 
 			hair->atlas_rects.emplace_back().texMulAdd = spriterectwnd.muladd;
 			hair->SetDirty();
 
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 				RefreshSprites();
 			});
 		});
@@ -296,12 +296,12 @@ void HairParticleWindow::RefreshSprites()
 	if (!scene.materials.Contains(entity))
 		return;
 	const MaterialComponent* material = scene.materials.GetComponent(entity);
-	wi::Sprite sprite;
+	lb::Sprite sprite;
 	sprite.textureResource = material->textures[MaterialComponent::BASECOLORMAP].resource;
 	if (!sprite.textureResource.IsValid() || !sprite.textureResource.GetTexture().IsValid())
 		return;
 
-	const wi::graphics::TextureDesc& desc = sprite.textureResource.GetTexture().GetDesc();
+	const lb::graphics::TextureDesc& desc = sprite.textureResource.GetTexture().GetDesc();
 
 	sprites.resize(hair->atlas_rects.size());
 	spriteRemoveButtons.resize(hair->atlas_rects.size());
@@ -318,7 +318,7 @@ void HairParticleWindow::RefreshSprites()
 			y = sprite;
 			y.params.enableDrawRect(XMFLOAT4(rect.z * desc.width, rect.w * desc.height, rect.x * desc.width, rect.y * desc.height));
 		}
-		x.OnClick([=](wi::gui::EventArgs args) {
+		x.OnClick([=](lb::gui::EventArgs args) {
 
 			spriterectwnd.SetVisible(true);
 
@@ -327,14 +327,14 @@ void HairParticleWindow::RefreshSprites()
 
 			spriterectwnd.OnAccepted([=]() {
 
-				wi::HairParticleSystem* hair = GetHair();
+				lb::HairParticleSystem* hair = GetHair();
 				if (hair == nullptr)
 					return;
 
 				hair->atlas_rects[i].texMulAdd = spriterectwnd.muladd;
 				hair->SetDirty();
 
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+				lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 					RefreshSprites();
 				});
 			});
@@ -344,12 +344,12 @@ void HairParticleWindow::RefreshSprites()
 		auto& r = spriteRemoveButtons[i];
 		r.Create("X");
 		r.SetLocalizationEnabled(false);
-		r.OnClick([=](wi::gui::EventArgs args) {
+		r.OnClick([=](lb::gui::EventArgs args) {
 
 			hair->atlas_rects.erase(hair->atlas_rects.begin() + i);
 			hair->SetDirty();
 
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 				RefreshSprites();
 				});
 		});
@@ -360,7 +360,7 @@ void HairParticleWindow::RefreshSprites()
 		s.SetValue(hair->atlas_rects[i].size);
 		s.SetLocalizationEnabled(false);
 		s.SetTooltip("Adjust sprite's overall size");
-		s.OnSlide([=](wi::gui::EventArgs args) {
+		s.OnSlide([=](lb::gui::EventArgs args) {
 
 			hair->atlas_rects[i].size = args.fValue;
 			hair->SetDirty();
@@ -406,7 +406,7 @@ void HairParticleWindow::SetEntity(Entity entity)
 
 }
 
-wi::HairParticleSystem* HairParticleWindow::GetHair()
+lb::HairParticleSystem* HairParticleWindow::GetHair()
 {
 	if (entity == INVALID_ENTITY)
 	{
@@ -414,7 +414,7 @@ wi::HairParticleSystem* HairParticleWindow::GetHair()
 	}
 
 	Scene& scene = editor->GetCurrentScene();
-	wi::HairParticleSystem* hair = scene.hairs.GetComponent(entity);
+	lb::HairParticleSystem* hair = scene.hairs.GetComponent(entity);
 
 	return hair;
 }
@@ -431,8 +431,8 @@ void HairParticleWindow::UpdateData()
 
 	std::string ss;
 	ss += "To use hair particle system, first you must select a surface mesh to spawn particles on, and then increase particle count to grow particles. The particles will get their texture from the Material that is created on the current entity.\n\n";
-	ss += "Position format: " + std::string(wi::graphics::GetFormatString(hair->position_format)) + "\n";
-	ss += "Memory usage: " + wi::helper::GetMemorySizeText(hair->GetMemorySizeInBytes()) + "\n";
+	ss += "Position format: " + std::string(lb::graphics::GetFormatString(hair->position_format)) + "\n";
+	ss += "Memory usage: " + lb::helper::GetMemorySizeText(hair->GetMemorySizeInBytes()) + "\n";
 	infoLabel.SetText(ss);
 
 	meshComboBox.ClearItems();
@@ -465,7 +465,7 @@ void HairParticleWindow::UpdateData()
 
 void HairParticleWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -474,7 +474,7 @@ void HairParticleWindow::ResizeLayout()
 	const float margin_left = 100;
 	const float margin_right = 40;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -482,14 +482,14 @@ void HairParticleWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

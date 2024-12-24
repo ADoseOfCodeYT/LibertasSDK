@@ -11,10 +11,10 @@
 #include <algorithm>
 #include <mutex>
 
-using namespace wi::graphics;
-using namespace wi::scene;
+using namespace lb::graphics;
+using namespace lb::scene;
 
-namespace wi
+namespace lb
 {
 	namespace ocean_internal
 	{
@@ -35,17 +35,17 @@ namespace wi
 
 		void LoadShaders()
 		{
-			wi::renderer::LoadShader(ShaderStage::CS, updateSpectrumCS, "oceanSimulatorCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, updateDisplacementMapCS, "oceanUpdateDisplacementMapCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, updateGradientFoldingCS, "oceanUpdateGradientFoldingCS.cso");
+			lb::renderer::LoadShader(ShaderStage::CS, updateSpectrumCS, "oceanSimulatorCS.cso");
+			lb::renderer::LoadShader(ShaderStage::CS, updateDisplacementMapCS, "oceanUpdateDisplacementMapCS.cso");
+			lb::renderer::LoadShader(ShaderStage::CS, updateGradientFoldingCS, "oceanUpdateGradientFoldingCS.cso");
 
-			wi::renderer::LoadShader(ShaderStage::VS, oceanSurfVS, "oceanSurfaceVS.cso");
+			lb::renderer::LoadShader(ShaderStage::VS, oceanSurfVS, "oceanSurfaceVS.cso");
 
-			wi::renderer::LoadShader(ShaderStage::PS, oceanSurfPS, "oceanSurfacePS.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, wireframePS, "oceanSurfaceSimplePS.cso");
+			lb::renderer::LoadShader(ShaderStage::PS, oceanSurfPS, "oceanSurfacePS.cso");
+			lb::renderer::LoadShader(ShaderStage::PS, wireframePS, "oceanSurfaceSimplePS.cso");
 
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = lb::graphics::GetDevice();
 
 			{
 				PipelineStateDesc desc;
@@ -115,12 +115,12 @@ namespace wi
 			occlusionQueries[i] = -1;
 		}
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		// Height map H(0)
 		int height_map_size = (params.dmap_dim + 4) * (params.dmap_dim + 1);
-		wi::vector<XMFLOAT2> h0_data(height_map_size);
-		wi::vector<float> omega_data(height_map_size);
+		lb::vector<XMFLOAT2> h0_data(height_map_size);
+		lb::vector<float> omega_data(height_map_size);
 		initHeightMap(h0_data.data(), omega_data.data());
 
 		int hmap_dim = params.dmap_dim;
@@ -130,7 +130,7 @@ namespace wi
 		int output_size = hmap_dim * hmap_dim;
 
 		// For filling the buffer with zeroes.
-		wi::vector<char> zero_data(3 * output_size * sizeof(float) * 2);
+		lb::vector<char> zero_data(3 * output_size * sizeof(float) * 2);
 		std::fill(zero_data.begin(), zero_data.end(), 0);
 
 		GPUBufferDesc buf_desc;
@@ -189,7 +189,7 @@ namespace wi
 
 		tex_desc.format = Format::R32G32B32A32_FLOAT;
 		tex_desc.mip_levels = 1;
-		wi::vector<XMFLOAT4> displacementdata(tex_desc.width * tex_desc.height); // zero init the heightmap to be valid before first simulation
+		lb::vector<XMFLOAT4> displacementdata(tex_desc.width * tex_desc.height); // zero init the heightmap to be valid before first simulation
 		std::fill(displacementdata.begin(), displacementdata.end(), XMFLOAT4(0, 0, 0, 0));
 		SubresourceData initdata;
 		initdata.data_ptr = displacementdata.data();
@@ -336,7 +336,7 @@ namespace wi
 
 	void Ocean::UpdateDisplacementMap(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		device->EventBegin("Ocean Simulation", cmd);
 
@@ -371,7 +371,7 @@ namespace wi
 
 
 		// ------------------------------------ Perform FFT -------------------------------------------
-		wi::fftgenerator::fft_512x512_c2c(buffer_Float_Dxyz, buffer_Float_Dxyz, buffer_Float2_Ht, cmd);
+		lb::fftgenerator::fft_512x512_c2c(buffer_Float_Dxyz, buffer_Float_Dxyz, buffer_Float2_Ht, cmd);
 
 
 
@@ -407,14 +407,14 @@ namespace wi
 		);
 		device->Barrier(GPUBarrier::Image(&gradientMap, ResourceState::UNORDERED_ACCESS, gradientMap.desc.layout), cmd);
 
-		wi::renderer::GenerateMipChain(gradientMap, wi::renderer::MIPGENFILTER_LINEAR, cmd);
+		lb::renderer::GenerateMipChain(gradientMap, lb::renderer::MIPGENFILTER_LINEAR, cmd);
 
 		device->EventEnd(cmd);
 	}
 
-	void Ocean::CopyDisplacementMapReadback(wi::graphics::CommandList cmd) const
+	void Ocean::CopyDisplacementMapReadback(lb::graphics::CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		device->EventBegin("Ocean Readback Copy", cmd);
 		device->CopyResource(&displacementMap_readback[displacement_readback_index], &displacementMap, cmd);
 		displacement_readback_valid[displacement_readback_index] = true;
@@ -424,7 +424,7 @@ namespace wi
 
 	void Ocean::RenderForOcclusionTest(const CameraComponent& camera, CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		device->EventBegin("Ocean Occlusion Test", cmd);
 
@@ -435,7 +435,7 @@ namespace wi
 		locker.lock(); // in case two threads draw the ocean the same time, index buffer creation must be locked
 		if (indexBuffer_occlusionTest.GetDesc().size != indexbuffer_required_size)
 		{
-			wi::vector<uint16_t> index_data(index_count);
+			lb::vector<uint16_t> index_data(index_count);
 			size_t counter = 0;
 			for (uint16_t x = 0; x < dim.x - 1; x++)
 			{
@@ -480,11 +480,11 @@ namespace wi
 
 	void Ocean::Render(const CameraComponent& camera, CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		device->EventBegin("Ocean Rendering", cmd);
 
-		bool wire = wi::renderer::IsWireRender();
+		bool wire = lb::renderer::IsWireRender();
 
 		if (wire)
 		{
@@ -502,7 +502,7 @@ namespace wi
 		locker.lock(); // in case two threads draw the ocean the same time, index buffer creation must be locked
 		if (indexBuffer.GetDesc().size != indexbuffer_required_size)
 		{
-			wi::vector<uint32_t> index_data(index_count);
+			lb::vector<uint32_t> index_data(index_count);
 			size_t counter = 0;
 			for (uint32_t x = 0; x < dim.x - 1; x++)
 			{
@@ -546,7 +546,7 @@ namespace wi
 
 	void Ocean::Initialize()
 	{
-		wi::Timer timer;
+		lb::Timer timer;
 
 		RasterizerState ras_desc;
 		ras_desc.fill_mode = FillMode::SOLID;
@@ -591,12 +591,12 @@ namespace wi
 		blendState_occlusionTest = blend_desc;
 
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); wi::fftgenerator::LoadShaders(); });
+		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); lb::fftgenerator::LoadShaders(); });
 
 		LoadShaders();
-		wi::fftgenerator::LoadShaders();
+		lb::fftgenerator::LoadShaders();
 
-		wi::backlog::post("wi::Ocean Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::backlog::post("lb::Ocean Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 	const Texture* Ocean::getDisplacementMap() const

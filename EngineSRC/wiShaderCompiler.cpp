@@ -40,9 +40,9 @@
 #define SHADERCOMPILER_PS5_INCLUDED
 #endif // __has_include("wiShaderCompiler_PS5.h") && !PLATFORM_PS5
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi::shadercompiler
+namespace lb::shadercompiler
 {
 
 #ifdef SHADERCOMPILER_ENABLED_DXCOMPILER
@@ -74,14 +74,14 @@ namespace wi::shadercompiler
 					uint32_t major = 0;
 					hr = info->GetVersion(&major, &minor);
 					assert(SUCCEEDED(hr));
-					wi::backlog::post("wi::shadercompiler: loaded " + library + " (version: " + std::to_string(major) + "." + std::to_string(minor) + ")");
+					lb::backlog::post("lb::shadercompiler: loaded " + library + " (version: " + std::to_string(major) + "." + std::to_string(minor) + ")");
 				}
 			}
 			else
 			{
-				wi::backlog::post("wi::shadercompiler: could not load library " + library, wi::backlog::LogLevel::Error);
+				lb::backlog::post("lb::shadercompiler: could not load library " + library, lb::backlog::LogLevel::Error);
 #ifdef PLATFORM_LINUX
-				wi::backlog::post(dlerror(), wi::backlog::LogLevel::Error); // print dlopen() error detail: https://linux.die.net/man/3/dlerror
+				lb::backlog::post(dlerror(), lb::backlog::LogLevel::Error); // print dlopen() error detail: https://linux.die.net/man/3/dlerror
 #endif // PLATFORM_LINUX
 			}
 
@@ -119,15 +119,15 @@ namespace wi::shadercompiler
 			return;
 		}
 
-		wi::vector<uint8_t> shadersourcedata;
-		if (!wi::helper::FileRead(input.shadersourcefilename, shadersourcedata))
+		lb::vector<uint8_t> shadersourcedata;
+		if (!lb::helper::FileRead(input.shadersourcefilename, shadersourcedata))
 		{
 			return;
 		}
 
 		// https://github.com/microsoft/DirectXShaderCompiler/wiki/Using-dxc.exe-and-dxcompiler.dll#dxcompiler-dll-interface
 
-		wi::vector<std::wstring> args = {
+		lb::vector<std::wstring> args = {
 			L"-res-may-alias",
 			//L"-flegacy-macro-expansion",
 			//L"-no-legacy-cbuf-layout",
@@ -409,31 +409,31 @@ namespace wi::shadercompiler
 		for (auto& x : input.defines)
 		{
 			args.push_back(L"-D");
-			wi::helper::StringConvert(x, args.emplace_back());
+			lb::helper::StringConvert(x, args.emplace_back());
 		}
 
 		for (auto& x : input.include_directories)
 		{
 			args.push_back(L"-I");
-			wi::helper::StringConvert(x, args.emplace_back());
+			lb::helper::StringConvert(x, args.emplace_back());
 		}
 
 #ifdef SHADERCOMPILER_XBOX_INCLUDED
 		if (input.format == ShaderFormat::HLSL6_XS)
 		{
-			wi::shadercompiler::xbox::AddArguments(input, args);
+			lb::shadercompiler::xbox::AddArguments(input, args);
 		}
 #endif // SHADERCOMPILER_XBOX_INCLUDED
 
 		// Entry point parameter:
 		std::wstring wentry;
-		wi::helper::StringConvert(input.entrypoint, wentry);
+		lb::helper::StringConvert(input.entrypoint, wentry);
 		args.push_back(L"-E");
 		args.push_back(wentry.c_str());
 
 		// Add source file name as last parameter. This will be displayed in error messages
 		std::wstring wsource;
-		wi::helper::StringConvert(wi::helper::GetFileNameFromPath(input.shadersourcefilename), wsource);
+		lb::helper::StringConvert(lb::helper::GetFileNameFromPath(input.shadersourcefilename), wsource);
 		args.push_back(wsource.c_str());
 
 		DxcBuffer Source;
@@ -456,7 +456,7 @@ namespace wi::shadercompiler
 				if (SUCCEEDED(hr))
 				{
 					std::string& filename = output->dependencies.emplace_back();
-					wi::helper::StringConvert(pFilename, filename);
+					lb::helper::StringConvert(pFilename, filename);
 				}
 				return hr;
 			}
@@ -482,7 +482,7 @@ namespace wi::shadercompiler
 		hr = dxcUtils->CreateDefaultIncludeHandler(&includehandler.dxcIncludeHandler);
 		assert(SUCCEEDED(hr));
 
-		wi::vector<const wchar_t*> args_raw;
+		lb::vector<const wchar_t*> args_raw;
 		args_raw.reserve(args.size());
 		for (auto& x : args)
 		{
@@ -566,7 +566,7 @@ namespace wi::shadercompiler
 				D3DCompile = (PFN_D3DCOMPILE)wiGetProcAddress(d3dcompiler, "D3DCompile");
 				if (D3DCompile != nullptr)
 				{
-					wi::backlog::post("wi::shadercompiler: loaded d3dcompiler_47.dll");
+					lb::backlog::post("lb::shadercompiler: loaded d3dcompiler_47.dll");
 				}
 			}
 		}
@@ -590,8 +590,8 @@ namespace wi::shadercompiler
 			return;
 		}
 
-		wi::vector<uint8_t> shadersourcedata;
-		if (!wi::helper::FileRead(input.shadersourcefilename, shadersourcedata))
+		lb::vector<uint8_t> shadersourcedata;
+		if (!lb::helper::FileRead(input.shadersourcefilename, shadersourcedata))
 		{
 			return;
 		}
@@ -635,17 +635,17 @@ namespace wi::shadercompiler
 		{
 			const CompilerInput* input = nullptr;
 			CompilerOutput* output = nullptr;
-			wi::vector<wi::vector<uint8_t>> filedatas;
+			lb::vector<lb::vector<uint8_t>> filedatas;
 
 			HRESULT Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes) override
 			{
 				for (auto& x : input->include_directories)
 				{
 					std::string filename = x + pFileName;
-					if (!wi::helper::FileExists(filename))
+					if (!lb::helper::FileExists(filename))
 						continue;
-					wi::vector<uint8_t>& filedata = filedatas.emplace_back();
-					if (wi::helper::FileRead(filename, filedata))
+					lb::vector<uint8_t>& filedata = filedatas.emplace_back();
+					if (lb::helper::FileRead(filename, filedata))
 					{
 						output->dependencies.push_back(filename);
 						*ppData = filedata.data();
@@ -733,7 +733,7 @@ namespace wi::shadercompiler
 
 #ifdef SHADERCOMPILER_PS5_INCLUDED
 		case ShaderFormat::PS5:
-			wi::shadercompiler::ps5::Compile(input, output);
+			lb::shadercompiler::ps5::Compile(input, output);
 			break;
 #endif // SHADERCOMPILER_PS5_INCLUDED
 
@@ -745,21 +745,21 @@ namespace wi::shadercompiler
 	bool SaveShaderAndMetadata(const std::string& shaderfilename, const CompilerOutput& output)
 	{
 #ifdef SHADERCOMPILER_ENABLED
-		wi::helper::DirectoryCreate(wi::helper::GetDirectoryFromPath(shaderfilename));
+		lb::helper::DirectoryCreate(lb::helper::GetDirectoryFromPath(shaderfilename));
 
-		wi::Archive dependencyLibrary(wi::helper::ReplaceExtension(shaderfilename, shadermetaextension), false);
+		lb::Archive dependencyLibrary(lb::helper::ReplaceExtension(shaderfilename, shadermetaextension), false);
 		if (dependencyLibrary.IsOpen())
 		{
 			std::string rootdir = dependencyLibrary.GetSourceDirectory();
-			wi::vector<std::string> dependencies = output.dependencies;
+			lb::vector<std::string> dependencies = output.dependencies;
 			for (auto& x : dependencies)
 			{
-				wi::helper::MakePathRelative(rootdir, x);
+				lb::helper::MakePathRelative(rootdir, x);
 			}
 			dependencyLibrary << dependencies;
 		}
 
-		if (wi::helper::FileWrite(shaderfilename, output.shaderdata, output.shadersize))
+		if (lb::helper::FileWrite(shaderfilename, output.shaderdata, output.shadersize))
 		{
 			return true;
 		}
@@ -771,33 +771,33 @@ namespace wi::shadercompiler
 	{
 #ifdef SHADERCOMPILER_ENABLED
 		std::string filepath = shaderfilename;
-		wi::helper::MakePathAbsolute(filepath);
-		if (!wi::helper::FileExists(filepath))
+		lb::helper::MakePathAbsolute(filepath);
+		if (!lb::helper::FileExists(filepath))
 		{
 			return true; // no shader file = outdated shader, apps can attempt to rebuild it
 		}
-		std::string dependencylibrarypath = wi::helper::ReplaceExtension(shaderfilename, shadermetaextension);
-		if (!wi::helper::FileExists(dependencylibrarypath))
+		std::string dependencylibrarypath = lb::helper::ReplaceExtension(shaderfilename, shadermetaextension);
+		if (!lb::helper::FileExists(dependencylibrarypath))
 		{
 			return false; // no metadata file = no dependency, up to date (for example packaged builds)
 		}
 
-		const uint64_t tim = wi::helper::FileTimestamp(filepath);
+		const uint64_t tim = lb::helper::FileTimestamp(filepath);
 
-		wi::Archive dependencyLibrary(dependencylibrarypath);
+		lb::Archive dependencyLibrary(dependencylibrarypath);
 		if (dependencyLibrary.IsOpen())
 		{
 			std::string rootdir = dependencyLibrary.GetSourceDirectory();
-			wi::vector<std::string> dependencies;
+			lb::vector<std::string> dependencies;
 			dependencyLibrary >> dependencies;
 
 			for (auto& x : dependencies)
 			{
 				std::string dependencypath = rootdir + x;
-				wi::helper::MakePathAbsolute(dependencypath);
-				if (wi::helper::FileExists(dependencypath))
+				lb::helper::MakePathAbsolute(dependencypath);
+				if (lb::helper::FileExists(dependencypath))
 				{
-					const uint64_t dep_tim = wi::helper::FileTimestamp(dependencypath);
+					const uint64_t dep_tim = lb::helper::FileTimestamp(dependencypath);
 
 					if (tim < dep_tim)
 					{
@@ -812,7 +812,7 @@ namespace wi::shadercompiler
 	}
 
 	std::mutex locker;
-	wi::unordered_set<std::string> registered_shaders;
+	lb::unordered_set<std::string> registered_shaders;
 	void RegisterShader(const std::string& shaderfilename)
 	{
 #ifdef SHADERCOMPILER_ENABLED

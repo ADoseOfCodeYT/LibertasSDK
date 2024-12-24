@@ -1,18 +1,18 @@
 #pragma once
 class EditorComponent;
 
-class ProfilerWidget : public wi::gui::Widget
+class ProfilerWidget : public lb::gui::Widget
 {
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 };
 
-class ProfilerWindow : public wi::gui::Window
+class ProfilerWindow : public lb::gui::Window
 {
 public:
 	void Create();
 
 	ProfilerWidget profilerWidget;
 
-	void Update(const wi::Canvas& canvas, float dt) override;
+	void Update(const lb::Canvas& canvas, float dt) override;
 	void ResizeLayout() override;
 };

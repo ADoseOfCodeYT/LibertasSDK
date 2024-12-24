@@ -10,7 +10,7 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-wi::Application application;					// Wicked Engine Application
+lb::Application application;					// Wicked Engine Application
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -31,7 +31,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     BOOL dpi_success = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     assert(dpi_success);
 
-	wi::arguments::Parse(lpCmdLine); // if you wish to use command line arguments, here is a good place to parse them...
+	lb::arguments::Parse(lpCmdLine); // if you wish to use command line arguments, here is a good place to parse them...
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -163,20 +163,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_BACK:
-			wi::gui::TextInputField::DeleteFromInput();
+			lb::gui::TextInputField::DeleteFromInput();
 			break;
 		case VK_RETURN:
 			break;
 		default:
 		{
 			const wchar_t c = (const wchar_t)wParam;
-			wi::gui::TextInputField::AddInput(c);
+			lb::gui::TextInputField::AddInput(c);
 		}
 		break;
 		}
 		break;
 	case WM_INPUT:
-		wi::input::rawinput::ParseMessage((void*)lParam);
+		lb::input::rawinput::ParseMessage((void*)lParam);
 		break;
 	case WM_KILLFOCUS:
 		application.is_window_active = false;

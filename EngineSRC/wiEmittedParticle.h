@@ -9,12 +9,12 @@
 #include "wiScene_Decl.h"
 #include "wiScene_Components.h"
 
-namespace wi
+namespace lb
 {
 	class Archive;
 }
 
-namespace wi
+namespace lb
 {
 	class EmittedParticleSystem
 	{
@@ -32,29 +32,29 @@ namespace wi
 		};
 
 		ParticleCounters statistics = {};
-		wi::graphics::GPUBuffer statisticsReadbackBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		lb::graphics::GPUBuffer statisticsReadbackBuffer[lb::graphics::GraphicsDevice::GetBufferCount()];
 
-		wi::graphics::GPUBuffer particleBuffer;
-		wi::graphics::GPUBuffer aliveList[2];
-		wi::graphics::GPUBuffer deadList;
-		wi::graphics::GPUBuffer distanceBuffer; // for sorting
-		wi::graphics::GPUBuffer sphGridCells;  // for SPH
-		wi::graphics::GPUBuffer sphParticleCells;  // for SPH
-		wi::graphics::GPUBuffer densityBuffer; // for SPH
-		wi::graphics::GPUBuffer counterBuffer;
-		wi::graphics::GPUBuffer indirectBuffers; // kickoffUpdate, simulation, draw
-		wi::graphics::GPUBuffer constantBuffer;
-		wi::graphics::GPUBuffer generalBuffer;
-		wi::scene::MeshComponent::BufferView vb_pos;
-		wi::scene::MeshComponent::BufferView vb_nor;
-		wi::scene::MeshComponent::BufferView vb_uvs;
-		wi::scene::MeshComponent::BufferView vb_col;
-		wi::graphics::GPUBuffer primitiveBuffer; // raytracing
-		wi::graphics::GPUBuffer culledIndirectionBuffer; // rasterization
-		wi::graphics::GPUBuffer culledIndirectionBuffer2; // rasterization
-		wi::graphics::Texture opacityCurveTex;
+		lb::graphics::GPUBuffer particleBuffer;
+		lb::graphics::GPUBuffer aliveList[2];
+		lb::graphics::GPUBuffer deadList;
+		lb::graphics::GPUBuffer distanceBuffer; // for sorting
+		lb::graphics::GPUBuffer sphGridCells;  // for SPH
+		lb::graphics::GPUBuffer sphParticleCells;  // for SPH
+		lb::graphics::GPUBuffer densityBuffer; // for SPH
+		lb::graphics::GPUBuffer counterBuffer;
+		lb::graphics::GPUBuffer indirectBuffers; // kickoffUpdate, simulation, draw
+		lb::graphics::GPUBuffer constantBuffer;
+		lb::graphics::GPUBuffer generalBuffer;
+		lb::scene::MeshComponent::BufferView vb_pos;
+		lb::scene::MeshComponent::BufferView vb_nor;
+		lb::scene::MeshComponent::BufferView vb_uvs;
+		lb::scene::MeshComponent::BufferView vb_col;
+		lb::graphics::GPUBuffer primitiveBuffer; // raytracing
+		lb::graphics::GPUBuffer culledIndirectionBuffer; // rasterization
+		lb::graphics::GPUBuffer culledIndirectionBuffer2; // rasterization
+		lb::graphics::Texture opacityCurveTex;
 
-		wi::graphics::RaytracingAccelerationStructure BLAS;
+		lb::graphics::RaytracingAccelerationStructure BLAS;
 
 	private:
 		void CreateSelfBuffers();
@@ -66,18 +66,18 @@ namespace wi
 
 		uint32_t MAX_PARTICLES = 1000;
 
-		mutable wi::vector<EmitLocation> emit_locations;
+		mutable lb::vector<EmitLocation> emit_locations;
 
 	public:
-		void UpdateCPU(const wi::scene::TransformComponent& transform, float dt);
+		void UpdateCPU(const lb::scene::TransformComponent& transform, float dt);
 		void Burst(int num);
-		void Burst(int num, const XMFLOAT3& position, const wi::Color& color = wi::Color::White());
-		void Burst(int num, const XMFLOAT4X4& transform, const wi::Color& color = wi::Color::White());
+		void Burst(int num, const XMFLOAT3& position, const lb::Color& color = lb::Color::White());
+		void Burst(int num, const XMFLOAT4X4& transform, const lb::Color& color = lb::Color::White());
 		void Restart();
 
 		// Must have a transform and material component, but mesh is optional
-		void UpdateGPU(uint32_t instanceIndex, const wi::scene::MeshComponent* mesh, wi::graphics::CommandList cmd) const;
-		void Draw(const wi::scene::MaterialComponent& material, wi::graphics::CommandList cmd, const PARTICLESHADERTYPE* shadertype_override = nullptr) const;
+		void UpdateGPU(uint32_t instanceIndex, const lb::scene::MeshComponent* mesh, lb::graphics::CommandList cmd) const;
+		void Draw(const lb::scene::MaterialComponent& material, lb::graphics::CommandList cmd, const PARTICLESHADERTYPE* shadertype_override = nullptr) const;
 
 		void CreateRaytracingRenderData();
 
@@ -101,7 +101,7 @@ namespace wi
 
 		PARTICLESHADERTYPE shaderType = SOFT;
 
-		wi::ecs::Entity meshID = wi::ecs::INVALID_ENTITY;
+		lb::ecs::Entity meshID = lb::ecs::INVALID_ENTITY;
 
 		float FIXED_TIMESTEP = -1.0f; // -1 : variable timestep; >=0 : fixed timestep
 
@@ -146,7 +146,7 @@ namespace wi
 		// Non-serialized attributes:
 		XMFLOAT3 center;
 		uint32_t layerMask = ~0u;
-		XMFLOAT4X4 worldMatrix = wi::math::IDENTITY_MATRIX;
+		XMFLOAT4X4 worldMatrix = lb::math::IDENTITY_MATRIX;
 
 		inline bool IsDebug() const { return _flags & FLAG_DEBUG; }
 		inline bool IsPaused() const { return _flags & FLAG_PAUSED; }
@@ -171,9 +171,9 @@ namespace wi
 		// Set the opacity curve parameters
 		//	peak : start peak of the opacity relative to particle lifetime [0,1]
 		void SetOpacityCurveControl(float peakStart, float peakEnd);
-		const wi::graphics::Texture* GetOpacityCurveTex() const { return &opacityCurveTex; }
+		const lb::graphics::Texture* GetOpacityCurveTex() const { return &opacityCurveTex; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(lb::Archive& archive, lb::ecs::EntitySerializer& seri);
 
 		static void Initialize();
 	};

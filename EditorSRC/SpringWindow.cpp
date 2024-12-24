@@ -1,19 +1,19 @@
 #include "stdafx.h"
 #include "SpringWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void SpringWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_SPRING " Spring", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_SPRING " Spring", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(460, 220));
 
 	closeButton.SetTooltip("Delete SpringComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -34,7 +34,7 @@ void SpringWindow::Create(EditorComponent* _editor)
 	resetAllButton.SetTooltip("Reset all springs in the scene to initial pose.");
 	resetAllButton.SetPos(XMFLOAT2(x, y));
 	resetAllButton.SetSize(XMFLOAT2(siz, hei));
-	resetAllButton.OnClick([&](wi::gui::EventArgs args) {
+	resetAllButton.OnClick([&](lb::gui::EventArgs args) {
 		auto& scene = editor->GetCurrentScene();
 		for (size_t i = 0; i < scene.springs.GetCount(); ++i)
 		{
@@ -47,8 +47,8 @@ void SpringWindow::Create(EditorComponent* _editor)
 	disabledCheckBox.SetTooltip("Disable simulation.");
 	disabledCheckBox.SetPos(XMFLOAT2(x, y += step));
 	disabledCheckBox.SetSize(XMFLOAT2(hei, hei));
-	disabledCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	disabledCheckBox.OnClick([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SpringComponent* spring = scene.springs.GetComponent(x.entity);
@@ -63,8 +63,8 @@ void SpringWindow::Create(EditorComponent* _editor)
 	gravityCheckBox.SetTooltip("Whether global gravity should affect the spring");
 	gravityCheckBox.SetPos(XMFLOAT2(x, y += step));
 	gravityCheckBox.SetSize(XMFLOAT2(hei, hei));
-	gravityCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	gravityCheckBox.OnClick([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SpringComponent* spring = scene.springs.GetComponent(x.entity);
@@ -79,8 +79,8 @@ void SpringWindow::Create(EditorComponent* _editor)
 	stiffnessSlider.SetTooltip("The stiffness affects how strongly the spring tries to orient itself to rest pose (higher values increase the jiggliness)");
 	stiffnessSlider.SetPos(XMFLOAT2(x, y += step));
 	stiffnessSlider.SetSize(XMFLOAT2(siz, hei));
-	stiffnessSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	stiffnessSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SpringComponent* spring = scene.springs.GetComponent(x.entity);
@@ -95,8 +95,8 @@ void SpringWindow::Create(EditorComponent* _editor)
 	dragSlider.SetTooltip("The drag affects how fast energy is lost (higher values make the spring come to rest faster)");
 	dragSlider.SetPos(XMFLOAT2(x, y += step));
 	dragSlider.SetSize(XMFLOAT2(siz, hei));
-	dragSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	dragSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SpringComponent* spring = scene.springs.GetComponent(x.entity);
@@ -111,8 +111,8 @@ void SpringWindow::Create(EditorComponent* _editor)
 	windSlider.SetTooltip("How much the global wind effect affects the spring");
 	windSlider.SetPos(XMFLOAT2(x, y += step));
 	windSlider.SetSize(XMFLOAT2(siz, hei));
-	windSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	windSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SpringComponent* spring = scene.springs.GetComponent(x.entity);
@@ -127,8 +127,8 @@ void SpringWindow::Create(EditorComponent* _editor)
 	gravitySlider.SetTooltip("How much the global gravity effect affects the spring");
 	gravitySlider.SetPos(XMFLOAT2(x, y += step));
 	gravitySlider.SetSize(XMFLOAT2(siz, hei));
-	gravitySlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	gravitySlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SpringComponent* spring = scene.springs.GetComponent(x.entity);
@@ -143,8 +143,8 @@ void SpringWindow::Create(EditorComponent* _editor)
 	hitradiusSlider.SetTooltip("The radius of the spring's collision sphere, that will be checked against colliders.");
 	hitradiusSlider.SetPos(XMFLOAT2(x, y += step));
 	hitradiusSlider.SetSize(XMFLOAT2(siz, hei));
-	hitradiusSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	hitradiusSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			SpringComponent* spring = scene.springs.GetComponent(x.entity);
@@ -188,7 +188,7 @@ void SpringWindow::SetEntity(Entity entity)
 
 void SpringWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -197,7 +197,7 @@ void SpringWindow::ResizeLayout()
 	const float margin_left = 120;
 	const float margin_right = 40;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -205,14 +205,14 @@ void SpringWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

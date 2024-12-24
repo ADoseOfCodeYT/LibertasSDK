@@ -1,36 +1,36 @@
 #pragma once
 class EditorComponent;
 
-class WaveGraph : public wi::gui::Widget
+class WaveGraph : public lb::gui::Widget
 {
 public:
-	wi::scene::SoundComponent* sound = nullptr;
+	lb::scene::SoundComponent* sound = nullptr;
 
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 };
 
-class SoundWindow : public wi::gui::Window
+class SoundWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	lb::ecs::Entity entity = lb::ecs::INVALID_ENTITY;
+	void SetEntity(lb::ecs::Entity entity);
 
-	wi::gui::Button openButton;
-	wi::gui::ComboBox reverbComboBox;
-	wi::gui::Label filenameLabel;
-	wi::gui::Button playstopButton;
-	wi::gui::CheckBox loopedCheckbox;
-	wi::gui::CheckBox reverbCheckbox;
-	wi::gui::CheckBox disable3dCheckbox;
-	wi::gui::Slider volumeSlider;
-	wi::gui::ComboBox submixComboBox;
-	wi::gui::TextInputField beginInput;
-	wi::gui::TextInputField lengthInput;
-	wi::gui::TextInputField loopBeginInput;
-	wi::gui::TextInputField loopLengthInput;
+	lb::gui::Button openButton;
+	lb::gui::ComboBox reverbComboBox;
+	lb::gui::Label filenameLabel;
+	lb::gui::Button playstopButton;
+	lb::gui::CheckBox loopedCheckbox;
+	lb::gui::CheckBox reverbCheckbox;
+	lb::gui::CheckBox disable3dCheckbox;
+	lb::gui::Slider volumeSlider;
+	lb::gui::ComboBox submixComboBox;
+	lb::gui::TextInputField beginInput;
+	lb::gui::TextInputField lengthInput;
+	lb::gui::TextInputField loopBeginInput;
+	lb::gui::TextInputField loopLengthInput;
 	WaveGraph waveGraph;
 
 	void ResizeLayout() override;

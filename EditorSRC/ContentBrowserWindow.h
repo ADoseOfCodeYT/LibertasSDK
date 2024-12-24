@@ -1,7 +1,7 @@
 #pragma once
 class EditorComponent;
 
-class ContentBrowserWindow : public wi::gui::Window
+class ContentBrowserWindow : public lb::gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
@@ -21,10 +21,10 @@ public:
 		SELECTION_COUNT
 	};
 	SELECTION current_selection = SELECTION_COUNT;
-	wi::gui::Button folderButtons[SELECTION_COUNT];
-	wi::vector<wi::gui::Button> itemButtons;
+	lb::gui::Button folderButtons[SELECTION_COUNT];
+	lb::vector<lb::gui::Button> itemButtons;
 
-	wi::gui::Button openFolderButton;
+	lb::gui::Button openFolderButton;
 
 	void RefreshContent();
 
@@ -32,8 +32,8 @@ public:
 	void AddItems(const std::string& folder, const std::string& extension, const std::string& icon);
 	void AddItem(const std::string& filename, const std::string& icon);
 
-	void Update(const wi::Canvas& canvas, float dt);
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Update(const lb::Canvas& canvas, float dt);
+	void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 	void ResizeLayout() override;
 };
 

@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include "ColliderWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
+using namespace lb::ecs;
+using namespace lb::scene;
 
 void ColliderWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_COLLIDER " Collider", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_COLLIDER " Collider", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
 	SetSize(XMFLOAT2(670, 340));
 
 	closeButton.SetTooltip("Delete ColliderComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](lb::gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		lb::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -39,8 +39,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	cpuCheckBox.Create("CPU: ");
 	cpuCheckBox.SetTooltip("Enable for use on the CPU. CPU usage includes: springs.");
 	cpuCheckBox.SetSize(XMFLOAT2(hei, hei));
-	cpuCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	cpuCheckBox.OnClick([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -54,8 +54,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	gpuCheckBox.Create("GPU: ");
 	gpuCheckBox.SetTooltip("Enable for use on the GPU. GPU usage includes: emitter and hair particle systems.\nNote that GPU can support only a limited amount of colliders.");
 	gpuCheckBox.SetSize(XMFLOAT2(hei, hei));
-	gpuCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	gpuCheckBox.OnClick([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -72,8 +72,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	shapeCombo.AddItem("Sphere", (uint64_t)ColliderComponent::Shape::Sphere);
 	shapeCombo.AddItem("Capsule", (uint64_t)ColliderComponent::Shape::Capsule);
 	shapeCombo.AddItem("Plane", (uint64_t)ColliderComponent::Shape::Plane);
-	shapeCombo.OnSelect([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	shapeCombo.OnSelect([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -87,8 +87,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	radiusSlider.Create(0, 10, 0, 100000, "Radius: ");
 	radiusSlider.SetSize(XMFLOAT2(wid, hei));
 	radiusSlider.SetPos(XMFLOAT2(x, y += step));
-	radiusSlider.OnSlide([&](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	radiusSlider.OnSlide([&](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -106,8 +106,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	offsetX.Create(-10, 10, 0, 10000, "Offset X: ");
 	offsetX.SetSize(XMFLOAT2(wid, hei));
 	offsetX.SetPos(XMFLOAT2(x, y += step));
-	offsetX.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	offsetX.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -121,8 +121,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	offsetY.Create(-10, 10, 0, 10000, "Offset Y: ");
 	offsetY.SetSize(XMFLOAT2(wid, hei));
 	offsetY.SetPos(XMFLOAT2(x, y += step));
-	offsetY.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	offsetY.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -136,8 +136,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	offsetZ.Create(-10, 10, 0, 10000, "Offset Z: ");
 	offsetZ.SetSize(XMFLOAT2(wid, hei));
 	offsetZ.SetPos(XMFLOAT2(x, y += step));
-	offsetZ.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	offsetZ.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -155,8 +155,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	tailX.Create(-10, 10, 0, 10000, "Tail X: ");
 	tailX.SetSize(XMFLOAT2(wid, hei));
 	tailX.SetPos(XMFLOAT2(x, y += step));
-	tailX.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	tailX.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -170,8 +170,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	tailY.Create(-10, 10, 0, 10000, "Tail Y: ");
 	tailY.SetSize(XMFLOAT2(wid, hei));
 	tailY.SetPos(XMFLOAT2(x, y += step));
-	tailY.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	tailY.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -185,8 +185,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	tailZ.Create(-10, 10, 0, 10000, "Tail Z: ");
 	tailZ.SetSize(XMFLOAT2(wid, hei));
 	tailZ.SetPos(XMFLOAT2(x, y += step));
-	tailZ.OnSlide([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	tailZ.OnSlide([=](lb::gui::EventArgs args) {
+		lb::scene::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -234,7 +234,7 @@ void ColliderWindow::SetEntity(Entity entity)
 
 void ColliderWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	lb::gui::Window::ResizeLayout();
 	const float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -243,7 +243,7 @@ void ColliderWindow::ResizeLayout()
 	const float margin_left = 80;
 	const float margin_right = 40;
 
-	auto add = [&](wi::gui::Widget& widget) {
+	auto add = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(margin_left, y));
@@ -251,14 +251,14 @@ void ColliderWindow::ResizeLayout()
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_right = [&](wi::gui::Widget& widget) {
+	auto add_right = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		widget.SetPos(XMFLOAT2(width - margin_right - widget.GetSize().x, y));
 		y += widget.GetSize().y;
 		y += padding;
 	};
-	auto add_fullwidth = [&](wi::gui::Widget& widget) {
+	auto add_fullwidth = [&](lb::gui::Widget& widget) {
 		if (!widget.IsVisible())
 			return;
 		const float margin_left = padding;

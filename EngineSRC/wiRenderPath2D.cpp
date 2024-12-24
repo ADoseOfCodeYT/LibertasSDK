@@ -4,9 +4,9 @@
 #include "wiSpriteFont.h"
 #include "wiRenderer.h"
 
-using namespace wi::graphics;
+using namespace lb::graphics;
 
-namespace wi
+namespace lb
 {
 	void RenderPath2D::DeleteGPUResources()
 	{
@@ -24,7 +24,7 @@ namespace wi
 		current_buffersize = GetInternalResolution();
 		current_layoutscale = 0; // invalidate layout
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		const Texture* dsv = GetDepthStencil();
 		if (dsv != nullptr && (resolutionScale != 1.0f || dsv->GetDesc().sample_count != msaaSampleCount))
@@ -142,16 +142,16 @@ namespace wi
 	}
 	void RenderPath2D::Render() const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 		CommandList cmd = device->BeginCommandList();
-		wi::image::SetCanvas(*this);
-		wi::font::SetCanvas(*this);
+		lb::image::SetCanvas(*this);
+		lb::font::SetCanvas(*this);
 
-		wi::renderer::ProcessDeferredTextureRequests(cmd);
+		lb::renderer::ProcessDeferredTextureRequests(cmd);
 
 		if (GetGUIBlurredBackground() != nullptr)
 		{
-			wi::image::SetBackground(*GetGUIBlurredBackground());
+			lb::image::SetBackground(*GetGUIBlurredBackground());
 		}
 
 		const Texture* dsv = GetDepthStencil();
@@ -199,7 +199,7 @@ namespace wi
 				{
 					if (y.type == RenderItem2D::TYPE::SPRITE &&
 						y.sprite != nullptr &&
-						y.sprite->params.stencilComp != wi::image::STENCILMODE_DISABLED)
+						y.sprite->params.stencilComp != lb::image::STENCILMODE_DISABLED)
 					{
 						y.sprite->Draw(cmd);
 					}
@@ -282,15 +282,15 @@ namespace wi
 			if (rtStenciled.IsValid())
 			{
 				device->EventBegin("Copy STENCIL Sprite Layers", cmd);
-				wi::image::Params fx;
+				lb::image::Params fx;
 				fx.enableFullScreen();
 				if (rtStenciled.GetDesc().sample_count > 1)
 				{
-					wi::image::Draw(&rtStenciled_resolved, fx, cmd);
+					lb::image::Draw(&rtStenciled_resolved, fx, cmd);
 				}
 				else
 				{
-					wi::image::Draw(&rtStenciled, fx, cmd);
+					lb::image::Draw(&rtStenciled, fx, cmd);
 				}
 				device->EventEnd(cmd);
 			}
@@ -303,7 +303,7 @@ namespace wi
 					{
 						if (y.type == RenderItem2D::TYPE::SPRITE &&
 							y.sprite != nullptr &&
-							y.sprite->params.stencilComp != wi::image::STENCILMODE_DISABLED)
+							y.sprite->params.stencilComp != lb::image::STENCILMODE_DISABLED)
 						{
 							y.sprite->Draw(cmd);
 						}
@@ -322,7 +322,7 @@ namespace wi
 				{
 				default:
 				case RenderItem2D::TYPE::SPRITE:
-					if (y.sprite != nullptr && y.sprite->params.stencilComp == wi::image::STENCILMODE_DISABLED)
+					if (y.sprite != nullptr && y.sprite->params.stencilComp == lb::image::STENCILMODE_DISABLED)
 					{
 						y.sprite->Draw(cmd);
 					}
@@ -346,21 +346,21 @@ namespace wi
 	}
 	void RenderPath2D::Compose(CommandList cmd) const
 	{
-		wi::image::Params fx;
+		lb::image::Params fx;
 		fx.enableFullScreen();
-		fx.blendFlag = wi::enums::BLENDMODE_PREMULTIPLIED;
+		fx.blendFlag = lb::enums::BLENDMODE_PREMULTIPLIED;
 		if (colorspace != ColorSpace::SRGB)
 		{
 			// Convert the regular SRGB result of the render path to linear space for HDR compositing:
 			fx.enableLinearOutputMapping(hdr_scaling);
 		}
-		wi::image::Draw(&GetRenderResult(), fx, cmd);
+		lb::image::Draw(&GetRenderResult(), fx, cmd);
 
 		RenderPath::Compose(cmd);
 	}
 
 
-	void RenderPath2D::AddSprite(wi::Sprite* sprite, const std::string& layer)
+	void RenderPath2D::AddSprite(lb::Sprite* sprite, const std::string& layer)
 	{
 		for (auto& x : layers)
 		{
@@ -373,7 +373,7 @@ namespace wi
 		}
 		SortLayers();
 	}
-	void RenderPath2D::RemoveSprite(wi::Sprite* sprite)
+	void RenderPath2D::RemoveSprite(lb::Sprite* sprite)
 	{
 		for (auto& x : layers)
 		{
@@ -401,7 +401,7 @@ namespace wi
 		}
 		CleanLayers();
 	}
-	int RenderPath2D::GetSpriteOrder(wi::Sprite* sprite)
+	int RenderPath2D::GetSpriteOrder(lb::Sprite* sprite)
 	{
 		for (auto& x : layers)
 		{
@@ -416,7 +416,7 @@ namespace wi
 		return 0;
 	}
 
-	void RenderPath2D::AddFont(wi::SpriteFont* font, const std::string& layer)
+	void RenderPath2D::AddFont(lb::SpriteFont* font, const std::string& layer)
 	{
 		for (auto& x : layers)
 		{
@@ -429,7 +429,7 @@ namespace wi
 		}
 		SortLayers();
 	}
-	void RenderPath2D::RemoveFont(wi::SpriteFont* font)
+	void RenderPath2D::RemoveFont(lb::SpriteFont* font)
 	{
 		for (auto& x : layers)
 		{
@@ -457,7 +457,7 @@ namespace wi
 		}
 		CleanLayers();
 	}
-	int RenderPath2D::GetFontOrder(wi::SpriteFont* font)
+	int RenderPath2D::GetFontOrder(lb::SpriteFont* font)
 	{
 		for (auto& x : layers)
 		{
@@ -498,7 +498,7 @@ namespace wi
 		}
 		SortLayers();
 	}
-	void RenderPath2D::SetSpriteOrder(wi::Sprite* sprite, int order)
+	void RenderPath2D::SetSpriteOrder(lb::Sprite* sprite, int order)
 	{
 		for (auto& x : layers)
 		{
@@ -512,7 +512,7 @@ namespace wi
 		}
 		SortLayers();
 	}
-	void RenderPath2D::SetFontOrder(wi::SpriteFont* font, int order)
+	void RenderPath2D::SetFontOrder(lb::SpriteFont* font, int order)
 	{
 		for (auto& x : layers)
 		{
@@ -574,7 +574,7 @@ namespace wi
 			{
 				continue;
 			}
-			wi::vector<RenderItem2D> itemsToRetain(0);
+			lb::vector<RenderItem2D> itemsToRetain(0);
 			for (auto& y : x.items)
 			{
 				if (y.sprite != nullptr || y.font != nullptr)

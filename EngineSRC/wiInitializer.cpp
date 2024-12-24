@@ -5,11 +5,11 @@
 #include <thread>
 #include <atomic>
 
-namespace wi::initializer
+namespace lb::initializer
 {
 	static std::atomic_bool initializationStarted{ false };
-	static wi::jobsystem::context ctx;
-	static wi::Timer timer;
+	static lb::jobsystem::context ctx;
+	static lb::Timer timer;
 	static std::atomic_bool systems[INITIALIZED_SYSTEM_COUNT]{};
 
 	void InitializeComponentsImmediate()
@@ -31,45 +31,45 @@ namespace wi::initializer
 		initializationStarted.store(true);
 
 		std::string ss;
-		ss += "\n[wi::initializer] Initializing Libertas Engine, please wait...\n";
+		ss += "\n[lb::initializer] Initializing Libertas Engine, please wait...\n";
 		ss += "Version: ";
-		ss += wi::version::GetVersionString();
-		wi::backlog::post(ss);
+		ss += lb::version::GetVersionString();
+		lb::backlog::post(ss);
 
-		size_t shaderdump_count = wi::renderer::GetShaderDumpCount();
+		size_t shaderdump_count = lb::renderer::GetShaderDumpCount();
 		if (shaderdump_count > 0)
 		{
-			wi::backlog::post("\nEmbedded shaders found: " + std::to_string(shaderdump_count));
+			lb::backlog::post("\nEmbedded shaders found: " + std::to_string(shaderdump_count));
 		}
 		else
 		{
-			wi::backlog::post("\nNo embedded shaders found, shaders will be compiled at runtime if needed.\n\tShader source path: " + wi::renderer::GetShaderSourcePath() + "\n\tShader binary path: " + wi::renderer::GetShaderPath());
+			lb::backlog::post("\nNo embedded shaders found, shaders will be compiled at runtime if needed.\n\tShader source path: " + lb::renderer::GetShaderSourcePath() + "\n\tShader binary path: " + lb::renderer::GetShaderPath());
 		}
 
-		wi::backlog::post("");
-		wi::jobsystem::Initialize();
+		lb::backlog::post("");
+		lb::jobsystem::Initialize();
 
-		wi::backlog::post("");
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::font::Initialize(); systems[INITIALIZED_SYSTEM_FONT].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::image::Initialize(); systems[INITIALIZED_SYSTEM_IMAGE].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::input::Initialize(); systems[INITIALIZED_SYSTEM_INPUT].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::renderer::Initialize(); systems[INITIALIZED_SYSTEM_RENDERER].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::texturehelper::Initialize(); systems[INITIALIZED_SYSTEM_TEXTUREHELPER].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::HairParticleSystem::Initialize(); systems[INITIALIZED_SYSTEM_HAIRPARTICLESYSTEM].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::EmittedParticleSystem::Initialize(); systems[INITIALIZED_SYSTEM_EMITTEDPARTICLESYSTEM].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::Ocean::Initialize(); systems[INITIALIZED_SYSTEM_OCEAN].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::gpusortlib::Initialize(); systems[INITIALIZED_SYSTEM_GPUSORTLIB].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::GPUBVH::Initialize(); systems[INITIALIZED_SYSTEM_GPUBVH].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::physics::Initialize(); systems[INITIALIZED_SYSTEM_PHYSICS].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::TrailRenderer::Initialize(); systems[INITIALIZED_SYSTEM_TRAILRENDERER].store(true); });
+		lb::backlog::post("");
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::font::Initialize(); systems[INITIALIZED_SYSTEM_FONT].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::image::Initialize(); systems[INITIALIZED_SYSTEM_IMAGE].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::input::Initialize(); systems[INITIALIZED_SYSTEM_INPUT].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::renderer::Initialize(); systems[INITIALIZED_SYSTEM_RENDERER].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::texturehelper::Initialize(); systems[INITIALIZED_SYSTEM_TEXTUREHELPER].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::HairParticleSystem::Initialize(); systems[INITIALIZED_SYSTEM_HAIRPARTICLESYSTEM].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::EmittedParticleSystem::Initialize(); systems[INITIALIZED_SYSTEM_EMITTEDPARTICLESYSTEM].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::Ocean::Initialize(); systems[INITIALIZED_SYSTEM_OCEAN].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::gpusortlib::Initialize(); systems[INITIALIZED_SYSTEM_GPUSORTLIB].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::GPUBVH::Initialize(); systems[INITIALIZED_SYSTEM_GPUBVH].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::physics::Initialize(); systems[INITIALIZED_SYSTEM_PHYSICS].store(true); });
+		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::TrailRenderer::Initialize(); systems[INITIALIZED_SYSTEM_TRAILRENDERER].store(true); });
 
 		// Initialize these immediately:
-		wi::lua::Initialize(); systems[INITIALIZED_SYSTEM_LUA].store(true);
-		wi::audio::Initialize(); systems[INITIALIZED_SYSTEM_AUDIO].store(true);
+		lb::lua::Initialize(); systems[INITIALIZED_SYSTEM_LUA].store(true);
+		lb::audio::Initialize(); systems[INITIALIZED_SYSTEM_AUDIO].store(true);
 
 		std::thread([] {
-			wi::jobsystem::Wait(ctx);
-			wi::backlog::post("\n[wi::initializer] Libertas Engine Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::jobsystem::Wait(ctx);
+			lb::backlog::post("\n[lb::initializer] Libertas Engine Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}).detach();
 
 	}
@@ -78,7 +78,7 @@ namespace wi::initializer
 	{
 		if (system == INITIALIZED_SYSTEM_COUNT)
 		{
-			return initializationStarted.load() && !wi::jobsystem::IsBusy(ctx);
+			return initializationStarted.load() && !lb::jobsystem::IsBusy(ctx);
 		}
 		else
 		{
@@ -88,6 +88,6 @@ namespace wi::initializer
 
 	void WaitForInitializationsToFinish()
 	{
-		wi::jobsystem::Wait(ctx);
+		lb::jobsystem::Wait(ctx);
 	}
 }

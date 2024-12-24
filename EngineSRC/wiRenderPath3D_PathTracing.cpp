@@ -17,11 +17,11 @@
 #endif // OIDN_VERSION_MAJOR >= 2
 #endif // __has_include("OpenImageDenoise/oidn.hpp")
 
-using namespace wi::graphics;
-using namespace wi::scene;
+using namespace lb::graphics;
+using namespace lb::scene;
 
 
-namespace wi
+namespace lb
 {
 #ifdef OPEN_IMAGE_DENOISE
 	bool DenoiserCallback(void* userPtr, double n)
@@ -44,13 +44,13 @@ namespace wi
 	{
 		DeleteGPUResources();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		XMUINT2 internalResolution = GetInternalResolution();
 
 		{
 			TextureDesc desc;
-			desc.format = wi::renderer::format_rendertarget_main;
+			desc.format = lb::renderer::format_rendertarget_main;
 			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
@@ -88,7 +88,7 @@ namespace wi
 
 				desc.layout = ResourceState::DEPTHSTENCIL;
 				desc.bind_flags = BindFlag::DEPTH_STENCIL;
-				desc.format = wi::renderer::format_depthbuffer_main;
+				desc.format = lb::renderer::format_depthbuffer_main;
 				device->CreateTexture(&desc, nullptr, &depthBuffer_Main);
 				device->SetName(&depthBuffer_Main, "depthBuffer_Main");
 			}
@@ -137,8 +137,8 @@ namespace wi
 			device->SetName(&rtGUIBlurredBackground[2], "rtGUIBlurredBackground[2]");
 		}
 
-		wi::renderer::CreateLuminanceResources(luminanceResources, internalResolution);
-		wi::renderer::CreateBloomResources(bloomResources, internalResolution);
+		lb::renderer::CreateLuminanceResources(luminanceResources, internalResolution);
+		lb::renderer::CreateBloomResources(bloomResources, internalResolution);
 
 		setLightShaftsEnabled(getLightShaftsEnabled());
 		setVolumeLightsEnabled(getVolumeLightsEnabled());
@@ -199,24 +199,24 @@ namespace wi
 #ifdef OPEN_IMAGE_DENOISE
 		if (sam == target)
 		{
-			if (!denoiserResult.IsValid() && !wi::jobsystem::IsBusy(denoiserContext))
+			if (!denoiserResult.IsValid() && !lb::jobsystem::IsBusy(denoiserContext))
 			{
-				//wi::helper::saveTextureToFile(denoiserAlbedo, "C:/PROJECTS/WickedEngine/Editor/_albedo.png");
-				//wi::helper::saveTextureToFile(denoiserNormal, "C:/PROJECTS/WickedEngine/Editor/_normal.png");
+				//lb::helper::saveTextureToFile(denoiserAlbedo, "C:/PROJECTS/WickedEngine/Editor/_albedo.png");
+				//lb::helper::saveTextureToFile(denoiserNormal, "C:/PROJECTS/WickedEngine/Editor/_normal.png");
 
 				texturedata_src.clear();
 				texturedata_dst.clear();
 				texturedata_albedo.clear();
 				texturedata_normal.clear();
 
-				if (wi::helper::saveTextureToMemory(traceResult, texturedata_src))
+				if (lb::helper::saveTextureToMemory(traceResult, texturedata_src))
 				{
-					wi::helper::saveTextureToMemory(denoiserAlbedo, texturedata_albedo);
-					wi::helper::saveTextureToMemory(denoiserNormal, texturedata_normal);
+					lb::helper::saveTextureToMemory(denoiserAlbedo, texturedata_albedo);
+					lb::helper::saveTextureToMemory(denoiserNormal, texturedata_normal);
 
 					texturedata_dst.resize(texturedata_src.size());
 
-					wi::jobsystem::Execute(denoiserContext, [&](wi::jobsystem::JobArgs args) {
+					lb::jobsystem::Execute(denoiserContext, [&](lb::jobsystem::JobArgs args) {
 
 						size_t width = (size_t)traceResult.desc.width;
 						size_t height = (size_t)traceResult.desc.height;
@@ -270,7 +270,7 @@ namespace wi
 							auto error = device.getError(errorMessage);
 							if (error != oidn::Error::None && error != oidn::Error::Cancelled)
 							{
-								wi::backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
+								lb::backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
 							}
 							else
 							{
@@ -278,7 +278,7 @@ namespace wi
 							}
 						}
 
-						GraphicsDevice* device = wi::graphics::GetDevice();
+						GraphicsDevice* device = lb::graphics::GetDevice();
 
 						TextureDesc desc;
 						desc.width = (uint32_t)width;
@@ -305,8 +305,8 @@ namespace wi
 
 	void RenderPath3D_PathTracing::Render() const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
-		wi::jobsystem::context ctx;
+		GraphicsDevice* device = lb::graphics::GetDevice();
+		lb::jobsystem::context ctx;
 
 		if (sam < target)
 		{
@@ -314,7 +314,7 @@ namespace wi
 			if (scene->terrains.GetCount() > 0)
 			{
 				cmd_copypages = device->BeginCommandList(QUEUE_COPY);
-				wi::jobsystem::Execute(ctx, [this, cmd_copypages](wi::jobsystem::JobArgs args) {
+				lb::jobsystem::Execute(ctx, [this, cmd_copypages](lb::jobsystem::JobArgs args) {
 					for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 					{
 						scene->terrains[i].CopyVirtualTexturePageStatusGPU(cmd_copypages);
@@ -324,19 +324,19 @@ namespace wi
 
 			// Setup:
 			CommandList cmd = device->BeginCommandList();
-			wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+			lb::jobsystem::Execute(ctx, [this, cmd](lb::jobsystem::JobArgs args) {
 
-				wi::renderer::BindCameraCB(
+				lb::renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
 					cmd
 				);
-				wi::renderer::UpdateRenderData(visibility_main, frameCB, cmd);
+				lb::renderer::UpdateRenderData(visibility_main, frameCB, cmd);
 
 				if (scene->IsAccelerationStructureUpdateRequested())
 				{
-					wi::renderer::UpdateRaytracingAccelerationStructures(*scene, cmd);
+					lb::renderer::UpdateRaytracingAccelerationStructures(*scene, cmd);
 				}
 			});
 
@@ -346,26 +346,26 @@ namespace wi
 			{
 				device->WaitCommandList(cmd, cmd_copypages);
 			}
-			wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+			lb::jobsystem::Execute(ctx, [this, cmd](lb::jobsystem::JobArgs args) {
 
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = lb::graphics::GetDevice();
 
-				wi::renderer::BindCameraCB(
+				lb::renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
 					cmd
 				);
-				wi::renderer::BindCommonResources(cmd);
-				wi::renderer::UpdateRenderDataAsync(visibility_main, frameCB, cmd);
+				lb::renderer::BindCommonResources(cmd);
+				lb::renderer::UpdateRenderDataAsync(visibility_main, frameCB, cmd);
 
 				if (scene->weather.IsRealisticSky())
 				{
-					wi::renderer::ComputeSkyAtmosphereTextures(cmd);
-					wi::renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
+					lb::renderer::ComputeSkyAtmosphereTextures(cmd);
+					lb::renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
 				}
 
-				if (wi::renderer::GetRaytraceDebugBVHVisualizerEnabled())
+				if (lb::renderer::GetRaytraceDebugBVHVisualizerEnabled())
 				{
 					RenderPassImage rp[] = {
 						RenderPassImage::RenderTarget(&traceResult, RenderPassImage::LoadOp::CLEAR)
@@ -377,15 +377,15 @@ namespace wi
 					vp.height = (float)traceResult.GetDesc().height;
 					device->BindViewports(1, &vp, cmd);
 
-					wi::renderer::RayTraceSceneBVH(*scene, cmd);
+					lb::renderer::RayTraceSceneBVH(*scene, cmd);
 
 					device->RenderPassEnd(cmd);
 				}
 				else
 				{
-					auto range = wi::profiler::BeginRangeGPU("Traced Scene", cmd);
+					auto range = lb::profiler::BeginRangeGPU("Traced Scene", cmd);
 
-					wi::renderer::RayTraceScene(
+					lb::renderer::RayTraceScene(
 						*scene,
 						traceResult,
 						sam,
@@ -397,12 +397,12 @@ namespace wi
 						&depthBuffer_Main
 					);
 
-					wi::profiler::EndRange(range); // Traced Scene
+					lb::profiler::EndRange(range); // Traced Scene
 				}
 
 				if (getVolumeLightsEnabled() && visibility_main.IsRequestedVolumetricLights())
 				{
-					wi::renderer::DrawShadowmaps(visibility_main, cmd);
+					lb::renderer::DrawShadowmaps(visibility_main, cmd);
 				}
 
 			});
@@ -411,7 +411,7 @@ namespace wi
 			{
 				CommandList cmd_allocation_tilerequest = device->BeginCommandList(QUEUE_COMPUTE);
 				device->WaitCommandList(cmd_allocation_tilerequest, cmd); // wait for opaque scene
-				wi::jobsystem::Execute(ctx, [this, cmd_allocation_tilerequest](wi::jobsystem::JobArgs args) {
+				lb::jobsystem::Execute(ctx, [this, cmd_allocation_tilerequest](lb::jobsystem::JobArgs args) {
 					for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 					{
 						scene->terrains[i].AllocateVirtualTextureTileRequestsGPU(cmd_allocation_tilerequest);
@@ -420,7 +420,7 @@ namespace wi
 
 				CommandList cmd_writeback_tilerequest = device->BeginCommandList(QUEUE_COPY);
 				device->WaitCommandList(cmd_writeback_tilerequest, cmd_allocation_tilerequest);
-				wi::jobsystem::Execute(ctx, [this, cmd_writeback_tilerequest](wi::jobsystem::JobArgs args) {
+				lb::jobsystem::Execute(ctx, [this, cmd_writeback_tilerequest](lb::jobsystem::JobArgs args) {
 					for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 					{
 						scene->terrains[i].WritebackTileRequestsGPU(cmd_writeback_tilerequest);
@@ -431,39 +431,39 @@ namespace wi
 
 		// Composite, tonemap etc:
 		CommandList cmd = device->BeginCommandList();
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+		lb::jobsystem::Execute(ctx, [this, cmd](lb::jobsystem::JobArgs args) {
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = lb::graphics::GetDevice();
 
-			wi::renderer::BindCameraCB(
+			lb::renderer::BindCameraCB(
 				*camera,
 				camera_previous,
 				camera_reflection,
 				cmd
 			);
-			wi::renderer::BindCommonResources(cmd);
+			lb::renderer::BindCommonResources(cmd);
 
-			wi::renderer::Postprocess_Lineardepth(traceDepth, rtLinearDepth, cmd);
+			lb::renderer::Postprocess_Lineardepth(traceDepth, rtLinearDepth, cmd);
 
 			if (scene->weather.IsRealisticSky())
 			{
-				wi::renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
+				lb::renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
 
 				if (scene->weather.IsRealisticSkyAerialPerspective())
 				{
-					wi::renderer::ComputeSkyAtmosphereCameraVolumeLut(cmd);
+					lb::renderer::ComputeSkyAtmosphereCameraVolumeLut(cmd);
 				}
 			}
 			if (scene->weather.IsRealisticSky() && scene->weather.IsRealisticSkyAerialPerspective())
 			{
-				wi::renderer::Postprocess_AerialPerspective(
+				lb::renderer::Postprocess_AerialPerspective(
 					aerialperspectiveResources,
 					cmd
 				);
 			}
 			if (scene->weather.IsVolumetricClouds())
 			{
-				wi::renderer::Postprocess_VolumetricClouds(
+				lb::renderer::Postprocess_VolumetricClouds(
 					volumetriccloudResources,
 					cmd,
 					*camera,
@@ -495,16 +495,16 @@ namespace wi
 				// Clear to trace result:
 				{
 					device->EventBegin("Clear to trace result", cmd);
-					wi::image::Params fx;
+					lb::image::Params fx;
 					fx.enableFullScreen();
-					fx.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-					if (denoiserResult.IsValid() && !wi::jobsystem::IsBusy(denoiserContext))
+					fx.blendFlag = lb::enums::BLENDMODE_OPAQUE;
+					if (denoiserResult.IsValid() && !lb::jobsystem::IsBusy(denoiserContext))
 					{
-						wi::image::Draw(&denoiserResult, fx, cmd);
+						lb::image::Draw(&denoiserResult, fx, cmd);
 					}
 					else
 					{
-						wi::image::Draw(&traceResult, fx, cmd);
+						lb::image::Draw(&traceResult, fx, cmd);
 					}
 					device->EventEnd(cmd);
 				}
@@ -513,27 +513,27 @@ namespace wi
 				if (scene->weather.IsRealisticSky() && scene->weather.IsRealisticSkyAerialPerspective())
 				{
 					device->EventBegin("Aerial Perspective Blend", cmd);
-					wi::image::Params fx;
+					lb::image::Params fx;
 					fx.enableFullScreen();
-					fx.blendFlag = wi::enums::BLENDMODE_PREMULTIPLIED;
-					wi::image::Draw(&aerialperspectiveResources.texture_output, fx, cmd);
+					fx.blendFlag = lb::enums::BLENDMODE_PREMULTIPLIED;
+					lb::image::Draw(&aerialperspectiveResources.texture_output, fx, cmd);
 					device->EventEnd(cmd);
 				}
 
 				// Blend the volumetric clouds on top:
 				if (scene->weather.IsVolumetricClouds())
 				{
-					wi::renderer::Postprocess_VolumetricClouds_Upsample(volumetriccloudResources, cmd);
+					lb::renderer::Postprocess_VolumetricClouds_Upsample(volumetriccloudResources, cmd);
 				}
 
-				wi::renderer::DrawDebugWorld(*scene, *camera, *this, cmd);
-				wi::renderer::DrawLightVisualizers(visibility_main, cmd);
-				wi::renderer::DrawSpritesAndFonts(*scene, *camera, false, cmd);
+				lb::renderer::DrawDebugWorld(*scene, *camera, *this, cmd);
+				lb::renderer::DrawLightVisualizers(visibility_main, cmd);
+				lb::renderer::DrawSpritesAndFonts(*scene, *camera, false, cmd);
 
 				if (getVolumeLightsEnabled() && visibility_main.IsRequestedVolumetricLights())
 				{
 					device->EventBegin("Contribute Volumetric Lights", cmd);
-					wi::renderer::Postprocess_Upsample_Bilateral(
+					lb::renderer::Postprocess_Upsample_Bilateral(
 						rtVolumetricLights,
 						rtLinearDepth,
 						rtMain,
@@ -548,15 +548,15 @@ namespace wi
 				if (getLightShaftsEnabled() && XMVectorGetX(XMVector3Dot(sunDirection, camera->GetAt())) > 0)
 				{
 					device->EventBegin("Contribute LightShafts", cmd);
-					wi::image::Params fx;
+					lb::image::Params fx;
 					fx.enableFullScreen();
-					fx.blendFlag = wi::enums::BLENDMODE_ADDITIVE;
-					wi::image::Draw(&rtSun[1], fx, cmd);
+					fx.blendFlag = lb::enums::BLENDMODE_ADDITIVE;
+					lb::image::Draw(&rtSun[1], fx, cmd);
 					device->EventEnd(cmd);
 				}
 				if (getLensFlareEnabled())
 				{
-					wi::renderer::DrawLensFlares(
+					lb::renderer::DrawLensFlares(
 						visibility_main,
 						cmd,
 						scene->weather.IsVolumetricClouds() ? &volumetriccloudResources.texture_cloudMask : nullptr
@@ -568,7 +568,7 @@ namespace wi
 
 			if (getEyeAdaptionEnabled())
 			{
-				wi::renderer::ComputeLuminance(
+				lb::renderer::ComputeLuminance(
 					luminanceResources,
 					rtMain,
 					cmd,
@@ -578,7 +578,7 @@ namespace wi
 			}
 			if (getBloomEnabled())
 			{
-				wi::renderer::ComputeBloom(
+				lb::renderer::ComputeBloom(
 					bloomResources,
 					rtMain,
 					cmd,
@@ -588,7 +588,7 @@ namespace wi
 				);
 			}
 
-			wi::renderer::Postprocess_Tonemap(
+			lb::renderer::Postprocess_Tonemap(
 				rtMain,
 				rtPostprocess,
 				cmd,
@@ -610,34 +610,34 @@ namespace wi
 
 			// GUI Background blurring:
 			{
-				auto range = wi::profiler::BeginRangeGPU("GUI Background Blur", cmd);
+				auto range = lb::profiler::BeginRangeGPU("GUI Background Blur", cmd);
 				device->EventBegin("GUI Background Blur", cmd);
-				wi::renderer::Postprocess_Downsample4x(rtPostprocess, rtGUIBlurredBackground[0], cmd);
-				wi::renderer::Postprocess_Downsample4x(rtGUIBlurredBackground[0], rtGUIBlurredBackground[2], cmd);
-				wi::renderer::Postprocess_Blur_Gaussian(rtGUIBlurredBackground[2], rtGUIBlurredBackground[1], rtGUIBlurredBackground[2], cmd, -1, -1, true);
+				lb::renderer::Postprocess_Downsample4x(rtPostprocess, rtGUIBlurredBackground[0], cmd);
+				lb::renderer::Postprocess_Downsample4x(rtGUIBlurredBackground[0], rtGUIBlurredBackground[2], cmd);
+				lb::renderer::Postprocess_Blur_Gaussian(rtGUIBlurredBackground[2], rtGUIBlurredBackground[1], rtGUIBlurredBackground[2], cmd, -1, -1, true);
 				device->EventEnd(cmd);
-				wi::profiler::EndRange(range);
+				lb::profiler::EndRange(range);
 			}
 			});
 
 		RenderPath2D::Render();
 
-		wi::jobsystem::Wait(ctx);
+		lb::jobsystem::Wait(ctx);
 	}
 
 	void RenderPath3D_PathTracing::Compose(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = lb::graphics::GetDevice();
 
 		device->EventBegin("RenderPath3D_PathTracing::Compose", cmd);
 
-		wi::renderer::BindCommonResources(cmd);
+		lb::renderer::BindCommonResources(cmd);
 
-		wi::image::Params fx;
+		lb::image::Params fx;
 		fx.enableFullScreen();
-		fx.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-		fx.quality = wi::image::QUALITY_LINEAR;
-		wi::image::Draw(&rtPostprocess, fx, cmd);
+		fx.blendFlag = lb::enums::BLENDMODE_OPAQUE;
+		fx.quality = lb::image::QUALITY_LINEAR;
+		lb::image::Draw(&rtPostprocess, fx, cmd);
 
 		device->EventEnd(cmd);
 
