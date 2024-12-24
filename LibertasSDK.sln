@@ -8,16 +8,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Supplementary", "Supplement
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		.github\workflows\build-nightly.yml = .github\workflows\build-nightly.yml
-		.github\workflows\build-pr.yml = .github\workflows\build-pr.yml
-		.github\workflows\build.yml = .github\workflows\build.yml
 		features.txt = features.txt
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 		third_party_software.txt = third_party_software.txt
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Content", "Content\Content.vcxitems", "{C48F6BFF-F91B-4DB5-98B5-15287DFB7C95}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{F1ADB727-BCFC-4967-A8ED-BF943AAA5BF7}"
 EndProject
@@ -36,6 +31,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Editor_Windows", "EditorSRC\Editor_Windows.vcxproj", "{5FE97B9B-A445-4EEA-A42D-9DE60B891D48}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shaders_SRC", "EngineSRC\shaders\Shaders_SRC.vcxitems", "{92E86448-0724-4387-ABAC-96E63EDF4190}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Content", "Content\Content.vcxitems", "{C48F6BFF-F91B-4DB5-98B5-15287DFB7C95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
