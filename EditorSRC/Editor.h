@@ -65,6 +65,8 @@ public:
 	lb::gui::Button materialsButton;
 	lb::gui::Button paintToolButton;
 
+	lb::gui::ComboBox guiScalingCombo;
+
 	GeneralWindow generalWnd;
 	GraphicsWindow graphicsWnd;
 	CameraWindow cameraWnd;

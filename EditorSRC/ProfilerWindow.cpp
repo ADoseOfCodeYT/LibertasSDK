@@ -41,15 +41,6 @@ void ProfilerWindow::Create()
 void ProfilerWindow::Update(const lb::Canvas& canvas, float dt)
 {
 	lb::gui::Window::Update(canvas, dt);
-
-	for (int i = 0; i < arraysize(lb::gui::Widget::sprites); ++i)
-	{
-		sprites[i].params.enableCornerRounding();
-		sprites[i].params.corners_rounding[0].radius = 10;
-		sprites[i].params.corners_rounding[1].radius = 10;
-		sprites[i].params.corners_rounding[2].radius = 10;
-		sprites[i].params.corners_rounding[3].radius = 10;
-	}
 }
 void ProfilerWindow::ResizeLayout()
 {

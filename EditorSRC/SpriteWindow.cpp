@@ -593,24 +593,7 @@ void SpriteWindow::SetEntity(lb::ecs::Entity entity)
 		tooltiptext += "\nMemory: " + lb::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(texture.desc));
 	}
 	maskButton.SetTooltip(tooltiptext);
-
-	if (
-		sprite->params.corners_rounding[0].radius > 0 ||
-		sprite->params.corners_rounding[1].radius > 0 ||
-		sprite->params.corners_rounding[2].radius > 0 ||
-		sprite->params.corners_rounding[3].radius > 0
-		)
-	{
-		sprite->params.enableCornerRounding();
-		sprite->params.corners_rounding[0].segments = 36;
-		sprite->params.corners_rounding[1].segments = 36;
-		sprite->params.corners_rounding[2].segments = 36;
-		sprite->params.corners_rounding[3].segments = 36;
-	}
-	else
-	{
-		sprite->params.disableCornerRounding();
-	}
+	sprite->params.disableCornerRounding();
 
 	textureButton.SetImage(sprite->textureResource);
 	maskButton.SetImage(sprite->maskResource);

@@ -32,7 +32,7 @@ public:
 	void AddItems(const std::string& folder, const std::string& extension, const std::string& icon);
 	void AddItem(const std::string& filename, const std::string& icon);
 
-	void Update(const lb::Canvas& canvas, float dt);
+	void Update(const lb::Canvas& canvas, float dt) override;
 	void Render(const lb::Canvas& canvas, lb::graphics::CommandList cmd) const override;
 	void ResizeLayout() override;
 };

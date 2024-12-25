@@ -1166,14 +1166,6 @@ void EditorComponent::Load()
 			aboutLabel.SetSize(XMFLOAT2(aboutWindow.GetWidgetAreaSize().x - 20, aboutLabel.GetSize().y));
 		});
 		aboutWindow.OnCollapse([&](lb::gui::EventArgs args) {
-			for (int i = 0; i < arraysize(lb::gui::Widget::sprites); ++i)
-			{
-				aboutWindow.sprites[i].params.enableCornerRounding();
-				aboutWindow.sprites[i].params.corners_rounding[0].radius = 10;
-				aboutWindow.sprites[i].params.corners_rounding[1].radius = 10;
-				aboutWindow.sprites[i].params.corners_rounding[2].radius = 10;
-				aboutWindow.sprites[i].params.corners_rounding[3].radius = 10;
-			}
 		});
 		GetGUI().AddWidget(&aboutWindow);
 	}
@@ -1189,6 +1181,34 @@ void EditorComponent::Load()
 		lb::platform::Exit();
 		});
 	topmenuWnd.AddWidget(&exitButton);
+
+	guiScalingCombo.Create("Gui Scale");
+	guiScalingCombo.SetDropArrowEnabled(false);
+	guiScalingCombo.SetFixedDropWidth(60);
+	guiScalingCombo.SetText("");
+	guiScalingCombo.SetTooltip("Set the custom scaling factor for the GUI.\nNote that this is in addition to the operating system's DPI scaling for the monitor.");
+	guiScalingCombo.AddItem("50%", 50);
+	guiScalingCombo.AddItem("75%", 75);
+	guiScalingCombo.AddItem("100%", 100);
+	guiScalingCombo.AddItem("125%", 125);
+	guiScalingCombo.AddItem("150%", 150);
+	guiScalingCombo.AddItem("175%", 175);
+	guiScalingCombo.AddItem("200%", 200);
+	guiScalingCombo.AddItem("225%", 225);
+	guiScalingCombo.AddItem("250%", 250);
+	if (main->config.Has("scaling"))
+	{
+		guiScalingCombo.SetSelectedByUserdata((uint64_t)main->config.GetInt("scaling"));
+	}
+	else
+	{
+		guiScalingCombo.SetSelectedByUserdataWithoutCallback(100);
+	}
+	guiScalingCombo.OnSelect([this](lb::gui::EventArgs args) {
+		this->main->config.Set("scaling", (int)args.userdata);
+	});
+	GetGUI().AddWidget(&guiScalingCombo);
+
 
 	componentsWnd.Create(this);
 	GetGUI().AddWidget(&componentsWnd);
@@ -1290,6 +1310,9 @@ void EditorComponent::FixedUpdate()
 void EditorComponent::Update(float dt)
 {
 	lb::profiler::range_id profrange = lb::profiler::BeginRangeCPU("Editor Update");
+
+	main->canvas.scaling = float(guiScalingCombo.GetSelectedUserdata()) / 100.0f;
+
 
 	if (CheckInput(EditorActions::MAKE_NEW_SCREENSHOT))
 	{
@@ -5300,6 +5323,9 @@ void EditorComponent::UpdateDynamicWidgets()
 	paintToolButton.SetSize(XMFLOAT2(hei, hei));
 	paintToolButton.Update(*this, 0);
 	y += hei + padding;
+
+	guiScalingCombo.SetSize(XMFLOAT2(50, 18));
+	guiScalingCombo.SetPos(XMFLOAT2(ofs, screenH - guiScalingCombo.GetSize().y - padding));
 
 }
 

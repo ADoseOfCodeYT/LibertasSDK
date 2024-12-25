@@ -40,29 +40,9 @@ void ContentBrowserWindow::Update(const lb::Canvas& canvas, float dt)
 
 	static const float radius = 15;
 
-	for (int i = 0; i < arraysize(lb::gui::Widget::sprites); ++i)
-	{
-		sprites[i].params.enableCornerRounding();
-		sprites[i].params.corners_rounding[0].radius = radius;
-		sprites[i].params.corners_rounding[1].radius = radius;
-		sprites[i].params.corners_rounding[2].radius = radius;
-		sprites[i].params.corners_rounding[3].radius = radius;
-
-		openFolderButton.sprites[i].params.enableCornerRounding();
-		openFolderButton.sprites[i].params.corners_rounding[0].radius = radius;
-		openFolderButton.sprites[i].params.corners_rounding[1].radius = radius;
-		openFolderButton.sprites[i].params.corners_rounding[2].radius = radius;
-		openFolderButton.sprites[i].params.corners_rounding[3].radius = radius;
-	}
-
 	for (auto& x : folderButtons)
 	{
 		x.font.params.h_align = lb::font::WIFALIGN_LEFT;
-		for (auto& y : x.sprites)
-		{
-			y.params.enableCornerRounding();
-			y.params.corners_rounding[3].radius = radius;
-		}
 		x.SetShadowRadius(0);
 	}
 	for (auto& x : itemButtons)
@@ -70,14 +50,6 @@ void ContentBrowserWindow::Update(const lb::Canvas& canvas, float dt)
 		if (x.sprites[lb::gui::IDLE].textureResource.IsValid())
 		{
 			x.sprites[lb::gui::IDLE].params.color = lb::Color::White();
-		}
-		for (auto& y : x.sprites)
-		{
-			y.params.enableCornerRounding();
-			y.params.corners_rounding[0].radius = radius;
-			y.params.corners_rounding[1].radius = radius;
-			y.params.corners_rounding[2].radius = radius;
-			y.params.corners_rounding[3].radius = radius;
 		}
 		x.SetShadowRadius(4);
 	}
