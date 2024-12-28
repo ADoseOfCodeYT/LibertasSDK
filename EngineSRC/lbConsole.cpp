@@ -45,7 +45,6 @@ namespace lb::console
 	lb::gui::GUI GUI;
 
 	bool locked = false;
-	bool blockLuaExec = false;
 	LogLevel logLevel = LogLevel::Default;
 	LogLevel unseen = LogLevel::None;
 
@@ -130,14 +129,6 @@ namespace lb::console
 						if (history.size() > deletefromline)
 						{
 							history.pop_front();
-						}
-						if (!blockLuaExec)
-						{
-							lb::lua::RunText(args.sValue);
-						}
-						else
-						{
-							Post("Lua execution is disabled", LogLevel::Error);
 						}
 						inputField.SetText("");
 					});
