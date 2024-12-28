@@ -1,5 +1,5 @@
 #include "lbBacklog_BindLua.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbLua.h"
 #include "lbMath_BindLua.h"
 
@@ -9,7 +9,7 @@ namespace lb::lua::backlog
 {
 	int backlog_clear(lua_State* L)
 	{
-		lb::backlog::clear();
+		lb::console::clear();
 		return 0;
 	}
 	int backlog_post(lua_State* L)
@@ -61,7 +61,7 @@ namespace lb::lua::backlog
 
 		if (!ss.empty())
 		{
-			lb::backlog::post(ss);
+			lb::console::Post(ss);
 		}
 
 		return 0;
@@ -72,7 +72,7 @@ namespace lb::lua::backlog
 
 		if (argc > 0)
 		{
-			lb::backlog::setFontSize(lb::lua::SGetInt(L, 1));
+			lb::console::setFontSize(lb::lua::SGetInt(L, 1));
 		}
 		else
 			lb::lua::SError(L, "backlog_fontsize(int val) not enough arguments!");
@@ -81,7 +81,7 @@ namespace lb::lua::backlog
 	}
 	int backlog_isactive(lua_State* L)
 	{
-		lb::lua::SSetBool(L, lb::backlog::isActive());
+		lb::lua::SSetBool(L, lb::console::IsActive());
 		return 1;
 	}
 	int backlog_fontrowspacing(lua_State* L)
@@ -89,7 +89,7 @@ namespace lb::lua::backlog
 		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			lb::backlog::setFontRowspacing(lb::lua::SGetFloat(L, 1));
+			lb::console::setFontRowspacing(lb::lua::SGetFloat(L, 1));
 		}
 		else
 			lb::lua::SError(L, "backlog_fontrowspacing(int val) not enough arguments!");
@@ -100,7 +100,7 @@ namespace lb::lua::backlog
 		int argc = lb::lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			lb::backlog::SetLogLevel((lb::backlog::LogLevel)lb::lua::SGetInt(L, 1));
+			lb::console::SetLogLevel((lb::console::LogLevel)lb::lua::SGetInt(L, 1));
 		}
 		else
 			lb::lua::SError(L, "backlog_setlevel(int val) not enough arguments!");
@@ -108,22 +108,12 @@ namespace lb::lua::backlog
 	}
 	int backlog_lock(lua_State* L)
 	{
-		lb::backlog::Lock();
+		lb::console::Lock();
 		return 0;
 	}
 	int backlog_unlock(lua_State* L)
 	{
-		lb::backlog::Unlock();
-		return 0;
-	}
-	int backlog_blocklua(lua_State* L)
-	{
-		lb::backlog::BlockLuaExecution();
-		return 0;
-	}
-	int backlog_unblocklua(lua_State* L)
-	{
-		lb::backlog::UnblockLuaExecution();
+		lb::console::Unlock();
 		return 0;
 	}
 
@@ -141,8 +131,6 @@ namespace lb::lua::backlog
 			lb::lua::RegisterFunc("backlog_setlevel", backlog_setlevel);
 			lb::lua::RegisterFunc("backlog_lock", backlog_lock);
 			lb::lua::RegisterFunc("backlog_unlock", backlog_unlock);
-			lb::lua::RegisterFunc("backlog_blocklua", backlog_blocklua);
-			lb::lua::RegisterFunc("backlog_unblocklua", backlog_unblocklua);
 		}
 	}
 }

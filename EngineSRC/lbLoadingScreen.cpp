@@ -9,7 +9,7 @@ using namespace lb::graphics;
 namespace lb
 {
 
-	bool LoadingScreen::isActive() const
+	bool LoadingScreen::IsActive() const
 	{
 		return lb::jobsystem::IsBusy(ctx);
 	}

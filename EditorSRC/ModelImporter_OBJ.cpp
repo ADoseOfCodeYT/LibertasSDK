@@ -95,7 +95,7 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 
 	if (!obj_errors.empty())
 	{
-		lb::backlog::post(obj_errors, lb::backlog::LogLevel::Error);
+		lb::console::Post(obj_errors, lb::console::LogLevel::Error);
 	}
 
 	if (success)

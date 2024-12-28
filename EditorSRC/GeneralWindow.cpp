@@ -290,7 +290,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			lb::backlog::post("Couldn't import localization file: " + filename, lb::backlog::LogLevel::Warning);
+			lb::console::Post("Couldn't import localization file: " + filename, lb::console::LogLevel::Warning);
 		}
 	});
 	AddWidget(&languageCombo);

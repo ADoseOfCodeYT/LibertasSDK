@@ -154,7 +154,7 @@ This is the documentation for the C++ features of Wicked Engine
 	2. [Lua_Globals](#lua_globals)
 	3. [Luna](#luna)
 11. [Tools](#tools)
-	1. [Backlog](#backlog)
+	1. [Backlog](#console)
 	2. [Profiler](#profiler)
 12. [Shaders](#shaders)
 	1. [Interop](#interop)
@@ -1440,7 +1440,7 @@ This is the place for tools that use engine-level systems
 ### Backlog
 [[Header]](../../WickedEngine/wiBacklog.h) [[Cpp]](../../WickedEngine/wiBacklog.cpp)
 Used to log any messages by any system, from any thread. It can draw itself to the screen. It can execute Lua scripts.
-If there was a `wii:backlog::LogLevel::Error` or higher severity message posted on the backlog, the contents of the log will be saved to the temporary user directory as wiBacklog.txt.
+If there was a `wii:console::LogLevel::Error` or higher severity message posted on the console, the contents of the log will be saved to the temporary user directory as wiBacklog.txt.
 ### Profiler
 [[Header]](../../WickedEngine/wiProfiler.h) [[Cpp]](../../WickedEngine/wiProfiler.cpp)
 Used to time specific ranges in execution. Support CPU and GPU timing. Can write the result to the screen as simple text at this time.

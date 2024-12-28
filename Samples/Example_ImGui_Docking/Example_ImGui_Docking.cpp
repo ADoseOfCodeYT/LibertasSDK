@@ -200,7 +200,7 @@ void Example_ImGui::Initialize()
 
 	myswapChain = this->swapChain;
 
-	lb::backlog::Lock();
+	lb::console::Lock();
 
 	ActivatePath(&renderer);
 }
@@ -1384,11 +1384,11 @@ void Example_ImGuiRenderer::Update(float dt)
 
 		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0, 3));
 
-		std::string log = lb::backlog::getText();
+		std::string log = lb::console::getText();
 		if (log.size() > 0)
 		{
 			lastlog += log;
-			lb::backlog::clear();
+			lb::console::clear();
 		}
 
 		ImGui::BeginChild("##log", ImVec2(0.0f, 0.0f), false, ImGuiWindowFlags_AlwaysVerticalScrollbar);

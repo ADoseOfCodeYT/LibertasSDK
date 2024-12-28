@@ -2,7 +2,7 @@
 
 #ifdef PLATFORM_LINUX
 #include "lbNetwork.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbTimer.h"
 
 #include <string>
@@ -47,7 +47,7 @@ namespace lb::network
 
 		if(socketinternal->handle == -1)
 		{
-			lb::backlog::post("lb::network_Linux error in CreateSocket: Could not create socket");
+			lb::console::Post("lb::network_Linux error in CreateSocket: Could not create socket");
 			return false;
 		}
 
@@ -71,7 +71,7 @@ namespace lb::network
 			int result = sendto(socketinternal->handle, (const char*)data, (int)dataSize, 0, (const sockaddr*)&target, sizeof(target));
 			if (result < 0)
 			{
-				lb::backlog::post("lb::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
+				lb::console::Post("lb::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
 				return false;
 			}
 
@@ -93,7 +93,7 @@ namespace lb::network
 			int result = bind(socketinternal->handle, (struct sockaddr *)&target , sizeof(target));
 			if (result < 0)
 			{
-				lb::backlog::post("lb::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
+				lb::console::Post("lb::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
 				return false;
 			}
 
@@ -117,7 +117,7 @@ namespace lb::network
 			int result = select(0, &readfds, NULL, NULL, &timeout);
 			if (result < 0)
 			{
-				lb::backlog::post("lb::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
+				lb::console::Post("lb::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
 				assert(0);
 				return false;
 			}
@@ -137,7 +137,7 @@ namespace lb::network
 			int result = recvfrom(socketinternal->handle, (char*)data, (int)dataSize, 0, (sockaddr*)& sender, (socklen_t*)&targetsize);
 			if (result < 0)
 			{
-				lb::backlog::post("lb::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
+				lb::console::Post("lb::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
 				assert(0);
 				return false;
 			}

@@ -8,7 +8,7 @@
 #include "lbFont.h"
 #include "lbImage.h"
 #include "lbTextureHelper.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbHelper.h"
 
 #include <sstream>
@@ -29,7 +29,7 @@ namespace lb::gui
 			static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [this](uint64_t userdata) { LoadShaders(); });
 			LoadShaders();
 
-			lb::backlog::post("GUI Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::console::Post("GUI Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 
 		void LoadShaders()
@@ -59,7 +59,7 @@ namespace lb::gui
 
 	void GUI::Update(const lb::Canvas& canvas, float dt)
 	{
-		if (!visible || lb::backlog::isActive())
+		if (!visible || lb::console::IsActive())
 		{
 			return;
 		}

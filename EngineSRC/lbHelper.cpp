@@ -1,6 +1,6 @@
 #include "lbHelper.h"
 #include "lbPlatform.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbEventHandler.h"
 #include "lbMath.h"
 
@@ -779,7 +779,7 @@ namespace lb::helper
 				}
 				else
 				{
-					lb::backlog::post("basisu::basis_compressor::process() failure!", lb::backlog::LogLevel::Error);
+					lb::console::Post("basisu::basis_compressor::process() failure!", lb::console::LogLevel::Error);
 					assert(0);
 				}
 			}
@@ -1029,7 +1029,7 @@ namespace lb::helper
 			return true;
 		}
 
-		lb::backlog::post("File not found: " + fileName, lb::backlog::LogLevel::Warning);
+		lb::console::Post("File not found: " + fileName, lb::console::LogLevel::Warning);
 		return false;
 	}
 	bool FileRead(const std::string& fileName, lb::vector<uint8_t>& data, size_t max_read, size_t offset)
@@ -1442,18 +1442,18 @@ namespace lb::helper
 #ifdef PLATFORM_WINDOWS_DESKTOP
 		std::string op = "start \"\" \"" + url + "\"";
 		int status = system(op.c_str());
-		lb::backlog::post("lb::helper::OpenUrl(" + url + ") returned status: " + std::to_string(status));
+		lb::console::Post("lb::helper::OpenUrl(" + url + ") returned status: " + std::to_string(status));
 		return;
 #endif // PLATFORM_WINDOWS_DESKTOP
 
 #ifdef PLATFORM_LINUX
 		std::string op = "xdg-open " + url;
 		int status = system(op.c_str());
-		lb::backlog::post("lb::helper::OpenUrl(" + url + ") returned status: " + std::to_string(status));
+		lb::console::Post("lb::helper::OpenUrl(" + url + ") returned status: " + std::to_string(status));
 		return;
 #endif // PLATFORM_WINDOWS_DESKTOP
 
-		lb::backlog::post("lb::helper::OpenUrl(" + url + "): not implemented for this operating system!", lb::backlog::LogLevel::Warning);
+		lb::console::Post("lb::helper::OpenUrl(" + url + "): not implemented for this operating system!", lb::console::LogLevel::Warning);
 	}
 
 	MemoryUsage GetMemoryUsage()

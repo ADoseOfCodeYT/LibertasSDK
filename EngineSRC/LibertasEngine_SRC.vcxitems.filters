@@ -58,6 +58,9 @@
     <Filter Include="UTILITY\meshoptimizer">
       <UniqueIdentifier>{5634b6ae-7f51-48ed-8a33-a5be8a31a56b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ENGINE\Tools\Console">
+      <UniqueIdentifier>{3f1e9809-e507-435c-956c-f54b94a32061}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)LUA\lapi.h">
@@ -230,9 +233,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)lbXInput.h">
       <Filter>ENGINE\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lbBacklog.h">
-      <Filter>ENGINE\Tools</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)lbArchive.h">
       <Filter>ENGINE\Helpers</Filter>
@@ -1395,6 +1395,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)lbRawInput.h">
       <Filter>ENGINE\Input</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)lbConsole.h">
+      <Filter>ENGINE\Tools\Console</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)LUA\lapi.c">
@@ -1570,9 +1573,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)lbXInput.cpp">
       <Filter>ENGINE\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lbBacklog.cpp">
-      <Filter>ENGINE\Tools</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)lbFFTGenerator.cpp">
       <Filter>ENGINE\Graphics</Filter>
@@ -2209,6 +2209,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)lbRawInput.cpp">
       <Filter>ENGINE\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)lbConsole.cpp">
+      <Filter>ENGINE\Tools\Console</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

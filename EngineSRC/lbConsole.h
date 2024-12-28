@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace lb::backlog
+namespace lb::console
 {
 	// Do not modify the order, as this is exposed to LUA scripts as int!
 	enum class LogLevel
@@ -33,13 +33,13 @@ namespace lb::backlog
 
 	std::string getText();
 	void clear();
-	void post(const char* input, LogLevel level = LogLevel::Default);
-	void post(const std::string& input, LogLevel level = LogLevel::Default);
+	void Post(const char* input, LogLevel level = LogLevel::Default);
+	void Post(const std::string& input, LogLevel level = LogLevel::Default);
 
-	void historyPrev();
-	void historyNext();
+	void HistoryPrev();
+	void HistoryNext();
 
-	bool isActive();
+	bool IsActive();
 
 	void setBackground(lb::graphics::Texture* texture);
 	void setFontSize(int value);
@@ -48,9 +48,6 @@ namespace lb::backlog
 
 	void Lock();
 	void Unlock();
-
-	void BlockLuaExecution();
-	void UnblockLuaExecution();
 
 	void SetLogLevel(LogLevel newLevel);
 

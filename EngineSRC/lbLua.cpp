@@ -1,6 +1,6 @@
 #include "lbLua.h"
 #include "lbLua_Globals.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbHelper.h"
 #include "lbApplication_BindLua.h"
 #include "lbRenderPath_BindLua.h"
@@ -61,7 +61,7 @@ namespace lb::lua
 		std::string ss;
 		ss += WILUA_ERROR_PREFIX;
 		ss += str;
-		lb::backlog::post(ss, lb::backlog::LogLevel::Error);
+		lb::console::Post(ss, lb::console::LogLevel::Error);
 		lua_pop(L, 1); // remove error message
 	}
 
@@ -274,7 +274,7 @@ namespace lb::lua
 
 		char text[256] = {};
 		snprintf(text, arraysize(text), "Lua  Initialized [%s.%s] (%d ms)", LUA_VERSION_MAJOR, LUA_VERSION_MINOR, (int)std::round(timer.elapsed()));
-		lb::backlog::post(text);
+		lb::console::Post(text);
 	}
 
 	lua_State* GetLuaState()
@@ -598,7 +598,7 @@ namespace lb::lua
 		{
 			ss += error;
 		}
-		lb::backlog::post(ss, lb::backlog::LogLevel::Error);
+		lb::console::Post(ss, lb::console::LogLevel::Error);
 	}
 
 	bool CompileFile(const char* filename, lb::vector<uint8_t>& dst)

@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "lbUnorderedMap.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 
 namespace lb::input::sdlinput
 {
@@ -34,7 +34,7 @@ namespace lb::input::sdlinput
 
     void Initialize() {
         if(!SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt")){
-            lb::backlog::post("[SDL Input] No controller config loaded, add gamecontrollerdb.txt file next to the executable or download it from https://github.com/gabomdq/SDL_GameControllerDB");
+            lb::console::Post("[SDL Input] No controller config loaded, add gamecontrollerdb.txt file next to the executable or download it from https://github.com/gabomdq/SDL_GameControllerDB");
         }
     }
 
@@ -204,7 +204,7 @@ namespace lb::input::sdlinput
                 case SDL_FINGERDOWN:
                 case SDL_FINGERUP:
                 case SDL_FINGERMOTION:
-                    lb::backlog::post("finger!");
+                    lb::console::Post("finger!");
                     break;
 
 
@@ -212,7 +212,7 @@ namespace lb::input::sdlinput
                 case SDL_DOLLARGESTURE:
                 case SDL_DOLLARRECORD:
                 case SDL_MULTIGESTURE:
-                    lb::backlog::post("gesture!");
+                    lb::console::Post("gesture!");
                     break;
                 default:
                     break;

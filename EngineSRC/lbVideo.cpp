@@ -1,7 +1,7 @@
 #include "lbVideo.h"
 #include "lbHelper.h"
 #include "lbRenderer.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 
 #include "Utility/minimp4.h"
 #include "Utility/h264.h"
@@ -357,7 +357,7 @@ namespace lb::video
 				}
 				else if (track.handler_type == MP4D_HANDLER_TYPE_SOUN)
 				{
-					lb::backlog::post("Audio from video file is not implemented yet!");
+					lb::console::Post("Audio from video file is not implemented yet!");
 				}
 			}
 		}

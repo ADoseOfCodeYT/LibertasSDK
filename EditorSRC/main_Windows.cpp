@@ -123,7 +123,7 @@ BOOL CreateEditorWindow(int nCmdShow)
 		borderless = editor.config.GetBool("borderless");
 		editor.allow_hdr = editor.config.GetBool("allow_hdr");
 
-		lb::backlog::post("config.ini loaded in " + std::to_string(timer.elapsed_milliseconds()) + " milliseconds\n");
+		lb::console::Post("config.ini loaded in " + std::to_string(timer.elapsed_milliseconds()) + " milliseconds\n");
 	}
 
 	HWND hWnd = NULL;

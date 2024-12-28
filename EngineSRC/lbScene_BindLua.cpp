@@ -6,7 +6,7 @@
 #include "lbPrimitive_BindLua.h"
 #include "lbSprite_BindLua.h"
 #include "lbSpriteFont_BindLua.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbECS.h"
 #include "lbLua.h"
 #include "lbUnorderedMap.h"

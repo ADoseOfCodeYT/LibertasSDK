@@ -1,6 +1,6 @@
 #include "lbJobSystem.h"
 #include "lbSpinLock.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbPlatform.h"
 #include "lbTimer.h"
 
@@ -316,7 +316,7 @@ namespace lb::jobsystem
 
 		char msg[256] = {};
 		snprintf(msg, arraysize(msg), "Job System Initialized with %d cores in %.2f ms\n\tHigh priority threads: %d\n\tLow priority threads: %d\n\tStreaming threads: %d", internal_state.numCores, timer.elapsed(), GetThreadCount(Priority::High), GetThreadCount(Priority::Low), GetThreadCount(Priority::Streaming));
-		lb::backlog::post(msg);
+		lb::console::Post(msg);
 	}
 
 	void ShutDown()

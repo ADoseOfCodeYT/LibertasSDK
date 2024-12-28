@@ -8,7 +8,7 @@
 #include "lbTextureHelper.h"
 #include "lbScene.h"
 #include "shaders/ShaderInterop_HairParticle.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbEventHandler.h"
 #include "lbTimer.h"
 
@@ -765,7 +765,7 @@ namespace lb
 		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { HairParticleSystem_Internal::LoadShaders(); });
 		HairParticleSystem_Internal::LoadShaders();
 
-		lb::backlog::post("Hair Particle System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("Hair Particle System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 	void HairParticleSystem::ConvertFromOLDSpriteSheet(uint32_t framesX, uint32_t framesY, uint32_t frameCount, uint32_t frameStart)

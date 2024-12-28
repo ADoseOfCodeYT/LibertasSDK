@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 		fullscreen = editor.config.GetBool("fullscreen");
 		editor.allow_hdr = editor.config.GetBool("allow_hdr");
 
-		lb::backlog::post("config.ini loaded in " + std::to_string(timer.elapsed_milliseconds()) + " milliseconds\n");
+		lb::console::Post("config.ini loaded in " + std::to_string(timer.elapsed_milliseconds()) + " milliseconds\n");
 	}
 
 	width = std::max(100, width);

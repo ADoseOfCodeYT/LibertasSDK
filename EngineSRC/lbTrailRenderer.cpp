@@ -1,6 +1,6 @@
 #include "lbTrailRenderer.h"
 #include "lbEventHandler.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbTimer.h"
 #include "lbRenderer.h"
 #include "lbTextureHelper.h"
@@ -333,6 +333,6 @@ namespace lb
 		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { TrailRenderer_Internal::LoadShaders(); });
 		TrailRenderer_Internal::LoadShaders();
 
-		lb::backlog::post("Trail Renderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("Trail Renderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 }

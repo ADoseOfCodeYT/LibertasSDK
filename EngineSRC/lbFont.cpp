@@ -3,7 +3,7 @@
 #include "lbResourceManager.h"
 #include "lbHelper.h"
 #include "shaders/ShaderInterop_Font.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbTextureHelper.h"
 #include "lbRectPacker.h"
 #include "lbSpinLock.h"
@@ -59,7 +59,7 @@ namespace lb::font
 
 				if (!stbtt_InitFont(&fontInfo, data, offset))
 				{
-					lb::backlog::post("Failed to load font: " + name + " (file was unrecognized, it must be a .ttf file)");
+					lb::console::Post("Failed to load font: " + name + " (file was unrecognized, it must be a .ttf file)");
 				}
 
 				stbtt_GetFontVMetrics(&fontInfo, &ascent, &descent, &lineGap);
@@ -72,7 +72,7 @@ namespace lb::font
 				}
 				else
 				{
-					lb::backlog::post("Failed to load font: " + name + " (file could not be opened)");
+					lb::console::Post("Failed to load font: " + name + " (file could not be opened)");
 				}
 			}
 		};
@@ -342,7 +342,7 @@ namespace lb::font
 		static lb::eventhandler::Handle handle1 = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 
-		lb::backlog::post("Font System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("Font System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 	void InvalidateAtlas()

@@ -2,7 +2,7 @@
 
 #include "lbScene.h"
 #include "lbProfiler.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbJobSystem.h"
 #include "lbRenderer.h"
 #include "lbTimer.h"
@@ -371,7 +371,7 @@ namespace lb::physics
 			}
 			else
 			{
-				lb::backlog::post("AddRigidBody failed: convex hull physics requested, but no MeshComponent provided!", lb::backlog::LogLevel::Error);
+				lb::console::Post("AddRigidBody failed: convex hull physics requested, but no MeshComponent provided!", lb::console::LogLevel::Error);
 				return;
 			}
 			break;
@@ -405,7 +405,7 @@ namespace lb::physics
 			}
 			else
 			{
-				lb::backlog::post("AddRigidBody failed: triangle mesh physics requested, but no MeshComponent provided!", lb::backlog::LogLevel::Error);
+				lb::console::Post("AddRigidBody failed: triangle mesh physics requested, but no MeshComponent provided!", lb::console::LogLevel::Error);
 				return;
 			}
 			break;
@@ -415,7 +415,7 @@ namespace lb::physics
 			{
 				char text[1024] = {};
 				snprintf(text, arraysize(text), "AddRigidBody failed, shape_result: %s", shape_result.GetError().c_str());
-				lb::backlog::post(text, lb::backlog::LogLevel::Error);
+				lb::console::Post(text, lb::console::LogLevel::Error);
 				return;
 			}
 			else
@@ -469,7 +469,7 @@ namespace lb::physics
 				physicsobject.bodyID = body_interface.CreateAndAddBody(settings, activation);
 				if (physicsobject.bodyID.IsInvalid())
 				{
-					lb::backlog::post("AddRigidBody failed: body couldn't be created! This could mean that there are too many physics objects.", lb::backlog::LogLevel::Error);
+					lb::console::Post("AddRigidBody failed: body couldn't be created! This could mean that there are too many physics objects.", lb::console::LogLevel::Error);
 					return;
 				}
 
@@ -501,7 +501,7 @@ namespace lb::physics
 			physicscomponent.CreateFromMesh(mesh);
 			if (physicscomponent.physicsIndices.empty())
 			{
-				lb::backlog::post("AddSoftBody failed: physics faces are empty, this means generating physics mesh has failed, try to change settings.", lb::backlog::LogLevel::Error);
+				lb::console::Post("AddSoftBody failed: physics faces are empty, this means generating physics mesh has failed, try to change settings.", lb::console::LogLevel::Error);
 				return;
 			}
 			const size_t vertexCount = physicscomponent.physicsToGraphicsVertexMapping.size();
@@ -571,7 +571,7 @@ namespace lb::physics
 
 			if (physicsobject.bodyID.IsInvalid())
 			{
-				lb::backlog::post("AddSoftBody failed: body couldn't be created! This could mean that there are too many physics objects.", lb::backlog::LogLevel::Error);
+				lb::console::Post("AddSoftBody failed: body couldn't be created! This could mean that there are too many physics objects.", lb::console::LogLevel::Error);
 				return;
 			}
 		}
@@ -705,7 +705,7 @@ namespace lb::physics
 					}
 					if (entityA == INVALID_ENTITY)
 					{
-						lb::backlog::post("Ragdoll creation aborted because humanoid has a missing required bone.", lb::backlog::LogLevel::Warning);
+						lb::console::Post("Ragdoll creation aborted because humanoid has a missing required bone.", lb::console::LogLevel::Warning);
 						return;
 					}
 
@@ -1149,7 +1149,7 @@ namespace lb::physics
 
 		char text[256] = {};
 		snprintf(text, arraysize(text), "Physics System Initialized [Jolt Physics %d.%d.%d] (%d ms)", JPH_VERSION_MAJOR, JPH_VERSION_MINOR, JPH_VERSION_PATCH, (int)std::round(timer.elapsed()));
-		lb::backlog::post(text);
+		lb::console::Post(text);
 	}
 
 	bool IsEnabled() { return ENABLED; }

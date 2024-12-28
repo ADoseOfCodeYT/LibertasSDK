@@ -217,7 +217,7 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 				lb::vector<uint8_t> filedata;
 				if (!lb::helper::FileRead(fileName, filedata))
 				{
-					lb::backlog::post("Heightmap loading failed, file couldn't be found: " + fileName, lb::backlog::LogLevel::Error);
+					lb::console::Post("Heightmap loading failed, file couldn't be found: " + fileName, lb::console::LogLevel::Error);
 				}
 
 				if (stbi_is_16_bit_from_memory((const stbi_uc*)filedata.data(), (int)filedata.size()))
@@ -232,7 +232,7 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 					}
 					else
 					{
-						lb::backlog::post("Heightmap loading unknown failure for 16-bit image: " + fileName, lb::backlog::LogLevel::Error);
+						lb::console::Post("Heightmap loading unknown failure for 16-bit image: " + fileName, lb::console::LogLevel::Error);
 					}
 				}
 				else
@@ -246,7 +246,7 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 					}
 					else
 					{
-						lb::backlog::post("Heightmap loading failure for 8-bit image: " + fileName, lb::backlog::LogLevel::Error);
+						lb::console::Post("Heightmap loading failure for 8-bit image: " + fileName, lb::console::LogLevel::Error);
 					}
 				}
 			});

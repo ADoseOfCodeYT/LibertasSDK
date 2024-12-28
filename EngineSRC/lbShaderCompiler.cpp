@@ -1,5 +1,5 @@
 #include "lbShaderCompiler.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbPlatform.h"
 #include "lbHelper.h"
 #include "lbArchive.h"
@@ -74,14 +74,14 @@ namespace lb::shadercompiler
 					uint32_t major = 0;
 					hr = info->GetVersion(&major, &minor);
 					assert(SUCCEEDED(hr));
-					lb::backlog::post("lb::shadercompiler: loaded " + library + " (version: " + std::to_string(major) + "." + std::to_string(minor) + ")");
+					lb::console::Post("lb::shadercompiler: loaded " + library + " (version: " + std::to_string(major) + "." + std::to_string(minor) + ")");
 				}
 			}
 			else
 			{
-				lb::backlog::post("lb::shadercompiler: could not load library " + library, lb::backlog::LogLevel::Error);
+				lb::console::Post("lb::shadercompiler: could not load library " + library, lb::console::LogLevel::Error);
 #ifdef PLATFORM_LINUX
-				lb::backlog::post(dlerror(), lb::backlog::LogLevel::Error); // print dlopen() error detail: https://linux.die.net/man/3/dlerror
+				lb::console::Post(dlerror(), lb::console::LogLevel::Error); // print dlopen() error detail: https://linux.die.net/man/3/dlerror
 #endif // PLATFORM_LINUX
 			}
 
@@ -566,7 +566,7 @@ namespace lb::shadercompiler
 				D3DCompile = (PFN_D3DCOMPILE)wiGetProcAddress(d3dcompiler, "D3DCompile");
 				if (D3DCompile != nullptr)
 				{
-					lb::backlog::post("lb::shadercompiler: loaded d3dcompiler_47.dll");
+					lb::console::Post("lb::shadercompiler: loaded d3dcompiler_47.dll");
 				}
 			}
 		}

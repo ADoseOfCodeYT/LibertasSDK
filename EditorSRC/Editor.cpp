@@ -299,7 +299,7 @@ void Editor::Initialize()
 	//infoDisplay.heap_allocation_counter = true;
 	//infoDisplay.vram_usage = true;
 
-	lb::backlog::setFontColor(lb::Color(130, 210, 220, 255));
+	lb::console::setFontColor(lb::Color(130, 210, 220, 255));
 
 	lb::renderer::SetOcclusionCullingEnabled(true);
 
@@ -327,33 +327,33 @@ void Editor::HotReload()
 	if (lb::shadercompiler::GetRegisteredShaderCount() > 0 && !lb::renderer::IsPipelineCreationActive())
 	{
 		lb::jobsystem::Execute(hotreload_ctx, [](lb::jobsystem::JobArgs args) {
-			lb::backlog::post("[Shader check] Started checking " + std::to_string(lb::shadercompiler::GetRegisteredShaderCount()) + " registered shaders for changes...");
+			lb::console::Post("[Shader check] Started checking " + std::to_string(lb::shadercompiler::GetRegisteredShaderCount()) + " registered shaders for changes...");
 			if (lb::shadercompiler::CheckRegisteredShadersOutdated())
 			{
-				lb::backlog::post("[Shader check] Changes detected, initiating reload...");
+				lb::console::Post("[Shader check] Changes detected, initiating reload...");
 				lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
 					lb::renderer::ReloadShaders();
 				});
 			}
 			else
 			{
-				lb::backlog::post("[Shader check] All up to date");
+				lb::console::Post("[Shader check] All up to date");
 			}
 		});
 	}
 
 	lb::jobsystem::Execute(hotreload_ctx, [](lb::jobsystem::JobArgs args) {
-		lb::backlog::post("[Resource check] Started checking resource manager for changes...");
+		lb::console::Post("[Resource check] Started checking resource manager for changes...");
 		if (lb::resourcemanager::CheckResourcesOutdated())
 		{
-			lb::backlog::post("[Resource check] Changes detected, initiating reload...");
+			lb::console::Post("[Resource check] Changes detected, initiating reload...");
 			lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
 				lb::resourcemanager::ReloadOutdatedResources();
 			});
 		}
 		else
 		{
-			lb::backlog::post("[Resource check] All up to date");
+			lb::console::Post("[Resource check] All up to date");
 		}
 	});
 
@@ -1000,7 +1000,7 @@ void EditorComponent::Load()
 	logButton.SetColor(lb::Color(50, 160, 200, 180), lb::gui::WIDGETSTATE::IDLE);
 	logButton.SetColor(lb::Color(120, 200, 200, 255), lb::gui::WIDGETSTATE::FOCUS);
 	logButton.OnClick([&](lb::gui::EventArgs args) {
-		lb::backlog::Toggle();
+		lb::console::Toggle();
 		});
 	topmenuWnd.AddWidget(&logButton);
 
@@ -1371,13 +1371,13 @@ void EditorComponent::Update(float dt)
 		}
 	}
 
-	if (!lb::backlog::isActive() && paintToolWnd.GetMode() == PaintToolWindow::MODE::MODE_DISABLED)
+	if (!lb::console::IsActive() && paintToolWnd.GetMode() == PaintToolWindow::MODE::MODE_DISABLED)
 	{
 		translator.Update(camera, currentMouse, *renderPath);
 	}
 
 	// Camera control:
-	if (!lb::backlog::isActive() && !GetGUI().HasFocus())
+	if (!lb::console::IsActive() && !GetGUI().HasFocus())
 	{
 		deleting = CheckInput(EditorActions::DELETE_ACTION);
 		currentMouse = lb::input::GetPointer();
@@ -2311,7 +2311,7 @@ void EditorComponent::Update(float dt)
 	}
 
 	// These keys work but for some reason in my keyboard 1 returns TAB and 2 returns TILDE keys.
-	if (!lb::backlog::isActive() && !GetGUI().IsTyping())
+	if (!lb::console::IsActive() && !GetGUI().IsTyping())
 	{
 		if (CheckInput(EditorActions::MOVE_TOGGLE_ACTION))
 		{
@@ -4666,7 +4666,7 @@ void EditorComponent::Open(std::string filename)
 	size_t camera_count_prev = GetCurrentScene().cameras.GetCount();
 
 	lb::jobsystem::Execute(loadmodel_workload, [=] (lb::jobsystem::JobArgs) {
-		lb::backlog::post("[Editor] started loading model: " + filename);
+		lb::console::Post("[Editor] started loading model: " + filename);
 		std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 		if (type == FileType::WISCENE)
 		{
@@ -4732,7 +4732,7 @@ void EditorComponent::Open(std::string filename)
 
 			componentsWnd.weatherWnd.Update();
 			componentsWnd.RefreshEntityTree();
-			lb::backlog::post("[Editor] finished loading model: " + filename);
+			lb::console::Post("[Editor] finished loading model: " + filename);
 		});
 	});
 }
@@ -4898,7 +4898,7 @@ void EditorComponent::PostSaveText(const std::string& message, const std::string
 	save_text_message = message;
 	save_text_filename = filename;
 	save_text_alpha = time_seconds;
-	lb::backlog::post(message + filename);
+	lb::console::Post(message + filename);
 }
 
 void EditorComponent::CheckBonePickingEnabled()
@@ -5225,11 +5225,11 @@ void EditorComponent::UpdateDynamicWidgets()
 
 
 
-	if (lb::backlog::GetUnseenLogLevelMax() >= lb::backlog::LogLevel::Error)
+	if (lb::console::GetUnseenLogLevelMax() >= lb::console::LogLevel::Error)
 	{
 		logButton.sprites[lb::gui::IDLE].params.color = lb::Color::Error();
 	}
-	else if (lb::backlog::GetUnseenLogLevelMax() >= lb::backlog::LogLevel::Warning)
+	else if (lb::console::GetUnseenLogLevelMax() >= lb::console::LogLevel::Warning)
 	{
 		logButton.sprites[lb::gui::IDLE].params.color = lb::Color::Warning();
 	}

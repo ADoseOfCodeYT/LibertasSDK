@@ -6,7 +6,7 @@
 #include "lbTextureHelper.h"
 #include "lbHelper.h"
 #include "lbUnorderedMap.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbRenderer.h"
 #include "lbEventHandler.h"
 
@@ -101,7 +101,7 @@ namespace lb::profiler
 			superluminal_handle = PerformanceAPI_LoadFrom(L"PerformanceAPI.dll", &superluminal_functions);
 			if (superluminal_handle)
 			{
-				lb::backlog::post("[lb::profiler] Superluminal Performance API loaded");
+				lb::console::Post("[lb::profiler] Superluminal Performance API loaded");
 			}
 #endif // PERFORMANCEAPI_ENABLED
 		}

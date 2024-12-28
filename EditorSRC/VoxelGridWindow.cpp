@@ -129,7 +129,7 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 		voxelgrid->flood_fill();
 		char text[256] = {};
 		snprintf(text, arraysize(text), "Flood filling took %.2f seconds.", tim.elapsed_seconds());
-		lb::backlog::post(text);
+		lb::console::Post(text);
 		});
 	AddWidget(&floodfillButton);
 
@@ -168,7 +168,7 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 		voxelgrid->create_mesh(indices, vertices, false);
 		if (vertices.empty())
 		{
-			lb::backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", lb::backlog::LogLevel::Warning);
+			lb::console::Post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", lb::console::LogLevel::Warning);
 			return;
 		}
 		scene.Entity_CreateMeshFromData("voxelgrid_to_mesh", indices.size(), indices.data(), vertices.size(), vertices.data());
@@ -188,7 +188,7 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 		voxelgrid->create_mesh(indices, vertices, true);
 		if (vertices.empty())
 		{
-			lb::backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", lb::backlog::LogLevel::Warning);
+			lb::console::Post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", lb::console::LogLevel::Warning);
 			return;
 		}
 		scene.Entity_CreateMeshFromData("voxelgrid_to_mesh", indices.size(), indices.data(), vertices.size(), vertices.data());

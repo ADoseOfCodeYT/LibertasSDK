@@ -4,7 +4,7 @@
 #include "lbHelper.h"
 #include "lbTimer.h"
 #include "lbInput.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbApplication_BindLua.h"
 #include "lbVersion.h"
 #include "lbEnums.h"
@@ -141,7 +141,7 @@ namespace lb
 			graphicsDevice->BindViewports(1, &viewport, cmd);
 			if (lb::initializer::IsInitializeFinished(lb::initializer::INITIALIZED_SYSTEM_FONT))
 			{
-				lb::backlog::DrawOutputText(canvas, cmd, colorspace);
+				lb::console::DrawOutputText(canvas, cmd, colorspace);
 			}
 			graphicsDevice->RenderPassEnd(cmd);
 
@@ -168,7 +168,7 @@ namespace lb
 			{
 				if (lb::lua::RunFile(startup_lua_filename))
 				{
-					lb::backlog::post("Executed startup file: " + startup_lua_filename);
+					lb::console::Post("Executed startup file: " + startup_lua_filename);
 				}
 			}
 			std::string startup_luab_filename = lb::helper::GetCurrentPath() + "/startup.luab";
@@ -176,7 +176,7 @@ namespace lb
 			{
 				if (lb::lua::RunBinaryFile(startup_luab_filename))
 				{
-					lb::backlog::post("Executed startup file: " + startup_luab_filename);
+					lb::console::Post("Executed startup file: " + startup_luab_filename);
 				}
 			}
 		}
@@ -298,7 +298,7 @@ namespace lb
 		lb::lua::SetDeltaTime(double(dt));
 		lb::lua::Update();
 
-		lb::backlog::Update(canvas, dt);
+		lb::console::Update(canvas, dt);
 
 		lb::resourcemanager::UpdateStreamingResources(dt);
 
@@ -551,7 +551,7 @@ namespace lb
 			{
 				params.cursor = lb::font::Draw(std::to_string(lb::renderer::GetShaderErrorCount()) + " shader compilation errors! Check the backlog for more information!\n", params, cmd);
 			}
-			if (lb::backlog::GetUnseenLogLevelMax() >= lb::backlog::LogLevel::Error)
+			if (lb::console::GetUnseenLogLevelMax() >= lb::console::LogLevel::Error)
 			{
 				params.cursor = lb::font::Draw("Errors found, check the backlog for more information!", params, cmd);
 			}
@@ -581,7 +581,7 @@ namespace lb
 
 		lb::profiler::DrawData(canvas, 4, 10, cmd, colorspace);
 
-		lb::backlog::Draw(canvas, cmd, colorspace);
+		lb::console::Draw(canvas, cmd, colorspace);
 
 		lb::profiler::EndRange(range); // Compose
 	}
@@ -641,7 +641,7 @@ namespace lb
 #elif defined(LIBERTASENGINE_BUILD_VULKAN)
 				use_vulkan = true;
 #else
-				lb::backlog::post("No rendering backend is enabled! Please enable at least one so we can use it as default", lb::backlog::LogLevel::Error);
+				lb::console::Post("No rendering backend is enabled! Please enable at least one so we can use it as default", lb::console::LogLevel::Error);
 				assert(false);
 #endif
 			}

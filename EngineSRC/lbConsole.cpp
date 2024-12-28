@@ -1,4 +1,4 @@
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbMath.h"
 #include "lbResourceManager.h"
 #include "lbTextureHelper.h"
@@ -20,7 +20,7 @@
 
 using namespace lb::graphics;
 
-namespace lb::backlog
+namespace lb::console
 {
 	bool enabled = false;
 	bool was_ever_enabled = enabled;
@@ -93,15 +93,15 @@ namespace lb::backlog
 				Toggle();
 			}
 
-			if (isActive())
+			if (IsActive())
 			{
 				if (lb::input::Press(lb::input::KEYBOARD_BUTTON_UP))
 				{
-					historyPrev();
+					HistoryPrev();
 				}
 				if (lb::input::Press(lb::input::KEYBOARD_BUTTON_DOWN))
 				{
-					historyNext();
+					HistoryNext();
 				}
 				if (lb::input::Down(lb::input::KEYBOARD_BUTTON_PAGEUP))
 				{
@@ -122,7 +122,7 @@ namespace lb::backlog
 					inputField.SetCancelInputEnabled(false);
 					inputField.OnInputAccepted([](lb::gui::EventArgs args) {
 						historyPos = 0;
-						post(args.sValue);
+						Post(args.sValue);
 						LogEntry entry;
 						entry.text = args.sValue;
 						entry.level = LogLevel::Default;
@@ -137,7 +137,7 @@ namespace lb::backlog
 						}
 						else
 						{
-							post("Lua execution is disabled", LogLevel::Error);
+							Post("Lua execution is disabled", LogLevel::Error);
 						}
 						inputField.SetText("");
 					});
@@ -218,7 +218,7 @@ namespace lb::backlog
 		{
 			const uint8_t colorData[] = { 0, 0, 43, 200, 43, 31, 141, 223 };
 			lb::texturehelper::CreateTexture(backgroundTex, colorData, 1, 2);
-			device->SetName(&backgroundTex, "lb::backlog::backgroundTex");
+			device->SetName(&backgroundTex, "lb::console::backgroundTex");
 		}
 
 		lb::image::Params fx = lb::image::Params((float)canvas.GetLogicalWidth(), (float)canvas.GetLogicalHeight());
@@ -337,7 +337,7 @@ namespace lb::backlog
 		entries.clear();
 		scroll = 0;
 	}
-	void post(const char* input, LogLevel level)
+	void Post(const char* input, LogLevel level)
 	{
 		if (logLevel > level)
 		{
@@ -398,12 +398,12 @@ namespace lb::backlog
 			write_logfile(); // will lock mutex
 		}
 	}
-	void post(const std::string& input, LogLevel level)
+	void Post(const std::string& input, LogLevel level)
 	{
-		post(input.c_str(), level);
+		Post(input.c_str(), level);
 	}
 
-	void historyPrev()
+	void HistoryPrev()
 	{
 		std::scoped_lock lock(logLock);
 		if (!history.empty())
@@ -416,7 +416,7 @@ namespace lb::backlog
 			}
 		}
 	}
-	void historyNext()
+	void HistoryNext()
 	{
 		std::scoped_lock lock(logLock);
 		if (!history.empty())
@@ -447,7 +447,7 @@ namespace lb::backlog
 		font_params.color = color;
 	}
 
-	bool isActive() { return enabled; }
+	bool IsActive() { return enabled; }
 
 	void Lock()
 	{
@@ -457,15 +457,6 @@ namespace lb::backlog
 	void Unlock()
 	{
 		locked = false;
-	}
-
-	void BlockLuaExecution()
-	{
-		blockLuaExec = true;
-	}
-	void UnblockLuaExecution()
-	{
-		blockLuaExec = false;
 	}
 
 	void SetLogLevel(LogLevel newLevel)

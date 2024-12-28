@@ -3,7 +3,7 @@
 #include "lbHelper.h"
 #include "lbTextureHelper.h"
 #include "lbUnorderedMap.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbJobSystem.h"
 
 #include "Utility/qoi.h"
@@ -438,13 +438,13 @@ namespace lb
 											}
 											else
 											{
-												lb::backlog::post("KTX2 transcoding error while loading image!", lb::backlog::LogLevel::Error);
+												lb::console::Post("KTX2 transcoding error while loading image!", lb::console::LogLevel::Error);
 												assert(0);
 											}
 										}
 										else
 										{
-											lb::backlog::post("KTX2 transcoding error while loading image level info!", lb::backlog::LogLevel::Error);
+											lb::console::Post("KTX2 transcoding error while loading image level info!", lb::console::LogLevel::Error);
 											assert(0);
 										}
 									}
@@ -571,13 +571,13 @@ namespace lb
 											}
 											else
 											{
-												lb::backlog::post("BASIS transcoding error while loading image!", lb::backlog::LogLevel::Error);
+												lb::console::Post("BASIS transcoding error while loading image!", lb::console::LogLevel::Error);
 												assert(0);
 											}
 										}
 										else
 										{
-											lb::backlog::post("BASIS transcoding error while loading image level info!", lb::backlog::LogLevel::Error);
+											lb::console::Post("BASIS transcoding error while loading image level info!", lb::console::LogLevel::Error);
 											assert(0);
 										}
 									}
@@ -1582,16 +1582,16 @@ namespace lb
 							resourceinternal->container_filename = resourceinternal->filename;
 							resourceinternal->container_fileoffset = 0;
 							resourceinternal->container_filesize = ~0ull;
-							lb::backlog::post("[resourcemanager] reload success: " + resourceinternal->filename);
+							lb::console::Post("[resourcemanager] reload success: " + resourceinternal->filename);
 						}
 						else
 						{
-							lb::backlog::post("[resourcemanager] reload failure - LoadResourceDirectly returned false: " + resourceinternal->filename, lb::backlog::LogLevel::Error);
+							lb::console::Post("[resourcemanager] reload failure - LoadResourceDirectly returned false: " + resourceinternal->filename, lb::console::LogLevel::Error);
 						}
 					}
 					else
 					{
-						lb::backlog::post("[resourcemanager] reload failure - file data could not be read: " + resourceinternal->filename, lb::backlog::LogLevel::Error);
+						lb::console::Post("[resourcemanager] reload failure - file data could not be read: " + resourceinternal->filename, lb::console::LogLevel::Error);
 					}
 				}
 			}

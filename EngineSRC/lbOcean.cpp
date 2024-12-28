@@ -3,7 +3,7 @@
 #include "lbResourceManager.h"
 #include "shaders/ShaderInterop_Ocean.h"
 #include "lbScene.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbEventHandler.h"
 #include "lbTimer.h"
 #include "lbVector.h"
@@ -596,7 +596,7 @@ namespace lb
 		LoadShaders();
 		lb::fftgenerator::LoadShaders();
 
-		lb::backlog::post("Ocean Simulator Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("Ocean Simulator Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 	const Texture* Ocean::getDisplacementMap() const

@@ -1,7 +1,7 @@
 #include "lbTextureHelper.h"
 #include "lbRandom.h"
 #include "lbColor.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbSpinLock.h"
 #include "lbTimer.h"
 #include "lbUnorderedMap.h"
@@ -206,7 +206,7 @@ namespace lb::texturehelper
 			device->SetName(&helperTextures[HELPERTEXTURE_NORMALMAPDEFAULT], "HELPERTEXTURE_NORMALMAPDEFAULT");
 		}
 
-		lb::backlog::post("Texture System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("Texture System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 	const Texture* getLogo()

@@ -6,7 +6,7 @@
 #include "lbHelper.h"
 #include "lbTextureHelper.h"
 #include "lbEnums.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbProfiler.h"
 #include "lbOcean.h"
 #include "lbGPUSortLib.h"
@@ -756,7 +756,7 @@ bool LoadShader(
 		}
 		else
 		{
-			lb::backlog::post("shader dump doesn't contain shader: " + shaderbinaryfilename, lb::backlog::LogLevel::Error);
+			lb::console::Post("shader dump doesn't contain shader: " + shaderbinaryfilename, lb::console::LogLevel::Error);
 		}
 #endif // SHADERDUMP_ENABLED
 	}
@@ -786,14 +786,14 @@ bool LoadShader(
 
 			if (!output.error_message.empty())
 			{
-				lb::backlog::post(output.error_message, lb::backlog::LogLevel::Warning);
+				lb::console::Post(output.error_message, lb::console::LogLevel::Warning);
 			}
-			lb::backlog::post("shader compiled: " + shaderbinaryfilename);
+			lb::console::Post("shader compiled: " + shaderbinaryfilename);
 			return device->CreateShader(stage, output.shaderdata, output.shadersize, &shader);
 		}
 		else
 		{
-			lb::backlog::post("shader compile FAILED: " + shaderbinaryfilename + "\n" + output.error_message, lb::backlog::LogLevel::Error);
+			lb::console::Post("shader compile FAILED: " + shaderbinaryfilename + "\n" + output.error_message, lb::console::LogLevel::Error);
 			SHADER_ERRORS.fetch_add(1);
 		}
 	}
@@ -2650,7 +2650,7 @@ void Initialize()
 	static lb::eventhandler::Handle handle2 = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 	LoadShaders();
 
-	lb::backlog::post("Renderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+	lb::console::Post("Renderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	initialized.store(true);
 }
 void ClearWorld(Scene& scene)
@@ -8455,7 +8455,7 @@ void RefreshEnvProbes(const Visibility& vis, CommandList cmd)
 				info += "\n\tFormat = ";
 				info += GetFormatString(desc.format);
 				info += "\n\tMemory = " + lb::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(desc)) + "\n";
-				lb::backlog::post(info);
+				lb::console::Post(info);
 			}
 
 			if (!envrenderingColorBuffer.IsValid())
@@ -8488,7 +8488,7 @@ void RefreshEnvProbes(const Visibility& vis, CommandList cmd)
 				info += "\n\tFormat = ";
 				info += GetFormatString(desc.format);
 				info += "\n\tMemory = " + lb::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(desc)) + "\n";
-				lb::backlog::post(info);
+				lb::console::Post(info);
 			}
 
 			if (!envrenderingColorBuffer_Filtered.IsValid())
@@ -8521,7 +8521,7 @@ void RefreshEnvProbes(const Visibility& vis, CommandList cmd)
 				info += "\n\tFormat = ";
 				info += GetFormatString(desc.format);
 				info += "\n\tMemory = " + lb::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(desc)) + "\n";
-				lb::backlog::post(info);
+				lb::console::Post(info);
 			}
 
 			if (required_sample_count > 1)
@@ -8553,7 +8553,7 @@ void RefreshEnvProbes(const Visibility& vis, CommandList cmd)
 					info += "\n\tFormat = ";
 					info += GetFormatString(desc.format);
 					info += "\n\tMemory = " + lb::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(desc)) + "\n";
-					lb::backlog::post(info);
+					lb::console::Post(info);
 				}
 			}
 		}
@@ -9962,7 +9962,7 @@ void BlockCompress(const Texture& texture_src, const Texture& texture_bc, Comman
 			size_t total_size = 0;
 			total_size += ComputeTextureMemorySizeInBytes(bc_raw_desc);
 			info += "\n\tMemory = " + lb::helper::GetMemorySizeText(total_size) + "\n";
-			lb::backlog::post(info);
+			lb::console::Post(info);
 		}
 
 		bc_raw_dest = *bc_raw;

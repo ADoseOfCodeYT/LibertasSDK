@@ -6,7 +6,7 @@
 #include "lbSprite.h"
 #include "lbProfiler.h"
 #include "lbScene.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 
 #if __has_include("OpenImageDenoise/oidn.hpp")
 #include "OpenImageDenoise/oidn.hpp"
@@ -270,7 +270,7 @@ namespace lb
 							auto error = device.getError(errorMessage);
 							if (error != oidn::Error::None && error != oidn::Error::Cancelled)
 							{
-								lb::backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
+								lb::console::Post(std::string("[OpenImageDenoise error] ") + errorMessage);
 							}
 							else
 							{

@@ -7,7 +7,7 @@
 #include "lbSpinLock.h"
 #include "lbHelper.h"
 #include "lbRenderer.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbTimer.h"
 #include "lbUnorderedMap.h"
 #include "lbLua.h"
@@ -1080,7 +1080,7 @@ namespace lb::scene
 
 		char text[64] = {};
 		snprintf(text, arraysize(text), "Scene::Instantiate took %.2f ms", timer.elapsed_milliseconds());
-		lb::backlog::post(text);
+		lb::console::Post(text);
 
 		return rootEntity;
 	}
@@ -4060,7 +4060,7 @@ namespace lb::scene
 			total_size += ComputeTextureMemorySizeInBytes(impostorRenderTarget_Surface_MSAA.desc);
 			total_size += ComputeTextureMemorySizeInBytes(impostorRenderTarget_Normal_MSAA.desc);
 			info += "\n\tMemory = " + lb::helper::GetMemorySizeText(total_size) + "\n";
-			lb::backlog::post(info);
+			lb::console::Post(info);
 		}
 
 		// reconstruct impostor array status:

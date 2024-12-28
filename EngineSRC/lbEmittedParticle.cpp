@@ -8,7 +8,7 @@
 #include "lbTextureHelper.h"
 #include "lbGPUSortLib.h"
 #include "lbProfiler.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbEventHandler.h"
 #include "lbTimer.h"
 #include "lbVector.h"
@@ -1085,7 +1085,7 @@ namespace lb
 		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { EmittedParticleSystem_Internal::LoadShaders(); });
 		EmittedParticleSystem_Internal::LoadShaders();
 
-		lb::backlog::post("Particle System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("Particle System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 

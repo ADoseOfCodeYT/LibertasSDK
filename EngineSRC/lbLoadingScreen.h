@@ -36,7 +36,7 @@ namespace lb
 		//Set a function that should be called when the loading finishes
 		void onFinished(std::function<void()> finishFunction);
 		//See if the loading is currently running
-		bool isActive() const;
+		bool IsActive() const;
 		// See if there are any loading tasks that are still not finished
 		bool isFinished() const;
 		// Returns the percentage of loading tasks that are finished (0% - 100%)

@@ -75,7 +75,7 @@ void ImportModel_FBX(const std::string& filename, lb::scene::Scene& scene)
 	{
 		std::string str = "FBX import error: ";
 		str += error.description.data;
-		lb::backlog::post(str, lb::backlog::LogLevel::Error);
+		lb::console::Post(str, lb::console::LogLevel::Error);
 		lb::helper::messageBox(str, "Error!");
 		return;
 	}

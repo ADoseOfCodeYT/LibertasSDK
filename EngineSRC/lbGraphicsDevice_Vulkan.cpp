@@ -2,7 +2,7 @@
 
 #ifdef LIBERTASENGINE_BUILD_VULKAN
 #include "lbHelper.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbVersion.h"
 #include "lbTimer.h"
 #include "lbUnorderedSet.h"
@@ -3603,7 +3603,7 @@ using namespace vulkan_internal;
 			assert(res == VK_SUCCESS);
 		}
 
-		lb::backlog::post("Created GraphicsDevice_Vulkan (" + std::to_string((int)std::round(timer.elapsed())) + " ms)\nAdapter: " + adapterName);
+		lb::console::Post("Created GraphicsDevice_Vulkan (" + std::to_string((int)std::round(timer.elapsed())) + " ms)\nAdapter: " + adapterName);
 	}
 	GraphicsDevice_Vulkan::~GraphicsDevice_Vulkan()
 	{

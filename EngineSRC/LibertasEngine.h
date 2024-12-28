@@ -20,7 +20,7 @@
 // Engine-level systems
 #include "lbVersion.h"
 #include "lbPlatform.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbPrimitive.h"
 #include "lbImage.h"
 #include "lbFont.h"
@@ -126,7 +126,7 @@ namespace lbInitializer = lb::initializer;
 namespace lbJobSystem = lb::jobsystem;
 namespace lbPlatform = lb::platform;
 namespace lbScene = lb::scene;
-namespace lbBackLog = lb::backlog;
+namespace lbBackLog = lb::console;
 namespace lbProfiler = lb::profiler;
 namespace lbVersion = lb::version;
 

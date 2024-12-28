@@ -31,25 +31,25 @@ namespace lb::initializer
 		initializationStarted.store(true);
 
 		std::string ss;
-		ss += "\n[lb::initializer] Initializing Libertas Engine, please wait...\n";
+		ss += "\nInitializing Libertas Engine, please wait...\n";
 		ss += "Version: ";
 		ss += lb::version::GetVersionString();
-		lb::backlog::post(ss);
+		lb::console::Post(ss);
 
 		size_t shaderdump_count = lb::renderer::GetShaderDumpCount();
 		if (shaderdump_count > 0)
 		{
-			lb::backlog::post("\nEmbedded shaders found: " + std::to_string(shaderdump_count));
+			lb::console::Post("\nEmbedded shaders found: " + std::to_string(shaderdump_count));
 		}
 		else
 		{
-			lb::backlog::post("\nNo embedded shaders found, shaders will be compiled at runtime if needed.\n\tShader source path: " + lb::renderer::GetShaderSourcePath() + "\n\tShader binary path: " + lb::renderer::GetShaderPath());
+			lb::console::Post("\nNo embedded shaders found, shaders will be compiled at runtime if needed.\n\tShader source path: " + lb::renderer::GetShaderSourcePath() + "\n\tShader binary path: " + lb::renderer::GetShaderPath());
 		}
 
-		lb::backlog::post("");
+		lb::console::Post("");
 		lb::jobsystem::Initialize();
 
-		lb::backlog::post("");
+		lb::console::Post("");
 		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::font::Initialize(); systems[INITIALIZED_SYSTEM_FONT].store(true); });
 		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::image::Initialize(); systems[INITIALIZED_SYSTEM_IMAGE].store(true); });
 		lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) { lb::input::Initialize(); systems[INITIALIZED_SYSTEM_INPUT].store(true); });
@@ -69,7 +69,7 @@ namespace lb::initializer
 
 		std::thread([] {
 			lb::jobsystem::Wait(ctx);
-			lb::backlog::post("\n[lb::initializer] Libertas Engine Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::console::Post("\n[lb::initializer] Libertas Engine Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}).detach();
 
 	}

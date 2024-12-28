@@ -6,7 +6,7 @@
 #include "lbResourceManager.h"
 #include "lbGPUSortLib.h"
 #include "lbTextureHelper.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbEventHandler.h"
 #include "lbTimer.h"
 
@@ -424,6 +424,6 @@ namespace lb
 		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { GPUBVH_Internal::LoadShaders(); });
 		GPUBVH_Internal::LoadShaders();
 
-		lb::backlog::post("GPU BVH System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("GPU BVH System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 }

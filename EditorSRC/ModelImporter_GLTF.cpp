@@ -923,7 +923,7 @@ void ImportModel_GLTF(const std::string& fileName, Scene& scene)
 				}
 				else
 				{
-					lb::backlog::post("[KHR_materials_specular warning] specularTexture must be either in surfaceMap.a or specularColorTexture.a! specularTexture discarded!", lb::backlog::LogLevel::Warning);
+					lb::console::Post("[KHR_materials_specular warning] specularTexture must be either in surfaceMap.a or specularColorTexture.a! specularTexture discarded!", lb::console::LogLevel::Warning);
 				}
 			}
 			if (ext_specular->second.Has("specularColorTexture"))
@@ -3207,7 +3207,7 @@ void Import_Extension_VRMC(LoaderState& state)
 	auto ext_vrmc_springbone_extended_collider = state.gltfModel.extensions.find("VRMC_springBone_extended_collider");
 	if (ext_vrmc_springbone_extended_collider != state.gltfModel.extensions.end())
 	{
-		lb::backlog::post("VRMC_springBone_extended_collider extension found in model, but it is not implemented yet in the importer.", lb::backlog::LogLevel::Warning);
+		lb::console::Post("VRMC_springBone_extended_collider extension found in model, but it is not implemented yet in the importer.", lb::console::LogLevel::Warning);
 	}
 }
 
@@ -3499,7 +3499,7 @@ inline std::string _ExportHelper_GetOriginalTexture(std::string texture_file)
 	for(auto& ext : original_texture_extension_iterator)
 	{
 		std::string target_file = lb::helper::ReplaceExtension(texture_file, ext);
-		lb::backlog::post(target_file);
+		lb::console::Post(target_file);
 		if (lb::helper::FileExists(target_file))
 		{
 			return target_file;

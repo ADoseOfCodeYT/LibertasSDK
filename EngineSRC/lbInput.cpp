@@ -4,7 +4,7 @@
 #include "lbRawInput.h"
 #include "lbSDLInput.h"
 #include "lbHelper.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbProfiler.h"
 #include "lbColor.h"
 #include "lbTimer.h"
@@ -130,7 +130,7 @@ namespace lb::input
 			cursor_table[i] = cursor_table_original[i];
 		}
 
-		lb::backlog::post("Input System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("Input System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		initialized.store(true);
 	}
 

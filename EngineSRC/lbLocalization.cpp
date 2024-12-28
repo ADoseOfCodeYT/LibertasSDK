@@ -1,6 +1,6 @@
 #include "lbLocalization.h"
 #include "lbHelper.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 
 #include "Utility/pugixml.hpp"
 
@@ -135,7 +135,7 @@ namespace lb
 		pugi::xml_parse_result result = doc.load_buffer_inplace(filedata.data(), filedata.size());
 		if (result.status != pugi::xml_parse_status::status_ok)
 		{
-			lb::backlog::post("XML error in " + filename + " at offset = " + std::to_string(result.offset) + ": " + result.description(), lb::backlog::LogLevel::Warning);
+			lb::console::Post("XML error in " + filename + " at offset = " + std::to_string(result.offset) + ": " + result.description(), lb::console::LogLevel::Warning);
 			return false;
 		}
 

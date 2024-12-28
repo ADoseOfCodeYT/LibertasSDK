@@ -451,7 +451,7 @@ void PaintToolWindow::Update(float dt)
 	XMFLOAT2 posNew;
 	posNew.x = editor->GetLogicalWidth() * 0.5f;
 	posNew.y = editor->GetLogicalHeight() * 0.5f;
-	if (editor->GetGUI().HasFocus() || lb::backlog::isActive())
+	if (editor->GetGUI().HasFocus() || lb::console::IsActive())
 	{
 		pos = posNew;
 		strokes.clear();
@@ -590,7 +590,7 @@ void PaintToolWindow::Update(float dt)
 				material->textures[sel].resource = lb::renderer::CreatePaintableTexture(1024, 1024, 1, lb::Color::White());
 				editTexture = GetEditTextureSlot(*material, &uvset);
 
-				lb::backlog::post("Paint Tool created default texture: " + texturename);
+				lb::console::Post("Paint Tool created default texture: " + texturename);
 			}
 
 			if (!editTexture.texture.IsValid())
@@ -1437,7 +1437,7 @@ using namespace PaintTool_Internal;
 void PaintToolWindow::DrawBrush(const lb::Canvas& canvas, CommandList cmd) const
 {
 	const MODE mode = GetMode();
-	if (mode == MODE_DISABLED || mode == MODE_TEXTURE || lb::backlog::isActive())
+	if (mode == MODE_DISABLED || mode == MODE_TEXTURE || lb::console::IsActive())
 		return;
 
 	static bool shaders_loaded = false;

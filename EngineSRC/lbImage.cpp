@@ -3,7 +3,7 @@
 #include "lbRenderer.h"
 #include "lbHelper.h"
 #include "shaders/ShaderInterop_Image.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbEventHandler.h"
 #include "lbTimer.h"
 
@@ -647,7 +647,7 @@ namespace lb::image
 		static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 
-		lb::backlog::post("Image System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lb::console::Post("Image System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 	}
 
 }

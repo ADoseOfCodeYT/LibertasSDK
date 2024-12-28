@@ -2,7 +2,7 @@
 
 #ifdef LIBERTASENGINE_BUILD_DX12
 #include "lbHelper.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbTimer.h"
 #include "lbUnorderedSet.h"
 
@@ -2751,7 +2751,7 @@ std::mutex queue_locker;
 			}
 			error += "\nExiting.";
 			lb::helper::messageBox(error, "Error!");
-			lb::backlog::post(error, lb::backlog::LogLevel::Error);
+			lb::console::Post(error, lb::console::LogLevel::Error);
 			lb::platform::Exit();
 		}
 
@@ -3038,7 +3038,7 @@ std::mutex queue_locker;
 			lb::helper::messageBox(ss.str(), "Warning!");
 		}
 
-		lb::backlog::post("Created GraphicsDevice_DX12 (" + std::to_string((int)std::round(timer.elapsed())) + " ms)\nAdapter: " + adapterName);
+		lb::console::Post("Created GraphicsDevice_DX12 (" + std::to_string((int)std::round(timer.elapsed())) + " ms)\nAdapter: " + adapterName);
 	}
 	GraphicsDevice_DX12::~GraphicsDevice_DX12()
 	{
@@ -5781,7 +5781,7 @@ std::mutex queue_locker;
 
 		if (!log.empty())
 		{
-			lb::backlog::post(log, lb::backlog::LogLevel::Error);
+			lb::console::Post(log, lb::console::LogLevel::Error);
 		}
 
 		std::string message = "D3D12: device removed, cause: ";

@@ -3,7 +3,7 @@
 #include "lbArchive.h"
 #include "lbRandom.h"
 #include "lbHelper.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbTimer.h"
 #include "lbVector.h"
 #include "shaders/ShaderInterop_DDGI.h"
@@ -2465,7 +2465,7 @@ namespace lb::scene
 
 		char text[64] = {};
 		snprintf(text, arraysize(text), "Scene::Serialize took %.2f seconds", timer.elapsed_seconds());
-		lb::backlog::post(text);
+		lb::console::Post(text);
 	}
 
 	void Scene::DDGI::Serialize(lb::Archive& archive)
@@ -2511,7 +2511,7 @@ namespace lb::scene
 				}
 				else
 				{
-					lb::backlog::post("The serialized DDGI irradiance data structure is different from current version, discarding irradiance data.", lb::backlog::LogLevel::Warning);
+					lb::console::Post("The serialized DDGI irradiance data structure is different from current version, discarding irradiance data.", lb::console::LogLevel::Warning);
 				}
 			}
 
@@ -2558,7 +2558,7 @@ namespace lb::scene
 				}
 				else
 				{
-					lb::backlog::post("The serialized DDGI probe offset structure is different from current version, discarding probe offset data.", lb::backlog::LogLevel::Warning);
+					lb::console::Post("The serialized DDGI probe offset structure is different from current version, discarding probe offset data.", lb::console::LogLevel::Warning);
 				}
 			}
 		}

@@ -7,7 +7,7 @@ This is a reference and explanation of Lua scripting features in Wicked Engine.
 1. [Introduction and usage](#introduction-and-usage)
 2. [Utility Tools](#utility-tools)
 4. [Engine Bindings](#engine-bindings)
-	1. [BackLog (Console)](#backlog)
+	1. [Console](#backlog)
 	2. [Renderer](#renderer)
 	3. [Sprite](#sprite)
 		1. [ImageParams](#imageparams)
@@ -129,8 +129,6 @@ The scripting API provides some functions which manipulate the BackLog. These fu
 - backlog_fontrowspacing(float spacing)  -- set a row spacing to the backlog
 - backlog_lock() -- disable and lock the backlog so HOME key doesn't bring it up
 - backlog_unlock() -- unlock the backlog so it can be toggled with the HOME key
-- backlog_blocklua() -- disable LUA code execution in the backlog
-- backlog_unblocklua() -- undisable LUA code execution in the backlog
 
 ### Renderer
 This is the graphics renderer, which is also responsible for managing the scene graph which consists of keeping track of

@@ -7,7 +7,7 @@
 #include "lbSpinLock.h"
 #include "lbHelper.h"
 #include "lbRenderer.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbTimer.h"
 #include "lbUnorderedMap.h"
 #include "lbLua.h"
@@ -1983,7 +1983,7 @@ namespace lb::scene
 					auto error = device.getError(errorMessage);
 					if (error != oidn::Error::None && error != oidn::Error::Cancelled)
 					{
-						lb::backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
+						lb::console::Post(std::string("[OpenImageDenoise error] ") + errorMessage);
 					}
 					else
 					{

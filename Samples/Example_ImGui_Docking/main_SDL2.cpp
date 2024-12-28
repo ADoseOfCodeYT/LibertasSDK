@@ -34,17 +34,17 @@ int sdl_loop(Example_ImGui &tests)
                             if (lb::shadercompiler::GetRegisteredShaderCount() > 0)
                             {
                                 std::thread([] {
-                                    lb::backlog::post("[Shader check] Started checking " + std::to_string(lb::shadercompiler::GetRegisteredShaderCount()) + " registered shaders for changes...");
+                                    lb::console::Post("[Shader check] Started checking " + std::to_string(lb::shadercompiler::GetRegisteredShaderCount()) + " registered shaders for changes...");
                                     if (lb::shadercompiler::CheckRegisteredShadersOutdated())
                                     {
-                                        lb::backlog::post("[Shader check] Changes detected, initiating reload...");
+                                        lb::console::Post("[Shader check] Changes detected, initiating reload...");
                                         lb::eventhandler::Subscribe_Once(lb::eventhandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
                                             lb::renderer::ReloadShaders();
                                             });
                                     }
                                     else
                                     {
-                                        lb::backlog::post("[Shader check] All up to date");
+                                        lb::console::Post("[Shader check] All up to date");
                                     }
                                     }).detach();
                             }

@@ -2,7 +2,7 @@
 
 #ifdef PLATFORM_WINDOWS_DESKTOP
 #include "lbNetwork.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbTimer.h"
 
 #include <string>
@@ -26,11 +26,11 @@ namespace lb::network
 			if (result)
 			{
 				int error = WSAGetLastError();
-				lb::backlog::post("Network Initialization FAILED with error: " + std::to_string(error));
+				lb::console::Post("Network Initialization FAILED with error: " + std::to_string(error));
 				assert(0);
 			}
 
-			lb::backlog::post("Network Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::console::Post("Network Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 		~NetworkInternal()
 		{
@@ -73,7 +73,7 @@ namespace lb::network
 		if (socketinternal->handle == INVALID_SOCKET)
 		{
 			int error = WSAGetLastError();
-			lb::backlog::post("lb::network error in CreateSocket: " + std::to_string(error));
+			lb::console::Post("lb::network error in CreateSocket: " + std::to_string(error));
 			return false;
 		}
 
@@ -98,7 +98,7 @@ namespace lb::network
 			if (result == SOCKET_ERROR)
 			{
 				int error = WSAGetLastError();
-				lb::backlog::post("lb::network error in Send: " + std::to_string(error));
+				lb::console::Post("lb::network error in Send: " + std::to_string(error));
 				return false;
 			}
 
@@ -122,7 +122,7 @@ namespace lb::network
 			if (result == SOCKET_ERROR)
 			{
 				int error = WSAGetLastError();
-				lb::backlog::post("lb::network error in ListenPort: " + std::to_string(error));
+				lb::console::Post("lb::network error in ListenPort: " + std::to_string(error));
 				return false;
 			}
 
@@ -147,7 +147,7 @@ namespace lb::network
 			if (result < 0)
 			{
 				int error = WSAGetLastError();
-				lb::backlog::post("lb::network error in CanReceive: " + std::to_string(error));
+				lb::console::Post("lb::network error in CanReceive: " + std::to_string(error));
 				assert(0);
 				return false;
 			}
@@ -169,7 +169,7 @@ namespace lb::network
 			if (result == SOCKET_ERROR)
 			{
 				int error = WSAGetLastError();
-				lb::backlog::post("lb::network error in Receive: " + std::to_string(error));
+				lb::console::Post("lb::network error in Receive: " + std::to_string(error));
 				return false;
 			}
 

@@ -8,7 +8,7 @@
 #include "lbImage.h"
 #include "lbFont.h"
 #include "lbTextureHelper.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 
 #include <mutex>
 #include <string>

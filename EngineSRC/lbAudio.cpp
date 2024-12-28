@@ -1,5 +1,5 @@
 #include "lbAudio.h"
-#include "lbBacklog.h"
+#include "lbConsole.h"
 #include "lbHelper.h"
 #include "lbTimer.h"
 #include "lbVector.h"
@@ -90,7 +90,7 @@ namespace lb::audio
 			{
 				std::stringstream ss("");
 				ss << "XAudio2: CoInitializeEx returned error: 0x" << std::hex << hr;
-				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 				return;
 			}
 
@@ -99,7 +99,7 @@ namespace lb::audio
 			{
 				std::stringstream ss("");
 				ss << "XAudio2: XAudio2Create returned error: 0x" << std::hex << hr;
-				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 				return;
 			}
 
@@ -115,7 +115,7 @@ namespace lb::audio
 			{
 				std::stringstream ss("");
 				ss << "XAudio2: CreateMasteringVoice returned error: 0x" << std::hex << hr;
-				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 				return;
 			}
 
@@ -141,7 +141,7 @@ namespace lb::audio
 				{
 					std::stringstream ss("");
 					ss << "XAudio2: CreateSubmixVoice returned error: 0x" << std::hex << hr;
-					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 					return;
 				}
 			}
@@ -153,7 +153,7 @@ namespace lb::audio
 			{
 				std::stringstream ss("");
 				ss << "XAudio2: X3DAudioInitialize returned error: 0x" << std::hex << hr;
-				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 				return;
 			}
 
@@ -164,7 +164,7 @@ namespace lb::audio
 				{
 					std::stringstream ss("");
 					ss << "XAudio2: XAudio2CreateReverb returned error: 0x" << std::hex << hr;
-					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 					return;
 				}
 
@@ -183,7 +183,7 @@ namespace lb::audio
 				{
 					std::stringstream ss("");
 					ss << "XAudio2: CreateSubmixVoice returned error: 0x" << std::hex << hr;
-					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 					return;
 				}
 
@@ -194,7 +194,7 @@ namespace lb::audio
 				{
 					std::stringstream ss("");
 					ss << "XAudio2: SetEffectParameters returned error: 0x" << std::hex << hr;
-					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 					return;
 				}
 			}
@@ -204,7 +204,7 @@ namespace lb::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			lb::backlog::post("Audio System Initialized [XAudio2] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::console::Post("Audio System Initialized [XAudio2] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 		~AudioInternal()
 		{
@@ -795,7 +795,7 @@ namespace lb::audio
 			{
 				std::stringstream ss("");
 				ss << "FAudioCreate returned error: " << res;
-				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 				return;
 			}
 
@@ -809,7 +809,7 @@ namespace lb::audio
 			{
 				std::stringstream ss("");
 				ss << "FAudio_CreateMasteringVoice returned error: " << res;
-				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 				return;
 			}
 		
@@ -826,7 +826,7 @@ namespace lb::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudio_CreateSubmixVoice returned error: " << res;
-					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 					return;
 				}
 			}
@@ -839,7 +839,7 @@ namespace lb::audio
 			{
 				std::stringstream ss("");
 				ss << "F3DAudioInitialize returned error: " << res;
-				lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 				return;
 			}
 
@@ -850,7 +850,7 @@ namespace lb::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudioCreateReverb returned error: " << res;
-					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 					return;
 				}
 
@@ -871,7 +871,7 @@ namespace lb::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudio_CreateSubmixVoice returned error: " << res;
-					lb::backlog::post(ss.str(), lb::backlog::LogLevel::Error);
+					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
 					return;
 				}
 			}
@@ -881,7 +881,7 @@ namespace lb::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			lb::backlog::post("Audio System Initialized [FAudio] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::console::Post("Audio System Initialized [FAudio] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}
 		~AudioInternal(){
 			if(reverbSubmix != nullptr)
