@@ -23,10 +23,10 @@
 #endif
 
 
-#include "../EngineSRC/wiProfiler.h"
-#include "../EngineSRC/wiBacklog.h"
-#include "../EngineSRC/wiPrimitive.h"
-#include "../EngineSRC/wiRenderPath3D.h"
+#include "../EngineSRC/lbProfiler.h"
+#include "../EngineSRC/lbConsole.h"
+#include "../EngineSRC/lbPrimitive.h"
+#include "../EngineSRC/lbRenderPath3D.h"
 #include "../EditorSRC/ModelImporter.h"
 
 #include <fstream>
@@ -517,7 +517,7 @@ void Example_ImGuiRenderer::Update(float dt)
 
 			ImGui::DockBuilderDockWindow("Scene", dock_id_left);
 			ImGui::DockBuilderDockWindow("Options", dock_id_right);
-			ImGui::DockBuilderDockWindow(ICON_MD_TEXT_SNIPPET " Libertas Backlog", dock_id_bottom);
+			ImGui::DockBuilderDockWindow(ICON_MD_TEXT_SNIPPET " Libertas Console", dock_id_bottom);
 			ImGui::DockBuilderDockWindow(ICON_MD_BUG_REPORT " Debugger", dock_id_bottom);
 
 			ImGui::DockBuilderFinish(dockspace_id);
@@ -1308,7 +1308,7 @@ void Example_ImGuiRenderer::Update(float dt)
 	ImGui::End();
 
 	//Wicked console and lua.
-	ImGui::Begin(ICON_MD_TEXT_SNIPPET " Libertas Backlog", &bAlwaysOpen, ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin(ICON_MD_TEXT_SNIPPET " Libertas Console", &bAlwaysOpen, ImGuiWindowFlags_NoScrollbar);
 	{
 		static std::string lastlog = "";
 
@@ -1379,7 +1379,7 @@ void Example_ImGuiRenderer::Update(float dt)
 			ImGui::SetClipboardText(lastlog.c_str());
 		ImGui::SameLine();
 		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0, -3));
-		if (ImGui::Button("Clear Backlog", ImVec2(IMGUIBUTTONWIDE, 0)))
+		if (ImGui::Button("Clear Console", ImVec2(IMGUIBUTTONWIDE, 0)))
 			lastlog.clear();
 
 		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0, 3));
