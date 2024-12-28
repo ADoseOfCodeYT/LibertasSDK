@@ -545,15 +545,15 @@ namespace lb
 			params.color = lb::Color::Error();
 			if (lb::renderer::GetShaderMissingCount() > 0)
 			{
-				params.cursor = lb::font::Draw(std::to_string(lb::renderer::GetShaderMissingCount()) + " shaders missing! Check the backlog for more information!\n", params, cmd);
+				params.cursor = lb::font::Draw(std::to_string(lb::renderer::GetShaderMissingCount()) + " shaders missing! Check the console for more information!\n", params, cmd);
 			}
 			if (lb::renderer::GetShaderErrorCount() > 0)
 			{
-				params.cursor = lb::font::Draw(std::to_string(lb::renderer::GetShaderErrorCount()) + " shader compilation errors! Check the backlog for more information!\n", params, cmd);
+				params.cursor = lb::font::Draw(std::to_string(lb::renderer::GetShaderErrorCount()) + " shader compilation errors! Check the console for more information!\n", params, cmd);
 			}
 			if (lb::console::GetUnseenLogLevelMax() >= lb::console::LogLevel::Error)
 			{
-				params.cursor = lb::font::Draw("Errors found, check the backlog for more information!", params, cmd);
+				params.cursor = lb::font::Draw("Errors found, check the console for more information!", params, cmd);
 			}
 
 			if (infoDisplay.colorgrading_helper)

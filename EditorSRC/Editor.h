@@ -248,7 +248,7 @@ enum class EditorLocalization
 	// Top menu:
 	Save,
 	Open,
-	Backlog,
+	Console,
 	Profiler,
 	__REMOVED_Cinema,
 	FullScreen,
@@ -265,7 +265,7 @@ static const char* EditorLocalizationStrings[] = {
 	// Top menu:
 	"Save",
 	"Open",
-	"Backlog",
+	"Console",
 	"Profiler",
 	"Cinema",
 	"Full screen",

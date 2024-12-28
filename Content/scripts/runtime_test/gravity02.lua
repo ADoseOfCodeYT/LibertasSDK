@@ -89,12 +89,12 @@ runProcess(function()
 	local epsilon = 0.05
 	local length = expectedRestingPos.Subtract(transform.GetPosition(), expectedRestingPos).Length() 
 	if (length > epsilon) then 
-		backlog_post("Test FAIL " .. script_file())
+		console_post("Test FAIL " .. script_file())
         signal("integration_test_fail")
 		vec = transform.GetPosition()
-		backlog_post("length: " .. length .. "," .. "pos: " .. vec.GetX() .. " " .. vec.GetY() .. " " .. vec.GetZ())
+		console_post("length: " .. length .. "," .. "pos: " .. vec.GetX() .. " " .. vec.GetY() .. " " .. vec.GetZ())
 	else 
-		backlog_post("Test PASS " .. script_file())
+		console_post("Test PASS " .. script_file())
         signal("integration_test_pass")
 	end 
 end)

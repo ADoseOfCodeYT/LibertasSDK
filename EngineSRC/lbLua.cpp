@@ -17,7 +17,7 @@
 #include "lbMath_BindLua.h"
 #include "lbInput_BindLua.h"
 #include "lbSpriteFont_BindLua.h"
-#include "lbBacklog_BindLua.h"
+#include "lbConsole_BindLua.h"
 #include "lbNetwork_BindLua.h"
 #include "lbPrimitive_BindLua.h"
 #include "lbPhysics_BindLua.h"
@@ -263,7 +263,7 @@ namespace lb::lua
 		scene::Bind();
 		Input_BindLua::Bind();
 		SpriteFont_BindLua::Bind();
-		backlog::Bind();
+		console::Bind();
 		Network_BindLua::Bind();
 		primitive::Bind();
 		Physics_BindLua::Bind();

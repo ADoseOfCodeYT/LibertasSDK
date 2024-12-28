@@ -1,6 +1,6 @@
 killProcesses()  -- stops all running lua coroutine processes
 
-backlog_post("---> START SCRIPT: pathfinding.lua")
+console_post("---> START SCRIPT: pathfinding.lua")
 
 -- Create a simple voxel grid by inserting some shapes manually:
 local voxelgrid = VoxelGrid(64, 64, 64)
@@ -40,4 +40,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: pathfinding.lua")
+console_post("---> END SCRIPT: pathfinding.lua")

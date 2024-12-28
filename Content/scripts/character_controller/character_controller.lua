@@ -227,7 +227,7 @@ local function Character(model_scene, start_transform, controllable, anim_scene,
 			end
 
 			if self.controllable then
-				if not backlog_isactive() then
+				if not console_isactive() then
 					-- Movement input:
 					local lookDir = Vector()
 					if(input.Down(KEYBOARD_BUTTON_LEFT) or input.Down(string.byte('A'))) then
@@ -966,7 +966,7 @@ runProcess(function()
 			debug = not debug
 		end
 
-		if debug and backlog_isactive() == false then
+		if debug and console_isactive() == false then
 
 			local model_transform = scene.Component_GetTransform(player.model)
 			local target_transform = scene.Component_GetTransform(player.neck)
@@ -1000,11 +1000,11 @@ runProcess(function()
 
 		update()
 		
-		if not backlog_isactive() then
+		if not console_isactive() then
 			if(input.Press(KEYBOARD_BUTTON_ESCAPE)) then
 				-- restore previous component
 				--	so if you loaded this script from the editor, you can go back to the editor with ESC
-				backlog_post("EXIT")
+				console_post("EXIT")
 				for i,anim in ipairs(scene.Component_GetAnimationArray()) do
 					anim.Stop() -- stop animations because some of them are retargeted and animation source scene will be lost after we exit this script!
 				end
@@ -1017,7 +1017,7 @@ runProcess(function()
 			end
 			if(input.Press(string.byte('R'))) then
 				-- reload script
-				backlog_post("RELOAD")
+				console_post("RELOAD")
 				application.SetActivePath(prevPath, 0.5)
 				while not application.IsFaded() do
 					update()

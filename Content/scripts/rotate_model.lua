@@ -1,7 +1,7 @@
 -- This script will load a teapot model with lights and rotate the whole model
 killProcesses()  -- stops all running lua coroutine processes
 
-backlog_post("---> START SCRIPT: rotate_model.lua")
+console_post("---> START SCRIPT: rotate_model.lua")
 
 scene = GetScene()
 scene.Clear()
@@ -15,4 +15,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: rotate_model.lua")
+console_post("---> END SCRIPT: rotate_model.lua")

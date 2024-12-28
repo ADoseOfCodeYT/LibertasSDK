@@ -155,7 +155,7 @@ function Conversation()
 		end,
 		
 		Enter = function(self, character)
-			backlog_post("Entering conversation")
+			console_post("Entering conversation")
 			self.state = ConversationState.Talking
 			self.character = character
 			if #self.character.dialogs < self.character.next_dialog then
@@ -165,7 +165,7 @@ function Conversation()
 		end,
 	
 		Exit = function(self)
-			backlog_post("Exiting conversation")
+			console_post("Exiting conversation")
 			self.state = ConversationState.Disabled
 			self.dialog = {}
 			self.override_input = false

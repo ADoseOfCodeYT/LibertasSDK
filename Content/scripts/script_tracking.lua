@@ -10,7 +10,7 @@
 --    script_pid() are a local variable exposed to each script for the user to track and kill all 
 --    instances of scripts that uses the same file
 
-backlog_post("---> START SCRIPT: script_tracking.lua")
+console_post("---> START SCRIPT: script_tracking.lua")
 
 -- Now you can track even the coroutine that the script has
 -- You can exactly kill this one coroutine by killing them like this: killProcess(proc_coroutine)
@@ -18,12 +18,12 @@ local proc_success, proc_coroutine = runProcess(function()
 	-- If you want to do stuff once but never again on the next sequence of reloads, you can do it like this 
 	-- (apply to any scripts you have their PID tracked on script too)
 	if not Script_Initialized(script_pid()) then
-		backlog_post("\n")
-		backlog_post("== Script INFO ==")
-		backlog_post("script_dir(): "..script_dir())
-		backlog_post("script_file(): "..script_file())
-		backlog_post("script_pid(): "..script_pid())
-		backlog_post("\n")
+		console_post("\n")
+		console_post("== Script INFO ==")
+		console_post("script_dir(): "..script_dir())
+		console_post("script_file(): "..script_file())
+		console_post("script_pid(): "..script_pid())
+		console_post("\n")
 
 		-- By using a global table you can keep code data across reloads
 		-- And if you want to keep each script instance separate you can use script_pid() to store the data
@@ -49,7 +49,7 @@ local proc_success, proc_coroutine = runProcess(function()
 		-- Also running a script can now return its PID, which you can use to kill the script you just launched in this script
 		-- Down below is a small demo to open a file on another script and open it relative to that script's path
 		D.subscript_PID = dofile(script_dir() .. "subscript_demo/load_model.lua", true)
-		backlog_post("subscript PID: "..D.subscript_PID)
+		console_post("subscript PID: "..D.subscript_PID)
 	end
 
 	while true do
@@ -62,7 +62,7 @@ local proc_success, proc_coroutine = runProcess(function()
 		if(input.Press(string.byte('R'))) then
 			-- This is an example to restart a script using killProcessPID, to keep script PID add true to the argument
 			killProcessPID(script_pid(), true)
-			backlog_post("RESTART")
+			console_post("RESTART")
 			dofile(script_file(), script_pid())
 			return
 		end
@@ -71,11 +71,11 @@ local proc_success, proc_coroutine = runProcess(function()
 			-- so if you loaded this script from the editor, you can go back to the editor with ESC
 			-- This is an example to exit a script using killProcessPID
 			killProcesses()
-			backlog_post("EXIT")
+			console_post("EXIT")
 			application.SetActivePath(D.prevPath)
 			return
 		end
 	end
 end)
 
-backlog_post("---> END SCRIPT: script_tracking.lua")
+console_post("---> END SCRIPT: script_tracking.lua")

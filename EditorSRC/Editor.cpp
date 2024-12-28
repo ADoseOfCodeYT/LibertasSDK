@@ -992,11 +992,11 @@ void EditorComponent::Load()
 	topmenuWnd.AddWidget(&contentBrowserButton);
 
 
-	logButton.Create("Backlog");
+	logButton.Create("Console");
 	logButton.SetLocalizationEnabled(lb::gui::LocalizationEnabled::Tooltip);
 	logButton.SetShadowRadius(2);
 	logButton.font.params.shadowColor = lb::Color::Transparent();
-	logButton.SetTooltip("Open the backlog (toggle with HOME button)");
+	logButton.SetTooltip("Open the console (toggle with HOME button)");
 	logButton.SetColor(lb::Color(50, 160, 200, 180), lb::gui::WIDGETSTATE::IDLE);
 	logButton.SetColor(lb::Color(120, 200, 200, 255), lb::gui::WIDGETSTATE::FOCUS);
 	logButton.OnClick([&](lb::gui::EventArgs args) {
@@ -1127,7 +1127,7 @@ void EditorComponent::Load()
 		ss += "Inspector mode: " + main->config.GetSection("hotkeys").GetText("inspector_mode") + " button (hold), hovered entity information will be displayed near mouse position.\n";
 		ss += "Place Instances: " + main->config.GetSection("hotkeys").GetText("PLACE_INSTANCES") + " (place clipboard onto clicked surface)\n";
 		ss += "Ragdoll and physics impulse tester: Hold " + main->config.GetSection("hotkeys").GetText("ragdoll_and_physics_impulse_tester") + " and click on ragdoll or rigid body physics entity with middle mouse.\n";
-		ss += "Script Console / backlog: HOME button\n";
+		ss += "Script Console / console: HOME button\n";
 		ss += "Bone picking: First select an armature, only then bone picking becomes available. As long as you have an armature or bone selected, bone picking will remain active.\n";
 		ss += "\n";
 		ss += "\nTips\n";
@@ -4986,15 +4986,15 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 
 
-	if (logButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Backlog) != nullptr)
+	if (logButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Console) != nullptr)
 	{
-		tmp = ICON_BACKLOG " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::Backlog);
+		tmp = ICON_CONSOLE " ";
+		tmp += current_localization.Get((size_t)EditorLocalization::Console);
 		logButton.SetText(tmp);
 	}
 	else
 	{
-		logButton.SetText(logButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_BACKLOG " Backlog" : ICON_BACKLOG);
+		logButton.SetText(logButton.GetState() > lb::gui::WIDGETSTATE::IDLE ? ICON_CONSOLE " Console" : ICON_CONSOLE);
 	}
 
 	if (profilerButton.GetState() > lb::gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Profiler) != nullptr)

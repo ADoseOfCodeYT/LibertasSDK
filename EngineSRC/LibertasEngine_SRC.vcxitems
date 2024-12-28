@@ -408,7 +408,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)lbTexture_BindLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lbMath_BindLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lbConsole.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)lbBacklog_BindLua.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lbConsole_BindLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LibertasEngine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lbColor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lbEmittedParticle.h" />
@@ -775,7 +775,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)lbTexture_BindLua.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lbMath_BindLua.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lbConsole.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)lbBacklog_BindLua.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lbConsole_BindLua.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lbEmittedParticle.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lbFadeManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lbFont.cpp" />

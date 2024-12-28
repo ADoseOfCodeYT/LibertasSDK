@@ -1,7 +1,7 @@
 -- This script will load a teapot model and demonstrate picking it with a ray
 killProcesses()  -- stops all running lua coroutine processes
 
-backlog_post("---> START SCRIPT: pick.lua")
+console_post("---> START SCRIPT: pick.lua")
 
 scene = GetScene()
 scene.Clear()
@@ -28,4 +28,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: pick.lua")
+console_post("---> END SCRIPT: pick.lua")

@@ -165,7 +165,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)lbMath_BindLua.h">
       <Filter>ENGINE\Scripting\LuaBindings</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lbBacklog_BindLua.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)lbConsole_BindLua.h">
       <Filter>ENGINE\Scripting\LuaBindings</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)lbNetwork_BindLua.h">
@@ -1520,7 +1520,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)lbMath_BindLua.cpp">
       <Filter>ENGINE\Scripting\LuaBindings</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lbBacklog_BindLua.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)lbConsole_BindLua.cpp">
       <Filter>ENGINE\Scripting\LuaBindings</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)lbNetwork_BindLua.cpp">

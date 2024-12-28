@@ -253,6 +253,6 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 	}
 	else
 	{
-		lb::helper::messageBox("OBJ import failed! Check backlog for errors!", "Error!");
+		lb::helper::messageBox("OBJ import failed! Check console for errors!", "Error!");
 	}
 }

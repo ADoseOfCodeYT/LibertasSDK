@@ -1,6 +1,6 @@
 killProcesses()  -- stops all running lua coroutine processes
 
-backlog_post("---> START SCRIPT: trail_renderer.lua")
+console_post("---> START SCRIPT: trail_renderer.lua")
 
 local trail = TrailRenderer()
 trail.SetWidth(0.2)
@@ -55,4 +55,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: trail_renderer.lua")
+console_post("---> END SCRIPT: trail_renderer.lua")

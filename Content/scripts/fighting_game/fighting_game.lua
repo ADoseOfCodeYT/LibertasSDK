@@ -2024,14 +2024,14 @@ runProcess(function()
 		if(input.Press(KEYBOARD_BUTTON_ESCAPE)) then
 			-- restore previous component
 			--	so if you loaded this script from the editor, you can go back to the editor with ESC
-			backlog_post("EXIT")
+			console_post("EXIT")
 			killProcesses()
 			application.SetActivePath(prevPath)
 			return
 		end
-		if(not backlog_isactive() and input.Press(string.byte('R'))) then
+		if(not console_isactive() and input.Press(string.byte('R'))) then
 			-- reload script
-			backlog_post("RELOAD")
+			console_post("RELOAD")
 			killProcesses()
 			application.SetActivePath(prevPath)
 			dofile(script_dir() .. "fighting_game.lua")

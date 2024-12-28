@@ -2,7 +2,7 @@
 -- Now you can access class parameters like you access table values just like usual, which now retrieves
 -- and change class data without using separate getter-setter functions
 
-backlog_post("---> START SCRIPT: class_parameters.lua")
+console_post("---> START SCRIPT: class_parameters.lua")
 
 ClearWorld()
 
@@ -36,11 +36,11 @@ runProcess(function()
         update()
         if(input.Press(string.byte('R'))) then
             killProcessPID(script_pid(), true)
-            backlog_post("RESTART")
+            console_post("RESTART")
             dofile(script_file(), script_pid())
             return
         end
     end
 end)
 
-backlog_post("---> END SCRIPT: class_parameters.lua")
+console_post("---> END SCRIPT: class_parameters.lua")

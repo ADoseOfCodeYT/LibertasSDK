@@ -7,7 +7,7 @@ This is a reference and explanation of Lua scripting features in Wicked Engine.
 1. [Introduction and usage](#introduction-and-usage)
 2. [Utility Tools](#utility-tools)
 4. [Engine Bindings](#engine-bindings)
-	1. [Console](#backlog)
+	1. [Console](#console)
 	2. [Renderer](#renderer)
 	3. [Sprite](#sprite)
 		1. [ImageParams](#imageparams)
@@ -72,16 +72,16 @@ This is a reference and explanation of Lua scripting features in Wicked Engine.
 Scripting in Wicked Engine is powered by Lua, meaning that the user can make use of the 
 syntax and features of the flexible and powerful Lua language.
 Apart from the common features, certain engine features are also available to use.
-You can load lua script files and execute them, or the engine scripting console (also known as the BackLog)
+You can load lua script files and execute them, or the engine scripting console (also known as the Console)
 can also be used to execute single line scripts (or you can execute file scripts by the dofile command here).
 Upon startup, the engine will try to load a startup script file named startup.lua in the root directory of 
 the application. If not found, an error message will be thrown followed by the normal execution by the program.
 In the startup file, you can specify any startup logic, for example loading content or anything.
 
-The Backlog is mapped to the HOME button on the keyboard. This will bring down an interface where lua commands can be entered with the keyboard. The ENTER button will execute the command that was entered. Pressing the HOME button again will exit the Backlog.
+The Console is mapped to the HOME button on the keyboard. This will bring down an interface where lua commands can be entered with the keyboard. The ENTER button will execute the command that was entered. Pressing the HOME button again will exit the Console.
 
 - Tip: You can inspect any object's functionality by calling 
-getprops(YourObject) on them (where YourObject is the object which is to be inspected). The result will be displayed on the BackLog.
+getprops(YourObject) on them (where YourObject is the object which is to be inspected). The result will be displayed on the Console.
 
 - Tags used in this documentation:
 	- [constructor]				: The method is a constructor for the same type of object.
@@ -98,7 +98,7 @@ This section describes the common tools for scripting which are not necessarily 
 - waitSeconds(float seconds)  -- wait until some time has passed (to be used from inside a process)
 - getprops(table object)  -- get reflection data from object
 - len(table object)  -- get the length of a table
-- backlog_post_list(table list)  -- post table contents to the backlog
+- console_post_list(table list)  -- post table contents to the console
 - fixedupdate()  -- wait for a fixed update step to be called (to be used from inside a process)
 - update()  -- wait for variable update step to be called (to be used from inside a process)
 - render()  -- wait for a render step to be called (to be used from inside a process)
@@ -118,17 +118,17 @@ These are some helpers to aid in debugging:
 ## Engine Bindings
 The scripting API provides functions for the developer to manipulate engine behaviour or query it for information.
 
-### BackLog
+### Console
 The scripting console of the engine. Input text with the keyboard, run the input with the RETURN key. The script errors
 are also displayed here.
-The scripting API provides some functions which manipulate the BackLog. These functions are in he global scope:
-- backlog_clear()  -- remove all entries from the backlog
-- backlog_post(string params,,,)  -- post a string to the backlog
-- backlog_fontsize(int size)  -- modify the fint size of the backlog
-- backlog_isactive() : boolean result  -- returns true if the backlog is active, false otherwise
-- backlog_fontrowspacing(float spacing)  -- set a row spacing to the backlog
-- backlog_lock() -- disable and lock the backlog so HOME key doesn't bring it up
-- backlog_unlock() -- unlock the backlog so it can be toggled with the HOME key
+The scripting API provides some functions which manipulate the Console. These functions are in he global scope:
+- console_clear()  -- remove all entries from the console
+- console_post(string params,,,)  -- post a string to the console
+- console_fontsize(int size)  -- modify the fint size of the console
+- console_isactive() : boolean result  -- returns true if the console is active, false otherwise
+- console_fontrowspacing(float spacing)  -- set a row spacing to the console
+- console_lock() -- disable and lock the console so HOME key doesn't bring it up
+- console_unlock() -- unlock the console so it can be toggled with the HOME key
 
 ### Renderer
 This is the graphics renderer, which is also responsible for managing the scene graph which consists of keeping track of

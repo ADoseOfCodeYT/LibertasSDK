@@ -1,6 +1,6 @@
 -- This script will add a spot light fixed to camera
 
-backlog_post("---> START SCRIPT: camera_spotlight.lua")
+console_post("---> START SCRIPT: camera_spotlight.lua")
 
 scene = GetScene()
 
@@ -26,7 +26,7 @@ runProcess(function()
 		local camup = camera.GetUpDirection()
 		local transform = scene.Component_GetTransform(light_entity)
 		if transform == nil then
-			backlog_post("light no longer exists, exiting script")
+			console_post("light no longer exists, exiting script")
 			return
 		else
 			transform.ClearTransform()
@@ -39,4 +39,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: camera_spotlight.lua")
+console_post("---> END SCRIPT: camera_spotlight.lua")

@@ -56,12 +56,12 @@ runProcess(function()
     local expectedRestingPos = Vector(0, expectedRestingPosY, 0)
 	local epsilon = 0.05
 	if (math.abs(expectedRestingPosY - transform.GetPosition().GetY()) > epsilon) then 
-		backlog_post("Test FAIL " .. script_file())
+		console_post("Test FAIL " .. script_file())
         signal("integration_test_fail")
 		vec = expectedRestingPos.Subtract(transform.GetPosition(), expectedRestingPos)
-		backlog_post("length: " .. length .. "," .. "pos: " .. vec.GetX() .. " " .. vec.GetY() .. " " .. vec.GetZ())
+		console_post("length: " .. length .. "," .. "pos: " .. vec.GetX() .. " " .. vec.GetY() .. " " .. vec.GetZ())
 	else 
-		backlog_post("Test PASS " .. script_file())
+		console_post("Test PASS " .. script_file())
         signal("integration_test_pass")
 	end 
 end)

@@ -65,7 +65,7 @@ namespace lb::console
 		lb::helper::FileWrite(filename, (const uint8_t*)text.c_str(), text.length());
 	}
 
-	// The logwriter object will automatically write out the backlog to the temp folder when it's destroyed
+	// The logwriter object will automatically write out the console to the temp folder when it's destroyed
 	//	Should happen on application exit
 	struct LogWriter
 	{
@@ -212,7 +212,7 @@ namespace lb::console
 			return;
 
 		GraphicsDevice* device = GetDevice();
-		device->EventBegin("Backlog", cmd);
+		device->EventBegin("Console", cmd);
 
 		if (!backgroundTex.IsValid())
 		{

@@ -1,7 +1,7 @@
 -- This script will load a teapot model and animate its base color between red and green
 killProcesses()  -- stops all running lua coroutine processes
 
-backlog_post("---> START SCRIPT: set_material_color.lua")
+console_post("---> START SCRIPT: set_material_color.lua")
 
 scene = GetScene()
 scene.Clear()
@@ -21,4 +21,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: set_material_color.lua")
+console_post("---> END SCRIPT: set_material_color.lua")

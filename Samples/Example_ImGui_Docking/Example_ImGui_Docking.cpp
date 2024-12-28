@@ -1307,7 +1307,7 @@ void Example_ImGuiRenderer::Update(float dt)
 	}
 	ImGui::End();
 
-	//Wicked backlog and lua.
+	//Wicked console and lua.
 	ImGui::Begin(ICON_MD_TEXT_SNIPPET " Libertas Backlog", &bAlwaysOpen, ImGuiWindowFlags_NoScrollbar);
 	{
 		static std::string lastlog = "";
@@ -1348,7 +1348,7 @@ void Example_ImGuiRenderer::Update(float dt)
 
 		if (lua_history.empty())
 		{
-			lua_history.push_back("backlog_post(\"Hello Libertas Engine :)\")");
+			lua_history.push_back("console_post(\"Hello Libertas Engine :)\")");
 		}
 
 		ImGui::PushItemWidth(24);

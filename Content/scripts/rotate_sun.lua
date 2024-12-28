@@ -1,7 +1,7 @@
 -- This script will check for directional lights and begin rotating them slowly if there are any
 killProcesses()  -- stops all running lua coroutine processes
 
-backlog_post("---> START SCRIPT: rotate_sun.lua")
+console_post("---> START SCRIPT: rotate_sun.lua")
 
 scene = GetScene()
 
@@ -21,4 +21,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: rotate_sun.lua")
+console_post("---> END SCRIPT: rotate_sun.lua")

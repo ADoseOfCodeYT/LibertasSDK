@@ -1,6 +1,6 @@
 -- This script will create many lights and move them in one direction.
 --	Use this when you already loaded a scene, because the lights will be placed inside the scene bounds
-backlog_post("---> START SCRIPT: spawn_many_lights.lua")
+console_post("---> START SCRIPT: spawn_many_lights.lua")
 
 scene = GetScene()
 
@@ -55,4 +55,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: spawn_many_lights.lua")
+console_post("---> END SCRIPT: spawn_many_lights.lua")

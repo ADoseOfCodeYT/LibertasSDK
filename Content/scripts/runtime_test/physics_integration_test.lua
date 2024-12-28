@@ -17,7 +17,7 @@ runProcess(function()
 	waitSignal("integration_test_complete")
 	
 	killProcesses()
-	backlog_post("Tests passed: " .. passedTestCount .. ", failed: " .. failedTestCount)
+	console_post("Tests passed: " .. passedTestCount .. ", failed: " .. failedTestCount)
 
 end)
 

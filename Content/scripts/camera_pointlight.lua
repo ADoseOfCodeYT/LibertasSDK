@@ -1,6 +1,6 @@
 -- This script will add a point light fixed to camera
 
-backlog_post("---> START SCRIPT: camera_pointlight.lua")
+console_post("---> START SCRIPT: camera_pointlight.lua")
 
 scene = GetScene()
 
@@ -23,7 +23,7 @@ runProcess(function()
 		local campos = camera.GetPosition()
 		local transform = scene.Component_GetTransform(light_entity)
 		if transform == nil then
-			backlog_post("light no longer exists, exiting script")
+			console_post("light no longer exists, exiting script")
 			return
 		else
 			transform.ClearTransform()
@@ -34,4 +34,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: camera_pointlight.lua")
+console_post("---> END SCRIPT: camera_pointlight.lua")

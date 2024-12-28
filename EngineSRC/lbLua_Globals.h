@@ -13,17 +13,17 @@ function len(T)
   return count
 end
 
--- Post list elements to backlog
-backlog_post_list = function(a)
+-- Post list elements to console
+console_post_list = function(a)
 	for key,value in pairs(a) do
-		backlog_post(value)
+		console_post(value)
 	end
 end
 
 -- Get object properties
 getprops = function(object)
 	for key,value in pairs(getmetatable(object)) do
-		backlog_post(key, " ",  value)
+		console_post(key, " ",  value)
 	end
 end
 

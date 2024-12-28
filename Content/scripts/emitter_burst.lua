@@ -1,7 +1,7 @@
 -- This script will load a particle emitter model and burst-spawn particles from it periodically
 killProcesses()  -- stops all running lua coroutine processes
 
-backlog_post("---> START SCRIPT: emitter_burst.lua")
+console_post("---> START SCRIPT: emitter_burst.lua")
 
 scene = GetScene()
 scene.Clear()
@@ -21,4 +21,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: emitter_burst.lua")
+console_post("---> END SCRIPT: emitter_burst.lua")

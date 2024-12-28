@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lb::lua::backlog
+namespace lb::lua::console
 {
 	void Bind();
 };

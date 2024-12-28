@@ -1,7 +1,7 @@
 -- This script demonstrates spawning multiple objects from one source scene
 killProcesses() -- stops all running lua coroutine processes
 
-backlog_post("---> START SCRIPT: instantiate.lua")
+console_post("---> START SCRIPT: instantiate.lua")
 
 scene = GetScene()
 scene.Clear()
@@ -28,4 +28,4 @@ runProcess(function()
 	end
 end)
 
-backlog_post("---> END SCRIPT: instantiate.lua")
+console_post("---> END SCRIPT: instantiate.lua")
