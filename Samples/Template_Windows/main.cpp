@@ -52,6 +52,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	application.infoDisplay.resolution = true;
 	application.infoDisplay.fpsinfo = true;
 
+
+	
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
 	{
@@ -145,13 +147,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_COMMAND:
         {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
+			return DefWindowProc(hWnd, message, wParam, lParam);
         }
         break;
     case WM_SIZE:
