@@ -7,7 +7,7 @@ using namespace lb::scene;
 void IKWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_IK " Inverse Kinematics", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_IK " Inverse Kinematics", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(400, 120));
 
 	closeButton.SetTooltip("Delete InverseKinematicsComponent");

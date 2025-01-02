@@ -69,7 +69,7 @@ namespace lb::initializer
 
 		std::thread([] {
 			lb::jobsystem::Wait(ctx);
-			lb::console::Post("\n[lb::initializer] Libertas Engine Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lb::console::Post("\nLibertas Engine Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
 		}).detach();
 
 	}

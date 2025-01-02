@@ -7,7 +7,7 @@ using namespace lb::scene;
 void TransformWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_TRANSFORM " Transform" , lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_TRANSFORM " Transform" , lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(480, 280));
 
 	closeButton.SetTooltip("Delete TransformComponent\nNote that a lot of components won't work correctly without a TransformComponent!");

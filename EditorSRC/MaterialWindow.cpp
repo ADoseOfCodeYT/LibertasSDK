@@ -28,7 +28,7 @@ MaterialComponent* get_material(Scene& scene, PickResult x)
 void MaterialWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_MATERIAL " Material", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_MATERIAL " Material", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(300, 1580));
 
 	closeButton.SetTooltip("Delete MaterialComponent");

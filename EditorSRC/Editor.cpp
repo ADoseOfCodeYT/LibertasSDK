@@ -299,8 +299,6 @@ void Editor::Initialize()
 	//infoDisplay.heap_allocation_counter = true;
 	//infoDisplay.vram_usage = true;
 
-	lb::console::setFontColor(lb::Color(130, 210, 220, 255));
-
 	lb::renderer::SetOcclusionCullingEnabled(true);
 
 	renderComponent.main = this;

@@ -7,7 +7,7 @@ using namespace lb::scene;
 void SpringWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_SPRING " Spring", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_SPRING " Spring", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(460, 220));
 
 	closeButton.SetTooltip("Delete SpringComponent");

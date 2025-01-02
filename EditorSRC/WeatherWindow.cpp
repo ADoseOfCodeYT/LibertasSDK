@@ -8,7 +8,7 @@ using namespace lb::graphics;
 void WeatherWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_WEATHER " Weather", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_WEATHER " Weather", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(660, 2140));
 
 	closeButton.SetTooltip("Delete WeatherComponent");

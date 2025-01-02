@@ -21,6 +21,7 @@
 #include "lbVersion.h"
 #include "lbPlatform.h"
 #include "lbConsole.h"
+#include "lbConvars.h"
 #include "lbPrimitive.h"
 #include "lbImage.h"
 #include "lbFont.h"

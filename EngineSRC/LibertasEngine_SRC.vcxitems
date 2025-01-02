@@ -310,6 +310,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Jolt\TriangleSplitter\TriangleSplitterLongestAxis.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Jolt\TriangleSplitter\TriangleSplitterMean.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Jolt\TriangleSplitter\TriangleSplitterMorton.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lbConvars.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lbRawInput.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\dds.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\dxva.h" />
@@ -319,6 +320,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\minimp4.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\pugiconfig.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\pugixml.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\string_utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WinAdapter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lbAsync_BindLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lbBVH.h" />
@@ -601,6 +603,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Jolt\TriangleSplitter\TriangleSplitterMean.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Jolt\TriangleSplitter\TriangleSplitterMorton.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lbArchive.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lbConvars.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lbRawInput.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\lodepng.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\meshoptimizer\allocator.cpp" />
@@ -829,6 +832,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">false</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </Text>
+    <Text Include="$(MSBuildThisFileDirectory)ConsoleVariables.txt" />
     <Text Include="$(MSBuildThisFileDirectory)Utility\meshoptimizer\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>

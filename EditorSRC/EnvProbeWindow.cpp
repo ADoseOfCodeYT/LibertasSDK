@@ -9,7 +9,7 @@ const std::string default_text = "Environment probes can be used to capture the 
 void EnvProbeWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_ENVIRONMENTPROBE " Environment Probe", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_ENVIRONMENTPROBE " Environment Probe", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(420, 340));
 
 	closeButton.SetTooltip("Delete EnvironmentProbeComponent");

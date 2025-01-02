@@ -7,7 +7,7 @@ using namespace lb::scene;
 void SoftBodyWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_SOFTBODY " Soft Body Physics", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_SOFTBODY " Soft Body Physics", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(580, 320));
 
 	closeButton.SetTooltip("Delete SoftBodyPhysicsComponent");

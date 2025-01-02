@@ -195,6 +195,12 @@ Texture texture_weatherMap;
 // See: https://github.com/turanszkij/WickedEngine/issues/450
 GPUBuffer luminance_dummy;
 
+// Dummy buffers preinitialized to invalid scene structs, avoids possible GPU crash when shader compiler is incorrectly pulling buffer desciptor load outside valid branch
+GPUBuffer instance_dummy;
+GPUBuffer geometry_dummy;
+GPUBuffer material_dummy;
+
+
 // Direct reference to a renderable instance:
 struct RenderBatch
 {
@@ -1399,11 +1405,7 @@ void LoadShaders()
 		desc.bs = &blendStates[BSTYPE_TRANSPARENT];
 		desc.dss = &depthStencils[DSSTYPE_DEPTHDISABLED];
 
-		RenderPassInfo renderpass_info;
-		renderpass_info.rt_count = 1;
-		renderpass_info.rt_formats[0] = Format::R32G32B32A32_FLOAT;
-
-		device->CreatePipelineState(&desc, &PSO_renderlightmap, &renderpass_info);
+		device->CreatePipelineState(&desc, &PSO_renderlightmap);
 		});
 	lb::jobsystem::Execute(ctx, [](lb::jobsystem::JobArgs args) {
 		PipelineStateDesc desc;
@@ -2083,6 +2085,40 @@ void LoadBuffers()
 	}
 
 	{
+		ShaderMeshInstance data;
+		data.init();
+		GPUBufferDesc desc;
+		desc.stride = sizeof(data);
+		desc.size = desc.stride;
+		desc.bind_flags = BindFlag::SHADER_RESOURCE;
+		desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+		device->CreateBuffer(&desc, &data, &instance_dummy);
+		device->SetName(&instance_dummy, "instance_dummy");
+	}
+	{
+		ShaderGeometry data;
+		data.init();
+		GPUBufferDesc desc;
+		desc.stride = sizeof(data);
+		desc.size = desc.stride;
+		desc.bind_flags = BindFlag::SHADER_RESOURCE;
+		desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+		device->CreateBuffer(&desc, &data, &geometry_dummy);
+		device->SetName(&geometry_dummy, "geometry_dummy");
+	}
+	{
+		ShaderMaterial data;
+		data.init();
+		GPUBufferDesc desc;
+		desc.stride = sizeof(data);
+		desc.size = desc.stride;
+		desc.bind_flags = BindFlag::SHADER_RESOURCE;
+		desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+		device->CreateBuffer(&desc, &data, &material_dummy);
+		device->SetName(&material_dummy, "material_dummy");
+	}
+
+	{
 		TextureDesc desc;
 		desc.type = TextureDesc::Type::TEXTURE_3D;
 		desc.format = Format::R16_FLOAT;
@@ -2258,7 +2294,7 @@ void SetUpStates()
 
 
 	rs = rasterizers[RSTYPE_DOUBLESIDED];
-	// Note: conservative raster can produce bright lightmap pixels, so now it's disabled!
+	// Note: conservative rasterization can cause GPU hang sometimes
 	//if (device->CheckCapability(GraphicsDeviceCapability::CONSERVATIVE_RASTERIZATION))
 	//{
 	//	rs.conservative_rasterization_enable = true;
@@ -4551,6 +4587,20 @@ void UpdatePerFrameData(
 	frameCB.decals = ShaderEntityIterator(decalarray_offset, decalarray_count);
 	frameCB.forces = ShaderEntityIterator(forcefieldarray_offset, forcefieldarray_count);
 
+	// GPU crash workarounds, setting buffers with invalid data:
+	if (frameCB.scene.instancebuffer < 0)
+	{
+		frameCB.scene.instancebuffer = device->GetDescriptorIndex(&instance_dummy, SubresourceType::SRV);
+	}
+	if (frameCB.scene.geometrybuffer < 0)
+	{
+		frameCB.scene.geometrybuffer = device->GetDescriptorIndex(&geometry_dummy, SubresourceType::SRV);
+	}
+	if (frameCB.scene.materialbuffer < 0)
+	{
+		frameCB.scene.materialbuffer = device->GetDescriptorIndex(&material_dummy, SubresourceType::SRV);
+	}
+
 }
 void UpdateRenderData(
 	const Visibility& vis,
@@ -4562,6 +4612,8 @@ void UpdateRenderData(
 
 	auto prof_updatebuffer_cpu = lb::profiler::BeginRangeCPU("Update Buffers (CPU)");
 	auto prof_updatebuffer_gpu = lb::profiler::BeginRangeGPU("Update Buffers (GPU)", cmd);
+
+	barrier_stack.push_back(GPUBarrier::Buffer(&vis.scene->meshletBuffer, ResourceState::SHADER_RESOURCE, ResourceState::UNORDERED_ACCESS));
 
 	barrier_stack.push_back(GPUBarrier::Buffer(&buffers[BUFFERTYPE_FRAMECB], ResourceState::CONSTANT_BUFFER, ResourceState::COPY_DST));
 	if (vis.scene->instanceBuffer.IsValid())
@@ -14366,7 +14418,7 @@ void CreateVolumetricCloudResources(VolumetricCloudResources& res, XMUINT2 resol
 	desc.width = resolution.x / 4;
 	desc.height = resolution.y / 4;
 	desc.format = Format::R16G16B16A16_FLOAT;
-	desc.layout = ResourceState::SHADER_RESOURCE;
+	desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
 	device->CreateTexture(&desc, nullptr, &res.texture_cloudRender);
 	device->SetName(&res.texture_cloudRender, "texture_cloudRender");
 	desc.format = Format::R32G32_FLOAT;
@@ -14742,7 +14794,6 @@ void Postprocess_TemporalAA(
 
 	{
 		GPUBarrier barriers[] = {
-			GPUBarrier::Memory(),
 			GPUBarrier::Image(output, ResourceState::UNORDERED_ACCESS, output->GetDesc().layout),
 		};
 		device->Barrier(barriers, arraysize(barriers), cmd);

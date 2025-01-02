@@ -66,34 +66,10 @@ namespace lb::lua::console
 
 		return 0;
 	}
-	int console_fontsize(lua_State* L)
-	{
-		int argc = lb::lua::SGetArgCount(L);
-
-		if (argc > 0)
-		{
-			lb::console::setFontSize(lb::lua::SGetInt(L, 1));
-		}
-		else
-			lb::lua::SError(L, "console_fontsize(int val) not enough arguments!");
-
-		return 0;
-	}
 	int console_isactive(lua_State* L)
 	{
 		lb::lua::SSetBool(L, lb::console::IsActive());
 		return 1;
-	}
-	int console_fontrowspacing(lua_State* L)
-	{
-		int argc = lb::lua::SGetArgCount(L);
-		if (argc > 0)
-		{
-			lb::console::setFontRowspacing(lb::lua::SGetFloat(L, 1));
-		}
-		else
-			lb::lua::SError(L, "console_fontrowspacing(int val) not enough arguments!");
-		return 0;
 	}
 	int console_setlevel(lua_State* L)
 	{
@@ -125,9 +101,7 @@ namespace lb::lua::console
 			initialized = true;
 			lb::lua::RegisterFunc("console_clear", console_clear);
 			lb::lua::RegisterFunc("console_post", console_post);
-			lb::lua::RegisterFunc("console_fontsize", console_fontsize);
 			lb::lua::RegisterFunc("console_isactive", console_isactive);
-			lb::lua::RegisterFunc("console_fontrowspacing", console_fontrowspacing);
 			lb::lua::RegisterFunc("console_setlevel", console_setlevel);
 			lb::lua::RegisterFunc("console_lock", console_lock);
 			lb::lua::RegisterFunc("console_unlock", console_unlock);

@@ -436,6 +436,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		editor->newEntityCombo.SetAngularHighlightColor(highlight);
 		editor->componentsWnd.newComponentCombo.SetAngularHighlightColor(highlight);
 		editor->componentsWnd.materialWnd.textureSlotButton.SetColor(lb::Color::White(), lb::gui::IDLE);
+		editor->componentsWnd.objectWnd.lightmapPreviewButton.SetColor(lb::Color::White());
+		for (auto& x : editor->componentsWnd.objectWnd.lightmapPreviewButton.sprites)
+		{
+			x.params.disableBackground();
+		}
 		editor->componentsWnd.spriteWnd.textureButton.SetColor(lb::Color::White(), lb::gui::IDLE);
 		editor->paintToolWnd.brushTextureButton.SetColor(lb::Color::White(), lb::gui::IDLE);
 		editor->paintToolWnd.revealTextureButton.SetColor(lb::Color::White(), lb::gui::IDLE);

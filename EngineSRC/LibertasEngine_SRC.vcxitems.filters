@@ -1398,6 +1398,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)lbConsole.h">
       <Filter>ENGINE\Tools\Console</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)lbConvars.h">
+      <Filter>ENGINE\Tools\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\string_utils.h">
+      <Filter>UTILITY</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)LUA\lapi.c">
@@ -2213,6 +2219,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)lbConsole.cpp">
       <Filter>ENGINE\Tools\Console</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)lbConvars.cpp">
+      <Filter>ENGINE\Tools\Console</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Utility\DirectXCollision.inl">
@@ -2284,5 +2293,6 @@
     <Text Include="$(MSBuildThisFileDirectory)Utility\meshoptimizer\CMakeLists.txt">
       <Filter>UTILITY\meshoptimizer</Filter>
     </Text>
+    <Text Include="$(MSBuildThisFileDirectory)ConsoleVariables.txt" />
   </ItemGroup>
 </Project>

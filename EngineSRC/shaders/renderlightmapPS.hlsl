@@ -5,16 +5,22 @@
 #include "lightingHF.hlsli"
 #include "stochasticSSRHF.hlsli"
 
+//#define DEBUG_CHARTS
+
 // This value specifies after which bounce the anyhit will be disabled:
 static const uint ANYTHIT_CUTOFF_AFTER_BOUNCE_COUNT = 4;
 
 struct Input
 {
 	float4 pos : SV_POSITION;
-	centroid float2 uv : TEXCOORD;
 	centroid float3 pos3D : WORLDPOSITION;
 	centroid float3 normal : NORMAL;
+#ifdef DEBUG_CHARTS
+	uint primitiveID : SV_PrimitiveID;
+#endif // DEBUG_CHARTS
 };
+
+
 
 static const float2 tangent_directions[] = {
 	float2(1, 0),
@@ -106,6 +112,12 @@ void BakeryPixelPush(inout float3 P, in float3 N, in float2 UV, inout RNG rng, i
 
 float4 main(Input input) : SV_TARGET
 {
+#ifdef DEBUG_CHARTS
+	return float4(random_color(input.primitiveID), 1);
+#endif // DEBUG_CHARTS
+
+	float2 uv = input.pos.xy * xTraceResolution_rcp;
+
 	Surface surface;
 	surface.init();
 	surface.N = normalize(input.normal);
@@ -116,9 +128,7 @@ float4 main(Input input) : SV_TARGET
 	float3 P = input.pos3D;
 
 	float bakerydebug = 0;
-	BakeryPixelPush(P, surface.N, input.uv, rng, bakerydebug);
-
-	float2 uv = input.uv;
+	BakeryPixelPush(P, surface.N, uv, rng, bakerydebug);
 	RayDesc ray;
 	ray.Origin = P;
 	ray.Direction = sample_hemisphere_cos(surface.N, rng);
@@ -247,7 +257,7 @@ float4 main(Input input) : SV_TARGET
 					newRay.Origin = surface.P;
 					newRay.TMin = 0.0001;
 					newRay.TMax = dist;
-					newRay.Direction = L + max3(surface.sss);
+					newRay.Direction = normalize(L + max3(surface.sss));
 
 #ifdef RTAPI
 					uint flags = RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES | RAY_FLAG_CULL_FRONT_FACING_TRIANGLES;
@@ -397,7 +407,7 @@ float4 main(Input input) : SV_TARGET
 		}
 
 		// Terminate ray's path or apply inverse termination bias:
-		const float termination_chance = max3(energy);
+		const float termination_chance = max3(energy);	
 		if (rng.next_float() > termination_chance)
 		{
 			break;

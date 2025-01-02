@@ -661,7 +661,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	RemoveWidgets();
 	ClearTransform();
 
-	lb::gui::Window::Create(ICON_TERRAIN " Terrain", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_TERRAIN " Terrain", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(420, 1000));
 
 	closeButton.SetTooltip("Delete Terrain.");

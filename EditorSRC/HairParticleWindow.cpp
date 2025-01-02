@@ -7,7 +7,7 @@ using namespace lb::scene;
 void HairParticleWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_HAIR " Hair Particle System", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_HAIR " Hair Particle System", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(600, 1000));
 
 	closeButton.SetTooltip("Delete HairParticleSystem");

@@ -36,6 +36,7 @@ public:
 	lb::gui::Button generateLightmapButton;
 	lb::gui::Button stopLightmapGenButton;
 	lb::gui::Button clearLightmapButton;
+	lb::gui::Button lightmapPreviewButton;
 
 	lb::gui::Button vertexAOButton;
 	bool deleteAOMode = false;

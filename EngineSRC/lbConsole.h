@@ -3,6 +3,7 @@
 #include "lbGraphicsDevice.h"
 #include "lbCanvas.h"
 #include "lbColor.h"
+#include "lbConvars.h"
 
 #include <string>
 
@@ -40,11 +41,6 @@ namespace lb::console
 	void HistoryNext();
 
 	bool IsActive();
-
-	void setBackground(lb::graphics::Texture* texture);
-	void setFontSize(int value);
-	void setFontRowspacing(float value);
-	void setFontColor(lb::Color color);
 
 	void Lock();
 	void Unlock();

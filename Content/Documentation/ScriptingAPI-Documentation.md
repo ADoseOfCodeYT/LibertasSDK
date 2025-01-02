@@ -124,9 +124,7 @@ are also displayed here.
 The scripting API provides some functions which manipulate the Console. These functions are in he global scope:
 - console_clear()  -- remove all entries from the console
 - console_post(string params,,,)  -- post a string to the console
-- console_fontsize(int size)  -- modify the fint size of the console
 - console_isactive() : boolean result  -- returns true if the console is active, false otherwise
-- console_fontrowspacing(float spacing)  -- set a row spacing to the console
 - console_lock() -- disable and lock the console so HOME key doesn't bring it up
 - console_unlock() -- unlock the console so it can be toggled with the HOME key
 

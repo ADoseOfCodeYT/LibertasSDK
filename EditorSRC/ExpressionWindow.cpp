@@ -8,7 +8,7 @@ void ExpressionWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	lb::gui::Window::Create(ICON_EXPRESSION " Expression", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_EXPRESSION " Expression", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 580));
 
 	closeButton.SetTooltip("Delete ExpressionComponent");

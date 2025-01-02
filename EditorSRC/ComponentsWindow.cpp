@@ -9,7 +9,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	lb::gui::Window::Create("Components ", lb::gui::Window::WindowControls::RESIZE_LEFT);
+	lb::gui::Window::Create("Components ", lb::gui::Window::WindowControls::RESIZE_LEFT | lb::gui::Window::WindowControls::DISABLE_TITLE_BAR);
 	SetText("Entity - Component System");
 	font.params.h_align = lb::font::WIFALIGN_RIGHT;
 	SetShadowRadius(2);

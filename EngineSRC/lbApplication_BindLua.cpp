@@ -148,6 +148,8 @@ namespace lb::lua
 				component->ActivatePath(comp->component, fadeSeconds, fadeColor);
 				return 0;
 			}
+
+			component->ActivatePath(nullptr);
 		}
 		else
 		{

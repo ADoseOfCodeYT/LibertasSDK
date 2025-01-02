@@ -2363,11 +2363,31 @@ namespace lb
 		case RenderPath3D::AO_HBAO:
 			desc.width = internalResolution.x / 2;
 			desc.height = internalResolution.y / 2;
-			lb::renderer::CreateSSAOResources(ssaoResources, internalResolution);
 			break;
 		case RenderPath3D::AO_RTAO:
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
+			break;
+		default:
+			break;
+		}
+
+		if (ComputeTextureMemorySizeInBytes(desc) > ComputeTextureMemorySizeInBytes(rtParticleDistortion.desc))
+		{
+			// There would be resource aliasing error if we proceed like this!
+			//	looks like ResizeBuffers() hasn't been called yet for the current internal resolution
+			//	if this happens, then ResizeBuffers() will be called next frame probably and then AO resources
+			//	will be created successfully
+			return;
+		}
+
+		switch (ao)
+		{
+		case RenderPath3D::AO_SSAO:
+		case RenderPath3D::AO_HBAO:
+			lb::renderer::CreateSSAOResources(ssaoResources, internalResolution);
+			break;
+		case RenderPath3D::AO_RTAO:
 			lb::renderer::CreateRTAOResources(rtaoResources, internalResolution);
 			break;
 		default:

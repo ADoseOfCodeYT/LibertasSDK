@@ -7,7 +7,7 @@ using namespace lb::scene;
 void HierarchyWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	lb::gui::Window::Create(ICON_HIERARCHY " Hierarchy", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE);
+	lb::gui::Window::Create(ICON_HIERARCHY " Hierarchy", lb::gui::Window::WindowControls::COLLAPSE | lb::gui::Window::WindowControls::CLOSE | lb::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(480, 60));
 
 	closeButton.SetTooltip("Delete HierarchyComponent");

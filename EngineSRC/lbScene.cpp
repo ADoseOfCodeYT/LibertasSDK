@@ -4435,6 +4435,9 @@ namespace lb::scene
 						object.lightmapWidth = lb::graphics::AlignTo(object.lightmapWidth, 4u);
 						object.lightmapHeight = lb::graphics::AlignTo(object.lightmapHeight, 4u);
 
+						object.lightmapWidth = clamp(object.lightmapWidth, 16u, 16384u);
+						object.lightmapHeight = clamp(object.lightmapHeight, 16u, 16384u);
+
 						TextureDesc desc;
 						desc.width = object.lightmapWidth;
 						desc.height = object.lightmapHeight;

@@ -11,6 +11,7 @@
 #include "lbPlatform.h"
 #include "lbHelper.h"
 #include "lbGUI.h"
+#include "lbConvars.h"
 
 #include <mutex>
 #include <deque>
@@ -31,7 +32,7 @@ namespace lb::console
 	};
 	std::deque<LogEntry> entries;
 	std::deque<LogEntry> history;
-	const float speed = 4000.0f;
+	const float speed = 6000.0f;
 	const size_t deletefromline = 500;
 	float pos = 5;
 	float scroll = 0;
@@ -41,7 +42,6 @@ namespace lb::console
 	Texture backgroundTex;
 	bool refitscroll = false;
 	lb::gui::TextInputField inputField;
-	lb::gui::Button toggleButton;
 	lb::gui::GUI GUI;
 
 	bool locked = false;
@@ -130,36 +130,14 @@ namespace lb::console
 						{
 							history.pop_front();
 						}
+						char* input = const_cast <char*>(args.sValue.c_str());
+
 						inputField.SetText("");
 					});
-					lb::Color theme_color_idle = lb::Color(30, 40, 60, 200);
-					lb::Color theme_color_focus = lb::Color(70, 150, 170, 220);
-					lb::Color theme_color_active = lb::Color::White();
-					lb::Color theme_color_deactivating = lb::Color::lerp(theme_color_focus, lb::Color::White(), 0.5f);
-					inputField.SetColor(theme_color_idle); // all states the same, it's gonna be always active anyway
-					inputField.font.params.color = lb::Color(160, 240, 250, 255);
+					lb::Color theme_color_idle = lb::Color(62, 62, 62, 255);
+					inputField.SetColor(theme_color_idle);
+					inputField.font.params.color = lb::Color(255, 255, 255, 255);
 					inputField.font.params.shadowColor = lb::Color::Transparent();
-
-					toggleButton.Create("V");
-					toggleButton.OnClick([](lb::gui::EventArgs args) {
-						Toggle();
-						});
-					toggleButton.SetColor(theme_color_idle, lb::gui::IDLE);
-					toggleButton.SetColor(theme_color_focus, lb::gui::FOCUS);
-					toggleButton.SetColor(theme_color_active, lb::gui::ACTIVE);
-					toggleButton.SetColor(theme_color_deactivating, lb::gui::DEACTIVATING);
-					toggleButton.SetShadowRadius(5);
-					toggleButton.SetShadowColor(lb::Color(80, 140, 180, 100));
-					toggleButton.font.params.color = lb::Color(160, 240, 250, 255);
-					toggleButton.font.params.rotation = XM_PI;
-					toggleButton.font.params.size = 24;
-					toggleButton.font.params.scaling = 3;
-					toggleButton.font.params.shadowColor = lb::Color::Transparent();
-					for (int i = 0; i < arraysize(toggleButton.sprites); ++i)
-					{
-						toggleButton.sprites[i].params.enableCornerRounding();
-						toggleButton.sprites[i].params.corners_rounding[2].radius = 50;
-					}
 				}
 				if (inputField.GetState() != lb::gui::ACTIVE)
 				{
@@ -183,13 +161,9 @@ namespace lb::console
 		}
 		pos = lb::math::Clamp(pos, -canvas.GetLogicalHeight(), 0);
 
-		inputField.SetSize(XMFLOAT2(canvas.GetLogicalWidth() - 40, 20));
-		inputField.SetPos(XMFLOAT2(20, canvas.GetLogicalHeight() - 40 + pos));
+		inputField.SetSize(XMFLOAT2(canvas.GetLogicalWidth() - 20, 20));
+		inputField.SetPos(XMFLOAT2(10, canvas.GetLogicalHeight() - 30 + pos));
 		inputField.Update(canvas, dt);
-
-		toggleButton.SetSize(XMFLOAT2(100, 100));
-		toggleButton.SetPos(XMFLOAT2(canvas.GetLogicalWidth() - toggleButton.GetSize().x - 20, 20 + pos));
-		toggleButton.Update(canvas, dt);
 	}
 	void Draw(
 		const lb::Canvas& canvas,
@@ -207,7 +181,8 @@ namespace lb::console
 
 		if (!backgroundTex.IsValid())
 		{
-			const uint8_t colorData[] = { 0, 0, 43, 200, 43, 31, 141, 223 };
+			const uint8_t colorData[] = { 0, 0, 0, 150, 0, 0, 0, 150 };
+			
 			lb::texturehelper::CreateTexture(backgroundTex, colorData, 1, 2);
 			device->SetName(&backgroundTex, "lb::console::backgroundTex");
 		}
@@ -221,31 +196,10 @@ namespace lb::console
 		}
 		lb::image::Draw(&backgroundTex, fx, cmd);
 
-		lb::image::Params inputbg;
-		inputbg.color = lb::Color(80, 140, 180, 200);
-		inputbg.pos = inputField.translation;
-		inputbg.pos.x -= 8;
-		inputbg.pos.y -= 8;
-		inputbg.siz = inputField.GetSize();
-		inputbg.siz.x += 16;
-		inputbg.siz.y += 16;
-		inputbg.enableCornerRounding();
-		inputbg.corners_rounding[0].radius = 10;
-		inputbg.corners_rounding[1].radius = 10;
-		inputbg.corners_rounding[2].radius = 10;
-		inputbg.corners_rounding[3].radius = 10;
-		if (colorspace != ColorSpace::SRGB)
-		{
-			inputbg.enableLinearOutputMapping(9);
-		}
-		lb::image::Draw(nullptr, inputbg, cmd);
-
 		if (colorspace != ColorSpace::SRGB)
 		{
 			inputField.sprites[inputField.GetState()].params.enableLinearOutputMapping(9);
 			inputField.font.params.enableLinearOutputMapping(9);
-			toggleButton.sprites[inputField.GetState()].params.enableLinearOutputMapping(9);
-			toggleButton.font.params.enableLinearOutputMapping(9);
 		}
 		inputField.Render(canvas, cmd);
 
@@ -255,8 +209,6 @@ namespace lb::console
 		rect.top = 0;
 		rect.bottom = (int32_t)canvas.GetPhysicalHeight();
 		device->BindScissorRects(1, &rect, cmd);
-
-		toggleButton.Render(canvas, cmd);
 
 		rect.bottom = int32_t(canvas.LogicalToPhysical(inputField.GetPos().y - 15));
 		device->BindScissorRects(1, &rect, cmd);
@@ -419,23 +371,6 @@ namespace lb::console
 			inputField.SetText(history[history.size() - 1 - historyPos].text);
 			inputField.SetAsActive();
 		}
-	}
-
-	void setBackground(Texture* texture)
-	{
-		backgroundTex = *texture;
-	}
-	void setFontSize(int value)
-	{
-		font_params.size = value;
-	}
-	void setFontRowspacing(float value)
-	{
-		font_params.spacingY = value;
-	}
-	void setFontColor(lb::Color color)
-	{
-		font_params.color = color;
 	}
 
 	bool IsActive() { return enabled; }
