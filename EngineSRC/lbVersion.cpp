@@ -4,12 +4,7 @@
 
 namespace lb::version
 {
-	// main engine core
-	const int major = 0;
-	// minor features, major updates, breaking compatibility changes
-	const int minor = 71;
-	// minor bug fixes, alterations, refactors, updates
-	const int revision = 94;
+	
 
 	const std::string version_string = std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(revision);
 
@@ -32,17 +27,6 @@ namespace lb::version
 
 	const char* GetCreditsString()
 	{
-		static const char* credits = R"(
-Credits
------------
-Made by Ismail Durmaz
-
-Libertas Engine is a fork of Wicked Engine
-
-Wicked Engine : https://github.com/turanszkij/WickedEngine
-Wicked Engine Contributors : https://github.com/turanszkij/WickedEngine/graphs/contributors
-		)";
-
 		return credits;
 	}
 

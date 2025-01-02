@@ -3,6 +3,24 @@
 
 namespace lb::version
 {
+	// main engine core
+	const int major = 1;
+	// minor features, major updates, breaking compatibility changes
+	const int minor = 71;
+	// minor bug fixes, alterations, refactors, updates
+	const int revision = 95;
+
+	static const char* credits = R"(
+Credits
+-----------
+Made by Ismail Durmaz
+
+Libertas Engine is a fork of Wicked Engine
+
+Wicked Engine : https://github.com/turanszkij/WickedEngine
+Wicked Engine Contributors : https://github.com/turanszkij/WickedEngine/graphs/contributors
+		)";
+
 	long GetVersion();
 	// major features
 	int GetMajor();
