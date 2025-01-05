@@ -1,41 +1,30 @@
 # <u> Features: </u>
 
-## Backends:
-
-* Direct X12 backend
-* Vulkan backend
-
 ## General Features:
 
 * Sprites
 * Fonts (TrueType)
-* 3D Renderpath
-* 2D Renderpath
-* Tiled Forward Rendering (+2.5D Culling)
 * Animated texturing
 * PBR
 * Skeletal Animation
 * Morph Target Animation
-* Parallax Occlusion Mapping
 * Interactive Water
-* Multithreaded Rendering
 * GPU Particles
 * Soft Particles
 * Hair Particles
-* Instanced Rendering
 * Lua Scripting
 * XAudio2
 * Input: Keyboard, Mouse, Controller, Touch
 * Controller Feedback
 * Resource Manager
 * Imposter System
-* Occlusion Culling With GPU Queries
 * Frame Profiler
 * Jolt Physics: Rigidbody, Softbody, Ragdoll
 * Ocean simulation (Fast Fourier Transform)
 * Job system
 * Inverse Kinematics
-* Springs, Colliders
+* Springs
+* Colliders
 * Animation Retargeting
 * Expressions
 * Procedural Terrain Generator
@@ -43,11 +32,81 @@
 * Video Decoding: H264
 * 3D Path Finding
 * Texture Streaming
-* Stochastic Alphatest Transparency
-* Entity-Component System (Data oriented design)
+* Parallax Occlusion Mapping
+* Entity-Component System
 * Texture Atlas Packing
 * Tiled Decals
+* Smooth Particle Hydrodynamics Fluid Simulation
 * Basic Networking (UDP)
+
+## Renderer:
+
+* Vulkan
+* DX12
+* Variable Rate Shading
+* Reversed Z-Buffer
+* Multithreaded Rendering
+* Instanced Rendering 
+* 3D Renderpath
+* 2D Renderpath
+* Reference Pathtracer
+* Tiled Forward Rendering (+2.5D Culling)
+* Stochastic Alphatest Transparency
+* Occlusion Culling With GPU Queries
+
+## Graphics:
+
+#### Effects:
+
+* Color Grading
+* Sharpen Filter
+* Eye Adaption
+* HDR
+* Bloom
+* Edge Outline
+* Motion Blur
+* Lens Flare
+* Bokeh Depth Of Field
+* Chromatic Aberration
+* Tessellation 
+
+#### Lights And Shadows:
+
+* Directional Lights (Cascaded Shadow Maps)
+* Spotlights (Simple Shadow Maps)
+* Point lights (Shadow Cubemaps)
+* Soft Shadows (PCF)
+* Translucent Colored Shadow Maps
+* Raytraced Shadows
+* Screen Space Contact Shadows
+* Refraction Caustics
+* Volumetric light Scattering
+* Light Shafts 
+
+#### Reflections:
+
+* Planar Reflections
+* Parallax Corrected Cubemap Reflections
+* Raytraced Reflections 
+* Stochastic Screen Space Reflections 
+
+#### Ambient Occlusion:
+
+* Screen Space Ambient Occlusion
+* Horizon Based Ambient Occlusion
+* Raytraced Ambient Occulusion
+
+#### Global Illumination:
+
+* Dynamic Diffuse Global Illumination
+* Lightmaps
+
+#### Anti Aliasing:
+
+* MSAA
+* TAA
+* FXAA
+* Super-Sampling
 
 ## Models:
 
@@ -55,7 +114,7 @@
 * OBJ
 * GLTF 2.0 
 
-### KHR Extensions:
+#### KHR Extensions:
 * KHR_materials_unlit
 * KHR_materials_transmission
 * KHR_materials_pbrSpecularGlossiness
@@ -68,66 +127,3 @@
 * KHR_texture_basisu
 * KHR_lights_punctual
 * EXT_lights_image_based
-
-
-## Graphics:
-
-* Color Grading
-* Sharpen Filter
-* Eye Adaption
-* HDR support
-* Planar Reflections
-* Variable Rate Shading
-* Parallax Corrected Cubemap Reflections
-* Bloom
-* Edge Outline
-* Motion Blur
-* Lens Flare
-* Light Shafts
-* Bokeh Depth Of Field
-* Chromatic Aberration
-* MSAA
-* FXAA
-* TAA
-* Super-Sampling
-* Directional Lights (Cascaded Shadow Maps)
-* Spotlights (Simple Shadow Maps)
-* Point lights (Shadow Cubemaps)
-* Soft Shadows (PCF)
-* Translucent Colored Shadows (Shadow Maps Only)
-* Refraction Caustics
-* Volumetric light Scattering
-* Smooth Particle Hydrodynamics Fluid Simulation
-* Reversed Z-Buffer
-* Tessellation
-
-
-
-#### Anti Aliasing
-* MSAA
-* TAA
-* FXAA
-* Super-Sampling
-
-#### Screen Space
-
-* Screen Space Refractions
-* Multi Sampled Ambient Occlusion
-* Screen Spacce Ambient Occlusion
-* Horizon Based Ambient Occlusion
-* Stochastic Screen Space Reflections
-* Screen Space Contact Shadows
-
-#### Raytracing
-* Dynamic Diffuse Global Illumination
-* Raytraced Ambient Occulusion
-* Raytraced Shadows
-* Raytraced Reflections
-
-#### Conetracing
-* Voxel Global Illumination
-* Voxel Reflections
-
-#### Pathtracing
-* Lightmap Baking
-* Reference Pathtracer
