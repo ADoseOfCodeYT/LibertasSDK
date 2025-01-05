@@ -130,7 +130,7 @@ namespace lb::input
 			cursor_table[i] = cursor_table_original[i];
 		}
 
-		lb::console::Post("Input System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lblog("Input System Initialized (%d ms)", (int)std::round(timer.elapsed()));
 		initialized.store(true);
 	}
 

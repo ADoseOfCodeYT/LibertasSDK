@@ -2463,9 +2463,7 @@ namespace lb::scene
 			}
 		}
 
-		char text[64] = {};
-		snprintf(text, arraysize(text), "Scene::Serialize took %.2f seconds", timer.elapsed_seconds());
-		lb::console::Post(text);
+		lblog("Scene::Serialize took %.2f seconds", timer.elapsed_seconds());
 	}
 
 	void Scene::DDGI::Serialize(lb::Archive& archive)

@@ -31,6 +31,8 @@ static constexpr T AlignTo(T value, T alignment)
 #define fourccXWMA 'AMWX'
 #define fourccDPDS 'sdpd'
 
+#define xaudio_check(hr) lblog_assert(SUCCEEDED(hr), "XAudio2 error: %s, line %d, hr = %s", relative_path(__FILE__), __LINE__, lb::helper::GetPlatformErrorString(hr).c_str())
+
 namespace lb::audio
 {
 	static const XAUDIO2FX_REVERB_I3DL2_PARAMETERS reverbPresets[] =
@@ -88,19 +90,14 @@ namespace lb::audio
 			hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 			if (!SUCCEEDED(hr))
 			{
-				std::stringstream ss("");
-				ss << "XAudio2: CoInitializeEx returned error: 0x" << std::hex << hr;
-				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
+				lblog_error("XAudio2: CoInitializeEx returned error: %s", lb::helper::GetPlatformErrorString(hr).c_str());
 				return;
 			}
 
 			hr = XAudio2Create(&audioEngine, 0, XAUDIO2_USE_DEFAULT_PROCESSOR);
 			if (!SUCCEEDED(hr))
 			{
-				std::stringstream ss("");
-				ss << "XAudio2: XAudio2Create returned error: 0x" << std::hex << hr;
-				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
-				return;
+				lblog_error("XAudio2: XAudio2Create returned error: %s", lb::helper::GetPlatformErrorString(hr).c_str());
 			}
 
 #ifdef _DEBUG
@@ -113,10 +110,7 @@ namespace lb::audio
 			hr = audioEngine->CreateMasteringVoice(&masteringVoice);
 			if (!SUCCEEDED(hr))
 			{
-				std::stringstream ss("");
-				ss << "XAudio2: CreateMasteringVoice returned error: 0x" << std::hex << hr;
-				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
-				return;
+				lblog_error("XAudio2: CreateMasteringVoice returned error: %s", lb::helper::GetPlatformErrorString(hr).c_str());
 			}
 
 			masteringVoice->GetVoiceDetails(&masteringVoiceDetails);
@@ -139,9 +133,7 @@ namespace lb::audio
 
 				if (!SUCCEEDED(hr))
 				{
-					std::stringstream ss("");
-					ss << "XAudio2: CreateSubmixVoice returned error: 0x" << std::hex << hr;
-					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
+					lblog_error("XAudio2: CreateSubmixVoice returned error: %s", lb::helper::GetPlatformErrorString(hr).c_str());
 					return;
 				}
 			}
@@ -151,9 +143,7 @@ namespace lb::audio
 			hr = X3DAudioInitialize(channelMask, X3DAUDIO_SPEED_OF_SOUND, audio3D);
 			if (!SUCCEEDED(hr))
 			{
-				std::stringstream ss("");
-				ss << "XAudio2: X3DAudioInitialize returned error: 0x" << std::hex << hr;
-				lb::console::Post(ss.str(), lb::console::LogLevel::Error);
+				lblog_error("XAudio2: X3DAudioInitialize returned error: %s", lb::helper::GetPlatformErrorString(hr).c_str());
 				return;
 			}
 
@@ -162,9 +152,7 @@ namespace lb::audio
 				hr = XAudio2CreateReverb(&reverbEffect);
 				if (!SUCCEEDED(hr))
 				{
-					std::stringstream ss("");
-					ss << "XAudio2: XAudio2CreateReverb returned error: 0x" << std::hex << hr;
-					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
+					lblog_error("XAudio2: XAudio2CreateReverb returned error: %s", lb::helper::GetPlatformErrorString(hr).c_str());
 					return;
 				}
 
@@ -181,9 +169,7 @@ namespace lb::audio
 				);
 				if (!SUCCEEDED(hr))
 				{
-					std::stringstream ss("");
-					ss << "XAudio2: CreateSubmixVoice returned error: 0x" << std::hex << hr;
-					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
+					lblog_error("XAudio2: CreateSubmixVoice returned error: %s", lb::helper::GetPlatformErrorString(hr).c_str());
 					return;
 				}
 
@@ -192,9 +178,7 @@ namespace lb::audio
 				HRESULT hr = reverbSubmix->SetEffectParameters(0, &native, sizeof(native));
 				if (!SUCCEEDED(hr))
 				{
-					std::stringstream ss("");
-					ss << "XAudio2: SetEffectParameters returned error: 0x" << std::hex << hr;
-					lb::console::Post(ss.str(), lb::console::LogLevel::Error);
+					lblog_error("XAudio2: SetEffectParameters returned error: %s", lb::helper::GetPlatformErrorString(hr).c_str());
 					return;
 				}
 			}
@@ -204,7 +188,7 @@ namespace lb::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			lb::console::Post("Audio System Initialized [XAudio2] (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lblog("Audio System Initialized [XAudio2] (%d ms)", (int)std::round(timer.elapsed()));
 		}
 		~AudioInternal()
 		{
@@ -468,9 +452,9 @@ namespace lb::audio
 
 		hr = instanceinternal->audio->audioEngine->CreateSourceVoice(&instanceinternal->sourceVoice, &soundinternal->wfx,
 			0, XAUDIO2_DEFAULT_FREQ_RATIO, instanceinternal.get(), &SFXSendList, NULL);
+		xaudio_check(hr);
 		if (FAILED(hr))
 		{
-			assert(0);
 			return false;
 		}
 
@@ -509,9 +493,9 @@ namespace lb::audio
 		instanceinternal->buffer.LoopCount = instance->IsLooped() ? XAUDIO2_LOOP_INFINITE : 0;
 
 		hr = instanceinternal->sourceVoice->SubmitSourceBuffer(&instanceinternal->buffer);
+		xaudio_check(hr);
 		if (FAILED(hr))
 		{
-			assert(0);
 			return false;
 		}
 
@@ -523,7 +507,7 @@ namespace lb::audio
 		{
 			auto instanceinternal = to_internal(instance);
 			HRESULT hr = instanceinternal->sourceVoice->Start();
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 		}
 	}
 	void Pause(SoundInstance* instance)
@@ -532,7 +516,7 @@ namespace lb::audio
 		{
 			auto instanceinternal = to_internal(instance);
 			HRESULT hr = instanceinternal->sourceVoice->Stop(); // preserves cursor position
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 		}
 	}
 	void Stop(SoundInstance* instance)
@@ -541,16 +525,16 @@ namespace lb::audio
 		{
 			auto instanceinternal = to_internal(instance);
 			HRESULT hr = instanceinternal->sourceVoice->Stop(); // preserves cursor position
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 			hr = instanceinternal->sourceVoice->FlushSourceBuffers(); // reset submitted audio buffer
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 			if (!instanceinternal->ended) // if already ended, don't submit end again, it can cause high pitched jerky sound
 			{
 				hr = instanceinternal->sourceVoice->SubmitSourceBuffer(&audio_internal->termination_mark); // mark this as terminated, this resets XAUDIO2_VOICE_STATE::SamplesPlayed to zero
-				assert(SUCCEEDED(hr));
+				xaudio_check(hr);
 			}
 			hr = instanceinternal->sourceVoice->SubmitSourceBuffer(&instanceinternal->buffer); // resubmit
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 		}
 	}
 	void SetVolume(float volume, SoundInstance* instance)
@@ -558,13 +542,13 @@ namespace lb::audio
 		if (instance == nullptr || !instance->IsValid())
 		{
 			HRESULT hr = audio_internal->masteringVoice->SetVolume(volume);
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 		}
 		else
 		{
 			auto instanceinternal = to_internal(instance);
 			HRESULT hr = instanceinternal->sourceVoice->SetVolume(volume);
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 		}
 	}
 	float GetVolume(const SoundInstance* instance)
@@ -589,12 +573,12 @@ namespace lb::audio
 			if (instanceinternal->buffer.LoopCount == 0)
 				return;
 			HRESULT hr = instanceinternal->sourceVoice->ExitLoop();
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 			if (instanceinternal->ended)
 			{
 				instanceinternal->buffer.LoopCount = 0;
 				hr = instanceinternal->sourceVoice->SubmitSourceBuffer(&instanceinternal->buffer);
-				assert(SUCCEEDED(hr));
+				xaudio_check(hr);
 			}
 		}
 	}
@@ -636,7 +620,7 @@ namespace lb::audio
 	void SetSubmixVolume(SUBMIX_TYPE type, float volume)
 	{
 		HRESULT hr = audio_internal->submixVoices[type]->SetVolume(volume);
-		assert(SUCCEEDED(hr));
+		xaudio_check(hr);
 	}
 	float GetSubmixVolume(SUBMIX_TYPE type)
 	{
@@ -691,7 +675,7 @@ namespace lb::audio
 			HRESULT hr;
 
 			hr = instanceinternal->sourceVoice->SetFrequencyRatio(settings.DopplerFactor);
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 
 			hr = instanceinternal->sourceVoice->SetOutputMatrix(
 				instanceinternal->audio->submixVoices[instance->type],
@@ -699,19 +683,19 @@ namespace lb::audio
 				settings.DstChannelCount, 
 				settings.pMatrixCoefficients
 			);
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 			
 			XAUDIO2_FILTER_PARAMETERS FilterParametersDirect = { LowPassFilter, 2.0f * sinf(X3DAUDIO_PI / 6.0f * settings.LPFDirectCoefficient), 1.0f };
 			hr = instanceinternal->sourceVoice->SetOutputFilterParameters(instanceinternal->audio->submixVoices[instance->type], &FilterParametersDirect);
-			assert(SUCCEEDED(hr));
+			xaudio_check(hr);
 
 			if (instance->IsEnableReverb() && instanceinternal->audio->reverbSubmix != nullptr)
 			{
 				hr = instanceinternal->sourceVoice->SetOutputMatrix(instanceinternal->audio->reverbSubmix, settings.SrcChannelCount, 1, &settings.ReverbLevel);
-				assert(SUCCEEDED(hr));
+				xaudio_check(hr);
 				XAUDIO2_FILTER_PARAMETERS FilterParametersReverb = { LowPassFilter, 2.0f * sinf(X3DAUDIO_PI / 6.0f * settings.LPFReverbCoefficient), 1.0f };
 				hr = instanceinternal->sourceVoice->SetOutputFilterParameters(instanceinternal->audio->reverbSubmix, &FilterParametersReverb);
-				assert(SUCCEEDED(hr));
+				xaudio_check(hr);
 			}
 		}
 	}
@@ -721,7 +705,7 @@ namespace lb::audio
 		XAUDIO2FX_REVERB_PARAMETERS native;
 		ReverbConvertI3DL2ToNative(&reverbPresets[preset], &native);
 		HRESULT hr = audio_internal->reverbSubmix->SetEffectParameters(0, &native, sizeof(native));
-		assert(SUCCEEDED(hr));
+		xaudio_check(hr);
 	}
 }
 

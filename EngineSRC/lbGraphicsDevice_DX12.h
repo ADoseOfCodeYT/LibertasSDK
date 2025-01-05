@@ -11,6 +11,8 @@
 #include "lbUnorderedMap.h"
 #include "lbVector.h"
 #include "lbSpinLock.h"
+#include "lbConsole.h"
+#include "lbHelper.h"
 
 #ifdef PLATFORM_XBOX
 #include "lbGraphicsDevice_DX12_XBOX.h"
@@ -30,6 +32,8 @@
 #include <deque>
 #include <atomic>
 #include <mutex>
+
+#define dx12_check(hr) lblog_assert(SUCCEEDED(hr), "DX12 error: %s, line %d, hr = %s", relative_path(__FILE__), __LINE__, lb::helper::GetPlatformErrorString(hr).c_str())
 
 namespace lb::graphics
 {
@@ -138,7 +142,7 @@ namespace lb::graphics
 			{
 				Semaphore& dependency = semaphore_pool.emplace_back();
 				HRESULT hr = device->CreateFence(0, D3D12_FENCE_FLAG_NONE, PPV_ARGS(dependency.fence));
-				assert(SUCCEEDED(hr));
+				dx12_check(hr);
 			}
 			Semaphore semaphore = std::move(semaphore_pool.back());
 			semaphore_pool.pop_back();
@@ -453,7 +457,7 @@ namespace lb::graphics
 				// Descriptor heaps' progress is recorded by the GPU:
 				fenceValue = allocationOffset.load();
 				HRESULT hr = queue->Signal(fence.Get(), fenceValue);
-				assert(SUCCEEDED(hr));
+				dx12_check(hr);
 				cached_completedValue = fence->GetCompletedValue();
 			}
 		};
@@ -489,7 +493,7 @@ namespace lb::graphics
 				{
 					heaps.emplace_back();
 					HRESULT hr = device->device->CreateDescriptorHeap(&desc, PPV_ARGS(heaps.back()));
-					assert(SUCCEEDED(hr));
+					dx12_check(hr);
 					D3D12_CPU_DESCRIPTOR_HANDLE heap_start = heaps.back()->GetCPUDescriptorHandleForHeapStart();
 					for (UINT i = 0; i < desc.NumDescriptors; ++i)
 					{

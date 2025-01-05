@@ -11,6 +11,7 @@
 #include "lbUnorderedMap.h"
 #include "lbVector.h"
 #include "lbSpinLock.h"
+#include "lbConsole.h"
 
 #ifdef _WIN32
 #define VK_USE_PLATFORM_WIN32_KHR
@@ -20,11 +21,15 @@
 #include "Utility/vulkan/vulkan.h"
 #include "Utility/volk.h"
 #include "Utility/vk_mem_alloc.h"
+#include "Utility/vk_enum_string_helper.h"
 
 #include <deque>
 #include <atomic>
 #include <mutex>
 #include <algorithm>
+
+#define vulkan_check(res) lblog_assert(res == VK_SUCCESS, "Vulkan error: %s, line %d, result = %s", relative_path(__FILE__), __LINE__, string_VkResult(res))
+
 
 namespace lb::graphics
 {
@@ -207,7 +212,7 @@ namespace lb::graphics
 				VkSemaphoreCreateInfo info = {};
 				info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 				VkResult res = vkCreateSemaphore(device, &info, nullptr, &sema);
-				assert(res == VK_SUCCESS);
+				vulkan_check(res);
 			}
 			VkSemaphore semaphore = semaphore_pool.back();
 			semaphore_pool.pop_back();
@@ -502,7 +507,7 @@ namespace lb::graphics
 					poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT;
 
 					VkResult res = vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool);
-					assert(res == VK_SUCCESS);
+					vulkan_check(res);
 
 					VkDescriptorSetLayoutBinding binding = {};
 					binding.descriptorType = type;
@@ -529,7 +534,7 @@ namespace lb::graphics
 					layoutInfo.pNext = &bindingFlagsInfo;
 
 					res = vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout);
-					assert(res == VK_SUCCESS);
+					vulkan_check(res);
 
 					VkDescriptorSetAllocateInfo allocInfo = {};
 					allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -537,7 +542,7 @@ namespace lb::graphics
 					allocInfo.descriptorSetCount = 1;
 					allocInfo.pSetLayouts = &descriptorSetLayout;
 					res = vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet);
-					assert(res == VK_SUCCESS);
+					vulkan_check(res);
 
 					for (int i = 0; i < (int)descriptorCount; ++i)
 					{

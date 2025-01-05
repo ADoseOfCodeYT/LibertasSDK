@@ -206,7 +206,7 @@ namespace lb::texturehelper
 			device->SetName(&helperTextures[HELPERTEXTURE_NORMALMAPDEFAULT], "HELPERTEXTURE_NORMALMAPDEFAULT");
 		}
 
-		lb::console::Post("Texture System Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+		lblog("Texture Helper Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
 	const Texture* getLogo()

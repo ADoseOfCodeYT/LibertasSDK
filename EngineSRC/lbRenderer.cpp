@@ -2686,7 +2686,7 @@ void Initialize()
 	static lb::eventhandler::Handle handle2 = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 	LoadShaders();
 
-	lb::console::Post("Renderer Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+	lblog("Renderer Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	initialized.store(true);
 }
 void ClearWorld(Scene& scene)

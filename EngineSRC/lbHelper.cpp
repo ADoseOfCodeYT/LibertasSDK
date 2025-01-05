@@ -30,6 +30,7 @@
 #include <direct.h>
 #include <Psapi.h> // GetProcessMemoryInfo
 #include <Commdlg.h> // openfile
+#include <comdef.h>
 #include <WinBase.h>
 #elif defined(PLATFORM_PS5)
 #else
@@ -1546,5 +1547,20 @@ namespace lb::helper
 			ss << timerSeconds / 60 / 60 << " hours";
 		}
 		return ss.str();
+	}
+		
+	std::string GetPlatformErrorString(lb::platform::error_type code)
+	{
+		std::string str;
+#ifdef _WIN32
+		_com_error err(code);
+		LPCTSTR errMsg = err.ErrorMessage();
+		wchar_t wtext[1024] = {};
+		_snwprintf_s(wtext, arraysize(wtext), arraysize(wtext), L"0x%08x (%s)", code, errMsg);
+		char text[1024] = {};
+		lb::helper::StringConvert(wtext, text, arraysize(text));
+		str = text;
+#endif // _WIN32
+		return str;
 	}
 }

@@ -6,6 +6,14 @@
 #include "lbConvars.h"
 
 #include <string>
+#include <cassert>
+
+#define lblog_level(str,level,...) {char text[1024] = {}; snprintf(text, sizeof(text), str, ## __VA_ARGS__); lb::console::Post(text, level);}
+#define lblog_messagebox(str,...) {char text[1024] = {}; snprintf(text, sizeof(text), str, ## __VA_ARGS__); lb::console::Post(text, lb::console::LogLevel::Error); lb::helper::messageBox(text, "Error!");}
+#define lblog_warning(str,...) {lblog_level(str, lb::console::LogLevel::Warning, ## __VA_ARGS__);}
+#define lblog_error(str,...) {lblog_level(str, lb::console::LogLevel::Error, ## __VA_ARGS__);}
+#define lblog(str,...) {lblog_level(str, lb::console::LogLevel::Default, ## __VA_ARGS__);}
+#define lblog_assert(cond,str,...) {if(!cond){lblog_error(str, ## __VA_ARGS__); assert(cond);}}
 
 namespace lb::console
 {

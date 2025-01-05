@@ -2,6 +2,7 @@
 #include "CommonInclude.h"
 #include "lbGraphicsDevice.h"
 #include "lbVector.h"
+#include "lbPlatform.h"
 
 #include <string>
 #include <functional>
@@ -177,4 +178,7 @@ namespace lb::helper
 
 	// Returns a good looking timer duration text as either milliseconds, seconds, minutes or hours
 	std::string GetTimerDurationText(float timerSeconds);
+
+	// Get error message from platform-specific error code, for example HRESULT on windows
+	std::string GetPlatformErrorString(lb::platform::error_type code);
 };

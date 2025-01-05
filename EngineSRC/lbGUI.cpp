@@ -29,7 +29,7 @@ namespace lb::gui
 			static lb::eventhandler::Handle handle = lb::eventhandler::Subscribe(lb::eventhandler::EVENT_RELOAD_SHADERS, [this](uint64_t userdata) { LoadShaders(); });
 			LoadShaders();
 
-			lb::console::Post("GUI Initialized (" + std::to_string((int)std::round(timer.elapsed())) + " ms)");
+			lblog("GUI Initialized (%d ms)", (int)std::round(timer.elapsed()));
 		}
 
 		void LoadShaders()

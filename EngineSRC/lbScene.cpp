@@ -1078,9 +1078,7 @@ namespace lb::scene
 
 		Merge(tmp);
 
-		char text[64] = {};
-		snprintf(text, arraysize(text), "Scene::Instantiate took %.2f ms", timer.elapsed_milliseconds());
-		lb::console::Post(text);
+		lblog("Scene::Instantiate took %.2f ms", timer.elapsed_milliseconds());
 
 		return rootEntity;
 	}
