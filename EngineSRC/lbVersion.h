@@ -8,7 +8,7 @@ namespace lb::version
 	// minor features, major updates, breaking compatibility changes
 	const int minor = 71;
 	// minor bug fixes, alterations, refactors, updates
-	const int revision = 96;
+	const int revision = 98;
 
 	static const char* credits = R"(
 Credits
