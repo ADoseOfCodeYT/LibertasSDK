@@ -769,6 +769,8 @@ namespace lb::scene
 		}
 
 		// Determine UV range for normalization:
+		size_t uv_stride = sizeof(Vertex_UVS);
+		Format uv_format = Vertex_UVS::FORMAT;
 		if (!vertex_uvset_0.empty() || !vertex_uvset_1.empty())
 		{
 			const XMFLOAT2* uv0_stream = vertex_uvset_0.empty() ? vertex_uvset_1.data() : vertex_uvset_0.data();
@@ -782,6 +784,12 @@ namespace lb::scene
 				uv_range_max = lb::math::Max(uv_range_max, uv1_stream[i]);
 				uv_range_min = lb::math::Min(uv_range_min, uv0_stream[i]);
 				uv_range_min = lb::math::Min(uv_range_min, uv1_stream[i]);
+			}
+			if (std::abs(uv_range_max.x - uv_range_min.x) > 65536 || std::abs(uv_range_max.y - uv_range_min.y) > 65536)
+			{
+				// The bounding box of UVs is too large, fall back to full precision UVs:
+				uv_stride = sizeof(Vertex_UVS32);
+				uv_format = Vertex_UVS32::FORMAT;
 			}
 		}
 
@@ -809,7 +817,7 @@ namespace lb::scene
 			AlignTo(indices.size() * GetIndexStride(), alignment) +
 			AlignTo(vertex_normals.size() * sizeof(Vertex_NOR), alignment) +
 			AlignTo(vertex_tangents.size() * sizeof(Vertex_TAN), alignment) +
-			AlignTo(uv_count * sizeof(Vertex_UVS), alignment) +
+			AlignTo(uv_count * uv_stride, alignment) +
 			AlignTo(vertex_atlas.size() * sizeof(Vertex_TEX), alignment) +
 			AlignTo(vertex_colors.size() * sizeof(Vertex_COL), alignment) +
 			AlignTo(vertex_boneindices.size() * sizeof(Vertex_BON), alignment) +
@@ -1057,16 +1065,30 @@ namespace lb::scene
 				const XMFLOAT2* uv0_stream = vertex_uvset_0.empty() ? vertex_uvset_1.data() : vertex_uvset_0.data();
 				const XMFLOAT2* uv1_stream = vertex_uvset_1.empty() ? vertex_uvset_0.data() : vertex_uvset_1.data();
 
-				vb_uvs.offset = buffer_offset;
-				vb_uvs.size = uv_count * sizeof(Vertex_UVS);
-				Vertex_UVS* vertices = (Vertex_UVS*)(buffer_data + buffer_offset);
-				buffer_offset += AlignTo(vb_uvs.size, alignment);
-				for (size_t i = 0; i < uv_count; ++i)
+				vb_uvs.size = uv_count * uv_stride;
+				if (uv_stride == sizeof(Vertex_UVS))
 				{
-					Vertex_UVS vert;
-					vert.uv0.FromFULL(uv0_stream[i], uv_range_min, uv_range_max);
-					vert.uv1.FromFULL(uv1_stream[i], uv_range_min, uv_range_max);
-					std::memcpy(vertices + i, &vert, sizeof(vert));
+					Vertex_UVS* vertices = (Vertex_UVS*)(buffer_data + buffer_offset);
+					buffer_offset += AlignTo(vb_uvs.size, alignment);
+					for (size_t i = 0; i < uv_count; ++i)
+					{
+						Vertex_UVS vert;
+						vert.uv0.FromFULL(uv0_stream[i], uv_range_min, uv_range_max);
+						vert.uv1.FromFULL(uv1_stream[i], uv_range_min, uv_range_max);
+						std::memcpy(vertices + i, &vert, sizeof(vert));
+					}
+				}
+				else
+				{
+					Vertex_UVS32* vertices = (Vertex_UVS32*)(buffer_data + buffer_offset);
+					buffer_offset += AlignTo(vb_uvs.size, alignment);
+					for (size_t i = 0; i < uv_count; ++i)
+					{
+						Vertex_UVS32 vert;
+						vert.uv0.FromFULL(uv0_stream[i], uv_range_min, uv_range_max);
+						vert.uv1.FromFULL(uv1_stream[i], uv_range_min, uv_range_max);
+						std::memcpy(vertices + i, &vert, sizeof(vert));
+					}
 				}
 			}
 
@@ -1267,7 +1289,7 @@ namespace lb::scene
 		}
 		if (vb_uvs.IsValid())
 		{
-			vb_uvs.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_uvs.offset, vb_uvs.size, &Vertex_UVS::FORMAT);
+			vb_uvs.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_uvs.offset, vb_uvs.size, &uv_format);
 			vb_uvs.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_uvs.subresource_srv);
 		}
 		if (vb_atl.IsValid())

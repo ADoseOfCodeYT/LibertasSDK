@@ -52,8 +52,44 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	application.infoDisplay.resolution = true;
 	application.infoDisplay.fpsinfo = true;
 
+	application.Initialize();
 
-	
+	ConVar_Float floattest("float.test", 1.0, ConVarFlags::Protected);
+	ConVar_Int inttest("int.test", 1, ConVarFlags::UnProtected);
+	ConVar_String strtest("string.test", "wowow", ConVarFlags::UnProtected);
+
+	ConVarSystem::Get()->SetConVarValueSafe("float.test", 99.9);
+
+	if (ConVarSystem::Get()->GetFloatConVarVal("float.test"))
+	{
+		lb::console::Post(std::to_string(floattest.Get()), lb::console::LogLevel::Warning);
+
+	}
+	else
+	{
+		lb::console::Post("no float", lb::console::LogLevel::Error);
+	}
+
+	if (ConVarSystem::Get()->GetStringConVarVal("string.test"))
+	{
+		lb::console::Post(strtest.Get(), lb::console::LogLevel::Warning);
+
+	}
+	else
+	{
+		lb::console::Post("no str", lb::console::LogLevel::Error);
+	}
+
+	if (ConVarSystem::Get()->GetIntConVarVal("int.test"))
+	{
+		lb::console::Post(std::to_string(inttest.Get()), lb::console::LogLevel::Warning);
+
+	}
+	else
+	{
+		lb::console::Post("no int", lb::console::LogLevel::Error);
+	}
+
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
 	{
