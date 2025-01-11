@@ -86,6 +86,7 @@ namespace lb::scene
 		mutable bool acceleration_structure_update_requested = false;
 		void SetAccelerationStructureUpdateRequested(bool value = true) { acceleration_structure_update_requested = value; }
 		bool IsAccelerationStructureUpdateRequested() const { return acceleration_structure_update_requested; }
+		bool IsLightmapUpdateRequested() const { return lightmap_request_allocator.load() > 0; }
 		lb::Archive optimized_instatiation_data;
 		lb::vector<lb::primitive::Capsule> character_capsules;
 
