@@ -56,13 +56,13 @@ BlendState			blendStates[BSTYPE_COUNT];
 GPUBuffer			buffers[BUFFERTYPE_COUNT];
 Sampler				samplers[SAMPLER_COUNT];
 
-#if __has_include("wiShaderDump.h")
-// In this case, wiShaderDump.h contains precompiled shader binary data
+#if __has_include("lbShaderDump.h")
+// In this case, lbShaderDump.h contains precompiled shader binary data
 #include "lbShaderDump.h"
 #define SHADERDUMP_ENABLED
 size_t GetShaderDumpCount()
 {
-	return wiShaderDump::shaderdump.size();
+	return lbShaderDump::shaderdump.size();
 }
 #else
 // In this case, shaders can only be loaded from file
@@ -755,8 +755,8 @@ bool LoadShader(
 	{
 #ifdef SHADERDUMP_ENABLED
 		// Loading shader from precompiled dump:
-		auto it = wiShaderDump::shaderdump.find(shaderbinaryfilename);
-		if (it != wiShaderDump::shaderdump.end())
+		auto it = lbShaderDump::shaderdump.find(shaderbinaryfilename);
+		if (it != lbShaderDump::shaderdump.end())
 		{
 			return device->CreateShader(stage, it->second.data, it->second.size, &shader);
 		}

@@ -360,7 +360,7 @@ int main(int argc, char* argv[])
 	std::cout << "\trebuild : \t\tAll shaders will be rebuilt, regardless if they are outdated or not\n";
 	std::cout << "\tdisable_optimization : \tShaders will be compiled without optimizations\n";
 	std::cout << "\tstrip_reflection : \tReflection will be stripped from shader binary to reduce file size\n";
-	std::cout << "\tshaderdump : \t\tShaders will be saved to wiShaderDump.h C++ header file (rebuild is assumed)\n";
+	std::cout << "\tshaderdump : \t\tShaders will be saved to lbShaderDump.h C++ header file (rebuild is assumed)\n";
 	std::cout << "Command arguments used: ";
 
 	lb::arguments::Parse(argc, argv);
@@ -605,8 +605,8 @@ int main(int argc, char* argv[])
 		}
 		ss += "};\n"; // map end
 		ss += "}\n"; // namespace end
-		lb::helper::FileWrite("wiShaderDump.h", (uint8_t*)ss.c_str(), ss.length());
-		std::cout << "[Libertas Engine Offline Shader Compiler] ShaderDump written to wiShaderDump.h in " << std::setprecision(4) << timer.elapsed_seconds() << " seconds\n";
+		lb::helper::FileWrite("lbShaderDump.h", (uint8_t*)ss.c_str(), ss.length());
+		std::cout << "[Libertas Engine Offline Shader Compiler] ShaderDump written to lbShaderDump.h in " << std::setprecision(4) << timer.elapsed_seconds() << " seconds\n";
 	}
 
 	lb::jobsystem::ShutDown();
